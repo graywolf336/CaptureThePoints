@@ -531,7 +531,9 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         inv.remove(Material.WOOL);
         p.getInventory().setHelmet(helmet);
-        p.updateInventory();
+        
+        // Deprecated
+        //p.updateInventory();
     }
 
     public boolean isInside (int loc, int first, int second) {
@@ -759,7 +761,9 @@ public class CaptureThePointsPlayerListener implements Listener {
                         
                         ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
                         player.getInventory().setHelmet(helmet);
-                        player.updateInventory();
+                        
+                        // Deprecated
+                        //p.updateInventory();
                     }
                 }
             }
@@ -828,7 +832,9 @@ public class CaptureThePointsPlayerListener implements Listener {
             player.getInventory().addItem(wool);
             //player.getInventory().addItem(new ItemStack[]{wool});
         }
-        player.updateInventory();
+        
+        // Deprecated
+        //p.updateInventory();
 
         //Move to spawn  
         ctp.playerData.get(player).team = team;
@@ -930,7 +936,9 @@ public class CaptureThePointsPlayerListener implements Listener {
 
             p.sendMessage("You bought " + ChatColor.AQUA + amount + " " + list.get(0).item.toString().toLowerCase() + ChatColor.WHITE + " for " + ChatColor.GREEN + price + ChatColor.WHITE + " money.");
             p.sendMessage("You now have " + ChatColor.GREEN + ctp.playerData.get(p).money + ChatColor.WHITE + " money.");
-            p.updateInventory();
+            
+            // Deprecated
+            //p.updateInventory();
             return;
         } else {
             String message = price != Integer.MAX_VALUE
@@ -1049,7 +1057,9 @@ public class CaptureThePointsPlayerListener implements Listener {
 
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
             p.getInventory().setHelmet(helmet);
-            p.updateInventory();
+            
+            // Deprecated
+            //p.updateInventory();
 
             p.sendMessage("[CTP] You selected " + ChatColor.GREEN + color.toUpperCase() + ChatColor.WHITE + " team.");
         }
@@ -1125,7 +1135,9 @@ public class CaptureThePointsPlayerListener implements Listener {
                         //Remove Helmet
                         p.getInventory().setHelmet(null);
                         p.getInventory().remove(Material.WOOL);
-                        p.updateInventory();
+                        
+                        // Deprecated
+                        //p.updateInventory();
                         
                         moveToSpawns(p);
                         playersForRemove.add(p);

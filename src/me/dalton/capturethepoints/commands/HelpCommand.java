@@ -21,7 +21,7 @@ public class HelpCommand extends CTPCommand {
     public void perform() {
         int size = parameters.size();
         // ctp = parameters.get(0)
-        String arg = size > 1 ? parameters.get(1) : "help"; // Kj -- grab the arguments with null -> empty checking. If only /ctp build, assume help.
+        //String arg = size > 1 ? parameters.get(1) : "help"; // Kj -- grab the arguments with null -> empty checking. If only /ctp build, assume help.
         String arg2 = size > 2 ? parameters.get(2) : "";
         String pagenumber = arg2;
         

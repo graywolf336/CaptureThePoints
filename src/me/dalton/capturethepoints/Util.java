@@ -1,6 +1,5 @@
 package me.dalton.capturethepoints;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -242,7 +241,8 @@ public class Util {
 
     /** Returns whether String is a number. */
     public static boolean isItInteger(String text) {
-        int id = 0;
+        @SuppressWarnings("unused")
+		int id = 0;
         try {
             id = Integer.parseInt(text);
         } catch (Exception NumberFormatException) {
@@ -409,7 +409,8 @@ public class Util {
     }
 
 // Tingiu mazint :/
-    public static void rewardPlayer(CaptureThePoints plugin, Player player) 
+    @SuppressWarnings("deprecation")
+	public static void rewardPlayer(CaptureThePoints plugin, Player player) 
     {
         try
         {
@@ -593,6 +594,7 @@ public class Util {
                     player.getInventory().addItem(stack);
                 }
             }
+            // Out dated
             player.updateInventory();
         }
         catch(Exception e)

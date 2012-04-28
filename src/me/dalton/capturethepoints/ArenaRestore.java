@@ -11,13 +11,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Directional;
 
@@ -39,11 +39,11 @@ public class ArenaRestore {
 
     public void addBlock(Block block, boolean isDestroyed) {
         CTPBlock tmp = new CTPBlock();
-        ContainerBlock dd;
+        InventoryHolder dd;
         BlockState state = block.getState();
         //chest
-        if (state instanceof ContainerBlock) {
-            dd = (ContainerBlock) state;
+        if (state instanceof InventoryHolder) {
+            dd = (InventoryHolder) state;
             ItemStack[] contents = dd.getInventory().getContents();
             tmp.inv = contents;
         }
@@ -67,7 +67,7 @@ public class ArenaRestore {
                 //chest
                 if (tmp.inv != null && tmp.inv.length > 0)
                 {
-                    ContainerBlock dd = (ContainerBlock) blockLocation.getBlock().getState();
+                	InventoryHolder dd = (InventoryHolder) blockLocation.getBlock().getState();
                     Inventory inv = dd.getInventory();
                     inv.setContents(tmp.inv);
                 }
@@ -190,7 +190,7 @@ public class ArenaRestore {
                 ctp.mysqlConnector.modifyData("INSERT INTO `Simple_block` (`data`, `x`, `y`, `z`, `z2`, `arena_name`, `block_type`, `direction`) VALUES ( " + data + "," + (int)firstPoint.x + "," +
                         (int)firstPoint.y + "," + (int)firstPoint.z + "," + (int)secondPoint.z + ",'" + arenaName + "'," + type + ",'NO');");
                 int id = ctp.mysqlConnector.getLastInsertedId();
-                ctp.mysqlConnector.modifyData("INSERT INTO `Spawner_block` (`block_ID`, `creature_type`, `delay`) VALUES ( " + id + ",'" + mobSpawner.getCreatureTypeId() + "'," + mobSpawner.getDelay() + ");");
+                ctp.mysqlConnector.modifyData("INSERT INTO `Spawner_block` (`block_ID`, `creature_type`, `delay`) VALUES ( " + id + ",'" + mobSpawner.getCreatureTypeName() + "'," + mobSpawner.getDelay() + ");");
                 break;
             }
 
@@ -349,7 +349,7 @@ public class ArenaRestore {
                         {
                             CreatureSpawner mobSpawner = (CreatureSpawner) block.getState();
 
-                            mobSpawner.setCreatureTypeId(blocksRez.getString("creature_type"));
+                            mobSpawner.setCreatureTypeByName(blocksRez.getString("creature_type"));
                             mobSpawner.setDelay(blocksRez.getInt("delay"));
 
                             break;

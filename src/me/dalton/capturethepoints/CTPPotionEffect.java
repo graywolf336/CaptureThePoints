@@ -57,32 +57,28 @@ public class CTPPotionEffect
 //        catch (Exception e) {}
     }
 
-    public static void removeAllEffects(Player player)
-    {
+    public static void removeAllEffects(Player player) {
         Collection<MobEffect> eff = ((CraftLivingEntity)player).getHandle().getEffects();
 
-        for(MobEffect effect : eff)
-        {
+        for(MobEffect effect : eff) {
             removePotionEffect(player, effect.getEffectId(), effect.getAmplifier());
         }
     }
 
-    public static List<CTPPotionEffect> storePlayerPotionEffects(Player player)
-    {
+    public static List<CTPPotionEffect> storePlayerPotionEffects(Player player) {
         List<CTPPotionEffect> effects = new ArrayList<CTPPotionEffect>();
 
         Collection<MobEffect> eff;
         eff = ((CraftLivingEntity)player).getHandle().getEffects();
-        for(MobEffect effect : eff)
-        {
+        
+        for(MobEffect effect : eff) {
             effects.add(new CTPPotionEffect(effect.getDuration(), effect.getAmplifier(), effect.getEffectId()));
         }
         
         return effects;
     }
 
-    public static void restorePotionEffects(Player player, List<CTPPotionEffect> effects)
-    {
+    public static void restorePotionEffects(Player player, List<CTPPotionEffect> effects) {
         for(CTPPotionEffect eff : effects)
             ((CraftLivingEntity)player).getHandle().addEffect(new MobEffect(eff.id, eff.duration, eff.strenght));
     }

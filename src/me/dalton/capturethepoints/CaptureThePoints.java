@@ -1,11 +1,10 @@
 package me.dalton.capturethepoints;
-import java.io.IOException;
-import java.util.logging.Level;
+
 import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
+import me.dalton.capturethepoints.commands.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +15,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import me.dalton.capturethepoints.commands.*;
+import java.io.IOException;
+import java.util.logging.Level;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.minecraft.server.Packet;
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
@@ -29,40 +31,38 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.minecraft.server.Packet51MapChunk;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.CraftWorld;
 
-public class CaptureThePoints extends JavaPlugin
-{
-    public static PermissionHandler Permissions;
+public class CaptureThePoints extends JavaPlugin {
+	public static Permission permission = null;
     public static Economy economyHandler = null;
 
     public static boolean UsePermissions;
 
     /** "plugins/CaptureThePoints" */
-    public static final String mainDir = "plugins/CaptureThePoints";
+    public static String mainDir;
 
     /** "plugins/CaptureThePoints/CaptureSettings.yml" */
     //public static final File myFile = new File(mainDir + File.separator + "CaptureSettings.yml");
     /** "plugins/CaptureThePoints/Global.yml" */
-    public static final File globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
+    public static File globalConfigFile = null;
 
     public static final Logger logger = Logger.getLogger("Minecraft");
 
     public static PluginDescriptionFile info = null;
 
     public static PluginManager pluginManager = null;
+    
+    /** The prefix for the console outputs **/
+    public static String conPrefix;
 
     /** List of commands accepted by CTP */
     private static List<CTPCommand> commands = new ArrayList<CTPCommand>(); // Kj
@@ -150,12 +150,16 @@ public class CaptureThePoints extends JavaPlugin
 
     @Override
     public void onEnable () {
+    	mainDir = this.getDataFolder().toString();
+    	globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
+    	info = getDescription();
+    	conPrefix = "[" + info.getName() + "] ";
+    	
         enableCTP(false);
     }
 
     public void enableCTP (boolean reloading) {
-        if (!reloading)
-        {
+        if (!reloading) {
             setupPermissions();
             setupEconomy();
             pluginManager = getServer().getPluginManager();
@@ -167,6 +171,7 @@ public class CaptureThePoints extends JavaPlugin
 
             populateCommands();
         }
+        
         loadConfigFiles();
 
         // Checks for mysql
@@ -192,7 +197,7 @@ public class CaptureThePoints extends JavaPlugin
                     if (data.isInLobby && !data.isReady) {
                         // Kj -- Time inactivity warning.
                         if (((System.currentTimeMillis() - data.lobbyJoinTime) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.warnedAboutActivity) {
-                            player.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] Please choose your class and ready up, else you will be kicked from the lobby!");
+                            sendMessage(player, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
                             data.warnedAboutActivity = true;
                         }
 
@@ -202,18 +207,13 @@ public class CaptureThePoints extends JavaPlugin
                             data.isInArena = false;
                             data.warnedAboutActivity = false;
                             leaveGame(player);
-                            player.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You have been kicked from the lobby for not being ready on time.");
+                            sendMessage(player, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
                         }
                     }
                 }
             }
 
         }, 200L, 200L); // 10 sec
-
-        if (!reloading) {
-            PluginDescriptionFile pdfFile = getDescription();
-            logger.info("[CTP] " + pdfFile.getVersion() + " version is enabled.");
-        }
     }
 
     @Override
@@ -223,10 +223,9 @@ public class CaptureThePoints extends JavaPlugin
             CTP_Scheduler.lobbyActivity = 0;
         }
         clearConfig();
-        logger.info("[" + info.getName() + "] Disabled");
         info = null;
         pluginManager = null;
-        Permissions = null;
+        permission = null;
         commands.clear();
     }
 
@@ -362,7 +361,9 @@ public class CaptureThePoints extends JavaPlugin
             // Remove Helmet
             p.getInventory().setHelmet(null);
             p.getInventory().remove(Material.WOOL);
-            p.updateInventory();
+            
+            // Deprecated
+            //p.updateInventory();
         
             // Get lobby location and move player to it.
             Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
@@ -404,7 +405,8 @@ public class CaptureThePoints extends JavaPlugin
                 p.getInventory().addItem(wool);
             }
 
-            p.updateInventory();
+            // Deprecated
+            //p.updateInventory();
             
             // Get team spawn location and move player to it.
             Spawn spawn =
@@ -456,7 +458,7 @@ public class CaptureThePoints extends JavaPlugin
 
         if (CaptureThePoints.UsePermissions) {
             for (String perm : permissions) {
-                if (CaptureThePoints.Permissions.has(p, perm)) {
+                if (CaptureThePoints.permission.has(p, perm)) {
                     return true;
                 }
             }
@@ -582,11 +584,11 @@ public class CaptureThePoints extends JavaPlugin
                     mainArena = loadArena(arena_list.get(nextInt)) == null
                             ? mainArena : loadArena(arena_list.get(nextInt)); // Change the mainArena based on this. (Ternary null check)
                 }
-                logger.info("[CTP] ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + arena_list + ", of which " + arenas.size() + " were suitable: " + arenas);
+                logger.info(conPrefix + "ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + arena_list + ", of which " + arenas.size() + " were suitable: " + arenas);
 
                 // else ctp.mainArena = ctp.mainArena;
             }
-            logger.info("[CTP] The selected arena, " + mainArena.name + ", has a minimum of " + mainArena.minimumPlayers + ", and a maximum of " + mainArena.maximumPlayers + ".");
+            logger.info(conPrefix + "The selected arena, " + mainArena.name + ", has a minimum of " + mainArena.minimumPlayers + ", and a maximum of " + mainArena.maximumPlayers + ".");
             return mainArena.name;
         }
         return mainArena.name == null ? "" : mainArena.name;
@@ -599,7 +601,7 @@ public class CaptureThePoints extends JavaPlugin
         if (!this.playerData.isEmpty()) {
             for (Player players : playerData.keySet()) {
                 blockListener.restoreThings(players);
-                players.sendMessage(ChatColor.RED + "[CTP] Reloading plugin configuration. The CTP game has been terminated.");  // Kj
+                sendMessage(players, ChatColor.RED + "Reloading plugin configuration. The CTP game has been terminated.");  // Kj
             }
         }
         clearSchedule();
@@ -1191,16 +1193,16 @@ public class CaptureThePoints extends JavaPlugin
                 getServer().getWorld(world);
                 arena.world = world;
             } catch (Exception ex) {
-                logger.warning("[CTP] ### WARNING: " + name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
+                logger.warning(conPrefix + "WARNING: " + name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
                 List<String> worlds = new LinkedList<String>();
                 for (World aWorld : getServer().getWorlds()) {
                     worlds.add(aWorld.getName());
                 }
                 if (worlds.size() == 1) {
                     arena.world = worlds.get(0);
-                    logger.info("[CTP] Successfully resolved. \"" + arena.world + "\" will be used.");
+                    logger.info(conPrefix + "Successfully resolved the world. \"" + arena.world + "\" will be used.");
                 } else {
-                    logger.info("[CTP] Could not resolve. Please fix this manually. Hint: Your installed worlds are: " + worlds);
+                    logger.info(conPrefix + "Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
                 }
             }
 
@@ -1315,7 +1317,7 @@ public class CaptureThePoints extends JavaPlugin
             // Kj -- Test that the spawn points are within the map boundaries
             for (Spawn aSpawn : arena.teamSpawns.values()) {
                 if (!playerListener.isInside((int) aSpawn.x, arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.z, arena.z1, arena.z2)) {
-                    logger.warning("[CTP] ### WARNING: The spawn point \"" + aSpawn.name + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
+                    logger.warning(conPrefix + "WARNING: The spawn point \"" + aSpawn.name + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
                     continue;
                 }
             }
@@ -1334,7 +1336,7 @@ public class CaptureThePoints extends JavaPlugin
 
             return arena;
         } else {
-            logger.warning("[CTP] Could not load arena! Check your config file and existing arenas");
+            logger.warning(conPrefix + "Could not load arena! Check your config file and existing arenas");
             return null;
         }
     }
@@ -1375,7 +1377,7 @@ public class CaptureThePoints extends JavaPlugin
                 hItem.cooldown = config.getInt("HealingItems." + str + ".Cooldown", 0);
                 hItem.resetCooldownOnDeath = config.getBoolean("HealingItems." + str + ".ResetCooldownOnDeath", true);
             } catch (Exception e) {
-                logger.warning("[CTP] Error while loading Healing items! " + itemNR + " item!");
+                logger.warning(conPrefix + "Error while loading Healing items! " + itemNR + " item!");
             }
 
             healingItems.add(hItem);
@@ -1477,23 +1479,21 @@ public class CaptureThePoints extends JavaPlugin
         // Get lobby location and move player to it.
         Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
         loc.setYaw((float) mainArena.lobby.dir);
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
-        {
-            Packet packet = new Packet51MapChunk((int)mainArena.lobby.x - 5, (int)mainArena.lobby.y - 2, (int)mainArena.lobby.z - 5, (int)mainArena.lobby.x + 5, (int)mainArena.lobby.y + 2, (int)mainArena.lobby.z + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
-            ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
+        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
+        	loc.getWorld().loadChunk(loc.getChunk());
+        //    Packet packet = new Packet51MapChunk((int)mainArena.lobby.x - 5, (int)mainArena.lobby.y - 2, (int)mainArena.lobby.z - 5, (int)mainArena.lobby.x + 5, (int)mainArena.lobby.y + 2, (int)mainArena.lobby.z + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
+        //    ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
         }
         //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
 
         if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0)
         {
             EconomyResponse r = economyHandler.bankWithdraw(player.getName(), mainArena.co.economyMoneyCostForJoiningArena);
-            if(r.transactionSuccess())
-            {
-                player.sendMessage("[CTP] You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.name + ChatColor.WHITE + " arena.");
+            if(r.transactionSuccess()) {
+                sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.name + ChatColor.WHITE + " arena.");
             }
-            else
-            {
-                player.sendMessage("[CTP] You dont have enought money to join arena!");
+            else {
+                sendMessage(player, "You dont have enought money to join arena!");
                 return;
             }
         }
@@ -1575,6 +1575,7 @@ public class CaptureThePoints extends JavaPlugin
 
     public void resetArenaList () {
         arena_list.clear();
+        
         //Load existing arenas
         File file = new File(mainDir + File.separator + "Arenas");
         loadArenas(file);
@@ -1597,56 +1598,55 @@ public class CaptureThePoints extends JavaPlugin
             PlayerInv.setHelmet(this.armor.get(player)[3].getTypeId() == 0
                     ? null : this.armor.get(player)[3]);
             this.armor.remove(player);
-            player.updateInventory();
         }
     }
 
     public void saveInv (Player player) {
-        //this.playerInventory.storeInventory(player);
         PlayerInventory PlayerInv = player.getInventory();
         this.Inventories.put(player, PlayerInv.getContents());
         PlayerInv.clear();
+        
         this.armor.put(player, PlayerInv.getArmorContents());
         PlayerInv.setHelmet(null);
         PlayerInv.setChestplate(null);
         PlayerInv.setLeggings(null);
         PlayerInv.setBoots(null);
     }
-
-    private void setupPermissions ()
+    
+    private boolean setupPermissions()
     {
-        Plugin test = getServer().getPluginManager().getPlugin("Permissions");
-        info = getDescription();
-        if (Permissions == null) {
-            if (test != null) {
-                UsePermissions = true;
-                Permissions = ((Permissions) test).getHandler();
-                logger.info("[CTP] Permissions was found and enabled.");
-            } else {
-                logger.info("[CTP] Permission system not detected, defaulting to OP");
-                UsePermissions = false;
-            }
+        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+            logger.info(conPrefix + "Vault plugin found, permission support enabled.");
+        }else {
+        	logger.info(conPrefix + "Permission system not detected, defaulting to OP");
+            UsePermissions = false;
         }
+        
+        return (permission != null);
     }
 
-    private boolean setupEconomy()
-    {
+    private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null)
         {
-            logger.info("[CTP] Vault plugin not detected, disabling economy support.");
+            logger.info(conPrefix + "Vault plugin not detected, disabling economy support.");
             return false;
         }
 
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null)
-        {
+        if (economyProvider != null) {
             economyHandler = economyProvider.getProvider();
         }
 
         if(economyHandler != null)
-            logger.info("[CTP] Vault plugin found, economy support enabled.");
+            logger.info(conPrefix + "Vault plugin found, economy support enabled.");
 
         return economyHandler != null;
+    }
+    
+    public void sendMessage(Player p, String message) {
+    	p.sendMessage("[CTP] " + message);
     }
 
 }

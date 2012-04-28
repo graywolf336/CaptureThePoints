@@ -26,23 +26,20 @@ public class MysqlConnector
         }
 
         Statement stmt = null;
-        ResultSet rs = null;
-        try
-        {
+        @SuppressWarnings("unused")
+		ResultSet rs = null;
+        try {
             Class.forName("com.mysql.jdbc.Driver");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        try
-        {
+        
+        try {
             con = DriverManager.getConnection("jdbc:mysql://" + ctp.globalConfigOptions.mysqlAddress + ":" + ctp.globalConfigOptions.mysqlPort + "/"
                         + ctp.globalConfigOptions.mysqlDatabase + "?user=" + ctp.globalConfigOptions.mysqlUser + "&password=" + ctp.globalConfigOptions.mysqlPass);
 
             stmt = con.createStatement();
-            try
-            {
+            try {
                 rs = stmt.executeQuery("SELECT * FROM Arena");
                 rs = stmt.executeQuery("SELECT * FROM Simple_block");
                 rs = stmt.executeQuery("SELECT * FROM Note_block");
@@ -50,8 +47,7 @@ public class MysqlConnector
                 rs = stmt.executeQuery("SELECT * FROM Item");
                 rs = stmt.executeQuery("SELECT * FROM Sign");
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Arena` ( `name` TEXT NOT NULL , `world` TEXT NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=latin1");
                 stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Simple_block` ( `data` INT NOT NULL , `x` INT NOT NULL , `y` INT NOT NULL , `z` INT NOT NULL, `z2` INT NOT NULL, `arena_name` TEXT NOT NULL , `block_type` INT NOT NULL , `id` INT NOT NULL AUTO_INCREMENT, `direction` TEXT NOT NULL , PRIMARY KEY ( `id` )) ENGINE=MyISAM DEFAULT CHARSET=latin1");
                 stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Note_block` ( `block_ID` INT NOT NULL , `note_type` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
@@ -70,80 +66,58 @@ public class MysqlConnector
         return true;
     }
 
-    public void connectToMySql()
-    {
-        if(ctp.globalConfigOptions.enableHardArenaRestore)
-        {
-            try
-            {
+    public void connectToMySql() {
+        if(ctp.globalConfigOptions.enableHardArenaRestore) {
+            try {
                 Class.forName("com.mysql.jdbc.Driver");  //try to register the mysql jdbc driver
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                e.printStackTrace();
             }
-            try
-            {
+            
+            try {
                 con = DriverManager.getConnection("jdbc:mysql://" + ctp.globalConfigOptions.mysqlAddress + ":" + ctp.globalConfigOptions.mysqlPort + "/"
                         + ctp.globalConfigOptions.mysqlDatabase + "?user=" + ctp.globalConfigOptions.mysqlUser + "&password=" + ctp.globalConfigOptions.mysqlPass);
+            } catch (Exception e) {
+            	CaptureThePoints.logger.severe("[CTP] Error connecting to the database. Check your creditals.");
+            	e.printStackTrace();
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
         }
     }
 
-    public void modifyData(String statement)
-    {
+    public void modifyData(String statement) {
         Statement stmt = null;
-        try
-        {
+        try {
             stmt = con.createStatement();
 
             stmt.executeUpdate(statement);
-        }
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(MysqlConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
 
-    public ResultSet getData(String statement)
-    {
+    public ResultSet getData(String statement) {
         Statement stmt = null;
-        try
-        {
+        try {
             stmt = con.createStatement();
 
             return stmt.executeQuery(statement);
-        }
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(MysqlConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return null;
     }
 
 
-    public int getLastInsertedId()
-    {
-        try
-        {
+    public int getLastInsertedId() {
+        try {
             ResultSet rs = getData("SELECT LAST_INSERT_ID();");
-            while(rs.next())
-            {
+            while(rs.next()) {
                 return rs.getInt(1);
             }
-        }
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(MysqlConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
     }
-
 }

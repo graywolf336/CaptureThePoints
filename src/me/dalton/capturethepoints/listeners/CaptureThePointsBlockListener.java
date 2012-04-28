@@ -9,8 +9,6 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Items;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
-import net.minecraft.server.Packet;
-import net.minecraft.server.Packet51MapChunk;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
@@ -19,8 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -407,7 +403,9 @@ public class CaptureThePointsBlockListener implements Listener
         inv.setChestplate(null);
         inv.setLeggings(null);
         inv.setBoots(null);
-        p.updateInventory();
+        
+        // Deprecated
+        //p.updateInventory();
 
         ctp.playerData.get(p).role = role;
 
@@ -453,7 +451,8 @@ public class CaptureThePointsBlockListener implements Listener
                 inv.addItem(stack);
             }
         }
-        p.updateInventory();
+        // Deprecated
+        //p.updateInventory();
 
         return true;
     }
@@ -769,8 +768,9 @@ public class CaptureThePointsBlockListener implements Listener
         loc.setYaw((float) ctp.mainArena.lobby.dir);
         if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
         {
-            Packet packet = new Packet51MapChunk((int)loc.getX() - 5, (int)loc.getY() - 2, (int)loc.getZ() - 5, (int)loc.getX() + 5, (int)loc.getY() + 2, (int)loc.getZ() + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
-            ((CraftPlayer)p).getHandle().netServerHandler.sendPacket(packet);
+        	loc.getWorld().loadChunk(loc.getChunk());
+            //Packet packet = new Packet51MapChunk((int)loc.getX() - 5, (int)loc.getY() - 2, (int)loc.getZ() - 5, (int)loc.getX() + 5, (int)loc.getY() + 2, (int)loc.getZ() + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
+            //((CraftPlayer)p).getHandle().netServerHandler.sendPacket(packet);
         }
         p.teleport(this.ctp.previousLocation.get(p));
 

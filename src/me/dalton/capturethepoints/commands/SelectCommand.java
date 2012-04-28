@@ -54,7 +54,7 @@ public class SelectCommand extends CTPCommand {
         config.addDefault("Arena", newarena);
         try {
             config.options().copyDefaults(true);
-            config.save(ctp.globalConfigFile);
+            config.save(CaptureThePoints.globalConfigFile);
         } catch (IOException ex) {
             Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
         }

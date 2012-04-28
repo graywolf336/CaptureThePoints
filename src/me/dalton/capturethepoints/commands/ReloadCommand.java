@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import org.bukkit.ChatColor;
 
 public class ReloadCommand extends CTPCommand {
    

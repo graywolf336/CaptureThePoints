@@ -13,7 +13,7 @@ public abstract class CTPCommand {
     /** CTP plugin instance */
     public CaptureThePoints ctp;
     
-    /** List of aliases this command recognises */
+    /** List of aliases this command recognizes */
     public List<String> aliases;
     
     /** The permissions associated with this command. Only one has to match to allow usage. */
@@ -43,7 +43,7 @@ public abstract class CTPCommand {
     /** The maximum parameters necessary for the command to work. "ctp" counts as a parameter, "/ctp command [help]" would be 3 for example. */
     public int maxParameters;
     
-    /** The maximum parameters necessary for the command to work. "ctp" counts as a parameter, "/ctp command [help]" would be 3 for example. */
+    /** ?The maximum parameters necessary for the command to work. "ctp" counts as a parameter, "/ctp command [help]" would be 3 for example. */
     public int actionIndex;
 
     /** The backbone of commands used by CTP */
@@ -74,7 +74,7 @@ public abstract class CTPCommand {
         this.parameters = parameters;
 
         if (senderMustBePlayer && !(sender instanceof Player)) {
-            sendMessage(ChatColor.RED + "This command can only be used by players.");
+            sendMessage("This command can only be used by players.");
             return;
         } else if (sender instanceof Player) {
             this.player = (Player) sender;

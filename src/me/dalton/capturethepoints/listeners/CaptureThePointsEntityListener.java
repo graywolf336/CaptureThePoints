@@ -211,7 +211,9 @@ public class CaptureThePointsEntityListener  implements Listener {
             DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).team.color.toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
-            player.updateInventory();
+            
+            // Deprecated
+            //p.updateInventory();
         }
         return true;
     }

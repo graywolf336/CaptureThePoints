@@ -36,9 +36,9 @@ public class SaveCommand extends CTPCommand {
             zlow = ctp.z2;
             zhigh = ctp.z1;
         }
-        for (int x = xlow; x <= xhigh; x++) {
-            for (int y = ylow; y <= yhigh; y++) {
-                for (int z = zlow; z <= zhigh; z++) {
+        //for (int x = xlow; x <= xhigh; x++) {
+          //  for (int y = ylow; y <= yhigh; y++) {
+            //    for (int z = zlow; z <= zhigh; z++) {
                     /*
                     Location loc = new Location(ctp.getServer().getWorld(ctp.world), x, y, z);
                     int typeID = loc.getBlock().getTypeId();
@@ -89,8 +89,8 @@ public class SaveCommand extends CTPCommand {
                     }
                     return true;
                      */
-                }
-            }
-        }
+            //    }
+          //  }
+        //}
     }
 }
