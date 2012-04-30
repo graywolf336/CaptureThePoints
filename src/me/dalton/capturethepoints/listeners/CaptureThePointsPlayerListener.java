@@ -1,10 +1,12 @@
 package me.dalton.capturethepoints.listeners;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
 import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
@@ -17,6 +19,7 @@ import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.commands.PJoinCommand;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -115,26 +118,22 @@ public class CaptureThePointsPlayerListener implements Listener {
             // Iron block
             if (event.hasBlock() && event.getClickedBlock().getTypeId() == 42) {
                 //If this role exists
-                if (ctp.roles.containsKey(ctp.playerData.get(p).role))
-                {
-                    if (!ctp.playerData.get(p).isReady)
-                    {
+                if (ctp.roles.containsKey(ctp.playerData.get(p).role)) {
+                    if (!ctp.playerData.get(p).isReady) {
                         Util.sendMessageToPlayers(ctp, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
                     }
                     ctp.playerData.get(p).isReady = true;
                     ctp.mainArena.lobby.playersinlobby.put(p, true); // Kj
                     checkLobby(p);
                 } 
-                else
-                {
+                else {
                     p.sendMessage(ChatColor.RED + "Please select a role.");
                 }
                 return;
             }
 
             // Sign
-            if (event.hasBlock() && event.getClickedBlock().getState() instanceof Sign)
-            {
+            if (event.hasBlock() && event.getClickedBlock().getState() instanceof Sign) {
                 // Cast the block to a sign to get the text on it.
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 // Check if the first line of the sign is a class name.
@@ -157,11 +156,9 @@ public class CaptureThePointsPlayerListener implements Listener {
                      */
                     
                     // Player is in Lobby choosing role.
-                    if (ctp.mainArena.lobby.playersinlobby.containsKey(p))
-                    {
+                    if (ctp.mainArena.lobby.playersinlobby.containsKey(p)) {
                         // Kj's
-                        if (role.equalsIgnoreCase("random"))
-                        {
+                        if (role.equalsIgnoreCase("random")) {
                             int size = ctp.roles.size();
                             if (size > 1) { // If there is more than 1 role to choose from
                                 Random random = new Random();
@@ -305,8 +302,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if((this.ctp.playerData.get(event.getPlayer()) == null))
             return;
 
-        if(!ctp.isGameRunning() && this.ctp.playerData.get(event.getPlayer()).isInLobby)
-        {
+        if(!ctp.isGameRunning() && this.ctp.playerData.get(event.getPlayer()).isInLobby) {
             ctp.playerData.get(event.getPlayer()).isInArena = false;
             ctp.playerData.get(event.getPlayer()).isInLobby = false;
             ctp.mainArena.lobby.playersinlobby.remove(event.getPlayer());
@@ -388,52 +384,35 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     // Ideally we want to take out the Player parameter (without losing its purpose, of course).
     /** Check the lobby to see if player[s] can be transferred.  */
-    private void checkLobby (Player p)
-    {
+    private void checkLobby (Player p) {
         // Kj -- If autostart is turned off, might as well ignore this. However, if a game has started and someone wants to join, that's different.
-        if (ctp.mainArena.co.autoStart || !ctp.isPreGame())
-        {
+        if (ctp.mainArena.co.autoStart || !ctp.isPreGame()) {
             Lobby lobby = ctp.mainArena.lobby;
             int readypeople = lobby.countReadyPeople();
 
             // The maximum number of players must be greater than the players already playing.
-            if (ctp.mainArena.maximumPlayers > ctp.mainArena.getPlayersPlaying(ctp).size())
-            {
+            if (ctp.mainArena.maximumPlayers > ctp.mainArena.getPlayersPlaying(ctp).size()) {
                 // Game not yet started
-                if (ctp.isPreGame())
-                {
-                    if (!lobby.hasUnreadyPeople())
-                    {
-                        if (readypeople >= ctp.mainArena.minimumPlayers)
-                        {
-                            if (readypeople % ctp.mainArena.teams.size() == 0)   // There may be more than two teams playing.
-                            {
+                if (ctp.isPreGame()) {
+                    if (!lobby.hasUnreadyPeople()) {
+                        if (readypeople >= ctp.mainArena.minimumPlayers) {
+                            if (readypeople % ctp.mainArena.teams.size() == 0) {  // There may be more than two teams playing. 
                                 moveToSpawns();
-                            } 
-                            else
-                            {
-                                if (ctp.mainArena.co.exactTeamMemberCount)
-                                {
-                                    if (readypeople / ctp.mainArena.teams.size() >= 1)
-                                    {
+                            } else {
+                                if (ctp.mainArena.co.exactTeamMemberCount) {
+                                    if (readypeople / ctp.mainArena.teams.size() >= 1) {
                                         moveToSpawns();
-                                    } 
-                                    else
-                                    {
+                                    } else {
                                         p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] There are already an even number of players. Please wait for a new player to ready up."); // Kj
                                         return;
                                     }
-                                } 
-                                else   // Does not require exact count and everyone is ready. Move them.
-                                {
+                                } else {   // Does not require exact count and everyone is ready. Move them.
                                     moveToSpawns();
                                 }
                             }
                         } 
-                        else
-                        {
-                            if (ctp.hasSuitableArena(readypeople))
-                            {
+                        else {
+                            if (ctp.hasSuitableArena(readypeople)) {
                                 Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + ctp.mainArena.minimumPlayers + " players, found " + readypeople + "].");
                                 List<Player> transport = new LinkedList<Player>(lobby.playersinlobby.keySet());
                                 ctp.blockListener.endGame(true);
@@ -448,59 +427,45 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         }
                     } 
-                    else
-                    {
+                    else {
                         p.sendMessage(ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople() + " people to ready up."); // Kj
                     }
-                }
-                else // Game already started
-                {
-                    if (!ctp.mainArena.co.allowLateJoin)
-                    {
+                } else { // Game already started
+                    if (!ctp.mainArena.co.allowLateJoin) {
                         p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] A game has already started. You may not join."); // Kj
                         return;
                     }
 
                     // Player is ready.
-                    if (lobby.playersinlobby.get(p))
-                    {
-                        if (ctp.mainArena.co.exactTeamMemberCount)
-                        {
+                    if (lobby.playersinlobby.get(p)) {
+                        if (ctp.mainArena.co.exactTeamMemberCount) {
                             // Uneven number of people and balanced teams is on.  
-                            if (ctp.mainArena.getPlayersPlaying(ctp).size() % ctp.mainArena.teams.size() != 0)
-                            {
+                            if (ctp.mainArena.getPlayersPlaying(ctp).size() % ctp.mainArena.teams.size() != 0) {
                                 moveToSpawns(p);
                                 return; 
-                            } 
-                            else if (lobby.playersinlobby.get(p))  // Even number of people and balanced teams is on. 
-                            {
-                                if (waitingToMove.size() < ctp.mainArena.teams.size() - 1)
-                                {
-                                    if(waitingToMove.contains(p))
-                                    {
+                            } else if (lobby.playersinlobby.get(p)) { // Even number of people and balanced teams is on.  
+                                if (waitingToMove.size() < ctp.mainArena.teams.size() - 1) {
+                                    if(waitingToMove.contains(p)) {
                                         p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] There is an even number of players. Please wait or do /ctp leave.");
                                         return;
                                     }
                                     waitingToMove.add(p); // Add to queue
                                     p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] There is an even number of players. Please wait or do /ctp leave."); // Kj
-                                } 
-                                else
-                                {
-                                    if(waitingToMove.contains(p))
-                                    {
+                                } else {
+                                    if(waitingToMove.contains(p)) {
                                         p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] There is an even number of players. Please wait or do /ctp leave.");
                                         return;
                                     }
                                     
                                     // Already someone waiting. Queue is cleared.
-                                    for(Player pl : waitingToMove)
-                                        moveToSpawns(pl);
+                                    for(Player pl : waitingToMove) {
+                                    	moveToSpawns(pl);
+                                    }
                                     
                                     moveToSpawns(p);
                                     
                                     waitingToMove.clear();
-                                }
-                                return;
+                                } return;
                             }
 
                         // Exact player count off. Player can be moved.
@@ -550,8 +515,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         return (point1 <= loc) && (loc <= point2);
     }
 
-    public void moveToSpawns ()
-    {
+    public void moveToSpawns () {
 //        if (ctp.mainArena.co.exactTeamMemberCount)
 //        {
 //            for (Player play : ctp.playerData.keySet())
@@ -587,8 +551,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 //                moveToSpawns(player);
 //            }
 //        }
-        for (Player player : ctp.playerData.keySet())
-        {
+        for (Player player : ctp.playerData.keySet()) {
             moveToSpawns(player);
         }
 
@@ -771,14 +734,12 @@ public class CaptureThePointsPlayerListener implements Listener {
         }, 100L, 100L);
     }
 
-    public void moveToSpawns (Player player)
-    {
+    public void moveToSpawns (Player player) {
         if(player == null)
             return;
 
 
-        if (waitingToMove != null && !waitingToMove.isEmpty())
-        {
+        if (waitingToMove != null && !waitingToMove.isEmpty()) {
             if(waitingToMove.contains(player))
                 waitingToMove.remove(player);
         }
@@ -794,12 +755,9 @@ public class CaptureThePointsPlayerListener implements Listener {
         Team team = null;
         int teamNR = -1;
 
-        if(ctp.playerData.get(player).team == null)
-        {
-            for (int i = 0; i < ctp.mainArena.teams.size(); i++)
-            {
-                if (ctp.mainArena.teams.get(i).memberCount < smallest)
-                {
+        if(ctp.playerData.get(player).team == null) {
+            for (int i = 0; i < ctp.mainArena.teams.size(); i++) {
+                if (ctp.mainArena.teams.get(i).memberCount < smallest) {
                     team = ctp.mainArena.teams.get(i);
                     smallest = team.memberCount;
                     color = team.color;
@@ -807,8 +765,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 }
             }
 
-            try
-            {
+            try {
                 ctp.mainArena.teams.get(teamNR).chatcolor = ChatColor.valueOf(team.color.toUpperCase()); // Kj
             } catch (Exception ex) {
                 ctp.mainArena.teams.get(teamNR).chatcolor = ChatColor.GREEN;
@@ -816,9 +773,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
             ctp.mainArena.teams.get(teamNR).memberCount++;
 
-        }
-        else   // For already selected team
-        {
+        } else {   // For already selected team
             team = ctp.playerData.get(player).team;
             color = team.color;
         }
@@ -927,15 +882,14 @@ public class CaptureThePointsPlayerListener implements Listener {
             }
             
             // Add enchantments
-            for(int j = 0; j < list.get(0).enchantments.size(); j++)
-            {
+            for(int j = 0; j < list.get(0).enchantments.size(); j++) {
                 stack.addEnchantment(list.get(0).enchantments.get(j), list.get(0).enchLevels.get(j));
             }
             p.getInventory().addItem(stack);
             chargeAccount(p, price);
 
-            p.sendMessage("You bought " + ChatColor.AQUA + amount + " " + list.get(0).item.toString().toLowerCase() + ChatColor.WHITE + " for " + ChatColor.GREEN + price + ChatColor.WHITE + " money.");
-            p.sendMessage("You now have " + ChatColor.GREEN + ctp.playerData.get(p).money + ChatColor.WHITE + " money.");
+            ctp.sendMessage(p, "You bought " + ChatColor.AQUA + amount + " " + list.get(0).item.toString().toLowerCase() + ChatColor.WHITE + " for " + ChatColor.GREEN + price + ChatColor.WHITE + " money.");
+            ctp.sendMessage(p, "You now have " + ChatColor.GREEN + ctp.playerData.get(p).money + ChatColor.WHITE + " money.");
             
             // Deprecated
             //p.updateInventory();
@@ -944,7 +898,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             String message = price != Integer.MAX_VALUE
                     ? "Not enough money! You have " + ChatColor.GREEN + ctp.playerData.get(p).money + ChatColor.WHITE + " money, but you need " + ChatColor.GREEN + price + ChatColor.WHITE + " money."
                     : ChatColor.RED + "This sign does not have a legal price. Please inform an admin.";
-            p.sendMessage(message);
+            ctp.sendMessage(p, message);
             return;
         }
     }
@@ -1013,40 +967,34 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    public void selectTeam (PlayerInteractEvent event, Player p)
-    {
+    public void selectTeam (PlayerInteractEvent event, Player p) {
         if(ctp.isGameRunning() || !ctp.mainArena.lobby.playersinlobby.containsKey(p))
             return;
         
-        if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.WOOL))
-        {
+        if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.WOOL)) {
             Block block = event.getClickedBlock();
             BlockState state = block.getState();
             MaterialData data = state.getData();
             String color = ((Wool) data).getColor().toString().toLowerCase();
 
             int hasThatTeam = -1;
-            for(int i = 0; i < ctp.mainArena.teams.size(); i++)
-            {
-                if(ctp.mainArena.teams.get(i).color.equals(color))
-                {
+            for(int i = 0; i < ctp.mainArena.teams.size(); i++) {
+                if(ctp.mainArena.teams.get(i).color.equals(color)) {
                     hasThatTeam = i;
                     break;
                 }
             }
-            if(hasThatTeam == -1)
-            {
+            
+            if(hasThatTeam == -1) {
                 p.sendMessage(ChatColor.RED + "[CTP] This arena does not contain this color -> " + ChatColor.GREEN + color.toUpperCase());
                 return;
             }
+            
             ctp.playerData.get(p).team = ctp.mainArena.teams.get(hasThatTeam);
 
-            try
-            {
+            try {
                 ctp.mainArena.teams.get(hasThatTeam).chatcolor = ChatColor.valueOf(color.toUpperCase()); // Kj
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 ctp.mainArena.teams.get(hasThatTeam).chatcolor = ChatColor.GREEN;
             }
 
@@ -1061,24 +1009,21 @@ public class CaptureThePointsPlayerListener implements Listener {
             // Deprecated
             //p.updateInventory();
 
-            p.sendMessage("[CTP] You selected " + ChatColor.GREEN + color.toUpperCase() + ChatColor.WHITE + " team.");
+            ctp.sendMessage(p, "You selected " + ChatColor.GREEN + color.toUpperCase() + ChatColor.WHITE + " team.");
         }
     }
 
-    private void balanceTeamsFromLobby()
-    {
+    private void balanceTeamsFromLobby() {
         int difference = 0;
         int optimalPlayerCountInTeam = ctp.mainArena.getPlayersPlaying(ctp).size() / ctp.mainArena.teams.size();
         int[] teamPlayersCount = new int[ctp.mainArena.teams.size()];
         List<Player> playersForBalance = new ArrayList<Player>();
 
         boolean areEqual = true;
-        for(int i = 0; i < ctp.mainArena.teams.size(); i++)
-        {
+        for(int i = 0; i < ctp.mainArena.teams.size(); i++) {
             teamPlayersCount[i] = ctp.mainArena.teams.get(i).getTeamPlayers(ctp).size();
             //System.out.println("Team players count = " + teamPlayersCount[i]);
-            if(optimalPlayerCountInTeam != teamPlayersCount[i])
-            {
+            if(optimalPlayerCountInTeam != teamPlayersCount[i]) {
                 areEqual = false;
             }
         }
@@ -1094,20 +1039,17 @@ public class CaptureThePointsPlayerListener implements Listener {
             return;
 
         //Finding which teams are overcrowded.
-        for(int i = 0; i < ctp.mainArena.teams.size(); i++)
-        {
+        for(int i = 0; i < ctp.mainArena.teams.size(); i++) {
            
             List<Player> TeamPlayers = ctp.mainArena.teams.get(i).getTeamPlayers(ctp);
 //            if(teamPlayersCount[i] > optimalPlayerCountInTeam)
 //            {
                 // Randam ir sudedam i sarasa zaidejus, kuriu yra per daug
-                for(int j = 0; j < teamPlayersCount[i] - optimalPlayerCountInTeam; j++)
-                {
+                for(int j = 0; j < teamPlayersCount[i] - optimalPlayerCountInTeam; j++) {
                     playersForBalance.add(TeamPlayers.get(j));
                 }
 //            }
-            if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0)
-            {
+            if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0) {
                 difference = difference + (optimalPlayerCountInTeam - teamPlayersCount[i]);
             }
         }
@@ -1115,16 +1057,12 @@ public class CaptureThePointsPlayerListener implements Listener {
         //System.out.println("Optimal count = " + optimalPlayerCountInTeam);
         //System.out.println("DIff = " + difference);
 
-        // If there are enought players to balance teams
-        if(difference <= playersForBalance.size() && difference > 0)
-        {
-            for(int i = 0; i < ctp.mainArena.teams.size(); i++)
-            {
-                if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0)
-                {
+        // If there are enough players to balance teams
+        if(difference <= playersForBalance.size() && difference > 0) {
+            for(int i = 0; i < ctp.mainArena.teams.size(); i++) {
+                if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0) {
                     List<Player> playersForRemove = new ArrayList<Player>();
-                    for(int j = 0; j < optimalPlayerCountInTeam - teamPlayersCount[i]; j++)
-                    {
+                    for(int j = 0; j < optimalPlayerCountInTeam - teamPlayersCount[i]; j++) {
                         Player p = playersForBalance.get(j);
 //                    for(Player p : playersForBalance)
 //                    {
@@ -1141,20 +1079,19 @@ public class CaptureThePointsPlayerListener implements Listener {
                         
                         moveToSpawns(p);
                         playersForRemove.add(p);
-                        p.sendMessage("[CTP] " + ctp.playerData.get(p).team.chatcolor + "You" + ChatColor.WHITE + " changed teams from "
+                        ctp.sendMessage(p, ctp.playerData.get(p).team.chatcolor + "You" + ChatColor.WHITE + " changed teams from "
                                 + oldTeam.chatcolor + oldTeam.color + ChatColor.WHITE + " to "+ ctp.playerData.get(p).team.chatcolor + ctp.playerData.get(p).team.color + ChatColor.WHITE + "! [Team-balancing]");
                     }
+                    
                     for(Player p : playersForRemove)
                         playersForBalance.remove(p);
                 }
             }
         }
 
-        //If there are not enought players to balance teams
-        if(ctp.mainArena.co.exactTeamMemberCount)
-        {
-            for(Player p : playersForBalance)
-            {
+        //If there are not enough players to balance teams
+        if(ctp.mainArena.co.exactTeamMemberCount) {
+            for(Player p : playersForBalance) {
                 // Moving to Lobby
                 ctp.playerData.get(p).team.memberCount--;
                 ctp.playerData.get(p).team = null;
@@ -1178,6 +1115,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 loc.setYaw((float) ctp.mainArena.lobby.dir);
                 loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
                 p.teleport(loc); // Teleport player to lobby
+                
                 Util.sendMessageToPlayers(ctp, "[CTP] " + ChatColor.GREEN + p.getName() + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
             }
         }

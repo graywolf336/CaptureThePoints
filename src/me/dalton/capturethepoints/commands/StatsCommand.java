@@ -26,6 +26,7 @@ public class StatsCommand extends CTPCommand {
             player.sendMessage(ChatColor.RED + "You are not in a CTP game!");
             return;
         }
+        
         PlayerData pdata = ctp.playerData.get(player);
         ChatColor cc = pdata.team.chatcolor, white = ChatColor.WHITE, green = ChatColor.GREEN;
         
@@ -41,7 +42,7 @@ public class StatsCommand extends CTPCommand {
         } else {
            // Calculate KD normally
             double kills = (double)pdata.kills * 100D; // Example: 4 kills -> 400
-            double deaths =(double)pdata.deaths; // Example: 3 deaths
+            double deaths = (double)pdata.deaths; // Example: 3 deaths
             kd = Math.round(kills/deaths); // Example: (400 / 3) = 133.333... Rounded -> 133.
             kd /= 100; // Example: 133 -> 1.33.
         }

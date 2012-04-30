@@ -82,7 +82,7 @@ public class CaptureThePoints extends JavaPlugin {
     //public HashMap<Player, PlayerData> playerData = new HashMap<Player, PlayerData>();
 
     /** The PlayerData stored by CTP. (HashMap: Player, and their data) */
-    public Map<Player, PlayerData> playerData = new ConcurrentHashMap<Player, PlayerData>();  // To avoid concurent modification exceptions    
+    public Map<Player, PlayerData> playerData = new ConcurrentHashMap<Player, PlayerData>();  // To avoid concurrent modification exceptions    
 
     /** Player's previous Locations before they started playing CTP. */
     public final HashMap<Player, Location> previousLocation = new HashMap<Player, Location>();
@@ -135,17 +135,13 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
     /** Load yml from specified file */
-    public FileConfiguration load (File file)
-    {
-        try
-        {
+    public FileConfiguration load (File file) {
+        try {
             FileConfiguration PluginPropConfig = YamlConfiguration.loadConfiguration(file);
             return PluginPropConfig;
-        } 
-        catch (Exception localException)
-        {
-        }
-        return null;
+        } catch (Exception localException) {
+        	
+        } return null;
     }
 
     @Override
@@ -1098,28 +1094,22 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void loadArenas (File file)
-    {
-        if (file.isDirectory())
-        {
+    public void loadArenas (File file) {
+        if (file.isDirectory()) {
             String[] internalNames = file.list();
-            for (String name : internalNames)
-            {
+            for (String name : internalNames) {
                 loadArenas(new File(file.getAbsolutePath() + File.separator + name));
             }
         } 
-        else
-        {
+        else {
             String fileName = file.getName().split("\\.")[0];
-            if (!arena_list.contains(fileName))
-            {
+            if (!arena_list.contains(fileName)) {
                 arena_list.add(fileName);
             }
         }
     }
 
-    public void loadConfigFiles ()
-    {
+    public void loadConfigFiles () {
         loadRoles();
         loadRewards();
         loadHealingItems();
@@ -1129,8 +1119,7 @@ public class CaptureThePoints extends JavaPlugin {
         loadArenas(file);
 
         // Load arenas boundaries
-        for(int i = 0; i < arena_list.size(); i++)
-        {
+        for(int i = 0; i < arena_list.size(); i++) {
             ArenaData tmp = loadArena(arena_list.get(i));
             ArenaBoundaries tmpBound = new ArenaBoundaries();
             //tmpBound.arenaName = tmp.name;
@@ -1155,16 +1144,12 @@ public class CaptureThePoints extends JavaPlugin {
             mainArena = loadArena(arenaName);
         }
         editingArena = mainArena;
-        if (mainArena == null)
-        {
+        if (mainArena == null) {
             globalConfig.set("Arena", null);
-            try
-            {
+            try {
                 globalConfig.options().copyDefaults(true);
                 globalConfig.save(globalConfigFile);
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -1181,8 +1166,7 @@ public class CaptureThePoints extends JavaPlugin {
     public ArenaData loadArena (String name) {
         ArenaData arena = new ArenaData();
 
-        if (arena_list.contains(name))
-        {
+        if (arena_list.contains(name))  {
             File arenaFile = new File(mainDir + File.separator + "Arenas" + File.separator + name + ".yml");
             FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
             
@@ -1210,14 +1194,12 @@ public class CaptureThePoints extends JavaPlugin {
             if(!arenaConf.contains("MaximumPlayers"))
                 arenaConf.set("MaximumPlayers", 9999);
             if(!arenaConf.contains("MinimumPlayers"))
-                arenaConf.set("MinimumPlayers", 2);
+                arenaConf.set("MinimumPlayers", 4);
 
             arena.maximumPlayers = arenaConf.getInt("MaximumPlayers", 9999);
-            arena.minimumPlayers = arenaConf.getInt("MinimumPlayers", 2);
-            if (arenaConf.contains("Points"))
-            {
-                for (String str : arenaConf.getConfigurationSection("Points").getKeys(false))
-                {
+            arena.minimumPlayers = arenaConf.getInt("MinimumPlayers", 4);
+            if (arenaConf.contains("Points")) {
+                for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
                     CTPPoints tmps = new CTPPoints();
                     tmps.name = str;
                     str = "Points." + str;
@@ -1227,37 +1209,31 @@ public class CaptureThePoints extends JavaPlugin {
 
                     // Load teams that are not allowed to capture
                     String teamColors = arenaConf.getString(str + ".NotAllowedToCaptureTeams");
-                    if(teamColors == null)
-                    {
+                    if(teamColors == null) {
                         tmps.notAllowedToCaptureTeams = null;
-                    }
-                    else
-                    {
+                    } else {
                         // Trim commas and whitespace, and split items by commas
                         teamColors = teamColors.toLowerCase();
                         teamColors = teamColors.trim();
                         teamColors = teamColors.replaceAll(" ", "");
 
-                        if (teamColors.endsWith(","))
-                        {
+                        if (teamColors.endsWith(",")) {
                             teamColors = teamColors.substring(0, teamColors.length() - 1);
                         }
+                        
                         String[] tc = teamColors.split(",");
 
                         tmps.notAllowedToCaptureTeams.addAll(Arrays.asList(tc));
                     }
 
-                    if (arenaConf.contains(str + ".Dir"))
-                    {
+                    if (arenaConf.contains(str + ".Dir")) {
                         tmps.pointDirection = arenaConf.getString(str + ".Dir");
                     }
                     arena.capturePoints.add(tmps);
                 }
             }
-            if (arenaConf.contains("Team-Spawns"))
-            {
-                for (String str : arenaConf.getConfigurationSection("Team-Spawns").getKeys(false))
-                {
+            if (arenaConf.contains("Team-Spawns")) {
+                for (String str : arenaConf.getConfigurationSection("Team-Spawns").getKeys(false)) {
                     Spawn spawn = new Spawn();
                     spawn.name = str;
                     str = "Team-Spawns." + str;
@@ -1271,6 +1247,7 @@ public class CaptureThePoints extends JavaPlugin {
                     team.spawn = spawn;
                     team.color = spawn.name;
                     team.memberCount = 0;
+                    
                     try {
                         team.chatcolor = ChatColor.valueOf(spawn.name.toUpperCase());
                     } catch (Exception ex) {
@@ -1281,21 +1258,19 @@ public class CaptureThePoints extends JavaPlugin {
                     boolean hasTeam = false;
 
                     for (Team aTeam : arena.teams) {
-                        if (aTeam.color.equalsIgnoreCase(spawn.name))
-                        {
+                        if (aTeam.color.equalsIgnoreCase(spawn.name)) {
                             hasTeam = true;
                             break;
                             //ctp.teams.remove(aTeam);
                         }
                     }
 
-                    if (!hasTeam)
-                    {
+                    if (!hasTeam) {
                         arena.teams.add(team);
                     }
                 }
             }
-            // Arena boundarys
+            // Arena boundaries
             arena.x1 = arenaConf.getInt("Boundarys.X1", 0);
             arena.y1 = arenaConf.getInt("Boundarys.Y1", 0);
             arena.z1 = arenaConf.getInt("Boundarys.Z1", 0);
@@ -1322,13 +1297,10 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
 
-            try
-            {
+            try {
                 arenaConf.options().copyDefaults(true);
                 arenaConf.save(arenaFile);
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
             }
             
@@ -1341,12 +1313,10 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void loadHealingItems ()
-    {
+    public void loadHealingItems () {
         FileConfiguration config = load();
         // Healing items loading
-        if (!config.contains("HealingItems"))
-        {
+        if (!config.contains("HealingItems")) {
             config.addDefault("HealingItems.BREAD.HOTHeal", 1);
             config.addDefault("HealingItems.BREAD.HOTInterval", 1);
             config.addDefault("HealingItems.BREAD.Duration", 5);
@@ -1362,13 +1332,12 @@ public class CaptureThePoints extends JavaPlugin {
             config.addDefault("HealingItems.GRILLED_PORK.InstantHeal", 5);
             config.addDefault("HealingItems.GRILLED_PORK.ResetCooldownOnDeath", true);
         }
+        
         int itemNR = 0;
-        for (String str : config.getConfigurationSection("HealingItems").getKeys(false))
-        {
+        for (String str : config.getConfigurationSection("HealingItems").getKeys(false)) {
             itemNR++;
             HealingItems hItem = new HealingItems();
-            try
-            {
+            try {
                 hItem.item = Util.getItemListFromString(str).get(0);
                 hItem.instantHeal = config.getInt("HealingItems." + str + ".InstantHeal", 0);
                 hItem.hotHeal = config.getInt("HealingItems." + str + ".HOTHeal", 0);
@@ -1382,49 +1351,39 @@ public class CaptureThePoints extends JavaPlugin {
 
             healingItems.add(hItem);
         }
-        try
-        {
+        
+        try {
             config.options().copyDefaults(true);
             config.save(globalConfigFile);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void loadRoles ()
-    {
+    public void loadRoles () {
         FileConfiguration config = load();
-        if (!config.contains("Roles"))
-        {
+        if (!config.contains("Roles")) {
             config.addDefault("Roles.Tank.Items", "268, 297:16, DIAMOND_CHESTPLATE, 308, 309, SHEARS, CAKE");
             config.addDefault("Roles.Fighter.Items", "272, 297:4, 261, 262:32, CHAINMAIL_CHESTPLATE, CHAINMAIL_LEGGINGS, CHAINMAIL_BOOTS");
             config.addDefault("Roles.Ranger.Items", "268, 297:6, 261, 262:256, 299, 300, 301");
             config.addDefault("Roles.Berserker.Items", "267, GOLDEN_APPLE:2");
         }
-        for (String str : config.getConfigurationSection("Roles").getKeys(false))
-        {
+        
+        for (String str : config.getConfigurationSection("Roles").getKeys(false)) {
             String text = config.getString("Roles." + str + ".Items");
 
             roles.put(str.toLowerCase(), Util.getItemListFromString(text));
-        }
-        try
-        {
+        } try {
             config.options().copyDefaults(true);
             config.save(globalConfigFile);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void loadRewards ()
-    {
+    public void loadRewards () {
         FileConfiguration config = load();
-        if (!config.contains("Rewards"))
-        {
+        if (!config.contains("Rewards")) {
             config.addDefault("Rewards.WinnerTeam.ItemCount", "2");
             config.addDefault("Rewards.WinnerTeam.Items", "DIAMOND_LEGGINGS, DIAMOND_HELMET, DIAMOND_CHESTPLATE, DIAMOND_BOOTS, DIAMOND_AXE, DIAMOND_HOE, DIAMOND_PICKAXE, DIAMOND_SPADE, DIAMOND_SWORD");
             config.addDefault("Rewards.OtherTeams.ItemCount", "1");
@@ -1433,6 +1392,7 @@ public class CaptureThePoints extends JavaPlugin {
             config.addDefault("Rewards.ForCapturingThePoint", "CLAY_BRICK, SNOW_BALL:2, SLIME_BALL, IRON_INGOT");
             config.addDefault("Rewards.ExpRewardForKillingOneEnemy", "0");
         }
+        
         rewards = new CTPRewards();
         rewards.expRewardForKillingEnemy = config.getInt("Rewards.ExpRewardForKillingOneEnemy", 0);
         rewards.winnerRewardCount = config.getInt("Rewards.WinnerTeam.ItemCount", 2);
@@ -1441,13 +1401,11 @@ public class CaptureThePoints extends JavaPlugin {
         rewards.loozerRewards = Util.getItemListFromString(config.getString("Rewards.OtherTeams.Items"));
         rewards.rewardsForCapture = Util.getItemListFromString(config.getString("Rewards.ForCapturingThePoint"));
         rewards.rewardsForKill = Util.getItemListFromString(config.getString("Rewards.ForKillingEnemy"));
-        try
-        {
+        
+        try {
             config.options().copyDefaults(true);
             config.save(globalConfigFile);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1476,23 +1434,11 @@ public class CaptureThePoints extends JavaPlugin {
             mainArena.lobby.playersinlobby.clear();   //Reset if first to come
         }
 
-        // Get lobby location and move player to it.
-        Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
-        loc.setYaw((float) mainArena.lobby.dir);
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
-        	loc.getWorld().loadChunk(loc.getChunk());
-        //    Packet packet = new Packet51MapChunk((int)mainArena.lobby.x - 5, (int)mainArena.lobby.y - 2, (int)mainArena.lobby.z - 5, (int)mainArena.lobby.x + 5, (int)mainArena.lobby.y + 2, (int)mainArena.lobby.z + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
-        //    ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
-        }
-        //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
-
-        if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0)
-        {
+        if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
             EconomyResponse r = economyHandler.bankWithdraw(player.getName(), mainArena.co.economyMoneyCostForJoiningArena);
             if(r.transactionSuccess()) {
                 sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.name + ChatColor.WHITE + " arena.");
-            }
-            else {
+            } else {
                 sendMessage(player, "You dont have enought money to join arena!");
                 return;
             }
@@ -1529,6 +1475,16 @@ public class CaptureThePoints extends JavaPlugin {
         mainArena.lobby.playerswhowereinlobby.add(player); // Kj
 
         player.setHealth(mainArena.co.maxPlayerHealth);
+        
+        // Get lobby location and move player to it.
+        Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
+        loc.setYaw((float) mainArena.lobby.dir);
+        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
+        	loc.getWorld().loadChunk(loc.getChunk());
+        //    Packet packet = new Packet51MapChunk((int)mainArena.lobby.x - 5, (int)mainArena.lobby.y - 2, (int)mainArena.lobby.z - 5, (int)mainArena.lobby.x + 5, (int)mainArena.lobby.y + 2, (int)mainArena.lobby.z + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
+        //    ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
+        }
+        //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
 
         Double X = Double.valueOf(player.getLocation().getX());
         Double y = Double.valueOf(player.getLocation().getY());
@@ -1541,7 +1497,7 @@ public class CaptureThePoints extends JavaPlugin {
 
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
-        player.sendMessage(ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.name + ChatColor.GREEN + ".");
+        sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.name + ChatColor.GREEN + ".");
         playerData.get(player).isInLobby = true;
         saveInv(player);
     }
@@ -1646,7 +1602,7 @@ public class CaptureThePoints extends JavaPlugin {
     }
     
     public void sendMessage(Player p, String message) {
-    	p.sendMessage("[CTP] " + message);
+    	p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message);
     }
 
 }

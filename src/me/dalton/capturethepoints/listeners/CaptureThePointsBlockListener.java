@@ -373,27 +373,20 @@ public class CaptureThePointsBlockListener implements Listener
     public boolean assignRole (Player p, String role)
     {
         // role changing cooldown
-        if(ctp.playerData.get(p).classChangeTime == 0)
-        {
+        if(ctp.playerData.get(p).classChangeTime == 0) {
             ctp.playerData.get(p).classChangeTime = System.currentTimeMillis();
-        }
-        else if((System.currentTimeMillis() - ctp.playerData.get(p).classChangeTime <= 1000)) // 1 sec
-        {
+        } else if((System.currentTimeMillis() - ctp.playerData.get(p).classChangeTime <= 1000)) { // 1 sec 
             p.sendMessage(ChatColor.RED + "[CTP] You can change roles only every 1 sec!");
             return false;
-        }
-        else
-        {
+        } else {
             ctp.playerData.get(p).classChangeTime = System.currentTimeMillis();
         }
-
 
         p.setHealth(20);
         PlayerInventory inv = p.getInventory();
         inv.clear();
         inv.setHelmet(null);
-        if(ctp.playerData.get(p).team != null)
-        {
+        if(ctp.playerData.get(p).team != null) {
             DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.color.toUpperCase());
 
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
@@ -409,25 +402,20 @@ public class CaptureThePointsBlockListener implements Listener
 
         ctp.playerData.get(p).role = role;
 
-        for (Items item : ctp.roles.get(role.toLowerCase()))
-        {
-            if (Util.ARMORS_TYPE.contains(item.item) && (!Util.HELMETS_TYPE.contains(item.item)))
-            {
+        for (Items item : ctp.roles.get(role.toLowerCase())) {
+            if (Util.ARMORS_TYPE.contains(item.item) && (!Util.HELMETS_TYPE.contains(item.item))) {
                 ItemStack i = new ItemStack(item.item, 1);
                 
                 // Add enchantments
-                for(int j = 0; j < item.enchantments.size(); j++)
-                {
+                for(int j = 0; j < item.enchantments.size(); j++) {
                     i.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
                 }
+                
                 Util.equipArmorPiece(i, inv);
-            } 
-            else
-            {
+            } else {
                 ItemStack stack;
                 // If something is wrong in config file
-                try
-                {
+                try {
                     // If exp or economy money - do not allow to pass(only for rewards)
                     if(item.item.equals(Material.AIR))
                         continue;
@@ -438,14 +426,11 @@ public class CaptureThePointsBlockListener implements Listener
                         stack.setDurability(item.type);
 
                     // Add enchantments
-                    for(int j = 0; j < item.enchantments.size(); j++)
-                    {
+                    for(int j = 0; j < item.enchantments.size(); j++) {
                         stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
                     }
-                }
-                catch(Exception e)
-                {
-                    System.out.println("[CTP] There is error in your config file, with roles. Please check them!");
+                } catch(Exception e) {
+                    CaptureThePoints.logger.info(CaptureThePoints.conPrefix + "There is error in your config file, with roles. Please check them!");
                     return false;
                 }
                 inv.addItem(stack);
