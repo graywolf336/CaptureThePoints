@@ -58,14 +58,16 @@ public class CTPPotionEffect
     }
 
     public static void removeAllEffects(Player player) {
-        Collection<MobEffect> eff = ((CraftLivingEntity)player).getHandle().getEffects();
+        @SuppressWarnings("unchecked")
+		Collection<MobEffect> eff = ((CraftLivingEntity)player).getHandle().getEffects();
 
         for(MobEffect effect : eff) {
             removePotionEffect(player, effect.getEffectId(), effect.getAmplifier());
         }
     }
 
-    public static List<CTPPotionEffect> storePlayerPotionEffects(Player player) {
+    @SuppressWarnings("unchecked")
+	public static List<CTPPotionEffect> storePlayerPotionEffects(Player player) {
         List<CTPPotionEffect> effects = new ArrayList<CTPPotionEffect>();
 
         Collection<MobEffect> eff;

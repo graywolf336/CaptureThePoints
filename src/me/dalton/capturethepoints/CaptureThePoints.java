@@ -1522,6 +1522,7 @@ public class CaptureThePoints extends JavaPlugin {
         //commands.add(new SaveCommand(this));
         commands.add(new SelectCommand(this));
         commands.add(new SetpointsCommand(this));
+        //commands.add(new SetpointCommand(this));
         commands.add(new StartCommand(this));
         commands.add(new StatsCommand(this));
         commands.add(new StopCommand(this));

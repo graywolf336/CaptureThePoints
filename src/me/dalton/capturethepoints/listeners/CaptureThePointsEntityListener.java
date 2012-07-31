@@ -134,8 +134,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 }
 
                 //Player has "died"
-                if ((this.ctp.playerData.get(playa) != null) && (playa.getHealth() - event.getDamage() <= 0))
-                {
+                if ((this.ctp.playerData.get(playa) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
                     event.setCancelled(true);
                     respawnPlayer(playa, attacker);
                 }
@@ -212,14 +211,12 @@ public class CaptureThePointsEntityListener  implements Listener {
 
                     HashMap<Integer, ? extends ItemStack> slots = inv.all(item.item);
                     int amount = 0;
-                    for (int slotNum : slots.keySet())
-                    {
+                    for (int slotNum : slots.keySet()) {
                         if(slots.get(slotNum).getDurability() == item.type)
                             amount += slots.get(slotNum).getAmount();
                     }
 
-                    if (amount < item.amount)
-                    {
+                    if (amount < item.amount) {
                         //Removing old potions
                         for (int slotNum : slots.keySet()) {
                             if(slots.get(slotNum).getDurability() == item.type)
@@ -257,64 +254,44 @@ public class CaptureThePointsEntityListener  implements Listener {
                         inv.addItem(stack);
                     }
                 }
-            }
-            else
-            {
-                if (!Util.ARMORS_TYPE.contains(item.item))
-                {
+            } else {
+                if (!Util.ARMORS_TYPE.contains(item.item)) {
                     ItemStack stack = new ItemStack(item.item);
                     stack.setAmount(item.amount);
                     if(item.type != -1)
                         stack.setDurability(item.type);
                     // Add enchantments
-                    for(int j = 0; j < item.enchantments.size(); j++)
-                    {
+                    for(int j = 0; j < item.enchantments.size(); j++) {
                         stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
                     }
                     
                     inv.addItem(stack);
                 } 
-                else
-                {// find if there is somethig equiped
+                else {// find if there is somethig equiped
                     ItemStack stack = new ItemStack(item.item, item.amount);
 
                     // Add enchantments
-                    for(int j = 0; j < item.enchantments.size(); j++)
-                    {
+                    for(int j = 0; j < item.enchantments.size(); j++) {
                         stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
                     }
                     
 
-                    if (Util.BOOTS_TYPE.contains(item.item))
-                    {
-                        if (inv.getBoots().getType() == item.item)
-                        {
+                    if (Util.BOOTS_TYPE.contains(item.item)) {
+                        if (inv.getBoots().getType() == item.item) {
                             inv.setBoots(stack);
-                        } 
-                        else
-                        {
+                        } else {
                             inv.addItem(stack);
                         }
-                    } 
-                    else if (Util.LEGGINGS_TYPE.contains(item.item))
-                    {
-                        if (inv.getLeggings().getType() == item.item)
-                        {
+                    } else if (Util.LEGGINGS_TYPE.contains(item.item)) {
+                        if (inv.getLeggings().getType() == item.item) {
                             inv.setLeggings(stack);
-                        } 
-                        else
-                        {
+                        } else {
                             inv.addItem(stack);
                         }
-                    } 
-                    else if (Util.CHESTPLATES_TYPE.contains(item.item))
-                    {
-                        if (inv.getChestplate().getType() == item.item)
-                        {
+                    } else if (Util.CHESTPLATES_TYPE.contains(item.item)) {
+                        if (inv.getChestplate().getType() == item.item) {
                             inv.setChestplate(stack);
-                        } 
-                        else
-                        {
+                        } else {
                             inv.addItem(stack);
                         }
                     }
