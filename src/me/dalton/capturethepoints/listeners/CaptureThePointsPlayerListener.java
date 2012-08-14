@@ -112,8 +112,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             return;
         }
 
-        if (ctp.playerData.containsKey(event.getPlayer()))
-        {
+        if (ctp.playerData.containsKey(event.getPlayer())) {
             Player p = event.getPlayer();
             // Iron block
             if (event.hasBlock() && event.getClickedBlock().getTypeId() == 42) {
@@ -297,18 +296,19 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerRespawn (PlayerRespawnEvent event)
-    {
-        if((this.ctp.playerData.get(event.getPlayer()) == null))
+    public void onPlayerRespawn (PlayerRespawnEvent event) {
+    	Player p = event.getPlayer();
+    	
+        if((this.ctp.playerData.get(p) == null))
             return;
 
-        if(!ctp.isGameRunning() && this.ctp.playerData.get(event.getPlayer()).isInLobby) {
-            ctp.playerData.get(event.getPlayer()).isInArena = false;
-            ctp.playerData.get(event.getPlayer()).isInLobby = false;
-            ctp.mainArena.lobby.playersinlobby.remove(event.getPlayer());
-            event.setRespawnLocation(ctp.previousLocation.get(event.getPlayer()));
-            ctp.leaveGame(event.getPlayer());
-            event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
+        if(!ctp.isGameRunning() && ctp.playerData.get(p).isInLobby) {
+            ctp.playerData.get(p).isInArena = false;
+            ctp.playerData.get(p).isInLobby = false;
+            ctp.mainArena.lobby.playersinlobby.remove(p);
+            event.setRespawnLocation(ctp.previousLocation.get(p));
+            ctp.leaveGame(p);
+            p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
             return;
         }
 
