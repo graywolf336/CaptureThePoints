@@ -1,6 +1,6 @@
 name: CaptureThePoints
 main: me.dalton.capturethepoints.CaptureThePoints
-version: 1.4.0
+version: 1.4.1
 authors: [dalton, Humsas, kjhf, graywolf336]
 softdepend: [Vault, iConomy]
 description: Capture the points arena
