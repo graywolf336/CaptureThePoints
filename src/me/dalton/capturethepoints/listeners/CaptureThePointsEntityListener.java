@@ -189,8 +189,8 @@ public class CaptureThePointsEntityListener  implements Listener {
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
             
-            // Deprecated
-            //p.updateInventory();
+    		//It's deprecated but it's currently the only way to get the desired effect.
+    		player.updateInventory();
         }
         return true;
     }

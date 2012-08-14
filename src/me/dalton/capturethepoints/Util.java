@@ -409,7 +409,6 @@ public class Util {
     }
 
 // Tingiu mazint :/
-    @SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) 
     {
         try
@@ -594,7 +593,8 @@ public class Util {
                     player.getInventory().addItem(stack);
                 }
             }
-            // Out dated
+            
+          //It's deprecated but it's currently the only way to get the desired effect.
             player.updateInventory();
         }
         catch(Exception e)

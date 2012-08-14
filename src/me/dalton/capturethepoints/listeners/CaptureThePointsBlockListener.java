@@ -397,8 +397,8 @@ public class CaptureThePointsBlockListener implements Listener
         inv.setLeggings(null);
         inv.setBoots(null);
         
-        // Deprecated
-        //p.updateInventory();
+		//It's deprecated but it's currently the only way to get the desired effect.
+		p.updateInventory();
 
         ctp.playerData.get(p).role = role;
 
@@ -436,8 +436,9 @@ public class CaptureThePointsBlockListener implements Listener
                 inv.addItem(stack);
             }
         }
-        // Deprecated
-        //p.updateInventory();
+        
+		//It's deprecated but it's currently the only way to get the desired effect.
+		p.updateInventory();
 
         return true;
     }

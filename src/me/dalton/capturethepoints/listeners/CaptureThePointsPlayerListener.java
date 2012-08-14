@@ -497,8 +497,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         inv.remove(Material.WOOL);
         p.getInventory().setHelmet(helmet);
         
-        // Deprecated
-        //p.updateInventory();
+		//It's deprecated but it's currently the only way to get the desired effect.
+		p.updateInventory();
     }
 
     public boolean isInside (int loc, int first, int second) {
@@ -725,8 +725,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                         ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
                         player.getInventory().setHelmet(helmet);
                         
-                        // Deprecated
-                        //p.updateInventory();
+                		//It's deprecated but it's currently the only way to get the desired effect.
+                		player.updateInventory();
                     }
                 }
             }
@@ -788,9 +788,9 @@ public class CaptureThePointsPlayerListener implements Listener {
             //player.getInventory().addItem(new ItemStack[]{wool});
         }
         
-        // Deprecated
-        //p.updateInventory();
-
+		//It's deprecated but it's currently the only way to get the desired effect.
+		player.updateInventory();
+		
         //Move to spawn  
         ctp.playerData.get(player).team = team;
 
@@ -891,8 +891,8 @@ public class CaptureThePointsPlayerListener implements Listener {
             ctp.sendMessage(p, "You bought " + ChatColor.AQUA + amount + " " + list.get(0).item.toString().toLowerCase() + ChatColor.WHITE + " for " + ChatColor.GREEN + price + ChatColor.WHITE + " money.");
             ctp.sendMessage(p, "You now have " + ChatColor.GREEN + ctp.playerData.get(p).money + ChatColor.WHITE + " money.");
             
-            // Deprecated
-            //p.updateInventory();
+            	//It's deprecated but it's currently the only way to get the desired effect.
+            	p.updateInventory();
             return;
         } else {
             String message = price != Integer.MAX_VALUE
@@ -1006,8 +1006,8 @@ public class CaptureThePointsPlayerListener implements Listener {
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
             p.getInventory().setHelmet(helmet);
             
-            // Deprecated
-            //p.updateInventory();
+    		//It's deprecated but it's currently the only way to get the desired effect.
+    		p.updateInventory();
 
             ctp.sendMessage(p, "You selected " + ChatColor.GREEN + color.toUpperCase() + ChatColor.WHITE + " team.");
         }
@@ -1074,8 +1074,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                         p.getInventory().setHelmet(null);
                         p.getInventory().remove(Material.WOOL);
                         
-                        // Deprecated
-                        //p.updateInventory();
+                		//It's deprecated but it's currently the only way to get the desired effect.
+                		p.updateInventory();
                         
                         moveToSpawns(p);
                         playersForRemove.add(p);

@@ -358,8 +358,9 @@ public class CaptureThePoints extends JavaPlugin {
             p.getInventory().setHelmet(null);
             p.getInventory().remove(Material.WOOL);
             
-            // Deprecated
-            //p.updateInventory();
+            
+            //It's deprecated but it's currently the only way to get the desired effect.
+            p.updateInventory();
         
             // Get lobby location and move player to it.
             Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
@@ -401,8 +402,8 @@ public class CaptureThePoints extends JavaPlugin {
                 p.getInventory().addItem(wool);
             }
 
-            // Deprecated
-            //p.updateInventory();
+            //It's deprecated but it's currently the only way to get the desired effect.
+            p.updateInventory();
             
             // Get team spawn location and move player to it.
             Spawn spawn =
@@ -1555,6 +1556,9 @@ public class CaptureThePoints extends JavaPlugin {
             PlayerInv.setHelmet(this.armor.get(player)[3].getTypeId() == 0
                     ? null : this.armor.get(player)[3]);
             this.armor.remove(player);
+            
+            //It's deprecated but it's currently the only way to get the desired effect.
+            player.updateInventory();
         }
     }
 
