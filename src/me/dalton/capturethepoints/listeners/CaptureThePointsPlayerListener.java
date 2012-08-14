@@ -32,6 +32,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -101,6 +103,21 @@ public class CaptureThePointsPlayerListener implements Listener {
             }*/
         }
     }
+    
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void invClick(InventoryClickEvent event) {
+		Player p = (Player) event.getWhoClicked();
+		
+		if (ctp.playerData.containsKey(p)) {
+			if (event.getInventory().getName().equalsIgnoreCase("container.crafting") && event.getRawSlot() == 5 && event.getSlotType() == SlotType.ARMOR) {
+				p.sendMessage(ChatColor.RED + "You can't remove your helmet.");
+				event.setCancelled(true);
+				return;
+			}
+		}else {
+			return;
+		}
+	}
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract (PlayerInteractEvent event)
@@ -266,22 +283,23 @@ public class CaptureThePointsPlayerListener implements Listener {
             return;
         }
         Location loc = event.getTo();
+        Player p = event.getPlayer();
+        
         // Find if player is in arena
-        if (this.ctp.playerData.get(event.getPlayer()) != null && !ctp.playerData.get(event.getPlayer()).isInLobby) {
-            Player player = event.getPlayer();
-            if (ctp.playerData.get(player).moveChecker >= 10) {
-                ctp.playerData.get(player).moveChecker = 0;
+        if (this.ctp.playerData.get(p) != null && !ctp.playerData.get(p).isInLobby) {
+            if (ctp.playerData.get(p).moveChecker >= 10) {
+                ctp.playerData.get(p).moveChecker = 0;
                 if (isInside(loc.getBlockY(), ctp.mainArena.y1, ctp.mainArena.y2) && isInside(loc.getBlockX(), ctp.mainArena.x1, ctp.mainArena.x2) && isInside(loc.getBlockZ(), ctp.mainArena.z1, ctp.mainArena.z2) && loc.getWorld().getName().equalsIgnoreCase(ctp.mainArena.world)) {
                     return;
                 } else {
-                    String color = ctp.playerData.get(player).team.color;
+                    String color = ctp.playerData.get(p).team.color;
                     Location loc2 = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).x, ctp.mainArena.teamSpawns.get(color).y + 1, ctp.mainArena.teamSpawns.get(color).z);
                     loc2.setYaw((float) ctp.mainArena.teamSpawns.get(color).dir);
                     loc2.getWorld().loadChunk(loc2.getBlockX(), loc2.getBlockZ());
-                    player.teleport(loc2);
+                    p.teleport(loc2);
                 }
             } else {
-                ctp.playerData.get(player).moveChecker++;
+                ctp.playerData.get(p).moveChecker++;
             }
         }
     }
