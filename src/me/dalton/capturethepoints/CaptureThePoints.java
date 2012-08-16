@@ -146,6 +146,14 @@ public class CaptureThePoints extends JavaPlugin {
 
     @Override
     public void onEnable () {
+    	pluginManager = getServer().getPluginManager();
+    	if(!pluginManager.isPluginEnabled("Vault")) {
+    		logger.severe(conPrefix + "Vault is required in order to use this plugin.");
+    		logger.severe(conPrefix + "dev.bukkit.org/server-mods/vault/");
+			pluginManager.disablePlugin(this);
+			return;
+		}
+    	
     	mainDir = this.getDataFolder().toString();
     	globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
     	info = getDescription();
@@ -158,7 +166,6 @@ public class CaptureThePoints extends JavaPlugin {
         if (!reloading) {
             setupPermissions();
             setupEconomy();
-            pluginManager = getServer().getPluginManager();
 
             // REGISTER EVENTS-----------------------------------------------------------------------------------
             pluginManager.registerEvents(this.blockListener, this);
