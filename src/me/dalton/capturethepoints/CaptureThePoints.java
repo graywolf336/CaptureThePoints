@@ -332,7 +332,8 @@ public class CaptureThePoints extends JavaPlugin {
         return balanced;
     }
 
-    private void balancePlayer (Player p, Team newTeam) {        
+    @SuppressWarnings("deprecation")
+	private void balancePlayer (Player p, Team newTeam) {        
         /*
         //Reseting cooldowns
         for (HealingItems item : healingItems) {
@@ -1546,7 +1547,8 @@ public class CaptureThePoints extends JavaPlugin {
         loadArenas(file);
     }
 
-    public void restoreInv (Player player) {
+    @SuppressWarnings("deprecation")
+	public void restoreInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
 
         // Just to be sure that inventory is saved
