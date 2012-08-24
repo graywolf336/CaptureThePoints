@@ -409,6 +409,7 @@ public class Util {
     }
 
 // Tingiu mazint :/
+	@SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) 
     {
         try
