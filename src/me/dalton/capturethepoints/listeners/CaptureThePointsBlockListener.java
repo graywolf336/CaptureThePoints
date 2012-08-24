@@ -370,7 +370,8 @@ public class CaptureThePointsBlockListener implements Listener
         return null;
     }
 
-    public boolean assignRole (Player p, String role)
+    @SuppressWarnings("deprecation")
+	public boolean assignRole (Player p, String role)
     {
         // role changing cooldown
         if(ctp.playerData.get(p).classChangeTime == 0) {
