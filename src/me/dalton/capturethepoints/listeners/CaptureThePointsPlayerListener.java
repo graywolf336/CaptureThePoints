@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import me.dalton.capturethepoints.ArenaData;
 import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
@@ -119,9 +120,9 @@ public class CaptureThePointsPlayerListener implements Listener {
 		}
 	}
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerInteract (PlayerInteractEvent event)
-    {
+    @SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerInteract (PlayerInteractEvent event){
         if (ctp.mainArena == null) {
             return;
         }
@@ -131,6 +132,30 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         if (ctp.playerData.containsKey(event.getPlayer())) {
             Player p = event.getPlayer();
+            //Potion Throwing In Lobby
+            if (ctp.playerData.get(p).isInLobby && p.getItemInHand().getTypeId()==373){
+            	
+            	if (event.hasBlock() && !((event.getClickedBlock().getState()) instanceof Sign) && event.getClickedBlock().getTypeId() != 42){
+                   event.setCancelled(true);
+                   p.sendMessage(ChatColor.RED + "You cannot throw potions in the Lobby!");
+                   p.updateInventory();
+                   return;
+                   
+            	}
+            	
+            	if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            		if(event.getClickedBlock().getState() instanceof Sign || event.getClickedBlock().getTypeId() == 42){
+                        p.updateInventory();
+            			event.setCancelled(true);
+            		}
+            	}else if(event.getAction() == Action.RIGHT_CLICK_AIR){
+                    event.setCancelled(true);
+                    p.sendMessage(ChatColor.RED + "You cannot throw potions in the Lobby!");
+                    p.updateInventory();
+                    return;
+            	}
+            	
+            }
             // Iron block
             if (event.hasBlock() && event.getClickedBlock().getTypeId() == 42) {
                 //If this role exists
@@ -189,12 +214,18 @@ public class CaptureThePointsPlayerListener implements Listener {
                         }
 
                         CTPPotionEffect.removeAllEffects(p);
-
+                        
+                        String oldRole = "";
+                        
+                        if (ctp.playerData.get(p).role != null && !ctp.playerData.get(p).role.isEmpty()){
+                        	oldRole = ctp.playerData.get(p).role;
+                        }
+                        
                         if(!ctp.blockListener.assignRole(p, role.toLowerCase())) // Try to assign new role
                             return;
 
-                        if (ctp.playerData.get(p).role != null && !ctp.playerData.get(p).role.isEmpty()) {
-                            String oldRole = ctp.playerData.get(p).role;
+                        if (ctp.playerData.get(p).role != null && !ctp.playerData.get(p).role.isEmpty() && !oldRole.isEmpty()) {
+                            
                             p.sendMessage(ChatColor.LIGHT_PURPLE + "Changing your role from " + ChatColor.GOLD + oldRole.substring(0, 1).toUpperCase() + oldRole.substring(1).toLowerCase()
                                     + ChatColor.LIGHT_PURPLE + " to " + ChatColor.GOLD + role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase() + ChatColor.LIGHT_PURPLE + ".");
                             p.sendMessage("Remember to hit the iron block to ready up!");
@@ -430,6 +461,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         } 
                         else {
+                            //Save variable for minor bug that results from player error
+                            ArenaData mainArenaTmp = ctp.mainArena;
                             if (ctp.hasSuitableArena(readypeople)) {
                                 Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + ctp.mainArena.minimumPlayers + " players, found " + readypeople + "].");
                                 List<Player> transport = new LinkedList<Player>(lobby.playersinlobby.keySet());
@@ -440,13 +473,26 @@ public class CaptureThePointsPlayerListener implements Listener {
                                     pj.execute(ctp.getServer().getConsoleSender(), Arrays.asList("ctp", "pjoin", aPlayer.getName()));
                                 }
                             } else {
+                            	//Reseting main Arena back
+                            	ctp.mainArena = mainArenaTmp;
                                 Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. No other suitable arenas found. [Needed " + ctp.mainArena.minimumPlayers + " players, found " + readypeople + "].");
                                 //ctp.blockListener.endGame(true);
                             }
                         }
                     } 
                     else {
-                        p.sendMessage(ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople() + " people to ready up."); // Kj
+                    	String notReady = "";
+                    	for(Player player: lobby.playersinlobby.keySet()){
+                    		
+                    		if(!ctp.playerData.get(player).isReady){
+                    			notReady+= player.getName()+", ";
+                    		}
+                    	}
+                    	if (!notReady.isEmpty()){
+                    		notReady = notReady.substring(0,notReady.length()-2);
+                    	}
+                    	
+                        p.sendMessage(ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople() + " Players Not Ready: "+notReady+"."); // Kj
                     }
                 } else { // Game already started
                     if (!ctp.mainArena.co.allowLateJoin) {
@@ -506,7 +552,8 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
     return ((p.getInventory().getHelmet().getType() != Material.WOOL) && (ctp.playerData.get(p).isInArena));
     }*/
-    public void fixHelmet (Player p) {
+    @SuppressWarnings("deprecation")
+	public void fixHelmet (Player p) {
         PlayerInventory inv = p.getInventory();
         p.sendMessage(ChatColor.RED + "Do not remove your helmet.");
         DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.color.toUpperCase());
@@ -587,7 +634,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         balanceTeamsFromLobby();
 
         ctp.blockListener.capturegame = true;
-        ctp.getServer().broadcastMessage("A Capture The Points game has started!");
+        ctp.getServer().broadcastMessage(ChatColor.AQUA+"[CTP]"+ChatColor.WHITE+" A Capture The Points game has started!");
         //Util.sendMessageToPlayers(ctp, "A Capture The Points game has started!"); // Kj change to message rather than broadcast
         ctp.blockListener.preGame = false;
         ctp.blockListener.didSomeoneWin();
@@ -718,7 +765,8 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         //Helmet Checking
         ctp.CTP_Scheduler.helmChecker = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            @Override
+            @SuppressWarnings("deprecation")
+			@Override
             public void run () {
                 if (ctp.isGameRunning())
                 {
@@ -752,7 +800,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         }, 100L, 100L);
     }
 
-    public void moveToSpawns (Player player) {
+    @SuppressWarnings("deprecation")
+	public void moveToSpawns (Player player) {
         if(player == null)
             return;
 
@@ -829,7 +878,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         ctp.playerData.get(player).isInArena = true;
     }
 
-    public void shop (Player p, Sign sign) {
+    @SuppressWarnings("deprecation")
+	public void shop (Player p, Sign sign) {
 //        if(p.getName().equalsIgnoreCase("Humsas"))
 //            plugin.playerData.get(p).money = 100000;
 
@@ -985,7 +1035,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    public void selectTeam (PlayerInteractEvent event, Player p) {
+    @SuppressWarnings("deprecation")
+	public void selectTeam (PlayerInteractEvent event, Player p) {
         if(ctp.isGameRunning() || !ctp.mainArena.lobby.playersinlobby.containsKey(p))
             return;
         
@@ -1031,7 +1082,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    private void balanceTeamsFromLobby() {
+    @SuppressWarnings("deprecation")
+	private void balanceTeamsFromLobby() {
         int difference = 0;
         int optimalPlayerCountInTeam = ctp.mainArena.getPlayersPlaying(ctp).size() / ctp.mainArena.teams.size();
         int[] teamPlayersCount = new int[ctp.mainArena.teams.size()];
