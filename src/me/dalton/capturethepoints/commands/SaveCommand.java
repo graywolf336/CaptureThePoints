@@ -18,6 +18,7 @@ public class SaveCommand extends CTPCommand {
 
     @Override
     public void perform() {
+    	/*
         int xlow = ctp.x1;
         int xhigh = ctp.x2;
         if (ctp.x2 < ctp.x1) {
@@ -35,7 +36,7 @@ public class SaveCommand extends CTPCommand {
         if (ctp.z2 < ctp.z1) {
             zlow = ctp.z2;
             zhigh = ctp.z1;
-        }
+        }*/
         //for (int x = xlow; x <= xhigh; x++) {
           //  for (int y = ylow; y <= yhigh; y++) {
             //    for (int z = zlow; z <= zhigh; z++) {

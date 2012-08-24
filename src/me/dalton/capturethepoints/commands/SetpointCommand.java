@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import org.bukkit.Location;
 
 public class SetpointCommand extends CTPCommand {
 
@@ -19,6 +18,7 @@ public class SetpointCommand extends CTPCommand {
 
     @Override
     public void perform() {
+    	/*
         Location loc = player.getLocation();
         if (parameters.get(2).equalsIgnoreCase("1")) {
             ctp.x1 = loc.getBlockX();
@@ -29,5 +29,6 @@ public class SetpointCommand extends CTPCommand {
             ctp.y2 = loc.getBlockY();
             ctp.z2 = loc.getBlockZ();
         }
+    */
     }
 }
