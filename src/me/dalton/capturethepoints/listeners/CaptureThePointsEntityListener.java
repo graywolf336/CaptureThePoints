@@ -1,6 +1,7 @@
 package me.dalton.capturethepoints.listeners;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
@@ -8,13 +9,16 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Items;
 import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Util;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,9 +26,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class CaptureThePointsEntityListener  implements Listener {
 
@@ -68,8 +75,77 @@ public class CaptureThePointsEntityListener  implements Listener {
         event.getDrops().clear();
     }
     
-
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPotionEffect(PotionSplashEvent event) {
+        // lobby damage check
+
+
+        if (ctp.isGameRunning()) {
+            Player thrower = (Player) event.getEntity().getShooter();
+            
+            if ((this.ctp.playerData.get(thrower) != null)) {
+                ThrownPotion potion = event.getEntity();
+                PotionEffect effect = null;
+                boolean harmful = false;
+                for(PotionEffect e: potion.getEffects()){
+                	effect = e;
+                }
+                
+                harmful = isHarmful(effect);
+                for(Iterator<LivingEntity> iter = event.getAffectedEntities().iterator(); iter.hasNext();){
+                	LivingEntity hitPlayerEntity = iter.next();
+                	Player hitPlayer = (Player)hitPlayerEntity;
+                	
+                	//Is potion negative/positive
+                	if(harmful){	                   //Negative
+                		//If hit self
+                		if(thrower.equals(hitPlayer)){
+                			event.setIntensity(hitPlayerEntity, 0); 
+                		}
+                		//Is thrower on the same team as player hit
+                		if (this.ctp.playerData.get(thrower).team.color.equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).team.color)){ // Yes
+                			event.setIntensity(hitPlayerEntity, 0); 
+                		}else{ // No
+                            if (isProtected(hitPlayer)) {
+                            	event.setIntensity(hitPlayerEntity, 0);                		                	
+                            }	
+                		}
+                        //Player has "died"
+                        if(effect.getType().equals(PotionEffectType.HARM)){
+                        	int damage = 6;
+                        	
+                        	if(effect.getAmplifier()==1){
+                        		damage = 12;
+                        	}
+                        	
+                        	double intensity = event.getIntensity(hitPlayerEntity);
+                        	
+                        	double tmpDamage = ((double)damage)*intensity;
+                        	damage = (int) tmpDamage;
+                        	
+                        	tmpDamage = tmpDamage - ((int)tmpDamage);
+                        	
+                        	if(tmpDamage >= .5){
+                        		damage++;
+                        	}
+                        	
+                            if ((this.ctp.playerData.get(hitPlayer) != null) && (hitPlayer.getHealth() - damage <= 0)) {
+                            	event.setIntensity(hitPlayerEntity, 0); 
+                                respawnPlayer(hitPlayer, thrower);
+                            }
+                        }
+                	}else{                            //Positive
+                		if (!this.ctp.playerData.get(thrower).team.color.equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).team.color)){ 
+                			event.setIntensity(hitPlayerEntity, 0); 
+                		}
+                	}
+                }
+            }
+        }
+    }
+
+
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             // Kj -- Didn't involve a player. So we don't care.
@@ -165,7 +241,8 @@ public class CaptureThePointsEntityListener  implements Listener {
         return true;
     }
     
-    private boolean dropWool(Player player) {
+    @SuppressWarnings("deprecation")
+	private boolean dropWool(Player player) {
         if (!ctp.mainArena.co.dropWoolOnDeath) {
             return false;
         }
@@ -195,9 +272,25 @@ public class CaptureThePointsEntityListener  implements Listener {
         return true;
     }
     
-    public void giveRoleItemsAfterDeath(Player player) {
+    @SuppressWarnings("deprecation")
+	public void giveRoleItemsAfterDeath(Player player) {
+    	
         PlayerInventory inv = player.getInventory();
-        inv.remove(374); // Removes bottles
+        
+        //Get wool for return
+        int ownedWool = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && item.getTypeId() == 35) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).team.color)) {
+                    inv.remove(35);
+                    ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
+                    player.getWorld().dropItem(player.getLocation(), tmp);
+                } else {
+                    ownedWool += item.getAmount();
+                }
+            }
+        }
+        inv.clear(); // Removes inventory
         
         for (Items item : ctp.roles.get(ctp.playerData.get(player).role)) {
             if(item.item.equals(Material.AIR))
@@ -298,6 +391,15 @@ public class CaptureThePointsEntityListener  implements Listener {
                 }
             }
         }
+        //Re-add Wool
+        if (ownedWool != 0) {
+            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).team.color.toUpperCase());
+            ItemStack wool = new ItemStack(35, ownedWool, color.getData());
+            player.getInventory().addItem(new ItemStack[]{wool});
+        }
+        
+		//It's deprecated but it's currently the only way to get the desired effect.
+		player.updateInventory();
     }
     
     public boolean isProtected(Player player) {
@@ -386,4 +488,37 @@ public class CaptureThePointsEntityListener  implements Listener {
             player.teleport(new Location(player.getWorld(), spawn.x, spawn.y, spawn.z, 0.0F, (float)spawn.dir));
         }
     }
+    
+
+    private boolean isHarmful(PotionEffect effect) {
+		
+    	PotionEffectType type = effect.getType();
+
+    	if (type.equals(PotionEffectType.HARM)){
+    		return true;
+    	}
+    	if (type.equals(PotionEffectType.HEAL)){
+    		return false;
+    	}
+    	if (type.equals(PotionEffectType.WEAKNESS)){
+    		return true;
+    	}
+    	if (type.equals(PotionEffectType.REGENERATION)){
+    		return false;
+    	}
+    	if (type.equals(PotionEffectType.INCREASE_DAMAGE)){
+    		return false;
+    	}
+    	if (type.equals(PotionEffectType.SPEED)){
+    		return false;
+    	}
+    	if (type.equals(PotionEffectType.SLOW)){
+    		return true;
+    	}
+    	if (type.equals(PotionEffectType.POISON)){
+    		return true;
+    	}
+    	
+		return false;
+	}
 }
