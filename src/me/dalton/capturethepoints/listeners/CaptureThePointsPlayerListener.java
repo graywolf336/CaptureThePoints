@@ -2,6 +2,7 @@ package me.dalton.capturethepoints.listeners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.Random;
 
 import me.dalton.capturethepoints.ArenaData;
 import me.dalton.capturethepoints.CTPPoints;
-import me.dalton.capturethepoints.CTPPotionEffect;
+//import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Items;
@@ -46,6 +47,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.PotionEffect;
 
 public class CaptureThePointsPlayerListener implements Listener {
     private final CaptureThePoints ctp;
@@ -212,8 +214,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                                         : roles.get(nextInt); // Change the role based on the random number. (Ternary null check)
                             }
                         }
-
-                        CTPPotionEffect.removeAllEffects(p);
+                        
+                        //CTPPotionEffect.removeAllEffects(p);
                         
                         String oldRole = "";
                         

@@ -1,4 +1,4 @@
-/*package me.dalton.capturethepoints;
+package me.dalton.capturethepoints;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,32 +7,29 @@ import net.minecraft.server.MobEffect;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;*/
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 /**
  *
  * @author Humsas
  */
-/*public class CTPPotionEffect
-{
+public class CTPPotionEffect {
     public int duration;
     public int strenght;
     public int id;
 
-    public CTPPotionEffect (int dur, int str, int id)
-    {
+    public CTPPotionEffect (int dur, int str, int id) {
         duration = dur;
         strenght = str;
         this.id = id;
     }
 
-    public static void setPotionEffect(LivingEntity entity, int type, int duration, int amplifier)
-    {
+    public static void setPotionEffect(LivingEntity entity, int type, int duration, int amplifier) {
         ((CraftLivingEntity)entity).getHandle().addEffect(new MobEffect(type, duration, amplifier));
     }
 
-    public static void removePotionEffect(LivingEntity entity, int type, int amplifier)
-    {
+    public static void removePotionEffect(LivingEntity entity, int type, int amplifier) {
         ((CraftPlayer)entity).getHandle().addEffect(new MobEffect(type, -1, amplifier + 1));
         
 //        try
@@ -52,6 +49,10 @@ import org.bukkit.entity.Player;*/
 //        catch (Exception e) {}
     }
 
+    /**
+     * @deprecated Use 
+     * @param player
+     */
     public static void removeAllEffects(Player player) {
         @SuppressWarnings("unchecked")
 		Collection<MobEffect> eff = ((CraftLivingEntity)player).getHandle().getEffects();
@@ -79,5 +80,13 @@ import org.bukkit.entity.Player;*/
         for(CTPPotionEffect eff : effects)
             ((CraftLivingEntity)player).getHandle().addEffect(new MobEffect(eff.id, eff.duration, eff.strenght));
     }
+    
+    //New things, trying to switch over to Craftbukkit
+    public static void removePotionEffects(Player player) {
+    	 Collection<PotionEffect> potions = player.getActivePotionEffects();
+         
+         for (PotionEffect pef : potions) {
+         	
+         }
+    }
 }
-*/

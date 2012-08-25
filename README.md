@@ -1,4 +1,4 @@
 CaptureThePoints
 ==========
 
-A clone of https://github.com/Humsas/CaptureThePoints that has uses Vault for permissions.
+# DO NOT USE THIS, AS IT WILL BREAK YOUR SERVER...i think
