@@ -59,7 +59,9 @@ public abstract class CTPCommand {
         maxParameters = 0;
     }
 
-    /** Send a message to the sender of the command. [CTP] is put at the start for you.*/
+    /** Send a message to the sender of the command. [CTP] is put at the start for you.
+     * @param message The message you want to send to the player, after the "[CTP] "
+     */
     public void sendMessage(String message) {
         sender.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message);
     }
