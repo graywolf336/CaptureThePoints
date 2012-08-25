@@ -1165,7 +1165,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arena.world = worlds.get(0);
                     logger.info(conPrefix + "Successfully resolved the world. \"" + arena.world + "\" will be used.");
                 } else {
-                	arena.world = worlds.get(0);
+                	logger.info(conPrefix + "This usually happens on the first load, create an arena and this message should go away.");
                     logger.info(conPrefix + "Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
                 }
             }
