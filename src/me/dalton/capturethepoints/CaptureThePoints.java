@@ -187,9 +187,11 @@ public class CaptureThePoints extends JavaPlugin {
                 if (playerData == null) {
                     return;
                 }
+                
                 if (playerData.isEmpty()) {
                     return;
                 }
+                
                 if (globalConfigOptions.lobbyKickTime <= 0) {
                     return;
                 }
@@ -326,26 +328,14 @@ public class CaptureThePoints extends JavaPlugin {
             // The teams balance unevenly.
             balancePlayer(highestTeam.getRandomPlayer(this), null); // Move one player from the team with the higher number of players to lobby.
         }
+        
         loop++;
         boolean balanced = balanceTeams(loop, balanceThreshold); // Check Teams again to check if balanced.
         return balanced;
     }
 
 	@SuppressWarnings("deprecation")
-	private void balancePlayer (Player p, Team newTeam) {        
-        /*
-        //Reseting cooldowns
-        for (HealingItems item : healingItems) {
-            if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
-                for (String playName : item.cooldowns.keySet()) {
-                    if (playName.equalsIgnoreCase(p.getName())) {
-                        item.cooldowns.remove(playName);
-                    }
-                }
-            }
-        }
-         */
-
+	private void balancePlayer (Player p, Team newTeam) {      
         // Reseting player data       
         if (newTeam == null) {
             // Moving to Lobby
@@ -433,6 +423,7 @@ public class CaptureThePoints extends JavaPlugin {
     
     /**  
      * Test whether a command sender can use this CTP command.
+     * 
      * @param sender The sender issuing the command
      * @param notOpCommand Set to true if anyone can use the command, else false if the command issuer has to be an op or CTP admin.
      * @param permissions The permissions to check against that are associated with the command.
@@ -450,6 +441,7 @@ public class CaptureThePoints extends JavaPlugin {
 
     /**  
      * Test whether a player can use this CTP command.
+     * 
      * @param p The player issuing the command
      * @param notOpCommand Set to true if anyone can use the command, else false if the command issuer has to be an op or CTP admin.
      * @param permissions The permissions to check against that are associated with the command.
@@ -490,7 +482,6 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
             if (zeroPlayers == true) {
-                //getServer().broadcastMessage("[CTP] No players left, game closes!");
                 Util.sendMessageToPlayers(this, "No players left. Resetting game.");
                 blockListener.endGame(true);
             }
@@ -629,14 +620,8 @@ public class CaptureThePoints extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
     }
 
-//    /** Get the configOptions from this file. */
-//    public ConfigOptions getConfigOptions (File arenafile) {
-//        return getConfigOptions(load(arenafile));
-//    }
-
     /** Get the configOptions from the config file. */
-    public ConfigOptions getConfigOptions (File arenafile)
-    {
+    public ConfigOptions getConfigOptions (File arenafile) {
         setConfigOptions(arenafile);
         FileConfiguration config = load(arenafile);
         
@@ -646,18 +631,13 @@ public class CaptureThePoints extends JavaPlugin {
         String pointCaptureWithScore = "";
         String global = "";
         String mySql = "";
-//        boolean updateConfig = false;
-//
-//        if (config.getProperty("Version") == null) {
-//            // old configuration
-//            updateConfig = true;
-//        } else {
-            //version 2
-            pointCapture = "GlobalSettings.GameMode.PointCapture.";
-            pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
-            global = "GlobalSettings.";
-            mySql = "GlobalSettings.MySql.";
-//        }
+        
+        //version 2
+        pointCapture = "GlobalSettings.GameMode.PointCapture.";
+        pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
+        global = "GlobalSettings.";
+        mySql = "GlobalSettings.MySql.";
+
         //Game mode configuration
         co.pointsToWin = config.getInt(pointCapture + "PointsToWin", globalConfigOptions.pointsToWin);
         co.playTime = config.getInt(pointCapture + "PlayTime", globalConfigOptions.playTime);
@@ -665,11 +645,11 @@ public class CaptureThePoints extends JavaPlugin {
         // Score mod
         co.useScoreGeneration = config.getBoolean(pointCaptureWithScore + "UseScoreGeneration", globalConfigOptions.useScoreGeneration);
         co.scoreMyltiplier = config.getInt(pointCaptureWithScore + "ScoreMultiplier", globalConfigOptions.scoreMyltiplier);
-        if(co.scoreMyltiplier < 1)
-        {
+        if(co.scoreMyltiplier < 1) {
             co.scoreMyltiplier = 2;
             config.addDefault(pointCaptureWithScore + "ScoreMultiplier", co.scoreMyltiplier);
         }
+        
         co.scoreToWin = config.getInt(pointCaptureWithScore + "ScoreToWin", globalConfigOptions.scoreToWin);
         co.onePointGeneratedScoreEvery30sec = config.getInt(pointCaptureWithScore + "OnePointGeneratedScoreEvery30sec", globalConfigOptions.onePointGeneratedScoreEvery30sec);
         co.scoreAnnounceTime = config.getInt(pointCaptureWithScore + "ScoreAnnounceTime", globalConfigOptions.scoreAnnounceTime);
@@ -734,8 +714,7 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
     //Sets config options if they does not exist
-    public void setConfigOptions (File arenafile)
-    {
+    public void setConfigOptions (File arenafile) {
         FileConfiguration config = load(arenafile);
         
         String pointCapture = "";
@@ -828,19 +807,15 @@ public class CaptureThePoints extends JavaPlugin {
         if(!config.contains(global + "UseSelectedArenaOnly"))
             config.set(global + "UseSelectedArenaOnly", globalConfigOptions.useSelectedArenaOnly);
 
-        try
-        {
+        try {
             config.options().copyDefaults(true);
             config.save(arenafile);
-        } 
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public ConfigOptions getArenaConfigOptions (File arenafile)
-    {
+    public ConfigOptions getArenaConfigOptions (File arenafile) {
         setArenaConfigOptions(arenafile);
         FileConfiguration config = load(arenafile);
 
@@ -920,8 +895,7 @@ public class CaptureThePoints extends JavaPlugin {
         return co;
     }
 
-    public void setArenaConfigOptions (File arenafile)
-    {
+    public void setArenaConfigOptions (File arenafile) {
         FileConfiguration config = load(arenafile);
         
         String pointCapture = "GlobalSettings.GameMode.PointCapture.";
@@ -1039,12 +1013,9 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         if (playerListener.waitingToMove != null && !playerListener.waitingToMove.isEmpty()) {
-            if (player == playerListener.waitingToMove.get(0) && playerListener.waitingToMove.size() == 1)
-            {
+            if (player == playerListener.waitingToMove.get(0) && playerListener.waitingToMove.size() == 1) {
                 playerListener.clearWaitingQueue(); // The player who left was someone in the lobby waiting to join. We need to remove them from the queue
-            }
-            else
-            {
+            } else {
                 playerListener.waitingToMove.remove(player);
             }
         }
@@ -1194,6 +1165,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arena.world = worlds.get(0);
                     logger.info(conPrefix + "Successfully resolved the world. \"" + arena.world + "\" will be used.");
                 } else {
+                	arena.world = worlds.get(0);
                     logger.info(conPrefix + "Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
                 }
             }
