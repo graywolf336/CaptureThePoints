@@ -86,7 +86,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 ctp.sendMessage(player, ChatColor.RED + "You may not drop items.");
                 return;
             }
-        }
+        }else return;
     }
     
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -99,26 +99,19 @@ public class CaptureThePointsPlayerListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-		}else {
-			return;
-		}
+		}else return;
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract (PlayerInteractEvent event){
-        if (ctp.mainArena == null) {
-            return;
-        }
-        if (ctp.mainArena.lobby == null) {
-            return;
-        }
+        if (ctp.mainArena == null) return;
+        if (ctp.mainArena.lobby == null) return;
 
         if (ctp.playerData.containsKey(event.getPlayer())) {
             Player p = event.getPlayer();
             //Potion Throwing In Lobby
-            if (ctp.playerData.get(p).isInLobby && p.getItemInHand().getTypeId()==373){
-            	
+            if (ctp.playerData.get(p).isInLobby && p.getItemInHand().getTypeId() == 373){
             	if (event.hasBlock() && !((event.getClickedBlock().getState()) instanceof Sign) && event.getClickedBlock().getTypeId() != 42){
                    event.setCancelled(true);
                    ctp.sendMessage(p, ChatColor.RED + "You cannot throw potions in the Lobby!");
@@ -140,6 +133,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             	}
             	
             }
+            
             // Iron block
             if (event.hasBlock() && event.getClickedBlock().getTypeId() == 42) {
                 //If this role exists
@@ -150,8 +144,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     ctp.playerData.get(p).isReady = true;
                     ctp.mainArena.lobby.playersinlobby.put(p, true); // Kj
                     checkLobby(p);
-                } 
-                else {
+                } else {
                 	ctp.sendMessage(p, ChatColor.RED + "Please select a role.");
                 }
                 return;
@@ -290,9 +283,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove (PlayerMoveEvent event) {
-        if (!(ctp.isGameRunning())) {
-            return;
-        }
+        if (!(ctp.isGameRunning())) return;
         Location loc = event.getTo();
         Player p = event.getPlayer();
         
