@@ -752,8 +752,7 @@ public class CaptureThePointsBlockListener implements Listener
         Location loc = ctp.previousLocation.get(p);
         //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         loc.setYaw((float) ctp.mainArena.lobby.dir);
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
-        {
+        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());
             //Packet packet = new Packet51MapChunk((int)loc.getX() - 5, (int)loc.getY() - 2, (int)loc.getZ() - 5, (int)loc.getX() + 5, (int)loc.getY() + 2, (int)loc.getZ() + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
             //((CraftPlayer)p).getHandle().netServerHandler.sendPacket(packet);
@@ -764,9 +763,9 @@ public class CaptureThePointsBlockListener implements Listener
         if (ctp.playerData.get(p) == null) {
             return;
         }
-
-        CTPPotionEffect.removeAllEffects(p);
-        CTPPotionEffect.restorePotionEffects(p, ctp.playerData.get(p).potionEffects);
+        
+        CTPPotionEffect.removeAllEffectsNew(p);
+        CTPPotionEffect.restorePotionEffectsNew(p, ctp.playerData.get(p).potionEffects);
 
         p.setFoodLevel(ctp.playerData.get(p).foodLevel);
         if (ctp.playerData.get(p).isInCreativeMode) {

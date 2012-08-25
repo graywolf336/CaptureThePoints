@@ -3,10 +3,7 @@ package me.dalton.capturethepoints;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.minecraft.server.MobEffect;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.LivingEntity;
+
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -16,98 +13,23 @@ import org.bukkit.potion.PotionEffectType;
  * @author Humsas
  */
 public class CTPPotionEffect {
-    public int duration;
-    public int strenght;
-    public int id;
+    private int duration, strength;
+    private PotionEffectType type;
 
-    public CTPPotionEffect (int dur, int str, int id) {
-        duration = dur;
-        strenght = str;
-        this.id = id;
+    public CTPPotionEffect (int duration, int strength, PotionEffectType type) {
+        this.duration = duration;
+        this.strength = strength;
+        this.type = type;
     }
-
-    public static void setPotionEffect(LivingEntity entity, int type, int duration, int amplifier) {
-        ((CraftLivingEntity)entity).getHandle().addEffect(new MobEffect(type, duration, amplifier));
-    }
-
-    /**
-     * @deprecated {@link #removePotionEffectNew(Player, PotionEffectType)}
-     * @param entity
-     * @param type
-     * @param amplifier
-     */
-    public static void removePotionEffect(LivingEntity entity, int type, int amplifier) {
-        ((CraftPlayer)entity).getHandle().addEffect(new MobEffect(type, -1, amplifier + 1));
-        
-//        try
-//        {
-//            if ((entity instanceof Player))
-//            {
-//                EntityPlayer player = ((CraftPlayer)entity).getHandle();
-//                player.netServerHandler.sendPacket(new Packet42RemoveMobEffect(player.id, new MobEffect(type, 0, 0)));
-//            }
-//
-//            Field field = EntityLiving.class.getDeclaredField("effects");
-//            field.setAccessible(true);
-//            @SuppressWarnings("rawtypes")
-//            HashMap effects = (HashMap)field.get(((CraftLivingEntity)entity).getHandle());
-//            effects.remove(Integer.valueOf(type));
-//        }
-//        catch (Exception e) {}
-    }
-
-    /**
-     * @deprecated Use {{@link #removePotionEffectNew(Player, PotionEffectType)}
-     * @param player
-     */
-    public static void removeAllEffects(Player player) {
-        @SuppressWarnings("unchecked")
-		Collection<MobEffect> eff = ((CraftLivingEntity)player).getHandle().getEffects();
-
-        for(MobEffect effect : eff) {
-            removePotionEffect(player, effect.getEffectId(), effect.getAmplifier());
-        }
-    }
-
-    /**
-     * @deprecated 
-     * @param player
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-	public static List<CTPPotionEffect> storePlayerPotionEffects(Player player) {
-        List<CTPPotionEffect> effects = new ArrayList<CTPPotionEffect>();
-
-        Collection<MobEffect> eff;
-        eff = ((CraftLivingEntity)player).getHandle().getEffects();
-        
-        for(MobEffect effect : eff) {
-            effects.add(new CTPPotionEffect(effect.getDuration(), effect.getAmplifier(), effect.getEffectId()));
-        }
-        
-        return effects;
-    }
-
-    /**
-     * @deprecated
-     * 
-     * @param player
-     * @param effects
-     */
-    public static void restorePotionEffects(Player player, List<CTPPotionEffect> effects) {
-        for(CTPPotionEffect eff : effects)
-            ((CraftLivingEntity)player).getHandle().addEffect(new MobEffect(eff.id, eff.duration, eff.strenght));
-    }
-    
-    /* Updated versions of the above, try to use these and not those.*/
     
     /**
      * The player to remove all the potions effects for.
      * 
      * @param player The player in which to remove potion effects from.
      */
-    public static void removeAllPotionEffects(Player player) {
+    public static void removeAllEffectsNew(Player player) {
     	 Collection<PotionEffect> potions = player.getActivePotionEffects();
+    	 
          for (PotionEffect pef : potions) {
          	removePotionEffectNew(player, pef.getType());
          }
@@ -122,4 +44,34 @@ public class CTPPotionEffect {
     public static void removePotionEffectNew(Player player, PotionEffectType type) {
     	player.removePotionEffect(type);
     }
+    
+    /**
+     * Provides a way to store the potion effects from the player.
+     * 
+     * @param player Player to store the effects for.
+     * @return A List of the potion effects.
+     */
+	public static List<CTPPotionEffect> storePlayerPotionEffectsNew(Player player) {
+        List<CTPPotionEffect> effects = new ArrayList<CTPPotionEffect>();
+        
+        Collection<PotionEffect> potions = player.getActivePotionEffects();
+        
+        for (PotionEffect potion : potions) {
+        	effects.add(new CTPPotionEffect(potion.getDuration(), potion.getAmplifier(), potion.getType()));
+        }
+        
+        return effects;
+    }
+	
+	/**
+	 * Provides a way to restore the potions that the player had.
+	 * 
+	 * @param player The player who we need to restore them back to.
+	 * @param effects A List<CTPPotionEffect> of the potions that need to be restored.
+	 */
+	public static void restorePotionEffectsNew(Player player, List<CTPPotionEffect> effects) {
+		for(CTPPotionEffect effect : effects) {
+			player.addPotionEffect(new PotionEffect(effect.type, effect.duration, effect.strength));
+		}
+	}
 }

@@ -68,21 +68,15 @@ public class ArenaData {
     /** Get all Players that are playing in this arena as a list of playername strings
      * @param ctp CaptureThePoints instance
      * @return The playername list */
-    public List<String> getPlayersPlaying(CaptureThePoints ctp)
-    {
+    public List<String> getPlayersPlaying(CaptureThePoints ctp) {
         List<String> players = new ArrayList<String>();
-        for (Player p : ctp.playerData.keySet())
-        {
-            if(!ctp.playerData.get(p).isInArena)
-            {
+        for (Player p : ctp.playerData.keySet()) {
+            if(!ctp.playerData.get(p).isInArena) {
                 continue; // Player is not yet in game.
-            } 
-            else
-            {
+            } else {
                 players.add(p.getName());
             }
-        }
-        return players;
+        } return players;
     }
     
     /** Check to see if this Arena has a lobby.

@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class KillStreakMessages {
     public static final HashMap<Integer, String> defaultMessages = new HashMap<Integer, String>();
     private static boolean usingCustom = false;
-    public HashMap<Integer, String> customMessages;
+    private HashMap<Integer, String> customMessages;
 
     /** Initialise KillStreakMessages by putting the default mappings in */
     public KillStreakMessages() {

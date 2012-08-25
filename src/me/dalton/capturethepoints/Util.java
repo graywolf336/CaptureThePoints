@@ -252,8 +252,7 @@ public class Util {
     }
 
     //mine
-    public static List<Items> getItemListFromString(String text)
-    {
+    public static List<Items> getItemListFromString(String text) {
         // Trim commas and whitespace, and split items by commas
         text = text.toUpperCase();
         text = text.trim();
@@ -289,31 +288,21 @@ public class Util {
             // Enchanted items
             getEnchantments(parts, i);
 
-            if (parts.length == 1)
-            {
-                if (Util.isItInteger(parts[0]))
-                {
+            if (parts.length == 1) {
+                if (Util.isItInteger(parts[0])) {
                     i.item = Material.getMaterial(Integer.parseInt(parts[0]));
-                } 
-                else
-                {
+                } else {
                     i.item = Material.getMaterial(parts[0]);
                 }
-            } 
-            else if (parts.length == 2 && parts[1].matches("(-)?[0-9]+"))
-            {
-                if (Util.isItInteger(parts[0]))
-                {
+            } else if (parts.length == 2 && parts[1].matches("(-)?[0-9]+")) {
+                if (Util.isItInteger(parts[0])) {
                     i.item = Material.getMaterial(Integer.parseInt(parts[0]));
                     i.amount = Integer.parseInt(parts[1]);
-                } 
-                else
-                {
+                } else {
                     i.item = Material.getMaterial(parts[0]);
                     i.amount = Integer.parseInt(parts[1]);
                 }
-            }
-            else if (parts.length == 3 && parts[2].matches("(-)?[0-9]+")) // For dyes
+            } else if (parts.length == 3 && parts[2].matches("(-)?[0-9]+")) // For dyes
             {
                 i.amount = Integer.parseInt(parts[2]);
                 i.type = Short.parseShort(parts[1]);
@@ -323,6 +312,7 @@ public class Util {
                     i.item = Material.getMaterial(parts[0]);
                 }
             }
+            
             if (i.item != null) {
                 list.add(i);
             } else {
@@ -398,10 +388,8 @@ public class Util {
         }
     }
 
-    public static void getExperience(String string, Items item)
-    {
-        if(string.contains("EXP"))
-        {
+    public static void getExperience(String string, Items item){
+        if(string.contains("EXP")){
             item.item = Material.AIR;
             item.exp = Integer.parseInt(string.substring(string.indexOf("EXP") + 4));
             string = "";
@@ -409,7 +397,6 @@ public class Util {
     }
 
 // Tingiu mazint :/
-	@SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) 
     {
         try

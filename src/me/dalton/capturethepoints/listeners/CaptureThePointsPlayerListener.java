@@ -46,7 +46,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
-import org.bukkit.potion.PotionEffect;
 
 public class CaptureThePointsPlayerListener implements Listener {
     private final CaptureThePoints ctp;
@@ -121,7 +120,6 @@ public class CaptureThePointsPlayerListener implements Listener {
 		}
 	}
 
-    @SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract (PlayerInteractEvent event){
         if (ctp.mainArena == null) {
@@ -214,8 +212,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         }
                         
-                        CTPPotionEffect.removeAllPotionEffects(p);
-                        //CTPPotionEffect.removeAllEffects(p);
+                        CTPPotionEffect.removeAllEffectsNew(p);
                         
                         String oldRole = "";
                         
@@ -554,7 +551,6 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
     return ((p.getInventory().getHelmet().getType() != Material.WOOL) && (ctp.playerData.get(p).isInArena));
     }*/
-    @SuppressWarnings("deprecation")
 	public void fixHelmet (Player p) {
         PlayerInventory inv = p.getInventory();
         p.sendMessage(ChatColor.RED + "Do not remove your helmet.");
@@ -797,7 +793,6 @@ public class CaptureThePointsPlayerListener implements Listener {
         }, 100L, 100L);
     }
 
-    @SuppressWarnings("deprecation")
 	public void moveToSpawns (Player player) {
         if(player == null)
             return;
@@ -875,7 +870,6 @@ public class CaptureThePointsPlayerListener implements Listener {
         ctp.playerData.get(player).isInArena = true;
     }
 
-    @SuppressWarnings("deprecation")
 	public void shop (Player p, Sign sign) {
 //        if(p.getName().equalsIgnoreCase("Humsas"))
 //            plugin.playerData.get(p).money = 100000;
@@ -1032,7 +1026,6 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
 	public void selectTeam (PlayerInteractEvent event, Player p) {
         if(ctp.isGameRunning() || !ctp.mainArena.lobby.playersinlobby.containsKey(p))
             return;
@@ -1079,7 +1072,6 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
 	private void balanceTeamsFromLobby() {
         int difference = 0;
         int optimalPlayerCountInTeam = ctp.mainArena.getPlayersPlaying(ctp).size() / ctp.mainArena.teams.size();

@@ -331,7 +331,6 @@ public class CaptureThePoints extends JavaPlugin {
         return balanced;
     }
 
-    @SuppressWarnings("deprecation")
 	private void balancePlayer (Player p, Team newTeam) {        
         /*
         //Reseting cooldowns
@@ -1467,8 +1466,8 @@ public class CaptureThePoints extends JavaPlugin {
         data.lobbyJoinTime = System.currentTimeMillis();
         
         // Store and remove potion effects on player
-        //data.potionEffects = CTPPotionEffect.storePlayerPotionEffects(player);
-        //CTPPotionEffect.removeAllEffects(player);
+        data.potionEffects = CTPPotionEffect.storePlayerPotionEffectsNew(player);
+        CTPPotionEffect.removeAllEffectsNew(player);
         
         playerData.put(player, data);
 
@@ -1546,7 +1545,6 @@ public class CaptureThePoints extends JavaPlugin {
         loadArenas(file);
     }
 
-    @SuppressWarnings("deprecation")
 	public void restoreInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
 

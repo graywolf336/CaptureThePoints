@@ -241,7 +241,6 @@ public class CaptureThePointsEntityListener  implements Listener {
         return true;
     }
     
-    @SuppressWarnings("deprecation")
 	private boolean dropWool(Player player) {
         if (!ctp.mainArena.co.dropWoolOnDeath) {
             return false;
@@ -272,7 +271,6 @@ public class CaptureThePointsEntityListener  implements Listener {
         return true;
     }
     
-    @SuppressWarnings("deprecation")
 	public void giveRoleItemsAfterDeath(Player player) {
     	
         PlayerInventory inv = player.getInventory();
@@ -459,7 +457,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             ctp.checkForKillMSG(player, true);
         }
 
-        CTPPotionEffect.removeAllEffects(player);
+        CTPPotionEffect.removeAllEffectsNew(player);
         player.setHealth(ctp.mainArena.co.maxPlayerHealth);
         player.setFoodLevel(20);
         Spawn spawn = ctp.playerData.get(player).team.spawn;
