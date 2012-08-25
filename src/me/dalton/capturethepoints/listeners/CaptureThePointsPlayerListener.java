@@ -33,6 +33,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -447,8 +449,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. No other suitable arenas found. [Needed " + ctp.mainArena.minimumPlayers + " players, found " + readypeople + "].");
                             }
                         }
-                    } 
-                    else {
+                    } else {
                     	String notReady = "";
                     	for(Player player: lobby.playersinlobby.keySet()){
                     		
@@ -877,13 +878,24 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
+	/**
+	 * Used to check if the player is trying to heal.
+	 * 
+	 * @param event The PlayerInteractEvent
+	 * @param p The Player in which is doing the action.
+	 */
     public void useHealingItem (PlayerInteractEvent event, Player p) {
-        if (ctp.isGameRunning() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+    	//Check if the game is running or not
+    	if (!ctp.isGameRunning()) return;
+    	
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Material mat = p.getItemInHand().getType();
+            
             for (HealingItems item : ctp.healingItems) {
                 if (item.item.item == mat) {
                     PlayersAndCooldowns cooldownData = null;
                     boolean alreadyExists = false;
+                    
                     if (item.cooldowns != null && item.cooldowns.size() > 0) {
                         for (String playName : item.cooldowns.keySet()) {
                             if (p.getHealth() >= ctp.mainArena.co.maxPlayerHealth) {
@@ -899,6 +911,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         }
                     }
+                    
                     if (cooldownData == null) {
                         cooldownData = new PlayersAndCooldowns();
                     } else {
@@ -913,9 +926,13 @@ public class CaptureThePointsPlayerListener implements Listener {
                     }
 
                     if (p.getHealth() + item.instantHeal > ctp.mainArena.co.maxPlayerHealth) {
-                        p.setHealth(ctp.mainArena.co.maxPlayerHealth);
+                    	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, ctp.mainArena.co.maxPlayerHealth, RegainReason.CUSTOM);
+                    	CaptureThePoints.pluginManager.callEvent(regen);
+                        //p.setHealth(ctp.mainArena.co.maxPlayerHealth);
                     } else {
-                        p.setHealth(p.getHealth() + item.instantHeal);
+                    	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, p.getHealth() + item.instantHeal, RegainReason.CUSTOM);
+                    	CaptureThePoints.pluginManager.callEvent(regen);
+                        //p.setHealth(p.getHealth() + item.instantHeal);
                     }
 
                     if (item.duration > 0) {
@@ -938,7 +955,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     return;
                 }
             }
-        }
+        }else return;
     }
 
 	@SuppressWarnings("deprecation")
