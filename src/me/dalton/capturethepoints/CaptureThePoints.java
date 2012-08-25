@@ -1489,10 +1489,7 @@ public class CaptureThePoints extends JavaPlugin {
         loc.setYaw((float) mainArena.lobby.dir);
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());
-        //    Packet packet = new Packet51MapChunk((int)mainArena.lobby.x - 5, (int)mainArena.lobby.y - 2, (int)mainArena.lobby.z - 5, (int)mainArena.lobby.x + 5, (int)mainArena.lobby.y + 2, (int)mainArena.lobby.z + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
-        //    ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
         }
-        //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
 
         Double X = Double.valueOf(player.getLocation().getX());
         Double y = Double.valueOf(player.getLocation().getY());

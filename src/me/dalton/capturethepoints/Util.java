@@ -3,6 +3,8 @@ package me.dalton.capturethepoints;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -125,7 +127,7 @@ public class Util {
      * @see PlayerData */
     public static void sendMessageToPlayers(CaptureThePoints ctp, String s) {
         for (Player play : ctp.playerData.keySet()) {
-            play.sendMessage("[CTP] " + s); // Kj
+            play.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
         }
     }
     
@@ -137,7 +139,7 @@ public class Util {
     public static void sendMessageToPlayers(CaptureThePoints ctp, Player exclude, String s) {
         for (Player play : ctp.playerData.keySet()) {
             if (play != null && play != exclude) {
-                play.sendMessage("[CTP] " + s); // Kj
+                play.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
             }
         }
     }
