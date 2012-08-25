@@ -23,16 +23,16 @@ public class StatsCommand extends CTPCommand {
     @Override
     public void perform() {
         if (!ctp.blockListener.isAlreadyInGame(player)) {
-            player.sendMessage(ChatColor.RED + "You are not in a CTP game!");
+            sendMessage(ChatColor.RED + "You are not in a CTP game!");
             return;
         }
         
         PlayerData pdata = ctp.playerData.get(player);
         ChatColor cc = pdata.team.chatcolor, white = ChatColor.WHITE, green = ChatColor.GREEN;
         
-        player.sendMessage(cc + "Your Stats: ");
-        player.sendMessage(cc + "  Kills: " + white + pdata.kills + " (Streak: " + pdata.killsInARow + ")");
-        player.sendMessage(cc + "  Deaths: " + white + pdata.deaths + " (Streak: " + pdata.deathsInARow + ")");
+        sendMessage(cc + "Your Stats: ");
+        sendMessage(cc + "  Kills: " + white + pdata.kills + " (Streak: " + pdata.killsInARow + ")");
+        sendMessage(cc + "  Deaths: " + white + pdata.deaths + " (Streak: " + pdata.deathsInARow + ")");
         
         double kd = 0D; 
         if (pdata.deaths == 0) {
@@ -58,8 +58,8 @@ public class StatsCommand extends CTPCommand {
             goodKD = ChatColor.GREEN;
         }
         
-        player.sendMessage(cc + "  K/D: " + goodKD + String.valueOf(kd));
-        player.sendMessage(cc + "  Money: " + green + pdata.money);
+        sendMessage(cc + "  K/D: " + goodKD + String.valueOf(kd));
+        sendMessage(cc + "  Money: " + green + pdata.money);
         return;
     }
 }

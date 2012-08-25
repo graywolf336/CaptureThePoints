@@ -24,11 +24,12 @@ public class LateJoinCommand extends CTPCommand {
             if (ctp.isGameRunning()) {
                 ctp.moveToLobby(player);
             } else {
-                player.sendMessage(ChatColor.RED + "Game not started yet.");
+                sendMessage(ChatColor.RED + "Game not started yet.");
             }
             return;
         }
-        player.sendMessage(ChatColor.RED + "You are already playing game!");
+        
+        sendMessage(ChatColor.RED + "You are already playing game!");
         return;
     }
 }

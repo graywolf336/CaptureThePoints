@@ -25,7 +25,8 @@ public class JoinCommand extends CTPCommand {
             ctp.moveToLobby(player);
             return;
         }
-        player.sendMessage(ChatColor.RED + "You are already playing game!");
+        
+        sendMessage(ChatColor.RED + "You are already playing game!");
         return;
     }
 }

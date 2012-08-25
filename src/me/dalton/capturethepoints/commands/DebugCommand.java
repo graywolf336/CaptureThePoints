@@ -26,7 +26,7 @@ public class DebugCommand extends CTPCommand {
         int size = parameters.size();
         String pagenumber = size > 2 ? parameters.get(2) : "";
         if (pagenumber.equalsIgnoreCase("2")) {
-            sender.sendMessage("Outputting CTP info (2) to Console.");
+            sendMessage("Outputting CTP info (2) to Console.");
             CaptureThePoints.logger.info("-----------========== CTP DEBUG ==========-----------");
             String checkMainArena = ctp.checkMainArena(player, ctp.mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
             if (!checkMainArena.isEmpty()) {
@@ -66,7 +66,8 @@ public class DebugCommand extends CTPCommand {
             CaptureThePoints.logger.info("-----------========== ######### ==========-----------");
             return;
         }
-        sender.sendMessage("Outputting CTP info (1) to Console.");
+        
+        sendMessage("Outputting CTP info (1) to Console.");
         CaptureThePoints.logger.info("-----------========== CTP DEBUG ==========-----------");
         CaptureThePoints.logger.info("Game running: "+ctp.isGameRunning());
         String checkMainArena = ctp.checkMainArena(player, ctp.mainArena); // Kj -- Check arena, if there is an error, an error message is returned.

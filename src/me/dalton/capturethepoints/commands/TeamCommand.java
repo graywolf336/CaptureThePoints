@@ -25,17 +25,17 @@ public class TeamCommand extends CTPCommand {
     @Override
     public void perform() {
         if (ctp.mainArena.teams.size() <= 0) {
-            player.sendMessage(ChatColor.RED + "There are no teams - has a game been started?");
+            sendMessage(ChatColor.RED + "There are no teams - has a game been started?");
             return;
         }
         
         if (!ctp.blockListener.isAlreadyInGame(player) || ctp.playerData.get(player) == null) {
-            player.sendMessage(ChatColor.RED + "You must be playing a game to get who's on your team!");
+            sendMessage(ChatColor.RED + "You must be playing a game to get who's on your team!");
             return;
         }
         
         if (!ctp.blockListener.isAlreadyInGame(player) || ctp.playerData.get(player).team == null) {
-            player.sendMessage(ChatColor.RED + "You have not yet been assigned a team!");
+            sendMessage(ChatColor.RED + "You have not yet been assigned a team!");
             return;
         }
         
@@ -50,11 +50,12 @@ public class TeamCommand extends CTPCommand {
                 playernames = aTeam.getTeamPlayerNames(ctp);
             }
         }
-        player.sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
+        
+        sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
         if (!ctp.mainArena.co.useScoreGeneration) {
-            player.sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.controledPoints + ChatColor.GREEN + " points!");
+            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.controledPoints + ChatColor.GREEN + " points!");
         } else {
-            player.sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.score + "!");
+            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.score + "!");
         }
         return;
     }

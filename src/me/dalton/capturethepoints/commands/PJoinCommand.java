@@ -25,32 +25,35 @@ public class PJoinCommand extends CTPCommand {
         if (sender instanceof Player) {
             String error = ctp.checkMainArena(player, ctp.mainArena);
             if (!error.isEmpty()) {
-                sender.sendMessage(error);
+                sendMessage(error);
                 return;
             }
+            
         } else {
             if (ctp.mainArena == null) {
-                sender.sendMessage(ChatColor.RED + "Please create an arena first");
+                sendMessage(ChatColor.RED + "Please create an arena first");
                 return;
             }
             if (ctp.mainArena.lobby == null) {
-                sender.sendMessage(ChatColor.RED + "Please create arena lobby");
+                sendMessage(ChatColor.RED + "Please create arena lobby");
                 return;
             }
         }
         Player bob = ctp.getServer().getPlayer(parameters.get(2));
         if (bob == null) {
-            sender.sendMessage(ChatColor.RED+"Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");
+            sendMessage(ChatColor.RED+"Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");
             return;
         }
+        
         if (!ctp.blockListener.isAlreadyInGame(bob)) {
             if (!(sender instanceof ConsoleCommandSender)) {
                 // If the command issuer is not from console
-                bob.sendMessage(ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " forced you to join CTP!");
+                ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " forced you to join CTP!");
             }
+            
             ctp.moveToLobby(bob);
         } else {
-            sender.sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is already playing CTP!");
+            sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is already playing CTP!");
         }
         return;
     }

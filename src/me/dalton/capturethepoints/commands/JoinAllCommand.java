@@ -24,16 +24,16 @@ public class JoinAllCommand extends CTPCommand {
         if (sender instanceof Player) {
             String error = ctp.checkMainArena(player, ctp.mainArena);
             if (!error.isEmpty()) {
-                sender.sendMessage(error);
+                sendMessage(error);
                 return;
             }
         } else {
             if (ctp.mainArena == null) {
-                sender.sendMessage(ChatColor.RED + "Please create an arena first");
+                sendMessage(ChatColor.RED + "Please create an arena first");
                 return;
             }
             if (ctp.mainArena.lobby == null) {
-                sender.sendMessage(ChatColor.RED + "Please create arena lobby");
+                sendMessage(ChatColor.RED + "Please create arena lobby");
                 return;
             }
         }
@@ -41,6 +41,7 @@ public class JoinAllCommand extends CTPCommand {
         if (ctp.isGameRunning()) {
             ctp.blockListener.endGame(true);
         }
+        
         int numberofplayers = ctp.getServer().getOnlinePlayers().length;
         ctp.chooseSuitableArena(numberofplayers); // Choose a suitable arena based on the number of players on the server.
 

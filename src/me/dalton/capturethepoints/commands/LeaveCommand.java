@@ -24,9 +24,10 @@ public class LeaveCommand extends CTPCommand {
     @Override
     public void perform() {
         if (!ctp.blockListener.isAlreadyInGame(player)) {
-            player.sendMessage(ChatColor.RED + "You are not in the game!");
+            sendMessage(ChatColor.RED + "You are not in the game!");
             return;
         }
+        
         ctp.leaveGame(player);
         return;
     }

@@ -25,13 +25,13 @@ public class RejoinCommand extends CTPCommand {
                 if (ctp.mainArena.lobby.playerswhowereinlobby.contains(player)) {
                     ctp.moveToLobby(player);
                 } else {
-                    player.sendMessage(ChatColor.RED + "Cannot rejoin -- you haven't disconnected from this game.");
+                    sendMessage(ChatColor.RED + "Cannot rejoin -- you haven't disconnected from this game.");
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "Game not started yet.");
+                sendMessage(ChatColor.RED + "Game not started yet.");
             }
         } else {
-            player.sendMessage(ChatColor.RED + "You are already playing game!");
+            sendMessage(ChatColor.RED + "You are already playing game!");
         }
     }
 }

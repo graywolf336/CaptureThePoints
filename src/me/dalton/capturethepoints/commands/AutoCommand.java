@@ -31,16 +31,16 @@ public class AutoCommand extends CTPCommand {
         if (sender instanceof Player) {
             String error = ctp.checkMainArena(player, ctp.mainArena);
             if (!error.isEmpty()) {
-                sender.sendMessage(error);
+                sendMessage(error);
                 return;
             }
         } else {
             if (ctp.mainArena == null) {
-                sender.sendMessage(ChatColor.RED + "Please create an arena first");
+                sendMessage(ChatColor.RED + "Please create an arena first");
                 return;
             }
             if (ctp.mainArena.lobby == null) {
-                sender.sendMessage(ChatColor.RED + "Please create arena lobby");
+                sendMessage(ChatColor.RED + "Please create arena lobby");
                 return;
             }
         }
@@ -53,20 +53,20 @@ public class AutoCommand extends CTPCommand {
 
         World world = ctp.getServer().getWorld(worldname);
         if (world == null) {
-            sender.sendMessage(ChatColor.RED + worldname + " is not a recognised world.");
-            sender.sendMessage(ChatColor.RED + "Hint: your first world's name is \"" + ctp.getServer().getWorlds().get(0).getName() + "\".");
+            sendMessage(ChatColor.RED + worldname + " is not a recognised world.");
+            sendMessage(ChatColor.RED + "Hint: your first world's name is \"" + ctp.getServer().getWorlds().get(0).getName() + "\".");
             return;
         }
 
         if (ctp.hasSuitableArena(world.getPlayers().size())) {
             ctp.chooseSuitableArena(world.getPlayers().size()); // Choose a suitable arena based on the number of players in the world.
         } else {
-            sender.sendMessage("[CTP] You do not have an arena that will accomodate "+world.getPlayers().size()+" players. Please change your min/max player settings.");
+            sendMessage("[CTP] You do not have an arena that will accomodate "+world.getPlayers().size()+" players. Please change your min/max player settings.");
             return;
         }
         
         if (ctp.isGameRunning()) {
-            sender.sendMessage("[CTP] A previous Capture The Points game has been terminated.");
+            sendMessage("[CTP] A previous Capture The Points game has been terminated.");
             ctp.blockListener.endGame(true);
         }
 
