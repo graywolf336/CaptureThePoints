@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  *
@@ -82,11 +83,15 @@ public class CTPPotionEffect {
     }
     
     //New things, trying to switch over to Craftbukkit
-    public static void removePotionEffects(Player player) {
+    public static void removeAllPotionEffects(Player player) {
     	 Collection<PotionEffect> potions = player.getActivePotionEffects();
-         
          for (PotionEffect pef : potions) {
-         	
+         	removePotionEffectNew(player, pef.getType());
          }
+    }
+    
+    //Remove the potion effect
+    public static void removePotionEffectNew(Player player, PotionEffectType type) {
+    	player.removePotionEffect(type);
     }
 }
