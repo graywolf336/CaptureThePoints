@@ -331,6 +331,7 @@ public class CaptureThePoints extends JavaPlugin {
         return balanced;
     }
 
+	@SuppressWarnings("deprecation")
 	private void balancePlayer (Player p, Team newTeam) {        
         /*
         //Reseting cooldowns
@@ -1545,6 +1546,7 @@ public class CaptureThePoints extends JavaPlugin {
         loadArenas(file);
     }
 
+	@SuppressWarnings("deprecation")
 	public void restoreInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
 
@@ -1612,6 +1614,12 @@ public class CaptureThePoints extends JavaPlugin {
         return economyHandler != null;
     }
     
+    /**
+     * Send a message to the player, with color and a prefix.
+     * 
+     * @param p The player in which to send the message to.
+     * @param message The message to send. "[CTP] " has been included.
+     */
     public void sendMessage(Player p, String message) {
     	p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message);
     }

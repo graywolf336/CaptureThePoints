@@ -141,19 +141,7 @@ public class Util {
             }
         }
     }
-
-//    public static int roleNumber(CaptureThePoints plugin, String role)
-//    {
-//        Configuration config = plugin.load();
-//        int rolesnum = config.getInt("numberofdifferentroles", 0);
-//        for(int i=0;i<rolesnum;i++)
-//        {
-//            String currolename = config.getString("role"+(i+1)+".name");
-//            if(currolename.equalsIgnoreCase(role))
-//                return i+1;
-//        }
-//        return 0;
-//    }
+    
     /**
      * Takes a comma-separated list of items in the <type>:<amount> format and
      * returns a list of ItemStacks created from that data.
@@ -397,6 +385,7 @@ public class Util {
     }
 
 // Tingiu mazint :/
+	@SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) 
     {
         try
@@ -585,8 +574,7 @@ public class Util {
           //It's deprecated but it's currently the only way to get the desired effect.
             player.updateInventory();
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             CaptureThePoints.logger.warning("[CTP] Error occured while rewarding players");
         }
 
