@@ -55,6 +55,9 @@ public class ConfigOptions {
     /** The maximum player health in game. [Default: 20] */
     public int maxPlayerHealth = 20;
     
+    /** An option to allow automatic health regain from their food/hunger being satisfied. */
+    public boolean regainHealth = false;
+    
     /** The starting money players are given. [Default: 0] */
     public int moneyAtTheLobby = 0;
     

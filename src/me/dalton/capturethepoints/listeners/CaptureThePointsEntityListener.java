@@ -26,7 +26,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.Wool;
@@ -73,6 +75,15 @@ public class CaptureThePointsEntityListener  implements Listener {
 
         event.setDroppedExp(0);
         event.getDrops().clear();
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void healthRegain(EntityRegainHealthEvent event) {
+    	if(ctp.mainArena.co.regainHealth) return;
+    	
+    	if (event.getRegainReason() == RegainReason.SATIATED) {
+    		event.setCancelled(true);
+    	}
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -430,6 +441,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
 
         CTPPotionEffect.removeAllEffectsNew(player);
+        //TODO: Set this to the event
         player.setHealth(ctp.mainArena.co.maxPlayerHealth);
         player.setFoodLevel(20);
         Spawn spawn = ctp.playerData.get(player).team.spawn;

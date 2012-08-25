@@ -56,6 +56,7 @@ public class DebugCommand extends CTPCommand {
                 CaptureThePoints.logger.info("   GivenWoolNumber: " + co.givenWoolNumber);
                 CaptureThePoints.logger.info("   LobbyKickTime: " + co.lobbyKickTime);
                 CaptureThePoints.logger.info("   MaxPlayerHealth: " + co.maxPlayerHealth);
+                CaptureThePoints.logger.info("   HealthRegenFromHunger: " + co.regainHealth);
                 CaptureThePoints.logger.info("   MoneyAtTheLobby: " + co.moneyAtTheLobby);
                 CaptureThePoints.logger.info("   MoneyEvery30sec: " + co.moneyEvery30Sec);
                 CaptureThePoints.logger.info("   MoneyForKill: " + co.moneyForKill);

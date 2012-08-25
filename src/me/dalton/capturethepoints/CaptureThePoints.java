@@ -682,6 +682,7 @@ public class CaptureThePoints extends JavaPlugin {
                 : config.getInt(global + "GivenWoolNumber", globalConfigOptions.givenWoolNumber);
         co.lobbyKickTime = config.getInt(global + "LobbyKickTime", globalConfigOptions.lobbyKickTime);
         co.maxPlayerHealth = config.getInt(global + "MaxPlayerHealth", globalConfigOptions.maxPlayerHealth);
+        co.regainHealth = config.getBoolean(global + "HealthRegenFromHunger", globalConfigOptions.regainHealth);
         co.moneyAtTheLobby = config.getInt(global + "MoneyAtTheLobby", globalConfigOptions.moneyAtTheLobby);
         co.moneyEvery30Sec = config.getInt(global + "MoneyEvery30sec", globalConfigOptions.moneyEvery30Sec);
         co.moneyForKill = config.getInt(global + "MoneyForKill", globalConfigOptions.moneyForKill);
@@ -792,6 +793,8 @@ public class CaptureThePoints extends JavaPlugin {
             config.set(global + "LobbyKickTime", globalConfigOptions.lobbyKickTime);
         if(!config.contains(global + "MaxPlayerHealth"))
             config.set(global + "MaxPlayerHealth", globalConfigOptions.maxPlayerHealth);
+        if(!config.contains(global + "HealthRegenFromHunger"))
+        	config.set(global + "HealthRegenFromHunger", globalConfigOptions.regainHealth);
         if(!config.contains(global + "MoneyAtTheLobby"))
             config.set(global + "MoneyAtTheLobby", globalConfigOptions.moneyAtTheLobby);
         if(!config.contains(global + "MoneyEvery30sec"))
@@ -861,6 +864,7 @@ public class CaptureThePoints extends JavaPlugin {
                 : config.getInt(global + "GivenWoolNumber", globalConfigOptions.givenWoolNumber);
         co.lobbyKickTime = globalConfigOptions.lobbyKickTime;
         co.maxPlayerHealth = config.getInt(global + "MaxPlayerHealth", globalConfigOptions.maxPlayerHealth);
+        co.regainHealth = config.getBoolean(global + "HealthRegenFromHunger", globalConfigOptions.regainHealth);
         co.moneyAtTheLobby = config.getInt(global + "MoneyAtTheLobby", globalConfigOptions.moneyAtTheLobby);
         co.moneyEvery30Sec = config.getInt(global + "MoneyEvery30sec", globalConfigOptions.moneyEvery30Sec);
         co.moneyForKill = config.getInt(global + "MoneyForKill", globalConfigOptions.moneyForKill);
@@ -944,6 +948,8 @@ public class CaptureThePoints extends JavaPlugin {
             config.set(global + "GivenWoolNumber", globalConfigOptions.givenWoolNumber);
         if(!config.contains(global + "MaxPlayerHealth"))
             config.set(global + "MaxPlayerHealth", globalConfigOptions.maxPlayerHealth);
+        if(!config.contains(global + "HealthRegenFromHunger"))
+        	config.set(global + "HealthRegenFromHunger", globalConfigOptions.regainHealth);
         if(!config.contains(global + "MoneyAtTheLobby"))
             config.set(global + "MoneyAtTheLobby", globalConfigOptions.moneyAtTheLobby);
         if(!config.contains(global + "MoneyEvery30sec"))
@@ -1454,6 +1460,7 @@ public class CaptureThePoints extends JavaPlugin {
         mainArena.lobby.playersinlobby.put(player, false); // Kj
         mainArena.lobby.playerswhowereinlobby.add(player); // Kj
 
+        //TODO: Change to the event
         player.setHealth(mainArena.co.maxPlayerHealth);
         
         // Get lobby location and move player to it.
