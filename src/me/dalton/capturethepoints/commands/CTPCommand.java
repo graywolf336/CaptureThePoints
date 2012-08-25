@@ -61,7 +61,7 @@ public abstract class CTPCommand {
 
     /** Send a message to the sender of the command. [CTP] is put at the start for you.*/
     public void sendMessage(String message) {
-        sender.sendMessage("[CTP] " + message);
+        sender.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message);
     }
 
     /**  
