@@ -30,6 +30,12 @@ public class CTPPotionEffect {
         ((CraftLivingEntity)entity).getHandle().addEffect(new MobEffect(type, duration, amplifier));
     }
 
+    /**
+     * @deprecated {@link #removePotionEffectNew(Player, PotionEffectType)}
+     * @param entity
+     * @param type
+     * @param amplifier
+     */
     public static void removePotionEffect(LivingEntity entity, int type, int amplifier) {
         ((CraftPlayer)entity).getHandle().addEffect(new MobEffect(type, -1, amplifier + 1));
         
@@ -51,7 +57,7 @@ public class CTPPotionEffect {
     }
 
     /**
-     * @deprecated Use 
+     * @deprecated Use {{@link #removePotionEffectNew(Player, PotionEffectType)}
      * @param player
      */
     public static void removeAllEffects(Player player) {
@@ -63,6 +69,11 @@ public class CTPPotionEffect {
         }
     }
 
+    /**
+     * @deprecated 
+     * @param player
+     * @return
+     */
     @SuppressWarnings("unchecked")
 	public static List<CTPPotionEffect> storePlayerPotionEffects(Player player) {
         List<CTPPotionEffect> effects = new ArrayList<CTPPotionEffect>();
@@ -77,12 +88,24 @@ public class CTPPotionEffect {
         return effects;
     }
 
+    /**
+     * @deprecated
+     * 
+     * @param player
+     * @param effects
+     */
     public static void restorePotionEffects(Player player, List<CTPPotionEffect> effects) {
         for(CTPPotionEffect eff : effects)
             ((CraftLivingEntity)player).getHandle().addEffect(new MobEffect(eff.id, eff.duration, eff.strenght));
     }
     
-    //New things, trying to switch over to Craftbukkit
+    /* Updated versions of the above, try to use these and not those.*/
+    
+    /**
+     * The player to remove all the potions effects for.
+     * 
+     * @param player The player in which to remove potion effects from.
+     */
     public static void removeAllPotionEffects(Player player) {
     	 Collection<PotionEffect> potions = player.getActivePotionEffects();
          for (PotionEffect pef : potions) {
@@ -90,7 +113,12 @@ public class CTPPotionEffect {
          }
     }
     
-    //Remove the potion effect
+    /**
+     * Provides a way to remove a potion effect from a player.
+     * 
+     * @param player Player in which to remove the PotionEffectType from.
+     * @param type PotionEffectType to remove.
+     */
     public static void removePotionEffectNew(Player player, PotionEffectType type) {
     	player.removePotionEffect(type);
     }

@@ -2,7 +2,6 @@ package me.dalton.capturethepoints.listeners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.Random;
 
 import me.dalton.capturethepoints.ArenaData;
 import me.dalton.capturethepoints.CTPPoints;
-//import me.dalton.capturethepoints.CTPPotionEffect;
+import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Items;
@@ -215,6 +214,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         }
                         
+                        CTPPotionEffect.removeAllPotionEffects(p);
                         //CTPPotionEffect.removeAllEffects(p);
                         
                         String oldRole = "";
