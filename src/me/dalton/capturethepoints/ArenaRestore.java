@@ -427,7 +427,6 @@ public class ArenaRestore {
 
         ctp.CTP_Scheduler.arenaRestore = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable()
         {
-            @Override
             public void run ()
             {
                 ctp.mysqlConnector.connectToMySql();
@@ -444,7 +443,6 @@ public class ArenaRestore {
                     // For second time
                     ctp.CTP_Scheduler.arenaRestoreSec  = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable()
                     {
-                        @Override
                         public void run ()
                         {
                             ctp.mysqlConnector.connectToMySql();

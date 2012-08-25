@@ -607,7 +607,6 @@ public class BuildCommand extends CTPCommand {
                 {
                     ctp.getServer().getScheduler().scheduleAsyncDelayedTask(ctp, new Runnable()
                     {
-                        @Override
                         public void run ()
                         {
                             ctp.mysqlConnector.connectToMySql();
@@ -1046,7 +1045,6 @@ public class BuildCommand extends CTPCommand {
                 {
                     ctp.getServer().getScheduler().scheduleAsyncDelayedTask(ctp, new Runnable()
                     {
-                        @Override
                         public void run ()
                         {
                             int xlow = ctp.editingArena.x1;

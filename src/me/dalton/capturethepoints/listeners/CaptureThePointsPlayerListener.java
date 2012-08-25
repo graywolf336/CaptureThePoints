@@ -641,7 +641,6 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         // Play time for points only
         ctp.CTP_Scheduler.playTimer = ctp.getServer().getScheduler().scheduleSyncDelayedTask(ctp, new Runnable() {
-            @Override
             public void run () {
                 if ((ctp.isGameRunning()) && (!ctp.mainArena.co.useScoreGeneration)) {
                     int maxPoints = -9999;
@@ -674,7 +673,6 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         //Money giving and score generation
         ctp.CTP_Scheduler.money_Score = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            @Override
             public void run () {
                 if (ctp.isGameRunning()) {
                     for (PlayerData data : ctp.playerData.values()) {
@@ -709,7 +707,6 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         //Messages about score
         ctp.CTP_Scheduler.pointMessenger = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            @Override
             public void run () {
                 if ((ctp.isGameRunning()) && (ctp.mainArena.co.useScoreGeneration)) {
                     String s = "";
@@ -727,7 +724,6 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         // Healing items cooldowns
         ctp.CTP_Scheduler.healingItemsCooldowns = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            @Override
             public void run () {
                 if (ctp.isGameRunning()) {
                     for (HealingItems item : ctp.healingItems) {
@@ -766,8 +762,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         //Helmet Checking
         ctp.CTP_Scheduler.helmChecker = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             @SuppressWarnings("deprecation")
-			@Override
-            public void run () {
+			public void run () {
                 if (ctp.isGameRunning())
                 {
                     for (Player player : ctp.playerData.keySet())

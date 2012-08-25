@@ -183,7 +183,6 @@ public class CaptureThePoints extends JavaPlugin {
 
         //Kj: LobbyActivity timer.
         CTP_Scheduler.lobbyActivity = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
             public void run () {
                 if (playerData == null) {
                     return;

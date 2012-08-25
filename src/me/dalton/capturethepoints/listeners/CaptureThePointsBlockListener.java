@@ -64,7 +64,6 @@ public class CaptureThePointsBlockListener implements Listener
                 // player can not drop down so we need to reset teleport flag
                 ctp.getServer().getScheduler().scheduleSyncDelayedTask(ctp, new Runnable()
                 {
-                    @Override
                     public void run ()
                     {
                         if (!ctp.playerNameForTeleport.isEmpty())
