@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.dalton</groupId>
   <artifactId>capturethepoints</artifactId>
-  <version>1.4.2-SNAPSHOT</version>
+  <version>1.4.3-SNAPSHOT</version>
   <name>CaptureThePoints</name>
   <url>http://dev.bukkit.org/server-mods/capturethepoints/</url>
   <description>Capture the points arena plugin, a unquie style of pvp arenas.</description>
