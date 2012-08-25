@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package me.dalton.capturethepoints;
+/*package me.dalton.capturethepoints;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,13 +7,13 @@ import net.minecraft.server.MobEffect;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Player;*/
 
 /**
  *
  * @author Humsas
  */
-public class CTPPotionEffect
+/*public class CTPPotionEffect
 {
     public int duration;
     public int strenght;
@@ -85,3 +80,4 @@ public class CTPPotionEffect
             ((CraftLivingEntity)player).getHandle().addEffect(new MobEffect(eff.id, eff.duration, eff.strenght));
     }
 }
+*/

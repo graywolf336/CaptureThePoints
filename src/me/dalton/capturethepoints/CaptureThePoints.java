@@ -1467,8 +1467,8 @@ public class CaptureThePoints extends JavaPlugin {
         data.lobbyJoinTime = System.currentTimeMillis();
         
         // Store and remove potion effects on player
-        data.potionEffects = CTPPotionEffect.storePlayerPotionEffects(player);
-        CTPPotionEffect.removeAllEffects(player);
+        //data.potionEffects = CTPPotionEffect.storePlayerPotionEffects(player);
+        //CTPPotionEffect.removeAllEffects(player);
         
         playerData.put(player, data);
 
