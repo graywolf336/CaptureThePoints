@@ -891,6 +891,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Material mat = p.getItemInHand().getType();
             
+            ctp.sendMessage(p, "The material in hand is: " + mat.toString());
+            
             for (HealingItems item : ctp.healingItems) {
                 if (item.item.item == mat) {
                     PlayersAndCooldowns cooldownData = null;
@@ -926,13 +928,13 @@ public class CaptureThePointsPlayerListener implements Listener {
                     }
 
                     if (p.getHealth() + item.instantHeal > ctp.mainArena.co.maxPlayerHealth) {
+                    	p.setHealth(ctp.mainArena.co.maxPlayerHealth);
                     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, ctp.mainArena.co.maxPlayerHealth, RegainReason.CUSTOM);
                     	CaptureThePoints.pluginManager.callEvent(regen);
-                        //p.setHealth(ctp.mainArena.co.maxPlayerHealth);
                     } else {
+                    	p.setHealth(p.getHealth() + item.instantHeal);
                     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, p.getHealth() + item.instantHeal, RegainReason.CUSTOM);
                     	CaptureThePoints.pluginManager.callEvent(regen);
-                        //p.setHealth(p.getHealth() + item.instantHeal);
                     }
 
                     if (item.duration > 0) {
