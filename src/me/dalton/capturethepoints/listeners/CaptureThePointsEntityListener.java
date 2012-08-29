@@ -81,13 +81,13 @@ public class CaptureThePointsEntityListener  implements Listener {
     public void healthRegain(EntityRegainHealthEvent event) {
     	if (!(event.getEntity() instanceof Player)) return;
     	
-    	if(ctp.mainArena.co.regainHealth) return;
-    	
     	 if (ctp.isGameRunning()) {
              if ((this.ctp.playerData.get((Player) event.getEntity()) != null)) {
-            	 if (event.getRegainReason() == RegainReason.SATIATED) {
-             		event.setCancelled(true);
-             	}else return;
+            	 if(!ctp.mainArena.co.regainHealth) {
+	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
+	             		event.setCancelled(true);
+	             	}else return;
+            	 }else return;
              }else return;
     	 }else return;
     }
