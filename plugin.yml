@@ -39,6 +39,7 @@ permissions:
         default: true
     ctp.admin:
         description: Admin commands.
+        default: op
     ctp.admin.arenalist:
         description: Shows existing arenas list.
         default: op
