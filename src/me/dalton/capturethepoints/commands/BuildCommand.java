@@ -773,8 +773,7 @@ public class BuildCommand extends CTPCommand {
         }
 
         if (arg.equalsIgnoreCase("arenalist")) {
-            if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.arenalist"})) 
-            {
+            if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.arenalist"})) {
                 // Reload arena list (matbe there is a new arena there)
 
                 File file = new File(CaptureThePoints.mainDir + File.separator + "Arenas");
@@ -782,21 +781,23 @@ public class BuildCommand extends CTPCommand {
                 
                 String arenas = "";
                 boolean firstTime = true;
-                for (String arena : ctp.arena_list)
-                {
-                    if (firstTime)
-                    {
+                for (String arena : ctp.arena_list) {
+                    if (firstTime) {
                         arenas = arena;
                         firstTime = false;
-                    } 
-                    else
-                    {
+                    } else {
                         arenas = arena + ", " + arenas;
                     }
                 }
                 sendMessage("Arena list:");
-                sendMessage(arenas);
-                return;
+                
+                if(arenas.equalsIgnoreCase("")) {
+                	sendMessage("There are currently no arenas.");
+                	return;
+                }else {
+                	sendMessage(arenas);
+                	return;
+                } 
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;

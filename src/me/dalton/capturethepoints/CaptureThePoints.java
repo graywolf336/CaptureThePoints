@@ -1046,6 +1046,7 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
         }
+        
         this.mainArena.lobby.playersinlobby.remove(player);
         this.blockListener.restoreThings(player);
         this.previousLocation.remove(player);
