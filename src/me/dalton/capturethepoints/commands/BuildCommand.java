@@ -789,13 +789,13 @@ public class BuildCommand extends CTPCommand {
                         arenas = arena + ", " + arenas;
                     }
                 }
-                sendMessage("Arena list:");
                 
                 if(arenas.equalsIgnoreCase("")) {
                 	sendMessage("There are currently no arenas.");
                 	return;
                 }else {
-                	sendMessage(arenas);
+                	sendMessage("Arena list:");
+                	sendMessage("  " + arenas);
                 	return;
                 } 
             }
