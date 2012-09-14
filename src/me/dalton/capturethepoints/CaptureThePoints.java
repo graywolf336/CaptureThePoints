@@ -32,6 +32,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -1461,8 +1463,9 @@ public class CaptureThePoints extends JavaPlugin {
         mainArena.lobby.playersinlobby.put(player, false); // Kj
         mainArena.lobby.playerswhowereinlobby.add(player); // Kj
 
-        //TODO: Change to the event
         player.setHealth(mainArena.co.maxPlayerHealth);
+        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, mainArena.co.maxPlayerHealth, RegainReason.CUSTOM);
+    	CaptureThePoints.pluginManager.callEvent(regen);
         
         // Get lobby location and move player to it.
         Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
