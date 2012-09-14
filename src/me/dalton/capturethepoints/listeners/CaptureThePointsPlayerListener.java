@@ -949,7 +949,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     if (p.getItemInHand().getAmount() > 1) {
                         p.getItemInHand().setAmount(p.getItemInHand().getAmount() - 1);
                     } else {
-                        p.setItemInHand(null);
+                        p.setItemInHand(new ItemStack(Material.AIR));
                     }
                     
                     // Cancel event to not heal like with golden apple
