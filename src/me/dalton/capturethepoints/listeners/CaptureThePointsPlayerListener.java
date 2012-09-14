@@ -656,16 +656,16 @@ public class CaptureThePointsPlayerListener implements Listener {
                         if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
                             for (String playName : item.cooldowns.keySet()) {
                                 PlayersAndCooldowns data = item.cooldowns.get(playName);
-                                if (data.cooldown == 1) // This is cause we begin from top
-                                {
-                                    ctp.getServer().getPlayer(playName).sendMessage(ChatColor.GREEN + item.item.item.toString() + ChatColor.WHITE + " cooldown has refreshed!");
+                                Player player = ctp.getServer().getPlayer(playName);
+                                if (data.cooldown == 1) {// This is cause we begin from top
+                                	player.sendMessage(ChatColor.GREEN + item.item.item.toString() + ChatColor.WHITE + " cooldown has refreshed!");
                                 }
 
                                 if (data.healingTimesLeft > 0 && data.intervalTimeLeft <= 0) {
                                     if (ctp.getServer().getPlayer(playName).getHealth() + item.hotHeal > ctp.mainArena.co.maxPlayerHealth) {
-                                        ctp.getServer().getPlayer(playName).setHealth(ctp.mainArena.co.maxPlayerHealth);
+                                    	healPlayerAndCallEvent(player, ctp.mainArena.co.maxPlayerHealth);
                                     } else {
-                                        ctp.getServer().getPlayer(playName).setHealth(ctp.getServer().getPlayer(playName).getHealth() + item.hotHeal);
+                                    	healPlayerAndCallEvent(player, player.getHealth() + item.hotHeal);
                                     }
                                     data.intervalTimeLeft = item.hotInterval;
                                     data.healingTimesLeft--;
@@ -1100,5 +1100,17 @@ public class CaptureThePointsPlayerListener implements Listener {
         if (waitingToMove != null) {
             waitingToMove.clear();
         }
+    }
+    
+    /**
+     * Heal the player (set the health) and cause an event to happen from it, thus improving relations with other plugins.
+     * 
+     * @param player The player to heal.
+     * @param amount The amount to heal the player.
+     */
+    public void healPlayerAndCallEvent(Player player, int amount) {
+    	player.setHealth(amount);
+    	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, amount, RegainReason.CUSTOM);
+    	CaptureThePoints.pluginManager.callEvent(regen);
     }
 }

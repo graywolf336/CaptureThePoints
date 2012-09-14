@@ -1463,6 +1463,7 @@ public class CaptureThePoints extends JavaPlugin {
         mainArena.lobby.playersinlobby.put(player, false); // Kj
         mainArena.lobby.playerswhowereinlobby.add(player); // Kj
 
+        //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
         player.setHealth(mainArena.co.maxPlayerHealth);
         EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, mainArena.co.maxPlayerHealth, RegainReason.CUSTOM);
     	CaptureThePoints.pluginManager.callEvent(regen);
