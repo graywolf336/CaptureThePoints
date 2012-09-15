@@ -1564,12 +1564,13 @@ public class CaptureThePoints extends JavaPlugin {
         PlayerInv.setBoots(null);
     }
     
-    private boolean setupPermissions()
-    {
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+    private boolean setupPermissions() {
+    	RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+    	
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
             logger.info(conPrefix + "Vault plugin found, permission support enabled.");
+            UsePermissions = true;
         }else {
         	logger.info(conPrefix + "Permission system not detected, defaulting to OP");
             UsePermissions = false;
@@ -1579,8 +1580,7 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null)
-        {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
             logger.info(conPrefix + "Vault plugin not detected, disabling economy support.");
             return false;
         }
