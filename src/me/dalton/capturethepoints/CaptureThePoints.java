@@ -665,6 +665,9 @@ public class CaptureThePoints extends JavaPlugin {
         co.mysqlPort = config.getInt(mySql + "Port", globalConfigOptions.mysqlPort);
         co.mysqlUser = config.getString(mySql + "User", globalConfigOptions.mysqlUser);
         co.mysqlPass = config.getString(mySql + "Pass", globalConfigOptions.mysqlPass);
+        
+        // Debug
+        co.debugMessages = config.getBoolean(global + "displayDebugMessages", globalConfigOptions.debugMessages);
 
         // Global configuration
         // Kj -- documentation for the different options, including their default values, can be found under the ConfigOptions class.
@@ -762,6 +765,10 @@ public class CaptureThePoints extends JavaPlugin {
             config.set(mySql + "User", globalConfigOptions.mysqlUser);
         if(!config.contains(mySql + "Pass"))
             config.set(mySql + "Pass", globalConfigOptions.mysqlPass);
+        
+        // Debug
+        if(!config.contains(global + "displayDebugMessages"))
+        	config.set(global + "displayDebugMessages", globalConfigOptions.debugMessages);
 
         // Global configuration
         if(!config.contains(global + "AllowBlockBreak"))

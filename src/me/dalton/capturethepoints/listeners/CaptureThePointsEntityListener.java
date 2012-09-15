@@ -86,6 +86,8 @@ public class CaptureThePointsEntityListener  implements Listener {
             	 if(!ctp.mainArena.co.regainHealth) {
 	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
 	             		event.setCancelled(true);
+	             		if(ctp.globalConfigOptions.debugMessages)
+	                    	ctp.getLogger().info("Just cancelled a EntityRegainHealthEvent you have it turned off during the game.");
 	             	}else return;
             	 }else return;
              }else return;
@@ -189,6 +191,8 @@ public class CaptureThePointsEntityListener  implements Listener {
                 // lobby damage check
                 if (this.ctp.playerData.get(playa).isInLobby || (attacker != null && this.ctp.playerData.get(attacker) != null && this.ctp.playerData.get(attacker).isInLobby)) {
                     event.setCancelled(true);
+                    if(ctp.globalConfigOptions.debugMessages)
+                    	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
                     return;
                 }
 
@@ -197,7 +201,10 @@ public class CaptureThePointsEntityListener  implements Listener {
                     if (attacker != null) {
                     	ctp.sendMessage(attacker, ChatColor.LIGHT_PURPLE + "You can't damage enemy in their spawn!");
                     }
+                    
                     event.setCancelled(true);
+                    if(ctp.globalConfigOptions.debugMessages)
+                    	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in his/her spawn area.");
                     return;
                 }
 
@@ -207,11 +214,15 @@ public class CaptureThePointsEntityListener  implements Listener {
                         if (this.ctp.playerData.get(playa).team.color.equalsIgnoreCase(this.ctp.playerData.get(attacker).team.color)) {
                         	ctp.sendMessage(attacker, ctp.playerData.get(playa).team.chatcolor + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
                             event.setCancelled(true);
+                            if(ctp.globalConfigOptions.debugMessages)
+                            	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
                             return;
                         } else {
                         	// This is if there exists something like factions group protection
                             if (event.isCancelled()) {
                                 event.setCancelled(false);
+                                if(ctp.globalConfigOptions.debugMessages)
+                                	ctp.getLogger().info("Just uncancelled a EntityDamageEvent because the event was cancelled by some other plugin.");
                             }
                         }
                     }
@@ -220,12 +231,16 @@ public class CaptureThePointsEntityListener  implements Listener {
                 //Player has "died"
                 if ((this.ctp.playerData.get(playa) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
                     event.setCancelled(true);
+                    if(ctp.globalConfigOptions.debugMessages)
+                    	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
                     respawnPlayer(playa, attacker);
                 }
             }
         }
         if (ctp.playerData.get((Player) event.getEntity()) != null && ctp.playerData.get((Player) event.getEntity()).isInLobby) {
             event.setCancelled(true);
+            if(ctp.globalConfigOptions.debugMessages)
+            	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
         }
     }
     

@@ -99,6 +99,8 @@ public class ConfigOptions {
      * @see KillStreakMessages */
     public KillStreakMessages killStreakMessages = new KillStreakMessages();
     
+    /** If the plugin should display all the debug messages. */
+    public boolean debugMessages = false;
     
     public boolean enableHardArenaRestore = false; // Write to MYSQL
     public int mysqlPort = 3306;
