@@ -683,7 +683,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 }
             }
 
-        }, 20L, 20L); // Every one sec
+        }, 20L, 20L); // Every second (one)
 
         //Helmet Checking
         ctp.CTP_Scheduler.helmChecker = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
