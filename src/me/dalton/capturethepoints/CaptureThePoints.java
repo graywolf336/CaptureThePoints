@@ -1107,6 +1107,7 @@ public class CaptureThePoints extends JavaPlugin {
         if (file.isDirectory()) {
             String[] internalNames = file.list();
             for (String name : internalNames) {
+            	if (!name.startsWith("."))
                 loadArenas(new File(file.getAbsolutePath() + File.separator + name));
             }
         } 
