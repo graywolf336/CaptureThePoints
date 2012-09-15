@@ -461,12 +461,13 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
         } else {
-            if (notOpCommand) {
+            if (notOpCommand)
                 return true;
-            }
-            return p.isOp();
+            else
+            	return p.isOp();
         }
-        return false;
+        
+        return false; //fail safe
     }
 
     public void checkForGameEndThenPlayerLeft () {
@@ -595,12 +596,14 @@ public class CaptureThePoints extends JavaPlugin {
         if (this.blockListener.capturegame) {
             this.blockListener.endGame(true);
         }
+        
         if (!this.playerData.isEmpty()) {
             for (Player players : playerData.keySet()) {
                 blockListener.restoreThings(players);
                 sendMessage(players, ChatColor.RED + "Reloading plugin configuration. The CTP game has been terminated.");  // Kj
             }
         }
+        
         clearSchedule();
         arena_list.clear();
         lobbies.clear();
@@ -888,13 +891,10 @@ public class CaptureThePoints extends JavaPlugin {
         }
         co.killStreakMessages = new KillStreakMessages(hm);
 
-        try
-        {
+        try {
             config.options().copyDefaults(true);
             config.save(arenafile);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -963,13 +963,10 @@ public class CaptureThePoints extends JavaPlugin {
         if(!config.contains(global + "DamageImmunityNearSpawnDistance"))
             config.set(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
 
-        try
-        {
+        try {
             config.options().copyDefaults(true);
             config.save(arenafile);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1006,11 +1003,11 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public boolean isGameRunning () {
+    public boolean isGameRunning() {
         return this.blockListener.capturegame;
     }
 
-    public boolean isPreGame () {
+    public boolean isPreGame() {
         return this.blockListener.preGame;
     }
 
@@ -1056,12 +1053,9 @@ public class CaptureThePoints extends JavaPlugin {
 
         // Check for player replacement if there is somone waiting to join the game
         boolean wasReplaced = false;
-        if (mainArena.co.exactTeamMemberCount && isGameRunning())
-        {
-            for (Player play : playerData.keySet())
-            {
-                if (playerData.get(play).isInLobby && playerData.get(play).isReady)
-                {
+        if (mainArena.co.exactTeamMemberCount && isGameRunning()) {
+            for (Player play : playerData.keySet()) {
+                if (playerData.get(play).isInLobby && playerData.get(play).isReady) {
                     this.playerListener.moveToSpawns(play);
                     wasReplaced = true;
                     break;
@@ -1073,7 +1067,7 @@ public class CaptureThePoints extends JavaPlugin {
         if (!wasReplaced) {
             checkForGameEndThenPlayerLeft();
         }
-
+            
         //If there was no replacement we should move one member to lobby
         if (!wasReplaced && mainArena.co.exactTeamMemberCount && this.isGameRunning()) {
             if (mainArena.co.balanceTeamsWhenPlayerLeaves > 0) {
