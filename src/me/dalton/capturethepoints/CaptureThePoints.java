@@ -81,7 +81,6 @@ public class CaptureThePoints extends JavaPlugin {
     public final HashMap<Player, ItemStack[]> Inventories = new HashMap<Player, ItemStack[]>();
 
     private HashMap<Player, ItemStack[]> armor = new HashMap<Player, ItemStack[]>();
-    //public HashMap<Player, PlayerData> playerData = new HashMap<Player, PlayerData>();
 
     /** The PlayerData stored by CTP. (HashMap: Player, and their data) */
     public Map<Player, PlayerData> playerData = new ConcurrentHashMap<Player, PlayerData>();  // To avoid concurrent modification exceptions    
@@ -91,7 +90,6 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** The Lobbies stored by CTP. */
     public List<Lobby> lobbies = new LinkedList<Lobby>();
-    // public ConfigOptions configOptions = new ConfigOptions();
 
     /** The global config options for CTP. */
     public ConfigOptions globalConfigOptions = new ConfigOptions();
@@ -170,9 +168,9 @@ public class CaptureThePoints extends JavaPlugin {
             setupEconomy();
 
             // REGISTER EVENTS-----------------------------------------------------------------------------------
-            pluginManager.registerEvents(this.blockListener, this);
-            pluginManager.registerEvents(this.entityListener, this);
-            pluginManager.registerEvents(this.playerListener, this);
+            pluginManager.registerEvents(blockListener, this);
+            pluginManager.registerEvents(entityListener, this);
+            pluginManager.registerEvents(playerListener, this);
 
             populateCommands();
         }
@@ -228,6 +226,7 @@ public class CaptureThePoints extends JavaPlugin {
             getServer().getScheduler().cancelTask(CTP_Scheduler.lobbyActivity);
             CTP_Scheduler.lobbyActivity = 0;
         }
+        
         clearConfig();
         info = null;
         pluginManager = null;
@@ -384,6 +383,7 @@ public class CaptureThePoints extends JavaPlugin {
                 if (item == null) {
                     continue;
                 }
+                
                 if (item.getType() == Material.WOOL) {
                     amountofwool += item.getAmount();
                 }
