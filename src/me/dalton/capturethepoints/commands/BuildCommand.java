@@ -1139,7 +1139,7 @@ public class BuildCommand extends CTPCommand {
             arenaName = arg2;
             ctp.mysqlConnector.connectToMySql();
 
-            ResultSet rezult = ctp.mysqlConnector.getData("SELECT * FROM Simple_block WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + BlockID.CHEST);
+            ResultSet rezult = ctp.mysqlConnector.getData("SELECT * FROM Simple_block WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + Material.CHEST.getId());
             try {
                 int chestCount = 0;
                 int totalItemsCount = 0;
@@ -1152,7 +1152,7 @@ public class BuildCommand extends CTPCommand {
                     System.out.println("|----------------------------------------------------------|");
                     System.out.println("| NR. | Daikto pav.   | Kiekis | Patvarumas | Vieta skryn. |");
                     ResultSet rezult2 = ctp.mysqlConnector.getData("SELECT distinct `type` , `durability` , `amount` , `place_in_inv`"
-                            + "FROM Simple_block, item WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + BlockID.CHEST + " "
+                            + "FROM Simple_block, item WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + Material.CHEST.getId() + " "
                             + "AND item.`block_ID` = " + rezult.getInt("id"));
 
                     int itemCount = 0;

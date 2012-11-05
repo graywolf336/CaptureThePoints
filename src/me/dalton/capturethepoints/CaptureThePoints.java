@@ -562,6 +562,8 @@ public class CaptureThePoints extends JavaPlugin {
      * @param numberofplayers The number of players that want to play.
      * @return The name of the selected mainArena, else empty String. */
     public String chooseSuitableArena (int numberofplayers) {
+    	if(mainArena.co == null) return mainArena.name; //temporary workaround for the NPE that happens sometimes three lines below 
+    	
         // Is the config set to allow the random choosing of arenas?
         if (!mainArena.co.useSelectedArenaOnly) {
             int size = arena_list.size();

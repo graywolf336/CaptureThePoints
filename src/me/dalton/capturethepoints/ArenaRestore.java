@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -130,13 +131,13 @@ public class ArenaRestore {
     public void storeBlock(Block block, Spawn firstPoint, Spawn secondPoint, String arenaName)
     {
         int type = block.getTypeId();
+        Material material = block.getType();
         int data = block.getData();
 //        Location loc = block.getLocation();
 
-        switch (type)
-        {
-            case BlockID.WALL_SIGN:
-            case BlockID.SIGN_POST:
+        switch (material) {
+        	case WALL_SIGN:
+        	case SIGN_POST:
             {
                 Sign sign = (Sign) block.getState();
                 String dir = ((Directional) block.getType().getNewData(block.getData())).getFacing().toString();
@@ -148,7 +149,7 @@ public class ArenaRestore {
                 break;
             }
 
-            case BlockID.CHEST:
+            case CHEST:
             {
                 Chest chest = (Chest) block.getState();
                 ctp.mysqlConnector.modifyData("INSERT INTO `Simple_block` (`data`, `x`, `y`, `z`, `z2`, `arena_name`, `block_type`, `direction`) VALUES ( " + data + "," + (int)firstPoint.x + "," +
@@ -159,8 +160,8 @@ public class ArenaRestore {
                 break;
             }
 
-            case BlockID.FURNACE:
-            case BlockID.BURNING_FURNACE:
+            case FURNACE:
+            case BURNING_FURNACE:
             {
                 Furnace furnace = (Furnace) block.getState();
                 String dir = ((Directional) block.getType().getNewData(block.getData())).getFacing().toString();
@@ -172,7 +173,7 @@ public class ArenaRestore {
                 break;
             }
 
-            case BlockID.DISPENSER:
+            case DISPENSER:
             {
                 Dispenser dispenser = (Dispenser) block.getState();
                 String dir = ((Directional) block.getType().getNewData(block.getData())).getFacing().toString();
@@ -184,7 +185,7 @@ public class ArenaRestore {
                 break;
             }
 
-            case BlockID.MOB_SPAWNER:
+            case MOB_SPAWNER:
             {
                 CreatureSpawner mobSpawner = (CreatureSpawner) block.getState();
                 ctp.mysqlConnector.modifyData("INSERT INTO `Simple_block` (`data`, `x`, `y`, `z`, `z2`, `arena_name`, `block_type`, `direction`) VALUES ( " + data + "," + (int)firstPoint.x + "," +
@@ -194,7 +195,7 @@ public class ArenaRestore {
                 break;
             }
 
-            case BlockID.NOTE_BLOCK:
+            case NOTE_BLOCK:
             {
                 NoteBlock noteBlock = (NoteBlock) block.getState();
                 ctp.mysqlConnector.modifyData("INSERT INTO `Simple_block` (`data`, `x`, `y`, `z`, `z2`, `arena_name`, `block_type`, `direction`) VALUES ( " + data + "," + (int)firstPoint.x + "," +
@@ -252,10 +253,8 @@ public class ArenaRestore {
             		" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + arenaName + "' and `block_type`" + signz + "(6, 8, 9, 10, 11, 27, 28, 31, 32," +
                     "50, 51, 55, 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 81, 83, 90, 92, 93, 94, 96, 104, 105, 111, 115, 117, 342, 343, 328, 333) LIMIT " + timesRestored * restoreCount + ", " + restoreCount);
 
-            while(blocksRez.next())
-            {
-                for(int z = blocksRez.getInt("z"); z <= blocksRez.getInt("z2"); z++)
-                {
+            while(blocksRez.next()) {
+                for(int z = blocksRez.getInt("z"); z <= blocksRez.getInt("z2"); z++) {
                     int id = blocksRez.getInt("id");
                     int data = blocksRez.getInt("data");
                     Location loc = new Location(ctp.getServer().getWorld(rs1.getString("world")), blocksRez.getInt("x"), blocksRez.getInt("y"), z);
@@ -267,23 +266,17 @@ public class ArenaRestore {
                     // Set main block info
                     block.setTypeId(type);
                     block.setData((byte)data);
-                    if(!dir.equalsIgnoreCase("NO") && id != 50)
-                    {
-                        try
-                        {
+                    if(!dir.equalsIgnoreCase("NO") && id != 50) {
+                        try {
                             ((Directional) block.getType().getNewData(block.getData())).setFacingDirection(BlockFace.valueOf(dir));
-                        }
-                        catch(Exception e)
-                        {
-                            //System.out.println("Failed to change Direction!");
-                        }
+                        } catch(Exception e) { /*System.out.println("Failed to change Direction!");*/ }
                     }
-
+                        
+                    Material material = block.getType();
                     // restore block
-                    switch (type)
-                    {
-                        case BlockID.WALL_SIGN:
-                        case BlockID.SIGN_POST:
+                    switch (material) {
+                        case WALL_SIGN:
+                        case SIGN_POST:
                         {
                             Sign sign = (Sign) block.getState();
                             String line1 = blocksRez.getString("first_line");
@@ -302,7 +295,7 @@ public class ArenaRestore {
                             break;
                         }
 
-                        case BlockID.CHEST:
+                        case CHEST:
                         {
                             Chest chest = (Chest) block.getState();
                             Inventory inv = chest.getInventory();
@@ -316,8 +309,8 @@ public class ArenaRestore {
                             break;
                         }
 
-                        case BlockID.FURNACE:
-                        case BlockID.BURNING_FURNACE:
+                        case FURNACE:
+                        case BURNING_FURNACE:
                         {
                             Furnace furnace = (Furnace) block.getState();
                             Inventory inv = furnace.getInventory();
@@ -331,7 +324,7 @@ public class ArenaRestore {
                             break;
                         }
 
-                        case BlockID.DISPENSER:
+                        case DISPENSER:
                         {
                             Dispenser dispenser = (Dispenser) block.getState();
                             Inventory inv = dispenser.getInventory();
@@ -345,7 +338,7 @@ public class ArenaRestore {
                             break;
                         }
 
-                        case BlockID.MOB_SPAWNER:
+                        case MOB_SPAWNER:
                         {
                             CreatureSpawner mobSpawner = (CreatureSpawner) block.getState();
 
@@ -355,7 +348,7 @@ public class ArenaRestore {
                             break;
                         }
 
-                        case BlockID.NOTE_BLOCK:
+                        case NOTE_BLOCK:
                         {
                             NoteBlock noteBlock = (NoteBlock) block.getState();
                             noteBlock.setRawNote((byte)blocksRez.getInt("note_type"));
@@ -364,29 +357,23 @@ public class ArenaRestore {
                     }
                 } // End of for Z cycle
             }
-        }
-        catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(ArenaRestore.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
 
-    public void restoreMySQLBlocks()
-    {
-        try
-        {
+    public void restoreMySQLBlocks() {
+        try {
             ResultSet rs1 = ctp.mysqlConnector.getData("SELECT * FROM Arena WHERE name like '"+ ctp.mainArena.name +"%'");
 
-            if (rs1.next())
-            {
+            if (rs1.next()) {
             	ResultSet blockCountRez = ctp.mysqlConnector.getData("SELECT COUNT(*) FROM (((Simple_block LEFT JOIN Sign on Sign.block_ID = id) LEFT JOIN Note_block on Note_block.block_ID = id)"+
             			" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.name + "' and `block_type` NOT IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
                         "50, 51, 55, 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 81, 83, 90, 92, 93, 94, 96, 104, 105, 111, 115, 117, 342, 343, 328, 333)");
 
                 int count = 0;
-                if(blockCountRez.next())
-                {
+                if(blockCountRez.next()) {
                     count = blockCountRez.getInt("count(*)");
                 }
 
