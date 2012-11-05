@@ -57,14 +57,9 @@ public class CaptureThePoints extends JavaPlugin {
     /** "plugins/CaptureThePoints/Global.yml" */
     public static File globalConfigFile = null;
 
-    public static final Logger logger = Logger.getLogger("Minecraft");
-
     public static PluginDescriptionFile info = null;
 
     public static PluginManager pluginManager = null;
-    
-    /** The prefix for the console outputs **/
-    public static String conPrefix;
 
     /** List of commands accepted by CTP */
     private static List<CTPCommand> commands = new ArrayList<CTPCommand>(); // Kj
@@ -148,8 +143,8 @@ public class CaptureThePoints extends JavaPlugin {
     public void onEnable () {
     	pluginManager = getServer().getPluginManager();
     	if(!pluginManager.isPluginEnabled("Vault")) {
-    		logger.severe(conPrefix + "Vault is required in order to use this plugin.");
-    		logger.severe(conPrefix + "dev.bukkit.org/server-mods/vault/");
+    		getLogger().severe("Vault is required in order to use this plugin.");
+    		getLogger().severe("dev.bukkit.org/server-mods/vault/");
 			pluginManager.disablePlugin(this);
 			return;
 		}
@@ -157,7 +152,6 @@ public class CaptureThePoints extends JavaPlugin {
     	mainDir = this.getDataFolder().toString();
     	globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
     	info = getDescription();
-    	conPrefix = "[" + info.getName() + "] ";
     	
         enableCTP(false);
     }
@@ -173,6 +167,7 @@ public class CaptureThePoints extends JavaPlugin {
             pluginManager.registerEvents(playerListener, this);
 
             populateCommands();
+            Util.setCTP(this);
         }
         
         loadConfigFiles();
@@ -264,7 +259,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         // Comand not found
 
-        logger.info(sender.getName() + " issued an unknown CTP command. It has " + parameters.size() + " Parameters: " + parameters + ". Displaying help to them.");
+        getLogger().info(sender.getName() + " issued an unknown CTP command. It has " + parameters.size() + " Parameters: " + parameters + ". Displaying help to them.");
         sendHelp(sender);
         return true;
     }
@@ -280,7 +275,7 @@ public class CaptureThePoints extends JavaPlugin {
      * @return Whether the teams are balanced. */
     public boolean balanceTeams(int loop, int balanceThreshold) {
         if (loop > 5) {
-            logger.warning("balanceTeams hit over 5 recursions. Aborting.");
+        	getLogger().warning("balanceTeams hit over 5 recursions. Aborting.");
             return false;
         }
         //int balancethreshold = mainArena.co.balanceTeamsWhenPlayerLeaves; // Get the balance threshold from config. We know this is over 0 already.
@@ -584,11 +579,11 @@ public class CaptureThePoints extends JavaPlugin {
                     mainArena = loadArena(arena_list.get(nextInt)) == null
                             ? mainArena : loadArena(arena_list.get(nextInt)); // Change the mainArena based on this. (Ternary null check)
                 }
-                logger.info(conPrefix + "ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + arena_list + ", of which " + arenas.size() + " were suitable: " + arenas);
+                getLogger().info("ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + arena_list + ", of which " + arenas.size() + " were suitable: " + arenas);
 
                 // else ctp.mainArena = ctp.mainArena;
             }
-            logger.info(conPrefix + "The selected arena, " + mainArena.name + ", has a minimum of " + mainArena.minimumPlayers + ", and a maximum of " + mainArena.maximumPlayers + ".");
+            getLogger().info("The selected arena, " + mainArena.name + ", has a minimum of " + mainArena.minimumPlayers + ", and a maximum of " + mainArena.maximumPlayers + ".");
             return mainArena.name;
         }
         return mainArena.name == null ? "" : mainArena.name;
@@ -976,7 +971,8 @@ public class CaptureThePoints extends JavaPlugin {
             config.options().copyDefaults(true);
             config.save(arenafile);
         } catch (IOException ex) {
-            Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger().severe("Error saving the arena file.");
+            getLogger().severe(ex.getMessage());
         }
     }
 
@@ -1142,7 +1138,8 @@ public class CaptureThePoints extends JavaPlugin {
                 globalConfig.options().copyDefaults(true);
                 globalConfig.save(globalConfigFile);
             } catch (IOException ex) {
-                Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
+               getLogger().severe("Error while saving the main arena config.");
+               getLogger().severe(ex.getMessage());
             }
         }
 
@@ -1169,17 +1166,17 @@ public class CaptureThePoints extends JavaPlugin {
                 getServer().getWorld(world);
                 arena.world = world;
             } catch (Exception ex) {
-                logger.warning(conPrefix + "WARNING: " + name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
+            	getLogger().warning("WARNING: " + name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
                 List<String> worlds = new LinkedList<String>();
                 for (World aWorld : getServer().getWorlds()) {
                     worlds.add(aWorld.getName());
                 }
                 if (worlds.size() == 1) {
                     arena.world = worlds.get(0);
-                    logger.info(conPrefix + "Successfully resolved the world. \"" + arena.world + "\" will be used.");
+                    getLogger().info("Successfully resolved the world. \"" + arena.world + "\" will be used.");
                 } else {
-                	logger.info(conPrefix + "This usually happens on the first load, create an arena and this message should go away.");
-                    logger.info(conPrefix + "Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
+                	getLogger().info("This usually happens on the first load, create an arena and this message should go away.");
+                	getLogger().info("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
                 }
             }
 
@@ -1285,7 +1282,7 @@ public class CaptureThePoints extends JavaPlugin {
             // Kj -- Test that the spawn points are within the map boundaries
             for (Spawn aSpawn : arena.teamSpawns.values()) {
                 if (!playerListener.isInside((int) aSpawn.x, arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.z, arena.z1, arena.z2)) {
-                    logger.warning(conPrefix + "WARNING: The spawn point \"" + aSpawn.name + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
+                	getLogger().warning("WARNING: The spawn point \"" + aSpawn.name + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
                     continue;
                 }
             }
@@ -1301,7 +1298,7 @@ public class CaptureThePoints extends JavaPlugin {
 
             return arena;
         } else {
-            logger.warning(conPrefix + "Could not load arena! Check your config file and existing arenas");
+        	getLogger().warning("Could not load arena! Check your config file and existing arenas");
             return null;
         }
     }
@@ -1339,7 +1336,7 @@ public class CaptureThePoints extends JavaPlugin {
                 hItem.cooldown = config.getInt("HealingItems." + str + ".Cooldown", 0);
                 hItem.resetCooldownOnDeath = config.getBoolean("HealingItems." + str + ".ResetCooldownOnDeath", true);
             } catch (Exception e) {
-                logger.warning(conPrefix + "Error while loading Healing items! " + itemNR + " item!");
+            	getLogger().warning("Error while loading Healing items! " + itemNR + " item!");
             }
 
             healingItems.add(hItem);
@@ -1572,10 +1569,10 @@ public class CaptureThePoints extends JavaPlugin {
     	
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
-            logger.info(conPrefix + "Vault plugin found, permission support enabled.");
+            getLogger().info("Vault plugin found, permission support enabled.");
             UsePermissions = true;
         }else {
-        	logger.info(conPrefix + "Permission system not detected, defaulting to OP");
+        	getLogger().info("Permission system not detected, defaulting to OP");
             UsePermissions = false;
         }
         
@@ -1584,7 +1581,7 @@ public class CaptureThePoints extends JavaPlugin {
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            logger.info(conPrefix + "Vault plugin not detected, disabling economy support.");
+        	getLogger().info("Vault plugin not detected, disabling economy support.");
             return false;
         }
 
@@ -1594,7 +1591,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
 
         if(economyHandler != null)
-            logger.info(conPrefix + "Vault plugin found, economy support enabled.");
+        	getLogger().info("Vault plugin found, economy support enabled.");
 
         return economyHandler != null;
     }
@@ -1607,6 +1604,17 @@ public class CaptureThePoints extends JavaPlugin {
      */
     public void sendMessage(Player p, String message) {
     	p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message);
+    }
+    
+    /**
+     * Provide a way to get the logger.
+     */
+    public void logSevere(String msg) {
+    	getLogger().severe(msg);
+    }
+    
+    public void logInfo(String msg) {
+    	getLogger().info(msg);
     }
 
 }

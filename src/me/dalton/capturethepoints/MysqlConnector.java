@@ -58,10 +58,7 @@ public class MysqlConnector
                 //stmt.executeUpdate("ALTER TABLE `Note_block` ADD `block_ID` INT NOT NULL ,ADD `note_type` INT NOT NULL");
             }
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        catch (Exception e) { e.printStackTrace(); }
 
         return true;
     }
@@ -78,7 +75,7 @@ public class MysqlConnector
                 con = DriverManager.getConnection("jdbc:mysql://" + ctp.globalConfigOptions.mysqlAddress + ":" + ctp.globalConfigOptions.mysqlPort + "/"
                         + ctp.globalConfigOptions.mysqlDatabase + "?user=" + ctp.globalConfigOptions.mysqlUser + "&password=" + ctp.globalConfigOptions.mysqlPass);
             } catch (Exception e) {
-            	CaptureThePoints.logger.severe("[CTP] Error connecting to the database. Check your creditals.");
+            	ctp.logSevere("Error connecting to the database. Check your creditals.");
             	e.printStackTrace();
             }
         }

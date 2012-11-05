@@ -27,59 +27,59 @@ public class DebugCommand extends CTPCommand {
         String pagenumber = size > 2 ? parameters.get(2) : "";
         if (pagenumber.equalsIgnoreCase("2")) {
             sendMessage("Outputting CTP info (2) to Console.");
-            CaptureThePoints.logger.info("-----------========== CTP DEBUG ==========-----------");
+            ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
             String checkMainArena = ctp.checkMainArena(player, ctp.mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
             if (!checkMainArena.isEmpty()) {
-                CaptureThePoints.logger.info("Main Arena errors: " + checkMainArena);
-                CaptureThePoints.logger.info("-----------========== ######### ==========-----------");
+                ctp.logInfo("Main Arena errors: " + checkMainArena);
+                ctp.logInfo("-----------========== ######### ==========-----------");
                 return;
             } else {
-                CaptureThePoints.logger.info(ctp.mainArena.name+"'s Config Options:");
+                ctp.logInfo(ctp.mainArena.name+"'s Config Options:");
                 ConfigOptions co = ctp.mainArena.co;
-                CaptureThePoints.logger.info("   PointsToWin: " + co.pointsToWin);
-                CaptureThePoints.logger.info("   PlayTime: " + co.playTime);
-                CaptureThePoints.logger.info("   UseScoreGeneration: " + co.useScoreGeneration);
-                CaptureThePoints.logger.info("   ScoreToWin: " + co.scoreToWin);
-                CaptureThePoints.logger.info("   OnePointGeneratedScoreEvery30sec: " + co.onePointGeneratedScoreEvery30sec);
-                CaptureThePoints.logger.info("   ScoreAnnounceTime: " + co.scoreAnnounceTime);
-                CaptureThePoints.logger.info("   AllowBlockBreak: " + co.allowBlockBreak);
-                CaptureThePoints.logger.info("   AllowBlockPlacement: " + co.allowBlockPlacement);
-                CaptureThePoints.logger.info("   AllowCommands: " + co.allowCommands);
-                CaptureThePoints.logger.info("   AllowDropItems: " + co.allowDropItems);
-                CaptureThePoints.logger.info("   AllowLateJoin: " + co.allowLateJoin);
-                CaptureThePoints.logger.info("   AutoStart: " + co.autoStart);
-                CaptureThePoints.logger.info("   BreakingBlocksDropsItems: " + co.breakingBlocksDropsItems);
-                CaptureThePoints.logger.info("   DamageImmunityNearSpawnDistance: " + co.protectionDistance);
-                CaptureThePoints.logger.info("   DropWoolOnDeath: " + co.dropWoolOnDeath);
-                CaptureThePoints.logger.info("   ExactTeamMemberCount: " + co.exactTeamMemberCount);
-                CaptureThePoints.logger.info("   GiveNewRoleItemsOnRespawn: " + co.giveNewRoleItemsOnRespawn);
-                CaptureThePoints.logger.info("   GivenWoolNumber: " + co.givenWoolNumber);
-                CaptureThePoints.logger.info("   LobbyKickTime: " + co.lobbyKickTime);
-                CaptureThePoints.logger.info("   MaxPlayerHealth: " + co.maxPlayerHealth);
-                CaptureThePoints.logger.info("   HealthRegenFromHunger: " + co.regainHealth);
-                CaptureThePoints.logger.info("   MoneyAtTheLobby: " + co.moneyAtTheLobby);
-                CaptureThePoints.logger.info("   MoneyEvery30sec: " + co.moneyEvery30Sec);
-                CaptureThePoints.logger.info("   MoneyForKill: " + co.moneyForKill);
-                CaptureThePoints.logger.info("   MoneyForPointCapture: " + co.moneyForPointCapture);
-                CaptureThePoints.logger.info("   RingBlock: " + co.ringBlock);
-                CaptureThePoints.logger.info("   UseSelectedArenaOnly: " + co.useSelectedArenaOnly);
+                ctp.logInfo("   PointsToWin: " + co.pointsToWin);
+                ctp.logInfo("   PlayTime: " + co.playTime);
+                ctp.logInfo("   UseScoreGeneration: " + co.useScoreGeneration);
+                ctp.logInfo("   ScoreToWin: " + co.scoreToWin);
+                ctp.logInfo("   OnePointGeneratedScoreEvery30sec: " + co.onePointGeneratedScoreEvery30sec);
+                ctp.logInfo("   ScoreAnnounceTime: " + co.scoreAnnounceTime);
+                ctp.logInfo("   AllowBlockBreak: " + co.allowBlockBreak);
+                ctp.logInfo("   AllowBlockPlacement: " + co.allowBlockPlacement);
+                ctp.logInfo("   AllowCommands: " + co.allowCommands);
+                ctp.logInfo("   AllowDropItems: " + co.allowDropItems);
+                ctp.logInfo("   AllowLateJoin: " + co.allowLateJoin);
+                ctp.logInfo("   AutoStart: " + co.autoStart);
+                ctp.logInfo("   BreakingBlocksDropsItems: " + co.breakingBlocksDropsItems);
+                ctp.logInfo("   DamageImmunityNearSpawnDistance: " + co.protectionDistance);
+                ctp.logInfo("   DropWoolOnDeath: " + co.dropWoolOnDeath);
+                ctp.logInfo("   ExactTeamMemberCount: " + co.exactTeamMemberCount);
+                ctp.logInfo("   GiveNewRoleItemsOnRespawn: " + co.giveNewRoleItemsOnRespawn);
+                ctp.logInfo("   GivenWoolNumber: " + co.givenWoolNumber);
+                ctp.logInfo("   LobbyKickTime: " + co.lobbyKickTime);
+                ctp.logInfo("   MaxPlayerHealth: " + co.maxPlayerHealth);
+                ctp.logInfo("   HealthRegenFromHunger: " + co.regainHealth);
+                ctp.logInfo("   MoneyAtTheLobby: " + co.moneyAtTheLobby);
+                ctp.logInfo("   MoneyEvery30sec: " + co.moneyEvery30Sec);
+                ctp.logInfo("   MoneyForKill: " + co.moneyForKill);
+                ctp.logInfo("   MoneyForPointCapture: " + co.moneyForPointCapture);
+                ctp.logInfo("   RingBlock: " + co.ringBlock);
+                ctp.logInfo("   UseSelectedArenaOnly: " + co.useSelectedArenaOnly);
             }
-            CaptureThePoints.logger.info("-----------========== ######### ==========-----------");
+            ctp.logInfo("-----------========== ######### ==========-----------");
             return;
         }
         
         sendMessage("Outputting CTP info (1) to Console.");
-        CaptureThePoints.logger.info("-----------========== CTP DEBUG ==========-----------");
-        CaptureThePoints.logger.info("Game running: "+ctp.isGameRunning());
+        ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
+        ctp.logInfo("Game running: "+ctp.isGameRunning());
         String checkMainArena = ctp.checkMainArena(player, ctp.mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
         if (!checkMainArena.isEmpty()) {
-            CaptureThePoints.logger.info("Main Arena errors: "+checkMainArena);
-            CaptureThePoints.logger.info("-----------========== ######### ==========-----------");
+            ctp.logInfo("Main Arena errors: "+checkMainArena);
+            ctp.logInfo("-----------========== ######### ==========-----------");
             return;
         } else {
-            CaptureThePoints.logger.info("Main Arena is playable.");
+            ctp.logInfo("Main Arena is playable.");
         }
-        CaptureThePoints.logger.info("Running sanity checks ... ");
+        ctp.logInfo("Running sanity checks ... ");
         
         List<String> result = new ArrayList<String>();
         if (ctp.mainArena.getPlayers(ctp).size() != ctp.playerData.size() || ctp.playerData.size() != (ctp.mainArena.lobby.playersinlobby.size() + ctp.mainArena.getPlayersPlaying(ctp).size())) {
@@ -121,28 +121,28 @@ public class DebugCommand extends CTPCommand {
         }
         
         if (result.isEmpty()) {
-            CaptureThePoints.logger.info("    Passed.");
+            ctp.logInfo("    Passed.");
         } else {
             for (String anError : result) {
-                CaptureThePoints.logger.info("    "+anError);
+                ctp.logInfo("    "+anError);
             }
         }
         
         result.clear();
         
-        CaptureThePoints.logger.info("Number of Arenas: "+ctp.arena_list.size()+": "+ctp.arena_list);   
-        CaptureThePoints.logger.info("Current Arena: \""+ctp.mainArena.name+"\" in World \""+ctp.mainArena.world+"\"");
+        ctp.logInfo("Number of Arenas: "+ctp.arena_list.size()+": "+ctp.arena_list);   
+        ctp.logInfo("Current Arena: \""+ctp.mainArena.name+"\" in World \""+ctp.mainArena.world+"\"");
         if (ctp.mainArena.hasLobby()) {
-            CaptureThePoints.logger.info("    Lobby: "+(int)ctp.mainArena.lobby.x+ ", "+(int)ctp.mainArena.lobby.y+ ", "+(int)ctp.mainArena.lobby.z+".");
+            ctp.logInfo("    Lobby: "+(int)ctp.mainArena.lobby.x+ ", "+(int)ctp.mainArena.lobby.y+ ", "+(int)ctp.mainArena.lobby.z+".");
         } else {
-            CaptureThePoints.logger.info("    Lobby: not made");
+            ctp.logInfo("    Lobby: not made");
         }
-        CaptureThePoints.logger.info("    Number of capture points: "+ctp.mainArena.capturePoints.size());
-        CaptureThePoints.logger.info("    Number of teams: "+ctp.mainArena.teamSpawns.size());
-        CaptureThePoints.logger.info("    Minimum Players for this arena: "+ctp.mainArena.minimumPlayers);
-        CaptureThePoints.logger.info("    Maxmimum Players for this arena: "+ctp.mainArena.maximumPlayers);
-        CaptureThePoints.logger.info("    Players ready in the lobby: "+ctp.mainArena.lobby.countReadyPeople()+"/"+ctp.mainArena.lobby.countAllPeople());
-        CaptureThePoints.logger.info(ctp.roles.size() + " Roles found: "+ctp.roles.keySet().toString());
+        ctp.logInfo("    Number of capture points: "+ctp.mainArena.capturePoints.size());
+        ctp.logInfo("    Number of teams: "+ctp.mainArena.teamSpawns.size());
+        ctp.logInfo("    Minimum Players for this arena: "+ctp.mainArena.minimumPlayers);
+        ctp.logInfo("    Maxmimum Players for this arena: "+ctp.mainArena.maximumPlayers);
+        ctp.logInfo("    Players ready in the lobby: "+ctp.mainArena.lobby.countReadyPeople()+"/"+ctp.mainArena.lobby.countAllPeople());
+        ctp.logInfo(ctp.roles.size() + " Roles found: "+ctp.roles.keySet().toString());
         
         int running = 0, total = 0;
         if (ctp.CTP_Scheduler.healingItemsCooldowns != 0) {
@@ -182,12 +182,12 @@ public class DebugCommand extends CTPCommand {
             total++;
         }
         
-        CaptureThePoints.logger.info(running+"/"+total+" Schedulers running: ");
+        ctp.logInfo(running+"/"+total+" Schedulers running: ");
         for (String schedule : result) {
-            CaptureThePoints.logger.info("    "+schedule);
+            ctp.logInfo("    "+schedule);
         }
 
-        CaptureThePoints.logger.info("End of page 1. To view page 2 (Main Arena Config Options), type /ctp debug 2"); 
-        CaptureThePoints.logger.info("-----------========== ######### ==========-----------");
+        ctp.logInfo("End of page 1. To view page 2 (Main Arena Config Options), type /ctp debug 2"); 
+        ctp.logInfo("-----------========== ######### ==========-----------");
     }
 }

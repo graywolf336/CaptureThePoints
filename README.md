@@ -3,6 +3,8 @@ CaptureThePoints
 
 # DO NOT USE THIS, AS IT WILL BREAK YOUR SERVER...i think
 
+If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
+
 ### Update: 1.4.3 ###
 * Rewrote the CTPPotionEffect to use Craftbukkit's APIs
 * Removed a bunch of commented out code, if you want it back look up the stuff in the github history prior to this commit.
@@ -13,5 +15,5 @@ CaptureThePoints
 * Made sure that only ops by default get the ctp.admin permission node
 * Added an option to disallow regenerating health due to their hunger bar being satisfied
 * Added a message to be displayed when the wasn't any arenas in the arenalist
-
-If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
+* Temporary workaround for a NPE that only happens at certain times.
+* Cleaned up how messages are logged to the console

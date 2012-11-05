@@ -29,8 +29,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
-public class CaptureThePointsBlockListener implements Listener
-{
+public class CaptureThePointsBlockListener implements Listener {
     private final CaptureThePoints ctp;
 
     public boolean capturegame = false;
@@ -137,7 +136,7 @@ public class CaptureThePointsBlockListener implements Listener
                                 if (ctp.playerData.get(player).team.color.equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
                                     if(ctp.globalConfigOptions.debugMessages)
-                                    	ctp.getLogger().info("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
+                                    	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
                                     return;
                                 }
                                 if (point.controledByTeam != null) {
@@ -151,7 +150,7 @@ public class CaptureThePointsBlockListener implements Listener
                                 if (ctp.playerData.get(player).team.color.equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
                                     if(ctp.globalConfigOptions.debugMessages)
-                                    	ctp.getLogger().info("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
+                                    	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
                                     return;
                                 }
                                 
@@ -411,7 +410,7 @@ public class CaptureThePointsBlockListener implements Listener
                         stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
                     }
                 } catch(Exception e) {
-                    CaptureThePoints.logger.info(CaptureThePoints.conPrefix + "There is error in your config file, with roles. Please check them!");
+                    ctp.logInfo("There is error in your config file, with roles. Please check them!");
                     return false;
                 }
                 inv.addItem(stack);

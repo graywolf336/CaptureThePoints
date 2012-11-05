@@ -21,7 +21,13 @@ import org.bukkit.inventory.PlayerInventory;
 public class Util {
     //Some data from MobArena utils, to make item, functions easier
     // Weapons
-
+	
+	private static CaptureThePoints ctp;
+	
+	public static void setCTP(CaptureThePoints instance) {
+		ctp = instance;
+	}
+	
     public static final List<Material> WEAPONS_TYPE = new LinkedList<Material>();
     public static final List<Material> SWORDS_TYPE = new LinkedList<Material>();
     public static final List<Material> AXES_TYPE = new LinkedList<Material>();
@@ -306,14 +312,13 @@ public class Util {
             if (i.item != null) {
                 list.add(i);
             } else {
-                CaptureThePoints.logger.warning("[CTP] Error while loading config file(Or Shop sign). Check: " + item);
+                ctp.getLogger().warning("[CTP] Error while loading config file (Or Shop sign). Check: " + item);
             }
         }
         return list;
     }
 
-    public static void getEnchantments(String[] enchantmentsString, Items item)
-    {
+    public static void getEnchantments(String[] enchantmentsString, Items item) {
         List<Enchantment> enchantments = new LinkedList<Enchantment>();
         List<Integer> enchLevels = new LinkedList<Integer>();
         try
@@ -358,10 +363,8 @@ public class Util {
             }
             item.enchLevels = enchLevels;
             item.enchantments = enchantments;
-        }
-        catch(Exception e)
-        {
-            CaptureThePoints.logger.warning("[CTP] Error while loading config file. Check: Item enchantments");
+        } catch(Exception e) {
+        	ctp.getLogger().severe("Error while loading config file. Check: Item enchantments");
         }
     }
 
@@ -575,9 +578,8 @@ public class Util {
             
           //It's deprecated but it's currently the only way to get the desired effect.
             player.updateInventory();
-        }
-        catch(Exception e) {
-            CaptureThePoints.logger.warning("[CTP] Error occured while rewarding players");
+        } catch(Exception e) {
+            ctp.getLogger().warning("Error occured while rewarding players");
         }
 
     }
