@@ -119,6 +119,9 @@ public class CaptureThePoints extends JavaPlugin {
     public int arenaRestoreMaxRestoreTimes = 0;
     public int arenaRestoreTimesRestoredSec = 0;   //For second time
     public int arenaRestoreMaxRestoreTimesSec = 0;
+    
+    /** If we're loading the plugin for the first time, defaults to false. */
+    private boolean firstTime = false;
 
     /** Name of the player who needs teleporting. */
     public String playerNameForTeleport = ""; // Block destroy - teleport protection
@@ -148,6 +151,7 @@ public class CaptureThePoints extends JavaPlugin {
 		}
     	
     	mainDir = this.getDataFolder().toString();
+    	if(mainDir.isEmpty()) firstTime = true;
     	globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
     	info = getDescription();
     	
@@ -531,9 +535,11 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
         }
+        
         if (arena.lobby == null) {
             return "No lobby for main arena " + arena.name + ".";
         }
+        
         if (getServer().getWorld(arena.world) == null) {
             if (canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
                 return "The arena config is incorrect. The world \"" + arena.world + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
@@ -541,6 +547,7 @@ public class CaptureThePoints extends JavaPlugin {
                 return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
             }
         }
+        
         // Kj -- Test that the spawn points are within the map boundaries
         for (Spawn aSpawn : arena.teamSpawns.values()) {
             if (!playerListener.isInside((int) aSpawn.x, arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.z, arena.z1, arena.z2)) {
@@ -716,7 +723,8 @@ public class CaptureThePoints extends JavaPlugin {
             config.options().copyDefaults(true);
             config.save(arenafile);
         } catch (IOException ex) {
-            Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            logSevere("Unabled to save the config file.");
         }
 
         return co;
@@ -1086,18 +1094,19 @@ public class CaptureThePoints extends JavaPlugin {
 
     public void loadArenas (File file) {
         if (file.isDirectory()) {
+        	if(firstTime) return;
             String[] internalNames = file.list();
             for (String name : internalNames) {
             	if (!name.startsWith("."))
             		loadArenas(new File(file.getAbsolutePath() + File.separator + name));
             }
         } 
-        else {
+        /*else {
             String fileName = file.getName().split("\\.")[0];
             if (!arena_list.contains(fileName)) {
                 arena_list.add(fileName);
             }
-        }
+        }*/
     }
 
     public void loadConfigFiles () {
