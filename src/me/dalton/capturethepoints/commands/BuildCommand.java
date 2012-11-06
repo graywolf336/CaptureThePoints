@@ -373,6 +373,9 @@ public class BuildCommand extends CTPCommand {
                             player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setTypeId(0);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "WEST");
                             tmps.pointDirection = "WEST";
+                            break;
+                        default:
+                        	break;
                     }
                 }
 

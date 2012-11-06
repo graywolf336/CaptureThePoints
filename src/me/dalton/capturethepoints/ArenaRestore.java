@@ -354,6 +354,9 @@ public class ArenaRestore {
                             noteBlock.setRawNote((byte)blocksRez.getInt("note_type"));
                             break;
                         }
+                        
+                        default:
+                        	break;
                     }
                 } // End of for Z cycle
             }
