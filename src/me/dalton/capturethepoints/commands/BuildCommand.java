@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.dalton.capturethepoints.*;
+import me.dalton.capturethepoints.beans.ArenaBoundaries;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -877,17 +878,17 @@ public class BuildCommand extends CTPCommand {
                     // To boundaries property
                     if(ctp.arenasBoundaries.containsKey(ctp.editingArena.name)) {
                         ArenaBoundaries bound = ctp.arenasBoundaries.get(ctp.editingArena.name);
-                        bound.world = ctp.editingArena.world;
-                        bound.x1 = ctp.editingArena.x1;
-                        bound.y1 = ctp.editingArena.y1;
-                        bound.z1 = ctp.editingArena.z1;
+                        bound.setWorld(ctp.editingArena.world);
+                        bound.setx1(ctp.editingArena.x1);
+                        bound.sety1(ctp.editingArena.y1);
+                        bound.setz1(ctp.editingArena.z1);
                     }
                     else {   // New arena
                         ArenaBoundaries bound = new  ArenaBoundaries();
-                        bound.world = loc.getWorld().getName();
-                        bound.x1 = ctp.editingArena.x1;
-                        bound.y1 = ctp.editingArena.y1;
-                        bound.z1 = ctp.editingArena.z1;
+                        bound.setWorld(loc.getWorld().getName());
+                        bound.setx1(ctp.editingArena.x1);
+                        bound.sety1(ctp.editingArena.y1);
+                        bound.setz1(ctp.editingArena.z1);
                         ctp.arenasBoundaries.put(ctp.editingArena.name, bound);
                     }
 
@@ -919,23 +920,23 @@ public class BuildCommand extends CTPCommand {
                         arenaConf.options().copyDefaults(true);
                         arenaConf.save(arenaFile);
                     } catch (IOException ex) {
-                        Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                        ex.printStackTrace();
+                        ctp.logSevere("Unable to save the arena config file, please see the above StackTrace.");
                     }
 
                     // To boundaries property
-                    if(ctp.arenasBoundaries.containsKey(ctp.editingArena.name))
-                    {
+                    if(ctp.arenasBoundaries.containsKey(ctp.editingArena.name)) {
                         ArenaBoundaries bound = ctp.arenasBoundaries.get(ctp.editingArena.name);
-                        bound.world = ctp.editingArena.world;
-                        bound.x2 = ctp.editingArena.x2;
-                        bound.y2 = ctp.editingArena.y2;
-                        bound.z2 = ctp.editingArena.z2;
+                        bound.setWorld(ctp.editingArena.world);
+                        bound.setx2(ctp.editingArena.x2);
+                        bound.sety2(ctp.editingArena.y2);
+                        bound.setz2(ctp.editingArena.z2);
                     } else {   // New arena
                         ArenaBoundaries bound = new  ArenaBoundaries();
-                        bound.world = loc.getWorld().getName();
-                        bound.x2 = ctp.editingArena.x2;
-                        bound.y2 = ctp.editingArena.y2;
-                        bound.z2 = ctp.editingArena.z2;
+                        bound.setWorld(loc.getWorld().getName());
+                        bound.setx2(ctp.editingArena.x2);
+                        bound.sety2(ctp.editingArena.y2);
+                        bound.setz2(ctp.editingArena.z2);
                         ctp.arenasBoundaries.put(ctp.editingArena.name, bound);
                     }
 

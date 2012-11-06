@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.listeners;
 import java.util.ArrayList;
 import java.util.List;
-import me.dalton.capturethepoints.ArenaBoundaries;
 import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
@@ -9,6 +8,8 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Items;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.beans.ArenaBoundaries;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
@@ -78,7 +79,7 @@ public class CaptureThePointsBlockListener implements Listener {
         if (!ctp.playerData.containsKey(player)) { // If tries to break arena blocks out of game
         
             for(ArenaBoundaries bound : ctp.arenasBoundaries.values()){
-                if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.x1, bound.x2) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.y1, bound.y2) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.z1, bound.z2) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.world)) {
+                if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2()) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2()) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2()) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
                     if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
@@ -206,7 +207,7 @@ public class CaptureThePointsBlockListener implements Listener {
 
         if (!ctp.playerData.containsKey(player)) {// If tries to place blocks in arena out of game
             for(ArenaBoundaries bound : ctp.arenasBoundaries.values()) {
-                if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.x1, bound.x2) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.y1, bound.y2) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.z1, bound.z2) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.world)) {
+                if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2()) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2()) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2()) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
                     if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }

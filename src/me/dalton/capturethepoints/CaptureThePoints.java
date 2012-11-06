@@ -3,6 +3,7 @@ package me.dalton.capturethepoints;
 import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
+import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.commands.*;
 
 import java.io.File;
@@ -1128,13 +1129,13 @@ public class CaptureThePoints extends JavaPlugin {
             ArenaData tmp = loadArena(arena_list.get(i));
             ArenaBoundaries tmpBound = new ArenaBoundaries();
             //tmpBound.arenaName = tmp.name;
-            tmpBound.world = tmp.world;
-            tmpBound.x1 = tmp.x1;
-            tmpBound.x2 = tmp.x2;
-            tmpBound.y1 = tmp.y1;
-            tmpBound.y2 = tmp.y2;
-            tmpBound.z1 = tmp.z1;
-            tmpBound.z2 = tmp.z2;
+            tmpBound.setWorld(tmp.world);
+            tmpBound.setx1(tmp.x1);
+            tmpBound.setx2(tmp.x2);
+            tmpBound.sety1(tmp.y1);
+            tmpBound.sety2(tmp.y2);
+            tmpBound.setz1(tmp.z1);
+            tmpBound.setz2(tmp.z2);
 
             arenasBoundaries.put(tmp.name, tmpBound);
         }
