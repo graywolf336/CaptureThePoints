@@ -1094,19 +1094,24 @@ public class CaptureThePoints extends JavaPlugin {
 
     public void loadArenas (File file) {
         if (file.isDirectory()) {
-        	if(firstTime) return;
-            String[] internalNames = file.list();
-            for (String name : internalNames) {
-            	if (!name.startsWith("."))
-            		loadArenas(new File(file.getAbsolutePath() + File.separator + name));
-            }
-        } 
-        /*else {
-            String fileName = file.getName().split("\\.")[0];
-            if (!arena_list.contains(fileName)) {
-                arena_list.add(fileName);
-            }
-        }*/
+        	if(firstTime) {
+        		file.mkdirs();
+        		return;
+        	}else {
+                String[] internalNames = file.list();
+                for (String name : internalNames) {
+                	if (!name.startsWith("."))
+                		loadArena(new File(file.getAbsolutePath() + File.separator + name));
+                }
+        	}
+        }
+    }
+    
+    public void loadArena(File file) {
+    	String fileName = file.getName().split("\\.")[0];
+        if (!arena_list.contains(fileName)) {
+            arena_list.add(fileName);
+        }
     }
 
     public void loadConfigFiles () {
@@ -1115,8 +1120,8 @@ public class CaptureThePoints extends JavaPlugin {
         loadHealingItems();
 
         //Load existing arenas
-        File file = new File(mainDir + File.separator + "Arenas");
-        loadArenas(file);
+        File dir = new File(mainDir + File.separator + "Arenas");
+        loadArenas(dir);
 
         // Load arenas boundaries
         for(int i = 0; i < arena_list.size(); i++) {
@@ -1536,8 +1541,8 @@ public class CaptureThePoints extends JavaPlugin {
         arena_list.clear();
         
         //Load existing arenas
-        File file = new File(mainDir + File.separator + "Arenas");
-        loadArenas(file);
+        File dir = new File(mainDir + File.separator + "Arenas");
+        loadArenas(dir);
     }
 
 	@SuppressWarnings("deprecation")
