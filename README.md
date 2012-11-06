@@ -13,6 +13,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Made the plugin respect unix's hidden files, thanks to Psithief
 * Made sure that UsePermissions was set to true if using Vault
 * Made sure that only ops by default get the ctp.admin permission node
+* Made it so that when you first load the plugin (or you haven't made any arenas yet) it doesn't automatically generate an Arenas.yml file in the Arenas folder which in the past would throw errors and confuse you.
 * Added an option to disallow regenerating health due to their hunger bar being satisfied
 * Added a message to be displayed when the wasn't any arenas in the arenalist
 * Temporary workaround for a NPE that only happens at certain times.
