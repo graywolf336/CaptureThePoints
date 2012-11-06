@@ -1,7 +1,9 @@
  package me.dalton.capturethepoints;
  
  import java.util.LinkedList;
- import java.util.List;
+import java.util.List;
+
+import me.dalton.capturethepoints.beans.Items;
  
  public class CTPRewards {
    public int winnerRewardCount;

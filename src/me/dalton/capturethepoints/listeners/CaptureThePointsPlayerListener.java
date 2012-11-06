@@ -12,13 +12,13 @@ import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.Items;
 import me.dalton.capturethepoints.Lobby;
 import me.dalton.capturethepoints.PlayerData;
 import me.dalton.capturethepoints.PlayersAndCooldowns;
 import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 
 import org.bukkit.ChatColor;
@@ -674,7 +674,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 PlayersAndCooldowns data = item.cooldowns.get(playName);
                                 Player player = ctp.getServer().getPlayer(playName);
                                 if (data.cooldown == 1) {// This is cause we begin from top
-                                	player.sendMessage(ChatColor.GREEN + item.item.item.toString() + ChatColor.WHITE + " cooldown has refreshed!");
+                                	player.sendMessage(ChatColor.GREEN + item.item.getItem().toString().toLowerCase() + ChatColor.WHITE + " cooldown has refreshed!");
                                 }
 
                                 if (data.healingTimesLeft > 0 && data.intervalTimeLeft <= 0) {
@@ -841,7 +841,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         List<Items> list = new LinkedList<Items>();
         list = Util.getItemListFromString(sign.getLine(1));
 
-        if (list.isEmpty() || (list.get(0).item == null) || list.get(0).item.equals(Material.AIR)) { // Kj -- changed bracing from != null ... to == null return;
+        if (list.isEmpty() || (list.get(0).getItem() == null) || list.get(0).getItem().equals(Material.AIR)) { // Kj -- changed bracing from != null ... to == null return;
             return;
         }
 
@@ -857,29 +857,29 @@ public class CaptureThePointsPlayerListener implements Listener {
         }    
 
         if (canPay(p, price)) {
-            int amount = list.get(0).amount;
-            if (list.get(0).item == Material.ARROW) {
+            int amount = list.get(0).getAmount();
+            if (list.get(0).getItem() == Material.ARROW) {
                 amount = 64;
             }
 
             ItemStack stack;
-            if (list.get(0).type == -1) {
-                stack = new ItemStack(list.get(0).item, amount);
+            if (list.get(0).getType() == -1) {
+                stack = new ItemStack(list.get(0).getItem(), amount);
             } else {
-                stack = new ItemStack(list.get(0).item);
+                stack = new ItemStack(list.get(0).getItem());
                 stack.setAmount(amount);
-                stack.setDurability(list.get(0).type);
+                stack.setDurability(list.get(0).getType());
             }
             
             // Add enchantments
-            for(int j = 0; j < list.get(0).enchantments.size(); j++) {
-                stack.addEnchantment(list.get(0).enchantments.get(j), list.get(0).enchLevels.get(j));
+            for(int j = 0; j < list.get(0).getEnchantments().size(); j++) {
+                stack.addEnchantment(list.get(0).getEnchantments().get(j), list.get(0).getEnchantmentLevels().get(j));
             }
             
             p.getInventory().addItem(stack);
             chargeAccount(p, price);
 
-            ctp.sendMessage(p, "You bought " + ChatColor.AQUA + amount + " " + list.get(0).item.toString().toLowerCase() + ChatColor.WHITE + " for " + ChatColor.GREEN + price + ChatColor.WHITE + " money.");
+            ctp.sendMessage(p, "You bought " + ChatColor.AQUA + amount + " " + list.get(0).getItem().toString().toLowerCase() + ChatColor.WHITE + " for " + ChatColor.GREEN + price + ChatColor.WHITE + " money.");
             ctp.sendMessage(p, "You now have " + ChatColor.GREEN + ctp.playerData.get(p).money + ChatColor.WHITE + " money.");
             
             	//It's deprecated but it's currently the only way to get the desired effect.
@@ -910,7 +910,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             ctp.sendMessage(p, "The material in hand is: " + mat.toString());
             
             for (HealingItems item : ctp.healingItems) {
-                if (item.item.item == mat) {
+                if (item.item.getItem() == mat) {
                     PlayersAndCooldowns cooldownData = null;
                     boolean alreadyExists = false;
                     
@@ -921,7 +921,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 return;
                             }
                             if (playName.equalsIgnoreCase(p.getName()) && item.cooldowns.get(playName).cooldown > 0) {
-                                p.sendMessage(ChatColor.GREEN + item.item.item.toString() + ChatColor.WHITE + " is on cooldown! Time left: " + ChatColor.GREEN + item.cooldowns.get(playName).cooldown);
+                                p.sendMessage(ChatColor.GREEN + item.item.getItem().toString().toLowerCase() + ChatColor.WHITE + " is on cooldown! Time left: " + ChatColor.GREEN + item.cooldowns.get(playName).cooldown);
                                 return;
                             } else if (playName.equalsIgnoreCase(p.getName())) {
                                 cooldownData = item.cooldowns.get(playName);

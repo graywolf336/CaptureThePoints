@@ -5,10 +5,10 @@ import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.Items;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
+import me.dalton.capturethepoints.beans.Items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -384,12 +384,12 @@ public class CaptureThePointsBlockListener implements Listener {
         ctp.playerData.get(p).role = role;
 
         for (Items item : ctp.roles.get(role.toLowerCase())) {
-            if (Util.ARMORS_TYPE.contains(item.item) && (!Util.HELMETS_TYPE.contains(item.item))) {
-                ItemStack i = new ItemStack(item.item, 1);
+            if (Util.ARMORS_TYPE.contains(item.getItem()) && (!Util.HELMETS_TYPE.contains(item.getItem()))) {
+                ItemStack i = new ItemStack(item.getItem(), 1);
                 
                 // Add enchantments
-                for(int j = 0; j < item.enchantments.size(); j++) {
-                    i.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
+                for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    i.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                 }
                 
                 Util.equipArmorPiece(i, inv);
@@ -398,17 +398,17 @@ public class CaptureThePointsBlockListener implements Listener {
                 // If something is wrong in config file
                 try {
                     // If exp or economy money - do not allow to pass(only for rewards)
-                    if(item.item.equals(Material.AIR))
+                    if(item.getItem().equals(Material.AIR))
                         continue;
 
-                    stack = new ItemStack(item.item);
-                    stack.setAmount(item.amount);
-                    if(item.type != -1)
-                        stack.setDurability(item.type);
+                    stack = new ItemStack(item.getItem());
+                    stack.setAmount(item.getAmount());
+                    if(item.getType() != -1)
+                        stack.setDurability(item.getType());
 
                     // Add enchantments
-                    for(int j = 0; j < item.enchantments.size(); j++) {
-                        stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
+                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     }
                 } catch(Exception e) {
                     ctp.logInfo("There is error in your config file, with roles. Please check them!");

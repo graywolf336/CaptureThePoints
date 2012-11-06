@@ -4,6 +4,7 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
+import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.commands.*;
 
 import java.io.File;
@@ -1631,8 +1632,11 @@ public class CaptureThePoints extends JavaPlugin {
     	getLogger().severe(msg);
     }
     
+	public void logWarning(String msg) {
+		getLogger().warning(msg);
+	}
+    
     public void logInfo(String msg) {
     	getLogger().info(msg);
     }
-
 }

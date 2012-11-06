@@ -6,9 +6,9 @@ import java.util.List;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.Items;
 import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.beans.Items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -309,90 +309,90 @@ public class CaptureThePointsEntityListener  implements Listener {
         inv.clear(); // Removes inventory
         
         for (Items item : ctp.roles.get(ctp.playerData.get(player).role)) {
-            if(item.item.equals(Material.AIR))
+            if(item.getItem().equals(Material.AIR))
                 continue;
 
-            if (inv.contains(item.item)) {
-                if(item.item.getId() == 373) {   // Potions
-                    ItemStack stack = new ItemStack(item.item);
-                    stack.setAmount(item.amount);
-                    stack.setDurability(item.type);
+            if (inv.contains(item.getItem())) {
+                if(item.getItem().getId() == 373) {   // Potions
+                    ItemStack stack = new ItemStack(item.getItem());
+                    stack.setAmount(item.getAmount());
+                    stack.setDurability(item.getType());
 
-                    HashMap<Integer, ? extends ItemStack> slots = inv.all(item.item);
+                    HashMap<Integer, ? extends ItemStack> slots = inv.all(item.getItem());
                     int amount = 0;
                     for (int slotNum : slots.keySet()) {
-                        if(slots.get(slotNum).getDurability() == item.type)
+                        if(slots.get(slotNum).getDurability() == item.getType())
                             amount += slots.get(slotNum).getAmount();
                     }
 
-                    if (amount < item.amount) {
+                    if (amount < item.getAmount()) {
                         //Removing old potions
                         for (int slotNum : slots.keySet()) {
-                            if(slots.get(slotNum).getDurability() == item.type)
+                            if(slots.get(slotNum).getDurability() == item.getType())
                                 inv.setItem(slotNum, null);
                         }
 
                         inv.addItem(stack);
                     }
                 }
-                else if (!Util.ARMORS_TYPE.contains(item.item)/* && (!Util.WEAPONS_TYPE.contains(item.getType()))*/) {
-                    HashMap<Integer, ? extends ItemStack> slots = inv.all(item.item);
+                else if (!Util.ARMORS_TYPE.contains(item.getItem())/* && (!Util.WEAPONS_TYPE.contains(item.getType()))*/) {
+                    HashMap<Integer, ? extends ItemStack> slots = inv.all(item.getItem());
                     int amount = 0;
                     for (int slotNum : slots.keySet()) {
                         amount += slots.get(slotNum).getAmount();
                     }
                     
-                    if (amount < item.amount) {
-                        inv.remove(item.item);
+                    if (amount < item.getAmount()) {
+                        inv.remove(item.getItem());
 
-                        ItemStack stack = new ItemStack(item.item);
-                        stack.setAmount(item.amount);
-                        if(item.type != -1)
-                            stack.setDurability(item.type);
+                        ItemStack stack = new ItemStack(item.getItem());
+                        stack.setAmount(item.getAmount());
+                        if(item.getType() != -1)
+                            stack.setDurability(item.getType());
                         // Add enchantments
-                        for(int j = 0; j < item.enchantments.size(); j++) {
-                            stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
+                        for(int j = 0; j < item.getEnchantments().size(); j++) {
+                            stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                         }
                         
                         inv.addItem(stack);
                     }
                 }
             } else {
-                if (!Util.ARMORS_TYPE.contains(item.item)) {
-                    ItemStack stack = new ItemStack(item.item);
-                    stack.setAmount(item.amount);
-                    if(item.type != -1)
-                        stack.setDurability(item.type);
+                if (!Util.ARMORS_TYPE.contains(item.getItem())) {
+                    ItemStack stack = new ItemStack(item.getItem());
+                    stack.setAmount(item.getAmount());
+                    if(item.getType() != -1)
+                        stack.setDurability(item.getType());
                     // Add enchantments
-                    for(int j = 0; j < item.enchantments.size(); j++) {
-                        stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
+                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     }
                     
                     inv.addItem(stack);
                 } 
-                else {// find if there is somethig equiped
-                    ItemStack stack = new ItemStack(item.item, item.amount);
+                else {// find if there is something equipped
+                    ItemStack stack = new ItemStack(item.getItem(), item.getAmount());
 
                     // Add enchantments
-                    for(int j = 0; j < item.enchantments.size(); j++) {
-                        stack.addEnchantment(item.enchantments.get(j), item.enchLevels.get(j));
+                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     }
                     
 
-                    if (Util.BOOTS_TYPE.contains(item.item)) {
-                        if (inv.getBoots().getType() == item.item) {
+                    if (Util.BOOTS_TYPE.contains(item.getItem())) {
+                        if (inv.getBoots().getType() == item.getItem()) {
                             inv.setBoots(stack);
                         } else {
                             inv.addItem(stack);
                         }
-                    } else if (Util.LEGGINGS_TYPE.contains(item.item)) {
-                        if (inv.getLeggings().getType() == item.item) {
+                    } else if (Util.LEGGINGS_TYPE.contains(item.getItem())) {
+                        if (inv.getLeggings().getType() == item.getItem()) {
                             inv.setLeggings(stack);
                         } else {
                             inv.addItem(stack);
                         }
-                    } else if (Util.CHESTPLATES_TYPE.contains(item.item)) {
-                        if (inv.getChestplate().getType() == item.item) {
+                    } else if (Util.CHESTPLATES_TYPE.contains(item.getItem())) {
+                        if (inv.getChestplate().getType() == item.getItem()) {
                             inv.setChestplate(stack);
                         } else {
                             inv.addItem(stack);
