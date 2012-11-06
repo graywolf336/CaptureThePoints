@@ -6,8 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
 /** Simpler ItemStack class  */
-public class Items
-{
+public class Items {
     /** This Item's Material 
      * @see org.bukkit.Material */
     public Material item;

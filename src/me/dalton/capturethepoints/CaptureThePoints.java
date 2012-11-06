@@ -134,9 +134,7 @@ public class CaptureThePoints extends JavaPlugin {
         try {
             FileConfiguration PluginPropConfig = YamlConfiguration.loadConfiguration(file);
             return PluginPropConfig;
-        } catch (Exception localException) {
-        	
-        } return null;
+        } catch (Exception localException) {} return null;
     }
 
     @Override
@@ -156,6 +154,11 @@ public class CaptureThePoints extends JavaPlugin {
         enableCTP(false);
     }
 
+    /**
+     * Loads everything from the configs and registers the events (if not reloading).
+     * 
+     * @param reloading Are we reloading the plugin?
+     */
     public void enableCTP (boolean reloading) {
         if (!reloading) {
             setupPermissions();
@@ -1138,8 +1141,8 @@ public class CaptureThePoints extends JavaPlugin {
                 globalConfig.options().copyDefaults(true);
                 globalConfig.save(globalConfigFile);
             } catch (IOException ex) {
+               ex.printStackTrace();
                getLogger().severe("Error while saving the main arena config.");
-               getLogger().severe(ex.getMessage());
             }
         }
 
