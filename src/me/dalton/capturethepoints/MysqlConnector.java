@@ -1,44 +1,50 @@
 package me.dalton.capturethepoints;
 
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 /**
- *
- * @author Humsas
- */
-public class MysqlConnector
-{
+  * @author Humsas
+*/
+
+public class MysqlConnector {
     private final CaptureThePoints ctp;
     private Connection con;
 
-    public MysqlConnector(CaptureThePoints instance)
-    {
+    public MysqlConnector(CaptureThePoints instance){
         ctp = instance;
     }
 
-    public boolean checkMysqlData()
-    {
-        if(ctp.globalConfigOptions.mysqlAddress == null || ctp.globalConfigOptions.mysqlDatabase == null || ctp.globalConfigOptions.mysqlPass == null
-                || ctp.globalConfigOptions.mysqlUser == null)
-        {
-            return false;
+    public boolean checkMysqlData() {
+        if(ctp.globalConfigOptions.mysqlAddress == null
+        		|| ctp.globalConfigOptions.mysqlDatabase == null
+        		|| ctp.globalConfigOptions.mysqlPass == null
+                || ctp.globalConfigOptions.mysqlUser == null) {
+        	return false;
         }
 
         Statement stmt = null;
-        @SuppressWarnings("unused")
+		@SuppressWarnings("unused")
 		ResultSet rs = null;
+        
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (Exception e) {
             e.printStackTrace();
+            ctp.logSevere("Couldn't find the mySQL Driver! Please check your CraftBukkit version to see if it isn't corrupt.");
         }
         
         try {
-            con = DriverManager.getConnection("jdbc:mysql://" + ctp.globalConfigOptions.mysqlAddress + ":" + ctp.globalConfigOptions.mysqlPort + "/"
-                        + ctp.globalConfigOptions.mysqlDatabase + "?user=" + ctp.globalConfigOptions.mysqlUser + "&password=" + ctp.globalConfigOptions.mysqlPass);
+            con = DriverManager.getConnection("jdbc:mysql://"
+            		+ ctp.globalConfigOptions.mysqlAddress
+            		+ ":" + ctp.globalConfigOptions.mysqlPort
+            		+ "/"
+                    + ctp.globalConfigOptions.mysqlDatabase
+                    + "?user="
+                    + ctp.globalConfigOptions.mysqlUser
+                    + "&password=" + ctp.globalConfigOptions.mysqlPass);
 
             stmt = con.createStatement();
+            
             try {
                 rs = stmt.executeQuery("SELECT * FROM Arena");
                 rs = stmt.executeQuery("SELECT * FROM Simple_block");
@@ -54,8 +60,6 @@ public class MysqlConnector
                 stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Spawner_block` (  `block_ID` INT NOT NULL , `creature_type` TEXT NOT NULL , `delay` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
                 stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Item` (  `type` INT NOT NULL , `block_ID` INT NOT NULL , `durability` INT NOT NULL, `amount` INT NOT NULL, `place_in_inv` INT NOT NULL, `data` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
                 stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Sign` (  `block_ID` INT NOT NULL , `first_line` TEXT NOT NULL , `second_line` TEXT NOT NULL, `third_line` TEXT NOT NULL, `fourth_line` TEXT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
-
-                //stmt.executeUpdate("ALTER TABLE `Note_block` ADD `block_ID` INT NOT NULL ,ADD `note_type` INT NOT NULL");
             }
         }
         catch (Exception e) { e.printStackTrace(); }
@@ -69,14 +73,15 @@ public class MysqlConnector
                 Class.forName("com.mysql.jdbc.Driver");  //try to register the mysql jdbc driver
             } catch (Exception e) {
                e.printStackTrace();
+               ctp.logSevere("Couldn't find the mySQL Driver! Please check your CraftBukkit version to see if it isn't corrupt.");
             }
             
             try {
                 con = DriverManager.getConnection("jdbc:mysql://" + ctp.globalConfigOptions.mysqlAddress + ":" + ctp.globalConfigOptions.mysqlPort + "/"
                         + ctp.globalConfigOptions.mysqlDatabase + "?user=" + ctp.globalConfigOptions.mysqlUser + "&password=" + ctp.globalConfigOptions.mysqlPass);
             } catch (Exception e) {
-            	ctp.logSevere("Error connecting to the database. Check your creditals.");
             	e.printStackTrace();
+            	ctp.logSevere("Error connecting to the database, pleaes check your creditals.");
             }
         }
     }
@@ -88,7 +93,8 @@ public class MysqlConnector
 
             stmt.executeUpdate(statement);
         } catch (SQLException ex) {
-            Logger.getLogger(MysqlConnector.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            ctp.logSevere("There was an error somewhere modifing the data in the database, please see the above StackTrace.");
         }
     }
 
@@ -100,7 +106,8 @@ public class MysqlConnector
 
             return stmt.executeQuery(statement);
         } catch (SQLException ex) {
-            Logger.getLogger(MysqlConnector.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            ctp.logSevere("There was an error getting the data from the database, please see the above StackTrace.");
         }
         return null;
     }
@@ -113,7 +120,8 @@ public class MysqlConnector
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(MysqlConnector.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            ctp.logSevere("There was an error while we tried to get the last inserted id, please see the above StackTrace.");
         }
         return -1;
     }
