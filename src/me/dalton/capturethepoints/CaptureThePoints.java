@@ -495,7 +495,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arena = mainArena;
                 }
             }
-            return "An arena doesn't seem to be built yet.";
+            return "An arena hasn't been built yet, try again later when an arena has been built.";
         }
         
         if (arena.lobby == null) {
@@ -1382,7 +1382,7 @@ public class CaptureThePoints extends JavaPlugin {
     public void moveToLobby (Player player) {
         String mainArenaCheckError = checkMainArena(player, mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
         if (!mainArenaCheckError.isEmpty()) {
-            player.sendMessage(mainArenaCheckError);
+            sendMessage(player, mainArenaCheckError);
             return;
         }
 
