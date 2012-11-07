@@ -622,22 +622,20 @@ public class CaptureThePointsPlayerListener implements Listener {
                             data.money += ctp.mainArena.co.moneyEvery30Sec;
                         }
                     }
-                    if (ctp.mainArena.co.useScoreGeneration)
-                    {
-                        for (Team team : ctp.mainArena.teams)
-                        {
+                    
+                    if (ctp.mainArena.co.useScoreGeneration) {
+                        for (Team team : ctp.mainArena.teams) {
                             int dublicator = 1;
                             int maxPossiblePointsToCapture = 0;
-                            for (Points point : ctp.mainArena.capturePoints)
-                            {
+                            for (Points point : ctp.mainArena.capturePoints) {
                                 if(point.getNotAllowedToCaptureTeams() == null || !Util.containsTeam(point.getNotAllowedToCaptureTeams(), team.color))
                                     maxPossiblePointsToCapture++;
                             }
 
-                            if (team.controledPoints == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0)
-                            {
+                            if (team.controledPoints == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0) {
                                 dublicator = ctp.mainArena.co.scoreMyltiplier;
                             }
+                            
                             team.score += ctp.mainArena.co.onePointGeneratedScoreEvery30sec * team.controledPoints * dublicator;
                         }
                     }
