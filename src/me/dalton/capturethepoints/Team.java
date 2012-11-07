@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 public class Team {
     /** The associated ChatColor of this Team. Defaults to GREEN 
      * @see ChatColor */
-    public ChatColor chatcolor = ChatColor.GREEN; // Kjhf  
+    public ChatColor chatcolor = ChatColor.GREEN; // Kjhf
     
     /** This Team's color */
     public String color;
@@ -29,7 +29,7 @@ public class Team {
     public int controlledPoints;
     
     /** This Team's spawn point */
-    public Spawn spawn;    
+    public Spawn spawn;
     
     /** Get a Team from its color 
      * @param ctp CaptureThePoints instance
@@ -47,19 +47,16 @@ public class Team {
     /** Get all Players in this team as a list of Players
      * @param ctp CaptureThePoints instance
      * @return The Player list */
-    public List<Player> getTeamPlayers(CaptureThePoints ctp)
-    {
+    public List<Player> getTeamPlayers(CaptureThePoints ctp) {
         List<Player> teamplayers = new ArrayList<Player>();
 
         Set<Player> players = ctp.playerData.keySet();
-        for (Player p : players)
-        {
-            if (ctp.playerData.get(p).team == null)
-            {
+        for (Player p : players) {
+            if (ctp.playerData.get(p).team == null) {
                 continue; // Player is not yet in game.
             }
-            if (ctp.playerData.get(p).team.color.equalsIgnoreCase(this.color))
-            {
+            
+            if (ctp.playerData.get(p).team.color.equalsIgnoreCase(this.color)) {
                 teamplayers.add(p);
             }
         }
@@ -81,6 +78,7 @@ public class Team {
             if (ctp.playerData.get(p).team == null || ctp.playerData.get(p).team.color == null) {
                 continue; // Player is not yet in game.
             }
+            
             if (ctp.playerData.get(p).team == this && ctp.playerData.get(p).team.color.equalsIgnoreCase(this.color)) {
                 teamplayers.add(p.getName());
             }
