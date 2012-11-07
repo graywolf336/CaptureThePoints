@@ -495,6 +495,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arena = mainArena;
                 }
             }
+            return "An arena doesn't seem to be built yet.";
         }
         
         if (arena.lobby == null) {
