@@ -338,11 +338,11 @@ public class CaptureThePointsBlockListener implements Listener {
         if (this.capturegame) {
             for (Team team : ctp.mainArena.teams) {
                 if (team.color.equalsIgnoreCase(aTeam)) {
-                    team.controledPoints++;
+                    team.controlledPoints++;
                     if (!ctp.mainArena.co.useScoreGeneration) {
-                        return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.controledPoints + "/" + ctp.mainArena.co.pointsToWin + " points).";
+                        return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.controlledPoints + "/" + ctp.mainArena.co.pointsToWin + " points).";
                     } else {
-                        return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.controledPoints + "/" + ctp.mainArena.capturePoints.size() + " points).";
+                        return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.controlledPoints + "/" + ctp.mainArena.capturePoints.size() + " points).";
                     }
                 }
             }
@@ -557,7 +557,7 @@ public class CaptureThePointsBlockListener implements Listener {
             }
         } else {
             for (Team team : ctp.mainArena.teams) {
-                if (team.controledPoints >= ctp.mainArena.co.pointsToWin) {
+                if (team.controlledPoints >= ctp.mainArena.co.pointsToWin) {
                     winningteams.add(team);
                     WinMessage = team.chatcolor + team.color.toUpperCase() + ChatColor.WHITE + " wins!";
                 }
@@ -590,7 +590,7 @@ public class CaptureThePointsBlockListener implements Listener {
             }
         } else {
             for (Team aTeam : ctp.mainArena.teams) {
-                message = message + aTeam.chatcolor + aTeam.color.toUpperCase() + ChatColor.WHITE + " final points: " + aTeam.controledPoints + ChatColor.AQUA + " // ";
+                message = message + aTeam.chatcolor + aTeam.color.toUpperCase() + ChatColor.WHITE + " final points: " + aTeam.controlledPoints + ChatColor.AQUA + " // ";
             }
         }
 
@@ -765,9 +765,9 @@ public class CaptureThePointsBlockListener implements Listener {
         if (this.capturegame) {
             for (Team team : ctp.mainArena.teams) {
                 if (team.color.equalsIgnoreCase(aTeam)) {
-                    team.controledPoints--;
-                    if (team.controledPoints < 0) {
-                        team.controledPoints = 0;
+                    team.controlledPoints--;
+                    if (team.controlledPoints < 0) {
+                        team.controlledPoints = 0;
                     }
                     return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " lost " + ChatColor.GOLD + lostpoint + ".";
                 }

@@ -38,7 +38,7 @@ public class SetpointsCommand extends CTPCommand {
         } else {
             for (Team team : ctp.mainArena.teams) {
                 if (team.color.equalsIgnoreCase(parameters.get(2))) {
-                    team.controledPoints = points;
+                    team.controlledPoints = points;
                 }
             }
             ctp.blockListener.didSomeoneWin();

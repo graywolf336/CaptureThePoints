@@ -53,7 +53,7 @@ public class TeamCommand extends CTPCommand {
         
         sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
         if (!ctp.mainArena.co.useScoreGeneration) {
-            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.controledPoints + ChatColor.GREEN + " points!");
+            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.controlledPoints + ChatColor.GREEN + " points!");
         } else {
             sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.score + "!");
         }

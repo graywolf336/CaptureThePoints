@@ -23,7 +23,7 @@ public class Team {
     public int score;
     
     /** The number of control points this Team has */
-    public int controledPoints;
+    public int controlledPoints;
     
     /** This Team's spawn point */
     public Spawn spawn;    

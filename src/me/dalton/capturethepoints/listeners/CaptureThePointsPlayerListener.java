@@ -565,7 +565,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         //Game settings
         for (Team team : ctp.mainArena.teams) {
-            team.controledPoints = 0;
+            team.controlledPoints = 0;
             team.score = 0;
         }
         
@@ -587,14 +587,14 @@ public class CaptureThePointsPlayerListener implements Listener {
                 if ((ctp.isGameRunning()) && (!ctp.mainArena.co.useScoreGeneration)) {
                     int maxPoints = -9999;
                     for (Team team : ctp.mainArena.teams) {
-                        if (team.controledPoints > maxPoints) {
-                            maxPoints = team.controledPoints;
+                        if (team.controlledPoints > maxPoints) {
+                            maxPoints = team.controlledPoints;
                         }
                     }
                     HashMap<String, String> colors = new HashMap<String, String>();
 
                     for (Team team : ctp.mainArena.teams) {
-                        if (team.controledPoints == maxPoints) {
+                        if (team.controlledPoints == maxPoints) {
                             colors.put(team.color, team.color);
                         }
                     }
@@ -632,11 +632,11 @@ public class CaptureThePointsPlayerListener implements Listener {
                                     maxPossiblePointsToCapture++;
                             }
 
-                            if (team.controledPoints == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0) {
+                            if (team.controlledPoints == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0) {
                                 dublicator = ctp.mainArena.co.scoreMyltiplier;
                             }
                             
-                            team.score += ctp.mainArena.co.onePointGeneratedScoreEvery30sec * team.controledPoints * dublicator;
+                            team.score += ctp.mainArena.co.onePointGeneratedScoreEvery30sec * team.controlledPoints * dublicator;
                         }
                     }
                     ctp.blockListener.didSomeoneWin();
