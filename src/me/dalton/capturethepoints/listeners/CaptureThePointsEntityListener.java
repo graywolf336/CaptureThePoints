@@ -6,9 +6,9 @@ import java.util.List;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.Spawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -430,7 +430,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             return false;
         }
                             
-        Location protectionPoint = new Location(ctp.getServer().getWorld(ctp.mainArena.world), spawn.x, spawn.y, spawn.z);
+        Location protectionPoint = new Location(ctp.getServer().getWorld(ctp.mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
         double distance = Util.getDistance(player.getLocation(), protectionPoint); // Kj -- this method is world-friendly.
         
         if (distance == Double.NaN) {
@@ -482,13 +482,13 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
 
-        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), spawn.x, spawn.y, spawn.z);
-        loc.setYaw((float) spawn.dir);
+        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
+        loc.setYaw((float) spawn.getDir());
         ctp.getServer().getWorld(ctp.mainArena.world).loadChunk(loc.getBlockX(), loc.getBlockZ());
         boolean teleport = player.teleport(loc);
         
         if (!teleport) {
-            player.teleport(new Location(player.getWorld(), spawn.x, spawn.y, spawn.z, 0.0F, (float)spawn.dir));
+            player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
         }
     }
     

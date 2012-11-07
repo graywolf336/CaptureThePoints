@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import me.dalton.capturethepoints.beans.Spawn;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

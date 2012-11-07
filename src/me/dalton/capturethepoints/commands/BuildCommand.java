@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import me.dalton.capturethepoints.*;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Points;
+import me.dalton.capturethepoints.beans.Spawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -162,11 +163,11 @@ public class BuildCommand extends CTPCommand {
                         || (arg2.equalsIgnoreCase("cyan")) || (arg2.equalsIgnoreCase("lightblue")) || (arg2.equalsIgnoreCase("purple"))
                         || (arg2.equalsIgnoreCase("pink")) || (arg2.equalsIgnoreCase("magenta")) || (arg2.equalsIgnoreCase("brown"))) {
                     Spawn spawn = new Spawn();
-                    spawn.name = arg2.toLowerCase();
-                    spawn.x = Double.valueOf(loc.getX()).doubleValue();
-                    spawn.y = Double.valueOf(loc.getY()).doubleValue();
-                    spawn.z = Double.valueOf(loc.getZ()).doubleValue();
-                    spawn.dir = loc.getYaw();
+                    spawn.setName(arg2.toLowerCase());
+                    spawn.setX(Double.valueOf(loc.getX()).doubleValue());
+                    spawn.setY(Double.valueOf(loc.getY()).doubleValue());
+                    spawn.setZ(Double.valueOf(loc.getZ()).doubleValue());
+                    spawn.setDir(loc.getYaw());
 
                     String aWorld = arenaConf.getString("World");
                     if (aWorld == null) {
@@ -179,7 +180,7 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".X", Double.valueOf(loc.getX()));
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".Y", Double.valueOf(loc.getY()));
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".Z", Double.valueOf(loc.getZ()));
-                    arenaConf.addDefault("Team-Spawns." + arg2 + ".Dir", Double.valueOf(spawn.dir));
+                    arenaConf.addDefault("Team-Spawns." + arg2 + ".Dir", Double.valueOf(spawn.getDir()));
                     try {
                         arenaConf.options().copyDefaults(true);
                         arenaConf.save(arenaFile);
@@ -199,7 +200,7 @@ public class BuildCommand extends CTPCommand {
                         team.color = arg2;
                         team.memberCount = 0;
                         try {
-                            team.chatcolor = ChatColor.valueOf(spawn.name.toUpperCase()); // Kj -- init teamchat colour
+                            team.chatcolor = ChatColor.valueOf(spawn.getName().toUpperCase()); // Kj -- init teamchat colour
                         } catch (Exception ex) {
                             team.chatcolor = ChatColor.GREEN;
                         }
@@ -1062,8 +1063,8 @@ public class BuildCommand extends CTPCommand {
                                     boolean first = true; // If it is first block in the stack
                                     int id = -1;
                                     int data = 0;
-                                    firstPoint.x = 0; firstPoint.y = 0; firstPoint.z = 0;
-                                    secondPoint.x = 0; secondPoint.y = 0; secondPoint.z = 0;
+                                    firstPoint.setX(0); firstPoint.setY(0); firstPoint.setZ(0);
+                                    secondPoint.setX(0); secondPoint.setY(0); secondPoint.setZ(0);
                                     
                                     for (int z = zlow; z <= zhigh; z++) {
                                         if(ctp.arenaRestore.canStackBlocksToMySQL(world.getBlockAt(x, y, z).getTypeId(), id, first, data, world.getBlockAt(x, y, z).getData())) {
@@ -1071,34 +1072,34 @@ public class BuildCommand extends CTPCommand {
                                                 first = false;
                                                 id = world.getBlockAt(x, y, z).getTypeId();
                                                 data = world.getBlockAt(x, y, z).getData();
-                                                firstPoint.x = x; firstPoint.y = y; firstPoint.z = z;
-                                                secondPoint.x = x; secondPoint.y = y; secondPoint.z = z;
+                                                firstPoint.setX(x); firstPoint.setY(y); firstPoint.setZ(z);
+                                                secondPoint.setX(x); secondPoint.setY(y); secondPoint.setZ(z);
                                             } else {  // Add one block to stack
-                                                secondPoint.z = z;
+                                                secondPoint.setZ(z);
                                             }
                                         } else { // Cant stack
                                             if(first) { // Only one block to write
-                                                firstPoint.x = x; firstPoint.y = y; firstPoint.z = z;
-                                                secondPoint.x = x; secondPoint.y = y; secondPoint.z = z;
+                                                firstPoint.setX(x); firstPoint.setY(y); firstPoint.setZ(z);
+                                                secondPoint.setX(x); secondPoint.setY(y); secondPoint.setZ(z);
                                                 
-                                                ctp.arenaRestore.storeBlock(world.getBlockAt((int)firstPoint.x, (int)firstPoint.y, (int)firstPoint.z), firstPoint, secondPoint, ctp.editingArena.name);
+                                                ctp.arenaRestore.storeBlock(world.getBlockAt((int)firstPoint.getX(), (int)firstPoint.getY(), (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.editingArena.name);
                                                 first = true;
                                                 id = -1;
                                                 data = 0;
                                             } else { // Last block in stack
-                                                ctp.arenaRestore.storeBlock(world.getBlockAt((int)firstPoint.x, (int)firstPoint.y, (int)firstPoint.z), firstPoint, secondPoint, ctp.editingArena.name);
+                                                ctp.arenaRestore.storeBlock(world.getBlockAt((int)firstPoint.getX(), (int)firstPoint.getY(), (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.editingArena.name);
                                                 
                                                 id = world.getBlockAt(x, y, z).getTypeId();
                                                 data = world.getBlockAt(x, y, z).getData();
-                                                firstPoint.x = x; firstPoint.y = y; firstPoint.z = z;
-                                                secondPoint.x = x; secondPoint.y = y; secondPoint.z = z;
+                                                firstPoint.setX(x); firstPoint.setY(y); firstPoint.setZ(z);
+                                                secondPoint.setX(x); secondPoint.setY(y); secondPoint.setZ(z);
                                             }
                                         }
                                     }
                                     
                                     // Check if there is something to write to mySQL
                                     if(!first) {
-                                        ctp.arenaRestore.storeBlock(world.getBlockAt(x, y, (int)firstPoint.z), firstPoint, secondPoint, ctp.editingArena.name);
+                                        ctp.arenaRestore.storeBlock(world.getBlockAt(x, y, (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.editingArena.name);
                                     }
                                 }
                             }

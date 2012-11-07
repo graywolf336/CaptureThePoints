@@ -13,12 +13,12 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Lobby;
 import me.dalton.capturethepoints.PlayerData;
-import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Points;
+import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 
 import org.bukkit.ChatColor;
@@ -311,8 +311,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                     return;
                 } else {
                     String color = ctp.playerData.get(p).team.color;
-                    Location loc2 = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).x, ctp.mainArena.teamSpawns.get(color).y + 1, ctp.mainArena.teamSpawns.get(color).z);
-                    loc2.setYaw((float) ctp.mainArena.teamSpawns.get(color).dir);
+                    Location loc2 = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).getX(), ctp.mainArena.teamSpawns.get(color).getY() + 1, ctp.mainArena.teamSpawns.get(color).getZ());
+                    loc2.setYaw((float) ctp.mainArena.teamSpawns.get(color).getDir());
                     loc2.getWorld().loadChunk(loc2.getBlockX(), loc2.getBlockZ());
                     p.teleport(loc2);
                 }
@@ -387,7 +387,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         // Find if player is in arena
         if (ctp.playerData.get(play).isInArena) {
             Spawn playerspawn = ctp.playerData.get(play).team.spawn; // Get the player's spawnpoint
-            if (event.getTo().getX() == playerspawn.x && event.getTo().getZ() == playerspawn.z) {
+            if (event.getTo().getX() == playerspawn.getX() && event.getTo().getZ() == playerspawn.getZ()) {
                 // The player is going to their spawn.
                 return;
             }
@@ -795,13 +795,13 @@ public class CaptureThePointsPlayerListener implements Listener {
                 ? ctp.mainArena.teamSpawns.get(ctp.playerData.get(player).team.color)
                 : team.spawn;
 
-        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).x, ctp.mainArena.teamSpawns.get(color).y + 1D, ctp.mainArena.teamSpawns.get(color).z); // Kj -- Y+1
-        loc.setYaw((float) ctp.mainArena.teamSpawns.get(color).dir);
+        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).getX(), ctp.mainArena.teamSpawns.get(color).getY() + 1D, ctp.mainArena.teamSpawns.get(color).getZ()); // Kj -- Y+1
+        loc.setYaw((float) ctp.mainArena.teamSpawns.get(color).getDir());
         loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         
         boolean teleport = player.teleport(loc);
         if (!teleport) {
-            player.teleport(new Location(player.getWorld(), spawn.x, spawn.y, spawn.z, 0.0F, (float) spawn.dir));
+            player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float) spawn.getDir()));
         }
         ctp.mainArena.lobby.playersinlobby.remove(player);
         ctp.playerData.get(player).isInLobby = false;

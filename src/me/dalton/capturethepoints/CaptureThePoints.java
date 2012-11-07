@@ -7,6 +7,7 @@ import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Rewards;
+import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.commands.*;
 
 import java.io.File;
@@ -415,12 +416,12 @@ public class CaptureThePoints extends JavaPlugin {
                     mainArena.teamSpawns.get(newTeam.color) != null ?
                     mainArena.teamSpawns.get(newTeam.color) :
                     newTeam.spawn;
-            Location loc = new Location(getServer().getWorld(mainArena.world), spawn.x, spawn.y, spawn.z);
-            loc.setYaw((float) spawn.dir);
+            Location loc = new Location(getServer().getWorld(mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
+            loc.setYaw((float) spawn.getDir());
             getServer().getWorld(mainArena.world).loadChunk(loc.getBlockX(), loc.getBlockZ());
             boolean teleport = p.teleport(loc);
             if (!teleport) {
-                p.teleport(new Location(p.getWorld(), spawn.x, spawn.y, spawn.z, 0.0F, (float)spawn.dir));
+                p.teleport(new Location(p.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
             }
             Util.sendMessageToPlayers(this, 
                     newTeam.chatcolor + p.getName() + ChatColor.WHITE + " changed teams from " 
@@ -554,10 +555,10 @@ public class CaptureThePoints extends JavaPlugin {
         
         // Kj -- Test that the spawn points are within the map boundaries
         for (Spawn aSpawn : arena.teamSpawns.values()) {
-            if (!playerListener.isInside((int) aSpawn.x, arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.z, arena.z1, arena.z2)) {
+            if (!playerListener.isInside((int) aSpawn.getX(), arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.getZ(), arena.z1, arena.z2)) {
                 if (canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                    return "The spawn point \"" + aSpawn.name + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. "
-                            + "[Spawn is " + (int) aSpawn.x + ", " + (int) aSpawn.z + ". Boundaries are " + arena.x1 + "<==>" + arena.x2 + ", " + arena.z1 + "<==>" + arena.z2 + "].";
+                    return "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. "
+                            + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.x1 + "<==>" + arena.x2 + ", " + arena.z1 + "<==>" + arena.z2 + "].";
                 } else {
                     return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
                 }
@@ -1246,21 +1247,21 @@ public class CaptureThePoints extends JavaPlugin {
             if (arenaConf.contains("Team-Spawns")) {
                 for (String str : arenaConf.getConfigurationSection("Team-Spawns").getKeys(false)) {
                     Spawn spawn = new Spawn();
-                    spawn.name = str;
+                    spawn.setName(str);
                     str = "Team-Spawns." + str;
-                    spawn.x = arenaConf.getDouble(str + ".X", 0.0D);
-                    spawn.y = arenaConf.getDouble(str + ".Y", 0.0D);
-                    spawn.z = arenaConf.getDouble(str + ".Z", 0.0D);
-                    spawn.dir = arenaConf.getDouble(str + ".Dir", 0.0D);
-                    arena.teamSpawns.put(spawn.name, spawn);
+                    spawn.setX(arenaConf.getDouble(str + ".X", 0.0D));
+                    spawn.setY(arenaConf.getDouble(str + ".Y", 0.0D));
+                    spawn.setZ(arenaConf.getDouble(str + ".Z", 0.0D));
+                    spawn.setDir(arenaConf.getDouble(str + ".Dir", 0.0D));
+                    arena.teamSpawns.put(spawn.getName(), spawn);
 
                     Team team = new Team();
                     team.spawn = spawn;
-                    team.color = spawn.name;
+                    team.color = spawn.getName();
                     team.memberCount = 0;
                     
                     try {
-                        team.chatcolor = ChatColor.valueOf(spawn.name.toUpperCase());
+                        team.chatcolor = ChatColor.valueOf(spawn.getName().toUpperCase());
                     } catch (Exception ex) {
                         team.chatcolor = ChatColor.GREEN;
                     }
@@ -1269,7 +1270,7 @@ public class CaptureThePoints extends JavaPlugin {
                     boolean hasTeam = false;
 
                     for (Team aTeam : arena.teams) {
-                        if (aTeam.color.equalsIgnoreCase(spawn.name)) {
+                        if (aTeam.color.equalsIgnoreCase(spawn.getName())) {
                             hasTeam = true;
                             break;
                             //ctp.teams.remove(aTeam);
@@ -1302,8 +1303,8 @@ public class CaptureThePoints extends JavaPlugin {
 
             // Kj -- Test that the spawn points are within the map boundaries
             for (Spawn aSpawn : arena.teamSpawns.values()) {
-                if (!playerListener.isInside((int) aSpawn.x, arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.z, arena.z1, arena.z2)) {
-                	getLogger().warning("WARNING: The spawn point \"" + aSpawn.name + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
+                if (!playerListener.isInside((int) aSpawn.getX(), arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.getZ(), arena.z1, arena.z2)) {
+                	getLogger().warning("WARNING: The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
                     continue;
                 }
             }
