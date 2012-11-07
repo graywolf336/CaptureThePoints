@@ -723,7 +723,7 @@ public class CaptureThePointsBlockListener implements Listener {
 
     public void restoreThings (Player p) {
         ctp.playerData.get(p).justJoined = true;
-        this.ctp.restoreInv(p);
+        Util.restoreInv(p);
 
         Location loc = ctp.previousLocation.get(p);
         //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());

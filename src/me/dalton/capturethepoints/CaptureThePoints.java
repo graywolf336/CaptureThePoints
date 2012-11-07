@@ -79,7 +79,7 @@ public class CaptureThePoints extends JavaPlugin {
     public ArenaRestore arenaRestore = new ArenaRestore(this);
     public MysqlConnector mysqlConnector = new MysqlConnector(this);
 
-    public final HashMap<Player, ItemStack[]> Inventories = new HashMap<Player, ItemStack[]>();
+    private final HashMap<Player, ItemStack[]> Inventories = new HashMap<Player, ItemStack[]>();
 
     private HashMap<Player, ItemStack[]> armor = new HashMap<Player, ItemStack[]>();
 
@@ -116,7 +116,7 @@ public class CaptureThePoints extends JavaPlugin {
     public List<HealingItems> healingItems = new LinkedList<HealingItems>();
 
     /** The list of Rewards stored by CTP. */
-    public Rewards rewards = new Rewards();
+    private Rewards rewards = new Rewards();
 
     /** The timers used by CTP. */
     public CTPScheduler CTP_Scheduler = new CTPScheduler();
@@ -1550,30 +1550,6 @@ public class CaptureThePoints extends JavaPlugin {
         loadArenas(dir);
     }
 
-	@SuppressWarnings("deprecation")
-	public void restoreInv (Player player) {
-        PlayerInventory PlayerInv = player.getInventory();
-
-        // Just to be sure that inventory is saved
-        if (Inventories.get(player) != null) {
-            PlayerInv.setContents(this.Inventories.get(player));
-            this.Inventories.remove(player);
-
-            PlayerInv.setBoots(this.armor.get(player)[0].getTypeId() == 0 ? null
-                    : this.armor.get(player)[0]); // Kj -- removed redundant casts
-            PlayerInv.setLeggings(this.armor.get(player)[1].getTypeId() == 0
-                    ? null : this.armor.get(player)[1]);
-            PlayerInv.setChestplate(this.armor.get(player)[2].getTypeId() == 0
-                    ? null : this.armor.get(player)[2]);
-            PlayerInv.setHelmet(this.armor.get(player)[3].getTypeId() == 0
-                    ? null : this.armor.get(player)[3]);
-            this.armor.remove(player);
-            
-            //It's deprecated but it's currently the only way to get the desired effect.
-            player.updateInventory();
-        }
-    }
-
     public void saveInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
         this.Inventories.put(player, PlayerInv.getContents());
@@ -1616,6 +1592,24 @@ public class CaptureThePoints extends JavaPlugin {
         	getLogger().info("Vault plugin found, economy support enabled.");
 
         return economyHandler != null;
+    }
+    
+    /**
+     * Returns the Rewards data.
+     * @see Rewards
+     */
+    public Rewards getRewards() {
+    	return this.rewards;
+    }
+    
+    /** Returns the Hashmap of the player inventories. */
+    public HashMap<Player, ItemStack[]> getInventories() {
+    	return this.Inventories;
+    }
+    
+    /** Returns the Hashmap of the armor stored. */
+    public HashMap<Player, ItemStack[]> getArmor() {
+    	return this.armor;
     }
     
     /**
