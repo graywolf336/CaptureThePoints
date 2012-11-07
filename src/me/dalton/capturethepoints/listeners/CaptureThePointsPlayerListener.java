@@ -13,11 +13,11 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Lobby;
 import me.dalton.capturethepoints.PlayerData;
-import me.dalton.capturethepoints.PlayersAndCooldowns;
 import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 
@@ -671,24 +671,24 @@ public class CaptureThePointsPlayerListener implements Listener {
                             for (String playName : item.cooldowns.keySet()) {
                                 PlayersAndCooldowns data = item.cooldowns.get(playName);
                                 Player player = ctp.getServer().getPlayer(playName);
-                                if (data.cooldown == 1) {// This is cause we begin from top
+                                if (data.getCooldown() == 1) {// This is cause we begin from top
                                 	player.sendMessage(ChatColor.GREEN + item.item.getItem().toString().toLowerCase() + ChatColor.WHITE + " cooldown has refreshed!");
                                 }
 
-                                if (data.healingTimesLeft > 0 && data.intervalTimeLeft <= 0) {
+                                if (data.getHealingTimesLeft() > 0 && data.getIntervalTimeLeft() <= 0) {
                                     if (ctp.getServer().getPlayer(playName).getHealth() + item.hotHeal > ctp.mainArena.co.maxPlayerHealth) {
                                     	healPlayerAndCallEvent(player, ctp.mainArena.co.maxPlayerHealth);
                                     } else {
                                     	healPlayerAndCallEvent(player, player.getHealth() + item.hotHeal);
                                     }
-                                    data.intervalTimeLeft = item.hotInterval;
-                                    data.healingTimesLeft--;
+                                    data.setIntervalTimeLeft(item.hotInterval);
+                                    data.setHealingTimesLeft(data.getHealingTimesLeft() - 1);
                                 }
                                 //ctp.getServer().getPlayer(playName).sendMessage(ChatColor.GREEN + item.item.item.toString() + ChatColor.WHITE + " cooldown: " + data.cooldown);
-                                data.intervalTimeLeft--;
-                                data.cooldown--;
+                                data.setIntervalTimeLeft(data.getIntervalTimeLeft() - 1);
+                                data.setCooldown(data.getCooldown() - 1);
 
-                                if (data.cooldown <= 0 && data.healingTimesLeft <= 0) {
+                                if (data.getCooldown() <= 0 && data.getHealingTimesLeft() <= 0) {
                                     item.cooldowns.remove(playName);
                                 }
                             }
@@ -918,8 +918,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 p.sendMessage(ChatColor.RED + "You are healthy!");
                                 return;
                             }
-                            if (playName.equalsIgnoreCase(p.getName()) && item.cooldowns.get(playName).cooldown > 0) {
-                                p.sendMessage(ChatColor.GREEN + item.item.getItem().toString().toLowerCase() + ChatColor.WHITE + " is on cooldown! Time left: " + ChatColor.GREEN + item.cooldowns.get(playName).cooldown);
+                            if (playName.equalsIgnoreCase(p.getName()) && item.cooldowns.get(playName).getCooldown() > 0) {
+                                p.sendMessage(ChatColor.GREEN + item.item.getItem().toString().toLowerCase() + ChatColor.WHITE + " is on cooldown! Time left: " + ChatColor.GREEN + item.cooldowns.get(playName).getCooldown());
                                 return;
                             } else if (playName.equalsIgnoreCase(p.getName())) {
                                 cooldownData = item.cooldowns.get(playName);
@@ -936,9 +936,9 @@ public class CaptureThePointsPlayerListener implements Listener {
 
                     // If we are here item has no cooldown, but it can have HOT ticking, but we do not check that.
                     if (item.cooldown == 0) {
-                        cooldownData.cooldown = -1;
+                        cooldownData.setCooldown(-1);
                     } else {
-                        cooldownData.cooldown = item.cooldown;
+                        cooldownData.setCooldown(item.cooldown);
                     }
 
                     if (p.getHealth() + item.instantHeal > ctp.mainArena.co.maxPlayerHealth) {
@@ -952,8 +952,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                     }
 
                     if (item.duration > 0) {
-                        cooldownData.healingTimesLeft = item.duration;
-                        cooldownData.intervalTimeLeft = item.hotInterval;
+                    	cooldownData.setHealingTimesLeft(item.duration);
+                        cooldownData.setIntervalTimeLeft(item.hotInterval);
                     }
 
                     if (!alreadyExists) {
