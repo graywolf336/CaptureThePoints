@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.dalton.capturethepoints.*;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
+import me.dalton.capturethepoints.beans.Points;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -291,15 +292,15 @@ public class BuildCommand extends CTPCommand {
                 	ctp.sendMessage(player, ChatColor.RED + "No arena selected!");
                     return;
                 }
-                CTPPoints tmps = new CTPPoints();
-                tmps.name = arg2;
+                Points tmps = new Points();
+                tmps.setName(arg2);
                 Location loc = player.getLocation();
                 int start_x;
-                tmps.x = (start_x = loc.getBlockX());
+                tmps.setX(start_x = loc.getBlockX());
                 int start_y;
-                tmps.y = (start_y = loc.getBlockY());
+                tmps.setY(start_y = loc.getBlockY());
                 int start_z;
-                tmps.z = (start_z = loc.getBlockZ());
+                tmps.setZ(start_z = loc.getBlockZ());
 
                 File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.name + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
@@ -309,8 +310,8 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
 
-                for (CTPPoints point : ctp.editingArena.capturePoints) {
-                    Location protectionPoint = new Location(player.getWorld(), point.x, point.y, point.z);
+                for (Points point : ctp.editingArena.capturePoints) {
+                    Location protectionPoint = new Location(player.getWorld(), point.getX(), point.getY(), point.getZ());
                     double distance = player.getLocation().distance(protectionPoint);
                     if (distance < 5.0D) {
                     	ctp.sendMessage(player, ChatColor.RED + "You are trying to build too close to another point!"); // Kj to -> too
@@ -346,7 +347,7 @@ public class BuildCommand extends CTPCommand {
                             player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z + 1).setTypeId(0);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "NORTH");
-                            tmps.pointDirection = "NORTH";
+                            tmps.setPointDirection("NORTH");
                             break;
                         case EAST:
                             Util.buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, ctp.globalConfigOptions.ringBlock);
@@ -355,7 +356,7 @@ public class BuildCommand extends CTPCommand {
                             player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setTypeId(0);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "EAST");
-                            tmps.pointDirection = "EAST";
+                            tmps.setPointDirection("EAST");
                             break;
                         case SOUTH:
                             Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, ctp.globalConfigOptions.ringBlock);
@@ -364,7 +365,7 @@ public class BuildCommand extends CTPCommand {
                             player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z + 1).setTypeId(0);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "SOUTH");
-                            tmps.pointDirection = "SOUTH";
+                            tmps.setPointDirection("SOUTH");
                             break;
                         case WEST:
                             Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, ctp.globalConfigOptions.ringBlock);
@@ -373,7 +374,7 @@ public class BuildCommand extends CTPCommand {
                             player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setTypeId(0);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "WEST");
-                            tmps.pointDirection = "WEST";
+                            tmps.setPointDirection("WEST");
                             break;
                         default:
                         	break;
@@ -405,22 +406,22 @@ public class BuildCommand extends CTPCommand {
 
                 // save arena point data
                 if(parameters.size() > 5) {
-                    tmps.notAllowedToCaptureTeams = new ArrayList<String>();
+                    tmps.setNotAllowedToCaptureTeams(new ArrayList<String>());
                     String colors = "";
                     for(int i = 5; i < parameters.size(); i++) {
-                        tmps.notAllowedToCaptureTeams.add(parameters.get(i).toLowerCase());
+                        tmps.getNotAllowedToCaptureTeams().add(parameters.get(i).toLowerCase());
                         colors = colors + parameters.get(i) + ", ";
                     }
                     
                     colors = colors.substring(0, colors.length() - 2);
                     arenaConf.addDefault("Points." + arg2 + ".NotAllowedToCaptureTeams", colors);
                 } else {
-                    tmps.notAllowedToCaptureTeams = null;
+                    tmps.setNotAllowedToCaptureTeams(null);
                 }
 
-                arenaConf.addDefault("Points." + arg2 + ".X", Double.valueOf(tmps.x));
-                arenaConf.addDefault("Points." + arg2 + ".Y", Double.valueOf(tmps.y));
-                arenaConf.addDefault("Points." + arg2 + ".Z", Double.valueOf(tmps.z));
+                arenaConf.addDefault("Points." + arg2 + ".X", Double.valueOf(tmps.getX()));
+                arenaConf.addDefault("Points." + arg2 + ".Y", Double.valueOf(tmps.getY()));
+                arenaConf.addDefault("Points." + arg2 + ".Z", Double.valueOf(tmps.getZ()));
                 try {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
@@ -473,8 +474,8 @@ public class BuildCommand extends CTPCommand {
 
                 // Kj -- s -> aPoint
                 if (ctp.mainArena.name.equals(player.getWorld().getName())) {
-                    for (CTPPoints aPoint : ctp.mainArena.capturePoints) {
-                        if (aPoint.name.equalsIgnoreCase(arg2)) {
+                    for (Points aPoint : ctp.mainArena.capturePoints) {
+                        if (aPoint.getName().equalsIgnoreCase(arg2)) {
                             ctp.mainArena.capturePoints.remove(aPoint);
                             break;
                         }
@@ -811,12 +812,12 @@ public class BuildCommand extends CTPCommand {
                 boolean firstTime = true;
 
                 //Kj -- s -> aPoint
-                for (CTPPoints aPoint : ctp.editingArena.capturePoints) {
+                for (Points aPoint : ctp.editingArena.capturePoints) {
                     if (firstTime) {
-                        points = aPoint.name;
+                        points = aPoint.getName();
                         firstTime = false;
                     } else {
-                        points = aPoint.name + ", " + points;
+                        points = aPoint.getName() + ", " + points;
                     }
                 }
                 

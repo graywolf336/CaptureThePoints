@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import me.dalton.capturethepoints.beans.Points;
+
 import org.bukkit.entity.Player;
 
 /** Arena Data of the saved arenas for playing CTP. */
@@ -22,8 +25,8 @@ public class ArenaData {
     public List<Team> teams = new ArrayList<Team>();
     
     /** The capture points this arena has. 
-     * @see CTPPoints */
-    public List<CTPPoints> capturePoints = new LinkedList<CTPPoints>();
+     * @see Points */
+    public List<Points> capturePoints = new LinkedList<Points>();
     
     /** This arena's Lobby 
      * @see Lobby */

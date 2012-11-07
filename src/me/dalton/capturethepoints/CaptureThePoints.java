@@ -5,6 +5,7 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.commands.*;
 
 import java.io.File;
@@ -1209,17 +1210,17 @@ public class CaptureThePoints extends JavaPlugin {
             arena.minimumPlayers = arenaConf.getInt("MinimumPlayers", 4);
             if (arenaConf.contains("Points")) {
                 for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
-                    CTPPoints tmps = new CTPPoints();
-                    tmps.name = str;
+                    Points tmps = new Points();
+                    tmps.setName(str);
                     str = "Points." + str;
-                    tmps.x = arenaConf.getInt(str + ".X", 0);
-                    tmps.y = arenaConf.getInt(str + ".Y", 0);
-                    tmps.z = arenaConf.getInt(str + ".Z", 0);
+                    tmps.setX(arenaConf.getInt(str + ".X", 0));
+                    tmps.setY(arenaConf.getInt(str + ".Y", 0));
+                    tmps.setZ(arenaConf.getInt(str + ".Z", 0));
 
                     // Load teams that are not allowed to capture
                     String teamColors = arenaConf.getString(str + ".NotAllowedToCaptureTeams");
                     if(teamColors == null) {
-                        tmps.notAllowedToCaptureTeams = null;
+                        tmps.setNotAllowedToCaptureTeams(null);
                     } else {
                         // Trim commas and whitespace, and split items by commas
                         teamColors = teamColors.toLowerCase();
@@ -1232,11 +1233,11 @@ public class CaptureThePoints extends JavaPlugin {
                         
                         String[] tc = teamColors.split(",");
 
-                        tmps.notAllowedToCaptureTeams.addAll(Arrays.asList(tc));
+                        tmps.getNotAllowedToCaptureTeams().addAll(Arrays.asList(tc));
                     }
 
                     if (arenaConf.contains(str + ".Dir")) {
-                        tmps.pointDirection = arenaConf.getString(str + ".Dir");
+                        tmps.setPointDirection(arenaConf.getString(str + ".Dir"));
                     }
                     arena.capturePoints.add(tmps);
                 }

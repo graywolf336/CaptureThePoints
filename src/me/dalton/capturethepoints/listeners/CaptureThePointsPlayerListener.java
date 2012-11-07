@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 
 import me.dalton.capturethepoints.ArenaData;
-import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
@@ -19,6 +18,7 @@ import me.dalton.capturethepoints.Spawn;
 import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 
 import org.bukkit.ChatColor;
@@ -628,9 +628,9 @@ public class CaptureThePointsPlayerListener implements Listener {
                         {
                             int dublicator = 1;
                             int maxPossiblePointsToCapture = 0;
-                            for (CTPPoints point : ctp.mainArena.capturePoints)
+                            for (Points point : ctp.mainArena.capturePoints)
                             {
-                                if(point.notAllowedToCaptureTeams == null || !Util.containsTeam(point.notAllowedToCaptureTeams, team.color))
+                                if(point.getNotAllowedToCaptureTeams() == null || !Util.containsTeam(point.getNotAllowedToCaptureTeams(), team.color))
                                     maxPossiblePointsToCapture++;
                             }
 

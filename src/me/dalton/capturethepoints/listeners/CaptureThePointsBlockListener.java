@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.listeners;
 import java.util.ArrayList;
 import java.util.List;
-import me.dalton.capturethepoints.CTPPoints;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
@@ -9,6 +8,7 @@ import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.Points;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -115,12 +115,12 @@ public class CaptureThePointsBlockListener implements Listener {
             if (data instanceof Wool) {
                 Location loc = block.getLocation();
 
-                for (CTPPoints point : ctp.mainArena.capturePoints) { // Kj -- s -> point
-                    Location pointLocation = new Location(player.getWorld(), point.x, point.y, point.z);
+                for (Points point : ctp.mainArena.capturePoints) { // Kj -- s -> point
+                    Location pointLocation = new Location(player.getWorld(), point.getX(), point.getY(), point.getZ());
                     double distance = pointLocation.distance(loc);
                     if (distance < 5.0D) {
                         // Check if player team can capture point
-                        if(point.notAllowedToCaptureTeams != null && Util.containsTeam(point.notAllowedToCaptureTeams, ctp.playerData.get(player).team.color)) {
+                        if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).team.color)) {
                             player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.globalConfigOptions.debugMessages)
@@ -128,11 +128,11 @@ public class CaptureThePointsBlockListener implements Listener {
                             return;
                         }
 
-                        if(isInsidePoint(point, loc) || (point.pointDirection != null && isInsidePointVert(point, loc))) {
+                        if(isInsidePoint(point, loc) || (point.getPointDirection() != null && isInsidePointVert(point, loc))) {
                             inPoint = true; // Kj -- for block placement checker
                         }
 
-                        if (point.pointDirection == null) {
+                        if (point.getPointDirection() == null) {
                             if (checkForFill(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), true)) {
                                 if (ctp.playerData.get(player).team.color.equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
@@ -140,9 +140,9 @@ public class CaptureThePointsBlockListener implements Listener {
                                     	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
                                     return;
                                 }
-                                if (point.controledByTeam != null) {
-                                    point.controledByTeam = null;
-                                    Util.sendMessageToPlayers(ctp, subtractPoints(((Wool) data).getColor().toString(), point.name));
+                                if (point.getControlledByTeam() != null) {
+                                    point.setControlledByTeam(null);
+                                    Util.sendMessageToPlayers(ctp, subtractPoints(((Wool) data).getColor().toString(), point.getName()));
                                     break;
                                 }
                             }
@@ -155,9 +155,9 @@ public class CaptureThePointsBlockListener implements Listener {
                                     return;
                                 }
                                 
-                                if (point.controledByTeam != null) {
-                                    point.controledByTeam = null;
-                                    Util.sendMessageToPlayers(ctp, subtractPoints(((Wool) data).getColor().toString(), point.name));
+                                if (point.getControlledByTeam() != null) {
+                                	point.setControlledByTeam(null);
+                                    Util.sendMessageToPlayers(ctp, subtractPoints(((Wool) data).getColor().toString(), point.getName()));
                                     break;
                                 }
                             }
@@ -233,12 +233,12 @@ public class CaptureThePointsBlockListener implements Listener {
             if ((data instanceof Wool)) {
                 Location loc = block.getLocation();
 
-                for (CTPPoints point : ctp.mainArena.capturePoints) {
-                    Location pointLocation = new Location(player.getWorld(), point.x, point.y, point.z);
+                for (Points point : ctp.mainArena.capturePoints) {
+                    Location pointLocation = new Location(player.getWorld(), point.getX(), point.getY(), point.getZ());
                     double distance = pointLocation.distance(loc);
                     if (distance < 5)  {// Found nearest point ( points can't be closer than 5 blocks)
                         // Check if player team can capture point
-                        if(point.notAllowedToCaptureTeams != null && Util.containsTeam(point.notAllowedToCaptureTeams, ctp.playerData.get(player).team.color)) {
+                        if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).team.color)) {
                             player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.globalConfigOptions.debugMessages)
@@ -252,11 +252,11 @@ public class CaptureThePointsBlockListener implements Listener {
                             return;
                         }
 
-                        if(isInsidePoint(point, loc) || (point.pointDirection != null && isInsidePointVert(point, loc))) {
+                        if(isInsidePoint(point, loc) || (point.getPointDirection() != null && isInsidePointVert(point, loc))) {
                             inPoint = true; // Kj -- for block placement checker
                         }
                         
-                        if (point.pointDirection == null) {
+                        if (point.getPointDirection() == null) {
                             //Check if wool is placed on top of point
                             if (checkForWoolOnTopHorizontal(loc, point)) {
                                 event.setCancelled(true);
@@ -266,9 +266,9 @@ public class CaptureThePointsBlockListener implements Listener {
                             }
 
                             if (checkForFill(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), false)) {
-                                if (point.controledByTeam == null) {
-                                    point.controledByTeam = ctp.playerData.get(player).team.color;
-                                    Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.name));
+                                if (point.getControlledByTeam() == null) {
+                                    point.setControlledByTeam(ctp.playerData.get(player).team.color);
+                                    Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.getName()));
                                     ctp.playerData.get(player).pointCaptures++;
                                     ctp.playerData.get(player).money += ctp.mainArena.co.moneyForPointCapture;
                                     player.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(player).money);
@@ -289,9 +289,9 @@ public class CaptureThePointsBlockListener implements Listener {
                             }
 
                             if (checkForFillVert(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), false)) {
-                                if (point.controledByTeam == null) {
-                                    point.controledByTeam = ctp.playerData.get(player).team.color;
-                                    Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.name));
+                                if (point.getControlledByTeam() == null) {
+                                    point.setControlledByTeam(ctp.playerData.get(player).team.color);
+                                    Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.getName()));
                                     ctp.playerData.get(player).pointCaptures++;
                                     ctp.playerData.get(player).money += ctp.mainArena.co.moneyForPointCapture;
                                     player.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(player).money);
@@ -434,16 +434,16 @@ public class CaptureThePointsBlockListener implements Listener {
         return color1.toString().equalsIgnoreCase(color) && color2.toString().equalsIgnoreCase(color) && color3.toString().equalsIgnoreCase(color);
     }
 
-    private boolean checkForFill (CTPPoints point, Location loc, String color, String placedWoolColor, boolean onBlockBreak) {
+    private boolean checkForFill (Points point, Location loc, String color, String placedWoolColor, boolean onBlockBreak) {
         //If player is placing not his own wool
         if ((!onBlockBreak) && (!placedWoolColor.equalsIgnoreCase(color))) {
             return false;
         }
         if (isInsidePoint(point, loc)) {
-            Location loc1 = new Location(loc.getWorld(), point.x, point.y, point.z);
-            Location loc2 = new Location(loc.getWorld(), point.x + 1, point.y, point.z);
-            Location loc3 = new Location(loc.getWorld(), point.x + 1, point.y, point.z + 1);
-            Location loc4 = new Location(loc.getWorld(), point.x, point.y, point.z + 1);
+            Location loc1 = new Location(loc.getWorld(), point.getX(), point.getY(), point.getZ());
+            Location loc2 = new Location(loc.getWorld(), point.getX() + 1, point.getY(), point.getZ());
+            Location loc3 = new Location(loc.getWorld(), point.getX() + 1, point.getY(), point.getZ() + 1);
+            Location loc4 = new Location(loc.getWorld(), point.getX(), point.getY(), point.getZ() + 1);
             if (loc.equals(loc1)) {
                 return checkForColor(placedWoolColor, loc2, loc3, loc4);
             } else if (loc.equals(loc2)) {
@@ -457,7 +457,7 @@ public class CaptureThePointsBlockListener implements Listener {
         return false;
     }
 
-    private boolean checkForFillVert (CTPPoints point, Location loc, String color, String placedWoolColor, boolean onBlockBreak) {
+    private boolean checkForFillVert (Points point, Location loc, String color, String placedWoolColor, boolean onBlockBreak) {
         //If player is placing not his own wool
         if ((!onBlockBreak) && (!placedWoolColor.equalsIgnoreCase(color))) {
             return false;
@@ -469,16 +469,16 @@ public class CaptureThePointsBlockListener implements Listener {
             Location loc3 = new Location(loc.getWorld(), 0, 0, 0);
             Location loc4 = new Location(loc.getWorld(), 0, 0, 0);
 
-            if (point.pointDirection.equals("NORTH") || point.pointDirection.equals("SOUTH")) {
-                loc1 = new Location(loc.getWorld(), point.x, point.y, point.z);
-                loc2 = new Location(loc.getWorld(), point.x, point.y + 1, point.z);
-                loc3 = new Location(loc.getWorld(), point.x, point.y, point.z + 1);
-                loc4 = new Location(loc.getWorld(), point.x, point.y + 1, point.z + 1);
-            } else if (point.pointDirection.equals("WEST") || point.pointDirection.equals("EAST")) {
-                loc1 = new Location(loc.getWorld(), point.x, point.y, point.z);
-                loc2 = new Location(loc.getWorld(), point.x, point.y + 1, point.z);
-                loc3 = new Location(loc.getWorld(), point.x + 1, point.y, point.z);
-                loc4 = new Location(loc.getWorld(), point.x + 1, point.y + 1, point.z);
+            if (point.getPointDirection().equals("NORTH") || point.getPointDirection().equals("SOUTH")) {
+                loc1 = new Location(loc.getWorld(), point.getX(), point.getY(), point.getZ());
+                loc2 = new Location(loc.getWorld(), point.getX(), point.getY() + 1, point.getZ());
+                loc3 = new Location(loc.getWorld(), point.getX(), point.getY(), point.getZ() + 1);
+                loc4 = new Location(loc.getWorld(), point.getX(), point.getY() + 1, point.getZ() + 1);
+            } else if (point.getPointDirection().equals("WEST") || point.getPointDirection().equals("EAST")) {
+                loc1 = new Location(loc.getWorld(), point.getX(), point.getY(), point.getZ());
+                loc2 = new Location(loc.getWorld(), point.getX(), point.getY() + 1, point.getZ());
+                loc3 = new Location(loc.getWorld(), point.getX() + 1, point.getY(), point.getZ());
+                loc4 = new Location(loc.getWorld(), point.getX() + 1, point.getY() + 1, point.getZ());
             }
 
             // This way because wool block is not placed yet
@@ -495,10 +495,10 @@ public class CaptureThePointsBlockListener implements Listener {
         return false;
     }
 
-    private boolean checkForWoolOnTopHorizontal (Location loc, CTPPoints s) {
-        for (int x = (int) s.x + 2; x >= s.x - 1; x--) {
-            for (int y = (int) s.y + 1; y <= s.y + 2; y++) {
-                for (int z = (int) s.z - 1; z <= s.z + 2; z++) {
+    private boolean checkForWoolOnTopHorizontal (Location loc, Points s) {
+        for (int x = (int) s.getX() + 2; x >= s.getX() - 1; x--) {
+            for (int y = (int) s.getY() + 1; y <= s.getY() + 2; y++) {
+                for (int z = (int) s.getZ() - 1; z <= s.getZ() + 2; z++) {
                     if ((loc.getBlockX() == x) && (loc.getBlockY() == y) && (loc.getBlockZ() == z)) {
                         return true;
                     }
@@ -508,35 +508,35 @@ public class CaptureThePointsBlockListener implements Listener {
         return false;
     }
 
-    private boolean checkForWoolOnTopVertical (Location loc, CTPPoints point) {
-        if (point.pointDirection.equals("NORTH")) {
-            if (loc.getX() >= point.x - 2 && loc.getX() < point.x) {
-                if (loc.getY() >= point.y - 1 && loc.getY() < point.y + 3) {
-                    if (loc.getZ() >= point.z - 1 && loc.getZ() < point.z + 3) {
+    private boolean checkForWoolOnTopVertical (Location loc, Points point) {
+        if (point.getPointDirection().equals("NORTH")) {
+            if (loc.getX() >= point.getX() - 2 && loc.getX() < point.getX()) {
+                if (loc.getY() >= point.getY() - 1 && loc.getY() < point.getY() + 3) {
+                    if (loc.getZ() >= point.getZ() - 1 && loc.getZ() < point.getZ() + 3) {
                         return true;
                     }
                 }
             }
-        } else if (point.pointDirection.equals("EAST")) {
-            if (loc.getX() >= point.x - 1 && loc.getX() < point.x + 3) {
-                if (loc.getY() >= point.y - 1 && loc.getY() < point.y + 3) {
-                    if (loc.getZ() >= point.z - 2 && loc.getZ() < point.z) {
+        } else if (point.getPointDirection().equals("EAST")) {
+            if (loc.getX() >= point.getX() - 1 && loc.getX() < point.getX() + 3) {
+                if (loc.getY() >= point.getY() - 1 && loc.getY() < point.getY() + 3) {
+                    if (loc.getZ() >= point.getZ() - 2 && loc.getZ() < point.getZ()) {
                         return true;
                     }
                 }
             }
-        } else if (point.pointDirection.equals("SOUTH")) {
-            if (loc.getX() >= point.x + 1 && loc.getX() < point.x + 3) {
-                if (loc.getY() >= point.y - 1 && loc.getY() < point.y + 3) {
-                    if (loc.getZ() >= point.z - 1 && loc.getZ() < point.z + 3) {
+        } else if (point.getPointDirection().equals("SOUTH")) {
+            if (loc.getX() >= point.getX() + 1 && loc.getX() < point.getX() + 3) {
+                if (loc.getY() >= point.getY() - 1 && loc.getY() < point.getY() + 3) {
+                    if (loc.getZ() >= point.getZ() - 1 && loc.getZ() < point.getZ() + 3) {
                         return true;
                     }
                 }
             }
-        } else if (point.pointDirection.equals("WEST")) {
-            if (loc.getX() >= point.x - 1 && loc.getX() < point.x + 3) {
-                if (loc.getY() >= point.y - 1 && loc.getY() < point.y + 3) {
-                    if (loc.getZ() >= point.z + 1 && loc.getZ() < point.z + 3) {
+        } else if (point.getPointDirection().equals("WEST")) {
+            if (loc.getX() >= point.getX() - 1 && loc.getX() < point.getX() + 3) {
+                if (loc.getY() >= point.getY() - 1 && loc.getY() < point.getY() + 3) {
+                    if (loc.getZ() >= point.getZ() + 1 && loc.getZ() < point.getZ() + 3) {
                         return true;
                     }
                 }
@@ -625,8 +625,8 @@ public class CaptureThePointsBlockListener implements Listener {
             ctp.CTP_Scheduler.healingItemsCooldowns = 0;
         }
 
-        for (CTPPoints s : ctp.mainArena.capturePoints) {
-            s.controledByTeam = null;
+        for (Points s : ctp.mainArena.capturePoints) {
+            s.setControlledByTeam(null);
         }
 
         this.preGame = true;
@@ -667,10 +667,10 @@ public class CaptureThePointsBlockListener implements Listener {
         return ctp.playerData.get(p) != null;
     }
 
-    private boolean isInsidePoint (CTPPoints point, Location loc) {
-        if (loc.getBlockX() == point.x || loc.getBlockX() == point.x + 1) {
-            if (loc.getBlockY() == point.y) {
-                if (loc.getBlockZ() == point.z || loc.getBlockZ() == point.z + 1) {
+    private boolean isInsidePoint (Points point, Location loc) {
+        if (loc.getBlockX() == point.getX() || loc.getBlockX() == point.getX() + 1) {
+            if (loc.getBlockY() == point.getY()) {
+                if (loc.getBlockZ() == point.getZ() || loc.getBlockZ() == point.getZ() + 1) {
                     return true;
                 }
             }
@@ -678,35 +678,35 @@ public class CaptureThePointsBlockListener implements Listener {
         return false;
     }
 
-    private boolean isInsidePointVert (CTPPoints point, Location loc) {
-        if (point.pointDirection.equals("NORTH")) {
-            if (loc.getBlockX() == point.x) {
-                if ((loc.getBlockY() == point.y) || (loc.getBlockY() == point.y + 1)) {
-                    if (loc.getBlockZ() == point.z || loc.getBlockZ() == point.z + 1) {
+    private boolean isInsidePointVert (Points point, Location loc) {
+        if (point.getPointDirection().equals("NORTH")) {
+            if (loc.getBlockX() == point.getX()) {
+                if ((loc.getBlockY() == point.getY()) || (loc.getBlockY() == point.getY() + 1)) {
+                    if (loc.getBlockZ() == point.getZ() || loc.getBlockZ() == point.getZ() + 1) {
                         return true;
                     }
                 }
             }
-        } else if (point.pointDirection.equals("EAST")) {
-            if ((loc.getBlockX() == point.x) || (loc.getBlockX() == point.x + 1)) {
-                if ((loc.getBlockY() == point.y) || (loc.getBlockY() == point.y + 1)) {
-                    if (loc.getBlockZ() == point.z) {
+        } else if (point.getPointDirection().equals("EAST")) {
+            if ((loc.getBlockX() == point.getX()) || (loc.getBlockX() == point.getX() + 1)) {
+                if ((loc.getBlockY() == point.getY()) || (loc.getBlockY() == point.getY() + 1)) {
+                    if (loc.getBlockZ() == point.getZ()) {
                         return true;
                     }
                 }
             }
-        } else if (point.pointDirection.equals("SOUTH")) {
-            if (loc.getBlockX() == point.x) {
-                if (loc.getBlockY() == point.y || loc.getBlockY() == point.y + 1) {
-                    if (loc.getBlockZ() == point.z || loc.getBlockZ() == point.z + 1) {
+        } else if (point.getPointDirection().equals("SOUTH")) {
+            if (loc.getBlockX() == point.getX()) {
+                if (loc.getBlockY() == point.getY() || loc.getBlockY() == point.getY() + 1) {
+                    if (loc.getBlockZ() == point.getZ() || loc.getBlockZ() == point.getZ() + 1) {
                         return true;
                     }
                 }
             }
-        } else if (point.pointDirection.equals("WEST")) {
-            if (loc.getBlockX() == point.x || loc.getBlockX() == point.x + 1) {
-                if (loc.getBlockY() == point.y || loc.getBlockY() == point.y + 1) {
-                    if (loc.getBlockZ() == point.z) {
+        } else if (point.getPointDirection().equals("WEST")) {
+            if (loc.getBlockX() == point.getX() || loc.getBlockX() == point.getX() + 1) {
+                if (loc.getBlockY() == point.getY() || loc.getBlockY() == point.getY() + 1) {
+                    if (loc.getBlockZ() == point.getZ()) {
                         return true;
                     }
                 }
