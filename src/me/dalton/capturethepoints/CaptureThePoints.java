@@ -6,6 +6,7 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
+import me.dalton.capturethepoints.beans.Rewards;
 import me.dalton.capturethepoints.commands.*;
 
 import java.io.File;
@@ -113,7 +114,7 @@ public class CaptureThePoints extends JavaPlugin {
     public List<HealingItems> healingItems = new LinkedList<HealingItems>();
 
     /** The list of Rewards stored by CTP. */
-    public CTPRewards rewards = new CTPRewards();
+    public Rewards rewards = new Rewards();
 
     /** The timers used by CTP. */
     public CTPScheduler CTP_Scheduler = new CTPScheduler();
@@ -1403,14 +1404,14 @@ public class CaptureThePoints extends JavaPlugin {
             config.addDefault("Rewards.ExpRewardForKillingOneEnemy", "0");
         }
         
-        rewards = new CTPRewards();
-        rewards.expRewardForKillingEnemy = config.getInt("Rewards.ExpRewardForKillingOneEnemy", 0);
-        rewards.winnerRewardCount = config.getInt("Rewards.WinnerTeam.ItemCount", 2);
-        rewards.winnerRewards = Util.getItemListFromString(config.getString("Rewards.WinnerTeam.Items"));
-        rewards.otherTeamRewardCount = config.getInt("Rewards.OtherTeams.ItemCount", 1);
-        rewards.loozerRewards = Util.getItemListFromString(config.getString("Rewards.OtherTeams.Items"));
-        rewards.rewardsForCapture = Util.getItemListFromString(config.getString("Rewards.ForCapturingThePoint"));
-        rewards.rewardsForKill = Util.getItemListFromString(config.getString("Rewards.ForKillingEnemy"));
+        rewards = new Rewards();
+        rewards.setExpRewardForKillingEnemy(config.getInt("Rewards.ExpRewardForKillingOneEnemy", 0));
+        rewards.setWinnerRewardCount(config.getInt("Rewards.WinnerTeam.ItemCount", 2));
+        rewards.setWinnerRewards(Util.getItemListFromString(config.getString("Rewards.WinnerTeam.Items")));
+        rewards.setOtherTeamRewardCount(config.getInt("Rewards.OtherTeams.ItemCount", 1));
+        rewards.setLooserRewards(Util.getItemListFromString(config.getString("Rewards.OtherTeams.Items")));
+        rewards.setRewardsForCapture(Util.getItemListFromString(config.getString("Rewards.ForCapturingThePoint")));
+        rewards.setRewardsForKill(Util.getItemListFromString(config.getString("Rewards.ForKillingEnemy")));
         
         try {
             config.options().copyDefaults(true);

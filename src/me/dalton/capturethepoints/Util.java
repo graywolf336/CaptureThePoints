@@ -383,13 +383,13 @@ public class Util {
 	@SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) {
         try {
-            player.giveExp(plugin.playerData.get(player).kills * plugin.rewards.expRewardForKillingEnemy);
+            player.giveExp(plugin.playerData.get(player).kills * plugin.rewards.getExpRewardForKillingEnemy());
 
             if (plugin.playerData.get(player).winner) {
-                for (int i = 0; i < plugin.rewards.winnerRewardCount; i++) {
+                for (int i = 0; i < plugin.rewards.getWinnerRewardCount(); i++) {
                     int itemCount = 0;
-                    int id = random(0, plugin.rewards.winnerRewards.size()); // Kj -- Took out -1
-                    Items item = plugin.rewards.winnerRewards.get(id);
+                    int id = random(0, plugin.rewards.getWinnerRewards().size()); // Kj -- Took out -1
+                    Items item = plugin.rewards.getWinnerRewards().get(id);
 
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
@@ -426,10 +426,10 @@ public class Util {
                     player.getInventory().addItem(stack);
                 }
             } else {
-                for (int i = 0; i < plugin.rewards.otherTeamRewardCount; i++) {
+                for (int i = 0; i < plugin.rewards.getOtherTeamRewardCount(); i++) {
                     int itemCount = 0;
-                    int id = random(0, plugin.rewards.loozerRewards.size()); // Kj -- Took out -1
-                    Items item = plugin.rewards.loozerRewards.get(id);
+                    int id = random(0, plugin.rewards.getLooserRewards().size()); // Kj -- Took out -1
+                    Items item = plugin.rewards.getLooserRewards().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
                         if(CaptureThePoints.economyHandler != null) {
@@ -467,10 +467,10 @@ public class Util {
             }
             //reward for kills
             for (int i = 0; i < plugin.playerData.get(player).kills; i++) {
-                if (plugin.rewards.rewardsForKill.size() > 0) {
+                if (plugin.rewards.getRewardsForKill().size() > 0) {
                     int itemCount = 0;
-                    int id = random(0, plugin.rewards.rewardsForKill.size()); // Kj -- Took out -1
-                    Items item = plugin.rewards.rewardsForKill.get(id);
+                    int id = random(0, plugin.rewards.getRewardsForKill().size()); // Kj -- Took out -1
+                    Items item = plugin.rewards.getRewardsForKill().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
                         if(CaptureThePoints.economyHandler != null) {
@@ -508,10 +508,10 @@ public class Util {
             }
             //reward for capture
             for (int i = 0; i < plugin.playerData.get(player).pointCaptures; i++) {
-                if (plugin.rewards.rewardsForCapture.size() > 0) {
+                if (plugin.rewards.getRewardsForCapture().size() > 0) {
                     int itemCount = 0;
-                    int id = random(0, plugin.rewards.rewardsForCapture.size()); // Kj -- Took out -1
-                    Items item = plugin.rewards.rewardsForCapture.get(id);
+                    int id = random(0, plugin.rewards.getRewardsForCapture().size()); // Kj -- Took out -1
+                    Items item = plugin.rewards.getRewardsForCapture().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
                         if(CaptureThePoints.economyHandler != null) {

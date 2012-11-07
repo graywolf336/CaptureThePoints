@@ -905,7 +905,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Material mat = p.getItemInHand().getType();
             
-            ctp.sendMessage(p, "The material in hand is: " + mat.toString());
+            if(ctp.globalConfigOptions.debugMessages) ctp.sendMessage(p, "The material in hand is: " + mat.toString());
             
             for (HealingItems item : ctp.healingItems) {
                 if (item.item.getItem() == mat) {
