@@ -1,7 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.Team;
+import me.dalton.capturethepoints.beans.Team;
+
 import org.bukkit.ChatColor;
 
 public class SetpointsCommand extends CTPCommand {
@@ -30,15 +31,15 @@ public class SetpointsCommand extends CTPCommand {
 
         if (ctp.mainArena.co.useScoreGeneration) {
             for (Team team : ctp.mainArena.teams) {
-                if (team.color.equalsIgnoreCase(parameters.get(2))) {
-                    team.score = points;
+                if (team.getColor().equalsIgnoreCase(parameters.get(2))) {
+                    team.setScore(points);
                 }
             }
             ctp.blockListener.didSomeoneWin();
         } else {
             for (Team team : ctp.mainArena.teams) {
-                if (team.color.equalsIgnoreCase(parameters.get(2))) {
-                    team.controlledPoints = points;
+                if (team.getColor().equalsIgnoreCase(parameters.get(2))) {
+                    team.setControlledPoints(points);
                 }
             }
             ctp.blockListener.didSomeoneWin();

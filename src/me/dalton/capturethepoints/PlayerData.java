@@ -3,6 +3,9 @@ package me.dalton.capturethepoints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import me.dalton.capturethepoints.beans.Team;
+
 import org.bukkit.entity.Player;
 
 /** Player Data of the people playing CTP. */

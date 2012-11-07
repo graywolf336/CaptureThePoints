@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.PlayerData;
-import me.dalton.capturethepoints.Team;
+import me.dalton.capturethepoints.beans.Team;
+
 import org.bukkit.ChatColor;
 
 public class TeamCommand extends CTPCommand {
@@ -40,22 +41,22 @@ public class TeamCommand extends CTPCommand {
         }
         
         PlayerData data = ctp.playerData.get(player);
-        String teamcolour = data.team.color.trim();
+        String teamcolour = data.team.getColor().trim();
         
         List<String> playernames = new ArrayList<String>();
         ChatColor cc = ChatColor.GREEN;
         for (Team aTeam : ctp.mainArena.teams) {
-            if (teamcolour.equalsIgnoreCase(aTeam.color)) {
-                cc = aTeam.chatcolor;
+            if (teamcolour.equalsIgnoreCase(aTeam.getColor())) {
+                cc = aTeam.getChatColor();
                 playernames = aTeam.getTeamPlayerNames(ctp);
             }
         }
         
         sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
         if (!ctp.mainArena.co.useScoreGeneration) {
-            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.controlledPoints + ChatColor.GREEN + " points!");
+            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.getControlledPoints() + ChatColor.GREEN + " points!");
         } else {
-            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.score + "!");
+            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.getScore() + "!");
         }
         return;
     }

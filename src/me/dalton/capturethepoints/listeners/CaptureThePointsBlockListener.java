@@ -4,11 +4,11 @@ import java.util.List;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
+import me.dalton.capturethepoints.beans.Team;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -120,7 +120,7 @@ public class CaptureThePointsBlockListener implements Listener {
                     double distance = pointLocation.distance(loc);
                     if (distance < 5.0D) {
                         // Check if player team can capture point
-                        if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).team.color)) {
+                        if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).team.getColor())) {
                             player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.globalConfigOptions.debugMessages)
@@ -133,8 +133,8 @@ public class CaptureThePointsBlockListener implements Listener {
                         }
 
                         if (point.getPointDirection() == null) {
-                            if (checkForFill(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), true)) {
-                                if (ctp.playerData.get(player).team.color.equalsIgnoreCase(((Wool) data).getColor().toString())) {
+                            if (checkForFill(point, loc, ctp.playerData.get(player).team.getColor(), ((Wool) data).getColor().toString(), true)) {
+                                if (ctp.playerData.get(player).team.getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
                                     if(ctp.globalConfigOptions.debugMessages)
                                     	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
@@ -147,8 +147,8 @@ public class CaptureThePointsBlockListener implements Listener {
                                 }
                             }
                         } else {
-                            if (checkForFillVert(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), true))  {
-                                if (ctp.playerData.get(player).team.color.equalsIgnoreCase(((Wool) data).getColor().toString())) {
+                            if (checkForFillVert(point, loc, ctp.playerData.get(player).team.getColor(), ((Wool) data).getColor().toString(), true))  {
+                                if (ctp.playerData.get(player).team.getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
                                     if(ctp.globalConfigOptions.debugMessages)
                                     	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
@@ -238,7 +238,7 @@ public class CaptureThePointsBlockListener implements Listener {
                     double distance = pointLocation.distance(loc);
                     if (distance < 5)  {// Found nearest point ( points can't be closer than 5 blocks)
                         // Check if player team can capture point
-                        if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).team.color)) {
+                        if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).team.getColor())) {
                             player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.globalConfigOptions.debugMessages)
@@ -247,7 +247,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         }
 
                         // If building near the point with not your own colored wool(to prevent wool destroy bug)
-                        if (!ctp.playerData.get(player).team.color.equalsIgnoreCase(((Wool) data).getColor().toString())) {
+                        if (!ctp.playerData.get(player).team.getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
                             event.setCancelled(true);
                             return;
                         }
@@ -265,9 +265,9 @@ public class CaptureThePointsBlockListener implements Listener {
                                 return;
                             }
 
-                            if (checkForFill(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), false)) {
+                            if (checkForFill(point, loc, ctp.playerData.get(player).team.getColor(), ((Wool) data).getColor().toString(), false)) {
                                 if (point.getControlledByTeam() == null) {
-                                    point.setControlledByTeam(ctp.playerData.get(player).team.color);
+                                    point.setControlledByTeam(ctp.playerData.get(player).team.getColor());
                                     Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.getName()));
                                     ctp.playerData.get(player).pointCaptures++;
                                     ctp.playerData.get(player).money += ctp.mainArena.co.moneyForPointCapture;
@@ -288,9 +288,9 @@ public class CaptureThePointsBlockListener implements Listener {
                                 return;
                             }
 
-                            if (checkForFillVert(point, loc, ctp.playerData.get(player).team.color, ((Wool) data).getColor().toString(), false)) {
+                            if (checkForFillVert(point, loc, ctp.playerData.get(player).team.getColor(), ((Wool) data).getColor().toString(), false)) {
                                 if (point.getControlledByTeam() == null) {
-                                    point.setControlledByTeam(ctp.playerData.get(player).team.color);
+                                    point.setControlledByTeam(ctp.playerData.get(player).team.getColor());
                                     Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.getName()));
                                     ctp.playerData.get(player).pointCaptures++;
                                     ctp.playerData.get(player).money += ctp.mainArena.co.moneyForPointCapture;
@@ -337,12 +337,12 @@ public class CaptureThePointsBlockListener implements Listener {
     public String addPoints (String aTeam, String gainedpoint) { // Kj -- remade.
         if (this.capturegame) {
             for (Team team : ctp.mainArena.teams) {
-                if (team.color.equalsIgnoreCase(aTeam)) {
-                    team.controlledPoints++;
+                if (team.getColor().equalsIgnoreCase(aTeam)) {
+                    team.addOneControlledPoints();
                     if (!ctp.mainArena.co.useScoreGeneration) {
-                        return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.controlledPoints + "/" + ctp.mainArena.co.pointsToWin + " points).";
+                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + ctp.mainArena.co.pointsToWin + " points).";
                     } else {
-                        return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.controlledPoints + "/" + ctp.mainArena.capturePoints.size() + " points).";
+                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + ctp.mainArena.capturePoints.size() + " points).";
                     }
                 }
             }
@@ -368,7 +368,7 @@ public class CaptureThePointsBlockListener implements Listener {
         inv.clear();
         inv.setHelmet(null);
         if(ctp.playerData.get(p).team != null) {
-            DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.color.toUpperCase());
+            DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.getColor().toUpperCase());
 
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
             p.getInventory().setHelmet(helmet);
@@ -550,16 +550,16 @@ public class CaptureThePointsBlockListener implements Listener {
         String WinMessage = "";
         if (ctp.mainArena.co.useScoreGeneration) {
             for (Team team : ctp.mainArena.teams) {
-                if (team.score >= ctp.mainArena.co.scoreToWin) {
+                if (team.getScore() >= ctp.mainArena.co.scoreToWin) {
                     winningteams.add(team);
-                    WinMessage = team.chatcolor + team.color.toUpperCase() + ChatColor.WHITE + " wins!";
+                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " wins!";
                 }
             }
         } else {
             for (Team team : ctp.mainArena.teams) {
-                if (team.controlledPoints >= ctp.mainArena.co.pointsToWin) {
+                if (team.getControlledPoints() >= ctp.mainArena.co.pointsToWin) {
                     winningteams.add(team);
-                    WinMessage = team.chatcolor + team.color.toUpperCase() + ChatColor.WHITE + " wins!";
+                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " wins!";
                 }
             }
         }
@@ -586,11 +586,11 @@ public class CaptureThePointsBlockListener implements Listener {
         String message = "";
         if (ctp.mainArena.co.useScoreGeneration) {
             for (Team aTeam : ctp.mainArena.teams) {
-                message = message + aTeam.chatcolor + aTeam.color.toUpperCase() + ChatColor.WHITE + " final score: " + aTeam.score + ChatColor.AQUA + " // ";
+                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " final score: " + aTeam.getScore() + ChatColor.AQUA + " // ";
             }
         } else {
             for (Team aTeam : ctp.mainArena.teams) {
-                message = message + aTeam.chatcolor + aTeam.color.toUpperCase() + ChatColor.WHITE + " final points: " + aTeam.controlledPoints + ChatColor.AQUA + " // ";
+                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " final points: " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
             }
         }
 
@@ -632,21 +632,16 @@ public class CaptureThePointsBlockListener implements Listener {
         this.preGame = true;
         this.capturegame = false;
 
-        for (Player player : this.ctp.playerData.keySet())
-        {
+        for (Player player : this.ctp.playerData.keySet()) {
             restoreThings(player);
-            if (!noRewards)
-            {
+            if (!noRewards) {
                 Util.rewardPlayer(ctp, player);
             }
         }
         //Arena restore
-        if(ctp.globalConfigOptions.enableHardArenaRestore)
-        {
+        if(ctp.globalConfigOptions.enableHardArenaRestore) {
             ctp.arenaRestore.restoreMySQLBlocks();
-        }
-        else
-        {
+        } else {
             ctp.arenaRestore.restoreAllBlocks();
         }
 
@@ -659,7 +654,7 @@ public class CaptureThePointsBlockListener implements Listener {
         this.ctp.previousLocation.clear();
         this.ctp.playerData.clear();
         for (int i = 0; i < ctp.mainArena.teams.size(); i++) {
-            ctp.mainArena.teams.get(i).memberCount = 0;
+            ctp.mainArena.teams.get(i).setMemberCount(0);
         }
     }
 
@@ -764,12 +759,12 @@ public class CaptureThePointsBlockListener implements Listener {
     public String subtractPoints (String aTeam, String lostpoint) { // Kj -- remade.
         if (this.capturegame) {
             for (Team team : ctp.mainArena.teams) {
-                if (team.color.equalsIgnoreCase(aTeam)) {
-                    team.controlledPoints--;
-                    if (team.controlledPoints < 0) {
-                        team.controlledPoints = 0;
+                if (team.getColor().equalsIgnoreCase(aTeam)) {
+                    team.substractOneControlledPoints();
+                    if (team.getControlledPoints() < 0) {
+                        team.setControlledPoints(0);
                     }
-                    return team.chatcolor + aTeam.toUpperCase() + ChatColor.WHITE + " lost " + ChatColor.GOLD + lostpoint + ".";
+                    return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " lost " + ChatColor.GOLD + lostpoint + ".";
                 }
             }
             return null;

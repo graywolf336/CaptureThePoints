@@ -3,7 +3,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import me.dalton.capturethepoints.Team;
 
  /** A Capture Point in a CaptureThePoints arena */
  public class Points {

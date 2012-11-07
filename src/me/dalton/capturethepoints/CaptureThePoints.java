@@ -8,6 +8,7 @@ import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Rewards;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.*;
 
 import java.io.File;
@@ -301,18 +302,18 @@ public class CaptureThePoints extends JavaPlugin {
 
         for (Team aTeam : mainArena.teams) {
             if (lowestmembercount == -1) {
-                lowestmembercount = aTeam.memberCount;
+                lowestmembercount = aTeam.getMemberCount();
                 lowestTeam = aTeam;
-                highestmembercount = aTeam.memberCount;
+                highestmembercount = aTeam.getMemberCount();
                 highestTeam = aTeam;
                 continue;
             } else {
-                if (aTeam.memberCount != lowestmembercount || aTeam.memberCount != highestmembercount) {
-                    if (aTeam.memberCount < lowestmembercount) {
-                        lowestmembercount = aTeam.memberCount; // Reassign new low
+                if (aTeam.getMemberCount() != lowestmembercount || aTeam.getMemberCount() != highestmembercount) {
+                    if (aTeam.getMemberCount() < lowestmembercount) {
+                        lowestmembercount = aTeam.getMemberCount(); // Reassign new low
                         lowestTeam = aTeam;
-                    } else if (aTeam.memberCount > highestmembercount) {
-                        highestmembercount = aTeam.memberCount; // Reassign new high
+                    } else if (aTeam.getMemberCount() > highestmembercount) {
+                        highestmembercount = aTeam.getMemberCount(); // Reassign new high
                         highestTeam = aTeam;
                     } else {
                         continue; // Logic error
@@ -347,7 +348,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Reseting player data       
         if (newTeam == null) {
             // Moving to Lobby
-            playerData.get(p).team.memberCount--;
+            playerData.get(p).team.substractOneMemeberCount();
             //playerData.get(p).color = null;
             playerData.get(p).team = null;
             playerData.get(p).isInArena = false;
@@ -376,10 +377,10 @@ public class CaptureThePoints extends JavaPlugin {
             
         } else {
             // Moving to other Team
-            String oldteam = playerData.get(p).team.color;
-            ChatColor oldcc = playerData.get(p).team.chatcolor;
+            String oldteam = playerData.get(p).team.getColor();
+            ChatColor oldcc = playerData.get(p).team.getChatColor();
             
-            playerData.get(p).team.memberCount--;
+            playerData.get(p).team.substractOneMemeberCount();
             playerData.get(p).team = newTeam;
             //playerData.get(p).color = newTeam.color;
                                    
@@ -399,7 +400,7 @@ public class CaptureThePoints extends JavaPlugin {
             p.getInventory().remove(Material.WOOL);
             
             //Give wool
-            DyeColor color1 = DyeColor.valueOf(newTeam.color.toUpperCase());
+            DyeColor color1 = DyeColor.valueOf(newTeam.getColor().toUpperCase());
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
             p.getInventory().setHelmet(helmet);
             
@@ -413,8 +414,8 @@ public class CaptureThePoints extends JavaPlugin {
             
             // Get team spawn location and move player to it.
             Spawn spawn =
-                    mainArena.teamSpawns.get(newTeam.color) != null ?
-                    mainArena.teamSpawns.get(newTeam.color) :
+                    mainArena.teamSpawns.get(newTeam.getColor()) != null ?
+                    mainArena.teamSpawns.get(newTeam.getColor()) :
                     newTeam.spawn;
             Location loc = new Location(getServer().getWorld(mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
             loc.setYaw((float) spawn.getDir());
@@ -424,9 +425,9 @@ public class CaptureThePoints extends JavaPlugin {
                 p.teleport(new Location(p.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
             }
             Util.sendMessageToPlayers(this, 
-                    newTeam.chatcolor + p.getName() + ChatColor.WHITE + " changed teams from " 
-                    + oldcc + oldteam + ChatColor.WHITE + " to "+ newTeam.chatcolor + newTeam.color + ChatColor.WHITE + "! [Team-balancing]");
-            newTeam.memberCount++;
+                    newTeam.getChatColor() + p.getName() + ChatColor.WHITE + " changed teams from " 
+                    + oldcc + oldteam + ChatColor.WHITE + " to "+ newTeam.getChatColor() + newTeam.getColor() + ChatColor.WHITE + "! [Team-balancing]");
+            newTeam.addOneMemeberCount();
         }
     }
     
@@ -482,11 +483,11 @@ public class CaptureThePoints extends JavaPlugin {
             //maybe dc or something. it should be moved to cheking to see players who left the game
             boolean zeroPlayers = true;
             for (int i = 0; i < mainArena.teams.size(); i++) {
-                if (mainArena.teams.get(i).memberCount == 1) {
+                if (mainArena.teams.get(i).getMemberCount() == 1) {
                     zeroPlayers = false;
                     Util.sendMessageToPlayers(this, "The game has stopped because there are too few players. "
-                            + mainArena.teams.get(i).chatcolor + mainArena.teams.get(i).color.toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
-                            + mainArena.teams.get(i).score + ")");
+                            + mainArena.teams.get(i).getChatColor() + mainArena.teams.get(i).getColor().toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
+                            + mainArena.teams.get(i).getScore() + ")");
                     blockListener.endGame(true);
                     break;
                 }
@@ -514,7 +515,7 @@ public class CaptureThePoints extends JavaPlugin {
             String message = mainArena.co.killStreakMessages.getMessage(data.killsInARow);
 
             if (!message.isEmpty()) {
-                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player).team.chatcolor + player.getName() + ChatColor.WHITE));
+                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player).team.getChatColor() + player.getName() + ChatColor.WHITE));
             }
         }
 
@@ -1061,7 +1062,7 @@ public class CaptureThePoints extends JavaPlugin {
         if (playerData.get(player).team != null) {
             for (int i = 0; i < mainArena.teams.size(); i++) {
                 if (mainArena.teams.get(i) == (playerData.get(player).team)) {
-                    mainArena.teams.get(i).memberCount--;
+                    mainArena.teams.get(i).substractOneMemeberCount();
                     break;
                 }
             }
@@ -1257,23 +1258,22 @@ public class CaptureThePoints extends JavaPlugin {
 
                     Team team = new Team();
                     team.spawn = spawn;
-                    team.color = spawn.getName();
-                    team.memberCount = 0;
+                    team.setColor(spawn.getName());
+                    team.setMemberCount(0);
                     
                     try {
-                        team.chatcolor = ChatColor.valueOf(spawn.getName().toUpperCase());
+                        team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase()));
                     } catch (Exception ex) {
-                        team.chatcolor = ChatColor.GREEN;
+                        team.setChatColor(ChatColor.GREEN);
                     }
 
                     // Check if this spawn is already in the list
                     boolean hasTeam = false;
 
                     for (Team aTeam : arena.teams) {
-                        if (aTeam.color.equalsIgnoreCase(spawn.getName())) {
+                        if (aTeam.getColor().equalsIgnoreCase(spawn.getName())) {
                             hasTeam = true;
                             break;
-                            //ctp.teams.remove(aTeam);
                         }
                     }
 

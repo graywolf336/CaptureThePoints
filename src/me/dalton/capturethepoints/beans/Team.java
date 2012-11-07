@@ -1,47 +1,118 @@
-package me.dalton.capturethepoints;
+package me.dalton.capturethepoints.beans;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.CaptureThePoints;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /** A CTP Team */
 public class Team {
-    /** The associated ChatColor of this Team. Defaults to GREEN 
-     * @see ChatColor */
-    public ChatColor chatcolor = ChatColor.GREEN; // Kjhf
-    
-    /** This Team's color */
-    public String color;
-    
-    /** The number of players in this Team */
-    public int memberCount;
-    
-    /** This Team's score */
-    public int score;
-    
-    /** The number of control points this Team has */
-    public int controlledPoints;
-    
-    /** This Team's spawn point */
+    private ChatColor chatcolor = ChatColor.GREEN; // Kjhf
+    private String color;
+    private int memberCount;
+    private int score;
+    private int controlledPoints;
     public Spawn spawn;
+    
+    /** Sets the associated ChatColor of this Team.
+     * @see ChatColor
+     */
+    public void setChatColor(ChatColor color) {
+    	this.chatcolor = color;
+    }
+    
+    /** Gets the associated ChatColor of this Team; defaults to GREEN.
+     * @see ChatColor
+     */
+    public ChatColor getChatColor() {
+    	return this.chatcolor;
+    }
+    
+    /** Sets this Teams color. */
+    public void setColor(String color) {
+    	this.color = color;
+    }
+    
+    /** Gets this Teams color. */
+    public String getColor() {
+    	return this.color;
+    }
+    
+    /** Sets the number of players in this Team. */
+    public void setMemberCount(int count) {
+    	this.memberCount = count;
+    }
+    
+    /** Gets the number of players in this Team. */
+    public int getMemberCount() {
+    	return this.memberCount;
+    }
+    
+    /** Subtracts one member count from the total. */
+    public void substractOneMemeberCount() {
+    	this.memberCount--;
+    }
+    
+    /** Adds one member to the count. */
+    public void addOneMemeberCount() {
+    	this.memberCount++;
+    }
+    
+    /** Sets this Teams score. */
+    public void setScore(int score) {
+    	this.score = score;
+    }
+    
+    /** Gets this Teams score. */
+    public int getScore() {
+    	return this.score;
+    }
+    
+    /** Sets the number of control points this Team has. */
+    public void setControlledPoints(int amount) {
+    	this.controlledPoints = amount;
+    }
+    
+    /** Gets the number of control points this Team has. */
+    public int getControlledPoints() {
+    	return this.controlledPoints;
+    }
+    
+    /** Subtracts one point count from the total. */
+    public void substractOneControlledPoints() {
+    	this.controlledPoints--;
+    }
+    
+    /** Adds one point to the count. */
+    public void addOneControlledPoints() {
+    	this.controlledPoints++;
+    }
+    
+    /** Sets this Teams spawn point. */
+    public void setSpawn(Spawn spawn) {
+    	this.spawn = spawn;
+    }
+    
+    /** Gets this Teams spawn point. */
+    public Spawn getSpawn() {
+    	return this.spawn;
+    }
     
     /** Get a Team from its color 
      * @param ctp CaptureThePoints instance
      * @param color The team's color
      * @return The Team corresponding to this color. */
     public static Team getTeamFromColor(CaptureThePoints ctp, String color) {
-        for (Team aTeam : ctp.mainArena.teams) {
-            if (aTeam.color.equalsIgnoreCase(color)) {
-                return aTeam;
-            }
-        }
-        return null;
+		for (Team aTeam : ctp.mainArena.teams)
+		    if (aTeam.getColor().equalsIgnoreCase(color))
+		        return aTeam;
+		
+		return null;
     }
     
     /** Get all Players in this team as a list of Players
@@ -56,7 +127,7 @@ public class Team {
                 continue; // Player is not yet in game.
             }
             
-            if (ctp.playerData.get(p).team.color.equalsIgnoreCase(this.color)) {
+            if (ctp.playerData.get(p).team.getColor().equalsIgnoreCase(this.color)) {
                 teamplayers.add(p);
             }
         }

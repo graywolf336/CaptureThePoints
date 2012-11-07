@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
-import me.dalton.capturethepoints.Team;
+import me.dalton.capturethepoints.beans.Team;
+
 import org.bukkit.entity.Player;
 
 public class DebugCommand extends CTPCommand {
@@ -112,7 +113,7 @@ public class DebugCommand extends CTPCommand {
             boolean insane = aTeam.sanityCheck(ctp);
             if (insane) {
                 int players = aTeam.getTeamPlayers(ctp) == null ? 0 : aTeam.getTeamPlayers(ctp).size(); 
-                result.add("Team "+aTeam.color+" has incorrect memberCount. It is different to TeamPlayers size: ["+players+" | "+aTeam.memberCount+"]");
+                result.add("Team " + aTeam.getColor() + " has incorrect memberCount. It is different to TeamPlayers size: [" + players +" | " + aTeam.getMemberCount() + "]");
             }
         }          
         

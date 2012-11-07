@@ -122,7 +122,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 			event.setIntensity(hitPlayerEntity, 0); 
                 		}
                 		//Is thrower on the same team as player hit
-                		if (this.ctp.playerData.get(thrower).team.color.equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).team.color)){ // Yes
+                		if (this.ctp.playerData.get(thrower).team.getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).team.getColor())){ // Yes
                 			event.setIntensity(hitPlayerEntity, 0); 
                 		}else{ // No
                             if (isProtected(hitPlayer)) {
@@ -154,7 +154,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                             }
                         }
                 	}else{                            //Positive
-                		if (!this.ctp.playerData.get(thrower).team.color.equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).team.color)){ 
+                		if (!this.ctp.playerData.get(thrower).team.getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).team.getColor())){ 
                 			event.setIntensity(hitPlayerEntity, 0); 
                 		}
                 	}
@@ -211,8 +211,8 @@ public class CaptureThePointsEntityListener  implements Listener {
                 //disable pvp damage
                 if (attacker != null) {
                     if ((this.ctp.playerData.get(playa) != null) && (this.ctp.playerData.get(attacker) != null)) {
-                        if (this.ctp.playerData.get(playa).team.color.equalsIgnoreCase(this.ctp.playerData.get(attacker).team.color)) {
-                        	ctp.sendMessage(attacker, ctp.playerData.get(playa).team.chatcolor + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
+                        if (this.ctp.playerData.get(playa).team.getColor().equalsIgnoreCase(this.ctp.playerData.get(attacker).team.getColor())) {
+                        	ctp.sendMessage(attacker, ctp.playerData.get(playa).team.getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
                             event.setCancelled(true);
                             if(ctp.globalConfigOptions.debugMessages)
                             	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
@@ -266,7 +266,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         int ownedWool = 0;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
-                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).team.color)) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).team.getColor())) {
                     inv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
@@ -278,7 +278,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         inv.remove(Material.WOOL);
         
         if (ownedWool != 0) {
-            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).team.color.toUpperCase());
+            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).team.getColor().toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
             
@@ -297,7 +297,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         int ownedWool = 0;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
-                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).team.color)) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).team.getColor())) {
                     inv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
@@ -403,7 +403,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
         //Re-add Wool
         if (ownedWool != 0) {
-            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).team.color.toUpperCase());
+            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).team.getColor().toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
         }
@@ -444,8 +444,8 @@ public class CaptureThePointsEntityListener  implements Listener {
     public void respawnPlayer (Player player, Player attacker) {
         if (attacker != null) {
             if(!ctp.globalConfigOptions.disableKillMessages) {
-                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).team.chatcolor + player.getName() + ChatColor.WHITE
-                        + " was killed by " + ctp.playerData.get(attacker).team.chatcolor + attacker.getName());
+                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).team.getChatColor() + player.getName() + ChatColor.WHITE
+                        + " was killed by " + ctp.playerData.get(attacker).team.getChatColor() + attacker.getName());
             }
             
             dropWool(player);
@@ -455,7 +455,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             ctp.checkForKillMSG(player, true);
         } else {
             if(!ctp.globalConfigOptions.disableKillMessages)
-                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).team.chatcolor + player.getName() + ChatColor.WHITE
+                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).team.getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
             ctp.sendMessage(player, ChatColor.RED + "Please do not remove your Helmet.");
             ctp.checkForKillMSG(player, true);

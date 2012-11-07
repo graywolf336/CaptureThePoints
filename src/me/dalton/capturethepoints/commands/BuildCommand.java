@@ -11,6 +11,7 @@ import me.dalton.capturethepoints.*;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Team;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -193,24 +194,25 @@ public class BuildCommand extends CTPCommand {
                         ctp.mainArena.world = player.getWorld().getName();
                         ctp.mainArena.name = ctp.editingArena.name;
                     }
+                    
                     if (ctp.mainArena.world.equals(player.getWorld().getName())) {
                         ctp.mainArena.teamSpawns.put(arg2, spawn);
                         Team team = new Team();
                         team.spawn = spawn;
-                        team.color = arg2;
-                        team.memberCount = 0;
+                        team.setColor(arg2);
+                        team.setMemberCount(0);
                         try {
-                            team.chatcolor = ChatColor.valueOf(spawn.getName().toUpperCase()); // Kj -- init teamchat colour
+                            team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase())); // Kj -- init teamchat colour
                         } catch (Exception ex) {
-                            team.chatcolor = ChatColor.GREEN;
+                            team.setChatColor(ChatColor.GREEN);
                         }
+                        
                         // Check if this spawn is already in the list
                         boolean hasTeam = false;
 
                         for (Team aTeam : ctp.mainArena.teams) {
-                            if (aTeam.color.equalsIgnoreCase(arg2)) {
+                            if (aTeam.getColor().equalsIgnoreCase(arg2)) {
                                 hasTeam = true;
-                                //ctp.teams.remove(aTeam);
                             }
                         }
 
@@ -261,7 +263,7 @@ public class BuildCommand extends CTPCommand {
                     ctp.mainArena.teamSpawns.remove(arg2);
                 }
                 for (int i = 0; i < ctp.mainArena.teams.size(); i++) {
-                    if (!ctp.mainArena.teams.get(i).color.equals(arg2)) {
+                    if (!ctp.mainArena.teams.get(i).getColor().equals(arg2)) {
                         continue;
                     }
                     ctp.mainArena.teams.remove(i);

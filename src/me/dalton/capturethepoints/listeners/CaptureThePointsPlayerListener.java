@@ -13,12 +13,12 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Lobby;
 import me.dalton.capturethepoints.PlayerData;
-import me.dalton.capturethepoints.Team;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 
 import org.bukkit.ChatColor;
@@ -310,7 +310,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 if (isInside(loc.getBlockY(), ctp.mainArena.y1, ctp.mainArena.y2) && isInside(loc.getBlockX(), ctp.mainArena.x1, ctp.mainArena.x2) && isInside(loc.getBlockZ(), ctp.mainArena.z1, ctp.mainArena.z2) && loc.getWorld().getName().equalsIgnoreCase(ctp.mainArena.world)) {
                     return;
                 } else {
-                    String color = ctp.playerData.get(p).team.color;
+                    String color = ctp.playerData.get(p).team.getColor();
                     Location loc2 = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).getX(), ctp.mainArena.teamSpawns.get(color).getY() + 1, ctp.mainArena.teamSpawns.get(color).getZ());
                     loc2.setYaw((float) ctp.mainArena.teamSpawns.get(color).getDir());
                     loc2.getWorld().loadChunk(loc2.getBlockX(), loc2.getBlockZ());
@@ -534,7 +534,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 	public void fixHelmet (Player p) {
         PlayerInventory inv = p.getInventory();
         ctp.sendMessage(p, ChatColor.RED + "Do not remove your helmet.");
-        DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.color.toUpperCase());
+        DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.getColor().toUpperCase());
         ItemStack helmet = new ItemStack(Material.WOOL, 1, (short) color1.getData());
 
         inv.remove(Material.WOOL);
@@ -565,8 +565,8 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         //Game settings
         for (Team team : ctp.mainArena.teams) {
-            team.controlledPoints = 0;
-            team.score = 0;
+            team.setControlledPoints(0);
+            team.setScore(0);
         }
         
         if ((!ctp.mainArena.co.useScoreGeneration) && (ctp.mainArena.co.pointsToWin > ctp.mainArena.capturePoints.size())) {
@@ -587,20 +587,20 @@ public class CaptureThePointsPlayerListener implements Listener {
                 if ((ctp.isGameRunning()) && (!ctp.mainArena.co.useScoreGeneration)) {
                     int maxPoints = -9999;
                     for (Team team : ctp.mainArena.teams) {
-                        if (team.controlledPoints > maxPoints) {
-                            maxPoints = team.controlledPoints;
+                        if (team.getControlledPoints() > maxPoints) {
+                            maxPoints = team.getControlledPoints();
                         }
                     }
                     HashMap<String, String> colors = new HashMap<String, String>();
 
                     for (Team team : ctp.mainArena.teams) {
-                        if (team.controlledPoints == maxPoints) {
-                            colors.put(team.color, team.color);
+                        if (team.getControlledPoints() == maxPoints) {
+                            colors.put(team.getColor(), team.getColor());
                         }
                     }
 
                     for (Player player : ctp.playerData.keySet()) {
-                        if ((ctp.playerData.get(player).isInArena) && (colors.containsKey(ctp.playerData.get(player).team.color))) {
+                        if ((ctp.playerData.get(player).isInArena) && (colors.containsKey(ctp.playerData.get(player).team.getColor()))) {
                             ctp.playerData.get(player).winner = true;
                         }
                     }
@@ -628,15 +628,15 @@ public class CaptureThePointsPlayerListener implements Listener {
                             int dublicator = 1;
                             int maxPossiblePointsToCapture = 0;
                             for (Points point : ctp.mainArena.capturePoints) {
-                                if(point.getNotAllowedToCaptureTeams() == null || !Util.containsTeam(point.getNotAllowedToCaptureTeams(), team.color))
+                                if(point.getNotAllowedToCaptureTeams() == null || !Util.containsTeam(point.getNotAllowedToCaptureTeams(), team.getColor()))
                                     maxPossiblePointsToCapture++;
                             }
 
-                            if (team.controlledPoints == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0) {
+                            if (team.getControlledPoints() == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0) {
                                 dublicator = ctp.mainArena.co.scoreMyltiplier;
                             }
                             
-                            team.score += ctp.mainArena.co.onePointGeneratedScoreEvery30sec * team.controlledPoints * dublicator;
+                            team.setScore(team.getScore() + (ctp.mainArena.co.onePointGeneratedScoreEvery30sec * team.getControlledPoints() * dublicator));
                         }
                     }
                     ctp.blockListener.didSomeoneWin();
@@ -651,7 +651,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 if ((ctp.isGameRunning()) && (ctp.mainArena.co.useScoreGeneration)) {
                     String s = "";
                     for (Team team : ctp.mainArena.teams) {
-                        s = s + team.chatcolor + team.color.toUpperCase() + ChatColor.WHITE + " score: " + team.score + ChatColor.AQUA + " // "; // Kj -- Added teamcolour
+                        s = s + team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " score: " + team.getScore() + ChatColor.AQUA + " // "; // Kj -- Added teamcolour
                     }
                     for (Player play : ctp.playerData.keySet()) {
                     	ctp.sendMessage(play, "Max Score: " + ChatColor.GOLD + ctp.mainArena.co.scoreToWin); // Kj -- Green -> Gold
@@ -718,7 +718,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         if(player.getHealth() <= 0)
                             return;
 
-                        DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(player).team.color.toUpperCase());
+                        DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(player).team.getColor().toUpperCase());
                         
                         inv.remove(Material.WOOL);
                         ctp.entityListener.respawnPlayer(player, null);
@@ -754,25 +754,25 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         if(ctp.playerData.get(player).team == null) {
             for (int i = 0; i < ctp.mainArena.teams.size(); i++) {
-                if (ctp.mainArena.teams.get(i).memberCount < smallest) {
+                if (ctp.mainArena.teams.get(i).getMemberCount() < smallest) {
                     team = ctp.mainArena.teams.get(i);
-                    smallest = team.memberCount;
-                    color = team.color;
+                    smallest = team.getMemberCount();
+                    color = team.getColor();
                     teamNR = i;
                 }
             }
 
             try {
-                ctp.mainArena.teams.get(teamNR).chatcolor = ChatColor.valueOf(team.color.toUpperCase()); // Kj
+                ctp.mainArena.teams.get(teamNR).setChatColor(ChatColor.valueOf(team.getColor().toUpperCase())); // Kj
             } catch (Exception ex) {
-                ctp.mainArena.teams.get(teamNR).chatcolor = ChatColor.GREEN;
+                ctp.mainArena.teams.get(teamNR).setChatColor(ChatColor.GREEN);
             }
 
-            ctp.mainArena.teams.get(teamNR).memberCount++;
+            ctp.mainArena.teams.get(teamNR).addOneMemeberCount();
 
         } else {   // For already selected team
             team = ctp.playerData.get(player).team;
-            color = team.color;
+            color = team.getColor();
         }
 
         //Give wool
@@ -791,8 +791,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         ctp.playerData.get(player).team = team;
 
         Spawn spawn =
-                ctp.mainArena.teamSpawns.get(ctp.playerData.get(player).team.color) != null
-                ? ctp.mainArena.teamSpawns.get(ctp.playerData.get(player).team.color)
+                ctp.mainArena.teamSpawns.get(ctp.playerData.get(player).team.getColor()) != null
+                ? ctp.mainArena.teamSpawns.get(ctp.playerData.get(player).team.getColor())
                 : team.spawn;
 
         Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.teamSpawns.get(color).getX(), ctp.mainArena.teamSpawns.get(color).getY() + 1D, ctp.mainArena.teamSpawns.get(color).getZ()); // Kj -- Y+1
@@ -825,12 +825,12 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         // If sign requires team color to buy
         if(!teamcolor.isEmpty()) {
-            if (ctp.playerData.get(p).team == null || ctp.playerData.get(p).team.color == null) {
+            if (ctp.playerData.get(p).team == null || ctp.playerData.get(p).team.getColor() == null) {
                 return;
             }
 
             // Kj -- If player does not match the teamcolour if it is specified.
-            if (!teamcolor.isEmpty() && !ctp.playerData.get(p).team.color.trim().equalsIgnoreCase(teamcolor.trim())) {
+            if (!teamcolor.isEmpty() && !ctp.playerData.get(p).team.getColor().trim().equalsIgnoreCase(teamcolor.trim())) {
             	ctp.sendMessage(p, ChatColor.RED + "You are not on the " + teamcolor.toUpperCase() + " team.");
                 return;
             }
@@ -989,7 +989,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
             int hasThatTeam = -1;
             for(int i = 0; i < ctp.mainArena.teams.size(); i++) {
-                if(ctp.mainArena.teams.get(i).color.equals(color)) {
+                if(ctp.mainArena.teams.get(i).getColor().equals(color)) {
                     hasThatTeam = i;
                     break;
                 }
@@ -1003,15 +1003,15 @@ public class CaptureThePointsPlayerListener implements Listener {
             ctp.playerData.get(p).team = ctp.mainArena.teams.get(hasThatTeam);
 
             try {
-                ctp.mainArena.teams.get(hasThatTeam).chatcolor = ChatColor.valueOf(color.toUpperCase()); // Kj
+                ctp.mainArena.teams.get(hasThatTeam).setChatColor(ChatColor.valueOf(color.toUpperCase())); // Kj
             } catch (Exception ex) {
-                ctp.mainArena.teams.get(hasThatTeam).chatcolor = ChatColor.GREEN;
+                ctp.mainArena.teams.get(hasThatTeam).setChatColor(ChatColor.GREEN);
             }
 
-            ctp.mainArena.teams.get(hasThatTeam).memberCount++;
+            ctp.mainArena.teams.get(hasThatTeam).addOneMemeberCount();
 
 
-            DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.color.toUpperCase());
+            DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p).team.getColor().toUpperCase());
 
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
             p.getInventory().setHelmet(helmet);
@@ -1063,7 +1063,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     for(int j = 0; j < optimalPlayerCountInTeam - teamPlayersCount[i]; j++) {
                         Player p = playersForBalance.get(j);
                         
-                        ctp.playerData.get(p).team.memberCount--;
+                        ctp.playerData.get(p).team.substractOneMemeberCount();
                         Team oldTeam = ctp.playerData.get(p).team;
                         ctp.playerData.get(p).team = null;     // For moveToSpawns team check
 
@@ -1076,8 +1076,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                         
                         moveToSpawns(p);
                         playersForRemove.add(p);
-                        ctp.sendMessage(p, ctp.playerData.get(p).team.chatcolor + "You" + ChatColor.WHITE + " changed teams from "
-                                + oldTeam.chatcolor + oldTeam.color + ChatColor.WHITE + " to "+ ctp.playerData.get(p).team.chatcolor + ctp.playerData.get(p).team.color + ChatColor.WHITE + "! [Team-balancing]");
+                        ctp.sendMessage(p, ctp.playerData.get(p).team.getChatColor() + "You" + ChatColor.WHITE + " changed teams from "
+                                + oldTeam.getChatColor() + oldTeam.getColor() + ChatColor.WHITE + " to "+ ctp.playerData.get(p).team.getChatColor() + ctp.playerData.get(p).team.getColor() + ChatColor.WHITE + "! [Team-balancing]");
                     }
                     
                     for(Player p : playersForRemove)
@@ -1090,7 +1090,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if(ctp.mainArena.co.exactTeamMemberCount) {
             for(Player p : playersForBalance) {
                 // Moving to Lobby
-                ctp.playerData.get(p).team.memberCount--;
+                ctp.playerData.get(p).team.substractOneMemeberCount();
                 ctp.playerData.get(p).team = null;
                 ctp.playerData.get(p).isInArena = false;
                 ctp.playerData.get(p).isInLobby = true;

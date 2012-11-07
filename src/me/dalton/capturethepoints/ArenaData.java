@@ -7,6 +7,7 @@ import java.util.List;
 
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Team;
 
 import org.bukkit.entity.Player;
 
