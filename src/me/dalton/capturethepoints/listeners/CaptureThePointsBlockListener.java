@@ -9,6 +9,8 @@ import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.util.InvManagement;
+import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -80,7 +82,7 @@ public class CaptureThePointsBlockListener implements Listener {
         
             for(ArenaBoundaries bound : ctp.arenasBoundaries.values()){
                 if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2()) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2()) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2()) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
-                    if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
+                    if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
 
@@ -208,7 +210,7 @@ public class CaptureThePointsBlockListener implements Listener {
         if (!ctp.playerData.containsKey(player)) {// If tries to place blocks in arena out of game
             for(ArenaBoundaries bound : ctp.arenasBoundaries.values()) {
                 if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2()) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2()) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2()) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
-                    if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
+                    if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
 
@@ -723,7 +725,7 @@ public class CaptureThePointsBlockListener implements Listener {
 
     public void restoreThings (Player p) {
         ctp.playerData.get(p).justJoined = true;
-        Util.restoreInv(p);
+        InvManagement.restoreInv(p);
 
         Location loc = ctp.previousLocation.get(p);
         //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());

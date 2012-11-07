@@ -2,6 +2,7 @@ package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
 
@@ -24,7 +25,7 @@ public class ColorsCommand extends CTPCommand {
 
     @Override
     public void perform() {       
-        if (ctp.canAccess(player, false, new String[]{"ctp.*", "ctp.admin"})) {
+        if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin"})) {
             sendMessage(ChatColor.RED + "Admin: " + ChatColor.BLUE +"Available team colors:"); // Kj -- typo ;)
             sendMessage(ChatColor.GREEN + "WHITE, LIGHTGRAY, GRAY, BLACK, RED, ORANGE, YELLOW, LIME, LIGHTBLUE, GREEN, CYAN, BLUE, PURPLE, MAGENTA, PINK, BROWN");
         }

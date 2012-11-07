@@ -20,6 +20,7 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.PJoinCommand;
+import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -64,7 +65,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         
         if (ctp.mainArena != null && ctp.mainArena.co != null && !ctp.mainArena.co.allowCommands) {
             String[] args = event.getMessage().split(" ");
-            if (!ctp.canAccess(player, false, new String[] { "ctp.*", "ctp.admin" }) && ctp.isGameRunning() && ctp.playerData.containsKey(player)
+            if (!Permissions.canAccess(player, false, new String[] { "ctp.*", "ctp.admin" }) && ctp.isGameRunning() && ctp.playerData.containsKey(player)
                     && !args[0].equalsIgnoreCase("/ctp")) {
             	ctp.sendMessage(player, ChatColor.RED + "You can't use commands while playing!");
                 event.setCancelled(true);

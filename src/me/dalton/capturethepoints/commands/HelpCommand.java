@@ -1,6 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.util.Permissions;
+
 import org.bukkit.ChatColor;
 
 public class HelpCommand extends CTPCommand {
@@ -29,60 +31,60 @@ public class HelpCommand extends CTPCommand {
             sendMessage(ChatColor.RED + "CTP Commands: " + ChatColor.GOLD + " Page 1/2");
             sendMessage(ChatColor.DARK_GREEN + "/ctp help [pagenumber] " + ChatColor.WHITE + "- view this menu.");
             
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp aliases " + ChatColor.WHITE + "- list of helpful command aliases");
             }
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.auto", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.auto", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp auto <worldname>" + ChatColor.WHITE + "- start ctp with all players in a world.");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp build help " + ChatColor.WHITE + "- arena editing commands list");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp colors " + ChatColor.WHITE + "- available colors and senders in-game");
             }
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.joinall"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.joinall"})) {
                 sendMessage(ChatColor.GREEN + "/ctp joinall " + ChatColor.WHITE + "- make all players join the game");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp join " + ChatColor.WHITE + "- join the game");
             }
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.kick"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.kick"})) {
                 sendMessage(ChatColor.GREEN + "/ctp kick <sender> " + ChatColor.WHITE + "- kicks player from the game");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp leave " + ChatColor.WHITE + "- leave the game");
             }
         } else if (pagenumber.equals("2")) {
             sendMessage(ChatColor.RED + "CTP Commands: " + ChatColor.GOLD + " Page 2/2");
             
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pjoin"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pjoin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp pjoin <sender> " + ChatColor.WHITE + "- makes this player join the game");
             }
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.reload"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.reload"})) {
                 sendMessage(ChatColor.GREEN + "/ctp reload " + ChatColor.WHITE + "- reload CTP config files");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.rejoin"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.rejoin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp rejoin " + ChatColor.WHITE + "- join a game if one has started.");
             }
             /*
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
                 sendMessage(ChatColor.GREEN + "/ctp save " + ChatColor.WHITE + "- save");
             }
              */
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setpoints"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setpoints"})) {
                 sendMessage(ChatColor.GREEN + "/ctp setpoints <TeamColor> <number> " + ChatColor.WHITE + "- Set the chosen team's points/score");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
                 sendMessage(ChatColor.GREEN + "/ctp stats " + ChatColor.WHITE + "- get your in-game stats");
             }
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.stop"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.stop"})) {
                 sendMessage(ChatColor.GREEN + "/ctp stop " + ChatColor.WHITE + "- stops already running game");
             }
-            if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
+            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
                 sendMessage(ChatColor.GREEN + "/ctp team  " + ChatColor.WHITE + "- gets the members on your team");
             }
-            if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin"})) {
+            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp version  " + ChatColor.WHITE + "- check this plugin's version");
             }
         }

@@ -3,6 +3,8 @@ package me.dalton.capturethepoints;
 import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
+import me.dalton.capturethepoints.util.InvManagement;
+import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
@@ -36,7 +38,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -181,6 +182,7 @@ public class CaptureThePoints extends JavaPlugin {
 
             populateCommands();
             Util.setCTP(this);
+            InvManagement.setCTP(this);
         }
         
         loadConfigFiles();
@@ -430,53 +432,6 @@ public class CaptureThePoints extends JavaPlugin {
             newTeam.addOneMemeberCount();
         }
     }
-    
-    /**  
-     * Test whether a command sender can use this CTP command.
-     * 
-     * @param sender The sender issuing the command
-     * @param notOpCommand Set to true if anyone can use the command, else false if the command issuer has to be an op or CTP admin.
-     * @param permissions The permissions to check against that are associated with the command.
-     * @return True if sender has permission, else false. 
-     */
-    public boolean canAccess (CommandSender sender, boolean notOpCommand, String[] permissions) {
-        if (sender instanceof ConsoleCommandSender) {
-            return true;
-        } else if (!(sender instanceof Player)) {
-            return false;
-        } else {
-            return canAccess((Player) sender, notOpCommand, permissions);
-        }
-    }
-
-    /**  
-     * Test whether a player can use this CTP command.
-     * 
-     * @param p The player issuing the command
-     * @param notOpCommand Set to true if anyone can use the command, else false if the command issuer has to be an op or CTP admin.
-     * @param permissions The permissions to check against that are associated with the command.
-     * @return True if player has permission, else false. 
-     */
-    public boolean canAccess (Player p, boolean notOpCommand, String[] permissions) {
-        if (permissions == null) {
-            return true;
-        }
-
-        if (CaptureThePoints.UsePermissions) {
-            for (String perm : permissions) {
-                if (CaptureThePoints.permission.has(p, perm)) {
-                    return true;
-                }
-            }
-        } else {
-            if (notOpCommand)
-                return true;
-            else
-            	return p.isOp();
-        }
-        
-        return false; //fail safe
-    }
 
     public void checkForGameEndThenPlayerLeft () {
         if (this.playerData.size() < 2 && !isPreGame()) {
@@ -547,7 +502,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         if (getServer().getWorld(arena.world) == null) {
-            if (canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
+            if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
                 return "The arena config is incorrect. The world \"" + arena.world + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
             } else {
                 return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
@@ -557,7 +512,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Kj -- Test that the spawn points are within the map boundaries
         for (Spawn aSpawn : arena.teamSpawns.values()) {
             if (!playerListener.isInside((int) aSpawn.getX(), arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.getZ(), arena.z1, arena.z2)) {
-                if (canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
+                if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
                     return "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. "
                             + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.x1 + "<==>" + arena.x2 + ", " + arena.z1 + "<==>" + arena.z2 + "].";
                 } else {
@@ -1057,6 +1012,7 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
         }
+        
         Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
         if (playerData.get(player).team != null) {

@@ -152,30 +152,6 @@ public class Util {
         }
     }
     
-	@SuppressWarnings("deprecation")
-	public static void restoreInv (Player player) {
-        PlayerInventory PlayerInv = player.getInventory();
-
-        // Just to be sure that inventory is saved
-        if (ctp.getInventories().get(player) != null) {
-            PlayerInv.setContents(ctp.getInventories().get(player));
-            ctp.getInventories().remove(player);
-
-            PlayerInv.setBoots(ctp.getArmor().get(player)[0].getTypeId() == 0 ? null
-                    : ctp.getArmor().get(player)[0]); // Kj -- removed redundant casts
-            PlayerInv.setLeggings(ctp.getArmor().get(player)[1].getTypeId() == 0
-                    ? null : ctp.getArmor().get(player)[1]);
-            PlayerInv.setChestplate(ctp.getArmor().get(player)[2].getTypeId() == 0
-                    ? null : ctp.getArmor().get(player)[2]);
-            PlayerInv.setHelmet(ctp.getArmor().get(player)[3].getTypeId() == 0
-                    ? null : ctp.getArmor().get(player)[3]);
-            ctp.getArmor().remove(player);
-            
-            //It's deprecated but it's currently the only way to get the desired effect.
-            player.updateInventory();
-        }
-    }
-    
     /**
      * Takes a comma-separated list of items in the <type>:<amount> format and
      * returns a list of ItemStacks created from that data.

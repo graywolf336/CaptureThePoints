@@ -1,6 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.util.Permissions;
+
 import org.bukkit.ChatColor;
 
 public class AliasesCommand extends CTPCommand {
@@ -21,33 +23,33 @@ public class AliasesCommand extends CTPCommand {
     public void perform() {
         sendMessage(ChatColor.RED + "Aliases for some commands:");
             sendMessage(ChatColor.GREEN + "alias: " + ChatColor.WHITE + "aliases");
-        if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+        if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
             sendMessage(ChatColor.GREEN + "build: " + ChatColor.WHITE + "b, create, make");
         }
-        if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.colors"})) {
+        if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.colors"})) {
             sendMessage(ChatColor.GREEN + "colors: " + ChatColor.WHITE + "colours, teams, players");
         } 
         
         sendMessage(ChatColor.GREEN + "help: " + ChatColor.WHITE + "?");
-        if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.joinall"})) {
+        if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.joinall"})) {
             sendMessage(ChatColor.GREEN + "joinall: " + ChatColor.WHITE + "jall");
         }
-        if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+        if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
             sendMessage(ChatColor.GREEN + "join: " + ChatColor.WHITE + "j, play");
         }            
-        if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
+        if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
             sendMessage(ChatColor.GREEN + "leave: " + ChatColor.WHITE + "exit, part, quit");
         }
-        if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pjoin"})) {
+        if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pjoin"})) {
             sendMessage(ChatColor.GREEN + "pjoin: " + ChatColor.WHITE + "pj");
         }
-        if (ctp.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.rejoin"})) {
+        if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.rejoin"})) {
             sendMessage(ChatColor.GREEN + "rejoin: " + ChatColor.WHITE + "rj");
         }
-        if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setarena", "ctp.admin.select", "ctp.admin.selectarena"})) {
+        if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setarena", "ctp.admin.select", "ctp.admin.selectarena"})) {
             sendMessage(ChatColor.GREEN + "select: " + ChatColor.WHITE + "setarena, selectarena, arena");
         }
-        if (ctp.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin.start", "ctp.admin"})) {
+        if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin.start", "ctp.admin"})) {
             sendMessage(ChatColor.GREEN + "start: " + ChatColor.WHITE + "go");
         }
     }
