@@ -1282,20 +1282,20 @@ public class CaptureThePoints extends JavaPlugin {
         FileConfiguration config = load();
         // Healing items loading
         if (!config.contains("HealingItems")) {
-            config.addDefault("HealingItems.BREAD.HOTHeal", 1);
-            config.addDefault("HealingItems.BREAD.HOTInterval", 1);
-            config.addDefault("HealingItems.BREAD.Duration", 5);
-            config.addDefault("HealingItems.BREAD.Cooldown", 0);
-            config.addDefault("HealingItems.BREAD.ResetCooldownOnDeath", false);
-            config.addDefault("HealingItems.GOLDEN_APPLE.InstantHeal", 20);
-            config.addDefault("HealingItems.GOLDEN_APPLE.Cooldown", 60);
-            config.addDefault("HealingItems.GOLDEN_APPLE.ResetCooldownOnDeath", true);
-            config.addDefault("HealingItems.GRILLED_PORK.HOTHeal", 1);
-            config.addDefault("HealingItems.GRILLED_PORK.HOTInterval", 3);
-            config.addDefault("HealingItems.GRILLED_PORK.Duration", 5);
-            config.addDefault("HealingItems.GRILLED_PORK.Cooldown", 10);
-            config.addDefault("HealingItems.GRILLED_PORK.InstantHeal", 5);
-            config.addDefault("HealingItems.GRILLED_PORK.ResetCooldownOnDeath", true);
+            config.set("HealingItems.BREAD.HOTHeal", 1);
+            config.set("HealingItems.BREAD.HOTInterval", 1);
+            config.set("HealingItems.BREAD.Duration", 5);
+            config.set("HealingItems.BREAD.Cooldown", 0);
+            config.set("HealingItems.BREAD.ResetCooldownOnDeath", false);
+            config.set("HealingItems.GOLDEN_APPLE.InstantHeal", 20);
+            config.set("HealingItems.GOLDEN_APPLE.Cooldown", 60);
+            config.set("HealingItems.GOLDEN_APPLE.ResetCooldownOnDeath", true);
+            config.set("HealingItems.GRILLED_PORK.HOTHeal", 1);
+            config.set("HealingItems.GRILLED_PORK.HOTInterval", 3);
+            config.set("HealingItems.GRILLED_PORK.Duration", 5);
+            config.set("HealingItems.GRILLED_PORK.Cooldown", 10);
+            config.set("HealingItems.GRILLED_PORK.InstantHeal", 5);
+            config.set("HealingItems.GRILLED_PORK.ResetCooldownOnDeath", true);
         }
         
         int itemNR = 0;
@@ -1321,41 +1321,44 @@ public class CaptureThePoints extends JavaPlugin {
             config.options().copyDefaults(true);
             config.save(globalConfigFile);
         } catch (IOException ex) {
-            Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
+        	ex.printStackTrace();
+            logSevere("Couldn't save the global config file, please see the StackTrace above.");
         }
     }
 
     public void loadRoles () {
         FileConfiguration config = load();
         if (!config.contains("Roles")) {
-            config.addDefault("Roles.Tank.Items", "268, 297:16, DIAMOND_CHESTPLATE, 308, 309, SHEARS, CAKE");
-            config.addDefault("Roles.Fighter.Items", "272, 297:4, 261, 262:32, CHAINMAIL_CHESTPLATE, CHAINMAIL_LEGGINGS, CHAINMAIL_BOOTS");
-            config.addDefault("Roles.Ranger.Items", "268, 297:6, 261, 262:256, 299, 300, 301");
-            config.addDefault("Roles.Berserker.Items", "267, GOLDEN_APPLE:2");
+            config.set("Roles.Tank.Items", "268, 297:16, DIAMOND_CHESTPLATE, 308, 309, SHEARS, CAKE");
+            config.set("Roles.Fighter.Items", "272, 297:4, 261, 262:32, CHAINMAIL_CHESTPLATE, CHAINMAIL_LEGGINGS, CHAINMAIL_BOOTS");
+            config.set("Roles.Ranger.Items", "268, 297:6, 261, 262:256, 299, 300, 301");
+            config.set("Roles.Berserker.Items", "267, GOLDEN_APPLE:2");
         }
         
         for (String str : config.getConfigurationSection("Roles").getKeys(false)) {
             String text = config.getString("Roles." + str + ".Items");
-
             roles.put(str.toLowerCase(), Util.getItemListFromString(text));
-        } try {
+        }
+        
+        try {
             config.options().copyDefaults(true);
             config.save(globalConfigFile);
         } catch (IOException ex) {
-            Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            logSevere("Couldn't save the global config file, please see the StackTrace above.");
         }
     }
 
     public void loadRewards () {
         FileConfiguration config = load();
         if (!config.contains("Rewards")) {
-            config.addDefault("Rewards.WinnerTeam.ItemCount", "2");
-            config.addDefault("Rewards.WinnerTeam.Items", "DIAMOND_LEGGINGS, DIAMOND_HELMET, DIAMOND_CHESTPLATE, DIAMOND_BOOTS, DIAMOND_AXE, DIAMOND_HOE, DIAMOND_PICKAXE, DIAMOND_SPADE, DIAMOND_SWORD");
-            config.addDefault("Rewards.OtherTeams.ItemCount", "1");
-            config.addDefault("Rewards.OtherTeams.Items", "CAKE, RAW_FISH:5, COAL:5, 56, GOLDEN_APPLE");
-            config.addDefault("Rewards.ForKillingEnemy", "APPLE, BREAD, ARROW:10");
-            config.addDefault("Rewards.ForCapturingThePoint", "CLAY_BRICK, SNOW_BALL:2, SLIME_BALL, IRON_INGOT");
-            config.addDefault("Rewards.ExpRewardForKillingOneEnemy", "0");
+            config.set("Rewards.WinnerTeam.ItemCount", "2");
+            config.set("Rewards.WinnerTeam.Items", "DIAMOND_LEGGINGS, DIAMOND_HELMET, DIAMOND_CHESTPLATE, DIAMOND_BOOTS, DIAMOND_AXE, DIAMOND_HOE, DIAMOND_PICKAXE, DIAMOND_SPADE, DIAMOND_SWORD");
+            config.set("Rewards.OtherTeams.ItemCount", "1");
+            config.set("Rewards.OtherTeams.Items", "CAKE, RAW_FISH:5, COAL:5, 56, GOLDEN_APPLE");
+            config.set("Rewards.ForKillingEnemy", "APPLE, BREAD, ARROW:10");
+            config.set("Rewards.ForCapturingThePoint", "CLAY_BRICK, SNOW_BALL:2, SLIME_BALL, IRON_INGOT");
+            config.set("Rewards.ExpRewardForKillingOneEnemy", "0");
         }
         
         rewards = new Rewards();
