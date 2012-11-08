@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 /** Player Data of the people playing CTP. */
 public class PlayerData {
@@ -16,7 +16,7 @@ public class PlayerData {
     private int money, health, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
-    private List<CTPPotionEffect> potionEffects = new ArrayList<CTPPotionEffect>();
+    private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
     /** Sets the team this player is on. */
     public void setTeam(Team team) {
@@ -245,11 +245,11 @@ public class PlayerData {
     	return this.warnedAboutActivity;
     }
     
-    public void setPotionEffects(List<CTPPotionEffect> effects) {
+    public void setPotionEffects(List<PotionEffect> effects) {
     	this.potionEffects = effects;
     }
     
-    public List<CTPPotionEffect> getPotionEffects() {
+    public List<PotionEffect> getPotionEffects() {
     	return this.potionEffects;
     }
     

@@ -3,12 +3,12 @@ package me.dalton.capturethepoints.listeners;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.util.PotionManagement;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -461,7 +461,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             ctp.checkForKillMSG(player, true);
         }
 
-        CTPPotionEffect.removeAllEffectsNew(player);
+        PotionManagement.removeAllEffectsNew(player);
         //TODO: Set this to the event
         player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
         player.setFoodLevel(20);

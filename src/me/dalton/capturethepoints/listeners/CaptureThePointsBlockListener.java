@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.listeners;
 import java.util.ArrayList;
 import java.util.List;
-import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
@@ -9,6 +8,7 @@ import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
 
@@ -744,8 +744,8 @@ public class CaptureThePointsBlockListener implements Listener {
             return;
         }
         
-        CTPPotionEffect.removeAllEffectsNew(p);
-        CTPPotionEffect.restorePotionEffectsNew(p, ctp.playerData.get(p).getPotionEffects());
+        PotionManagement.removeAllEffectsNew(p);
+        PotionManagement.restorePotionEffectsNew(p, ctp.playerData.get(p).getPotionEffects());
 
         p.setFoodLevel(ctp.playerData.get(p).getFoodLevel());
         if (ctp.playerData.get(p).wasInCreative()) {

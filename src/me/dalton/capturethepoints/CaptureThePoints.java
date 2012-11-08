@@ -3,6 +3,7 @@ package me.dalton.capturethepoints;
 import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
+import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
@@ -1435,8 +1436,8 @@ public class CaptureThePoints extends JavaPlugin {
         data.setLobbyJoinTime(System.currentTimeMillis());
         
         // Store and remove potion effects on player
-        data.setPotionEffects(CTPPotionEffect.storePlayerPotionEffectsNew(player));
-        CTPPotionEffect.removeAllEffectsNew(player);
+        data.setPotionEffects(PotionManagement.storePlayerPotionEffectsNew(player));
+        PotionManagement.removeAllEffectsNew(player);
         
         playerData.put(player, data);
 

@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
@@ -20,6 +19,7 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.PJoinCommand;
+import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
@@ -207,7 +207,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         }
                         
-                        CTPPotionEffect.removeAllEffectsNew(p);
+                        PotionManagement.removeAllEffectsNew(p);
                         
                         String oldRole = "";
                         

@@ -6,7 +6,7 @@ CaptureThePoints
 If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
 
 ### Update: 1.4.5 ###
-* Rewrote the CTPPotionEffect to use Craftbukkit APIs
+* Rewrote how potions are handled completely, let craftbukkit do it for us.
 * Rewrote several classes and moved things around to be organized in the code.
 * Removed a bunch of commented out code, if you want it back look up the stuff in the github history prior to this commit.
 * Made when we setHealth to trigger a new regain health event, although I'm still finding these throughout the plugin.
