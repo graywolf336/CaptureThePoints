@@ -83,7 +83,7 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo("Running sanity checks ... ");
         
         List<String> result = new ArrayList<String>();
-        if (ctp.mainArena.getPlayers(ctp).size() != ctp.playerData.size() || ctp.playerData.size() != (ctp.mainArena.lobby.playersinlobby.size() + ctp.mainArena.getPlayersPlaying(ctp).size())) {
+        if (ctp.mainArena.getPlayers(ctp).size() != ctp.playerData.size() || ctp.playerData.size() != (ctp.mainArena.lobby.getPlayersInLobby().size() + ctp.mainArena.getPlayersPlaying(ctp).size())) {
             result.add("Inconsistant number of Players: ["+ctp.mainArena.getPlayersPlaying(ctp).size()+" | "+ctp.playerData.size()+" | "+(ctp.mainArena.lobby.countAllPeople() + ctp.mainArena.getPlayersPlaying(ctp).size())+"]");
         }
         if (!ctp.hasSuitableArena(ctp.mainArena.getPlayersPlaying(ctp).size()) && ctp.isGameRunning()) {
@@ -96,10 +96,10 @@ public class DebugCommand extends CTPCommand {
                 continue;
             }
             boolean isReady = false;
-            if (ctp.mainArena.lobby.playersinlobby.get(p) == null) {
+            if (ctp.mainArena.lobby.getPlayersInLobby().get(p) == null) {
                 isReady = true;
             } else {
-                isReady = ctp.mainArena.lobby.playersinlobby.get(p);
+                isReady = ctp.mainArena.lobby.getPlayersInLobby().get(p);
             }
             if (ctp.playerData.get(p).isReady != isReady) {
                 error = true; // Needs to be separate otherwise for loop will spam.
@@ -134,7 +134,7 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo("Number of Arenas: "+ctp.arena_list.size()+": "+ctp.arena_list);   
         ctp.logInfo("Current Arena: \""+ctp.mainArena.name+"\" in World \""+ctp.mainArena.world+"\"");
         if (ctp.mainArena.hasLobby()) {
-            ctp.logInfo("    Lobby: "+(int)ctp.mainArena.lobby.x+ ", "+(int)ctp.mainArena.lobby.y+ ", "+(int)ctp.mainArena.lobby.z+".");
+            ctp.logInfo("    Lobby: " + (int)ctp.mainArena.lobby.getX() + ", " + (int)ctp.mainArena.lobby.getY() + ", " + (int)ctp.mainArena.lobby.getZ() + ".");
         } else {
             ctp.logInfo("    Lobby: not made");
         }

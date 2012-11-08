@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.dalton.capturethepoints.*;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
+import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
@@ -764,10 +765,10 @@ public class BuildCommand extends CTPCommand {
                     ctp.mainArena.lobby = lobby;
                 }
 
-                arenaConf.addDefault("Lobby.X", Double.valueOf(lobby.x));
-                arenaConf.addDefault("Lobby.Y", Double.valueOf(lobby.y));
-                arenaConf.addDefault("Lobby.Z", Double.valueOf(lobby.z));
-                arenaConf.addDefault("Lobby.Dir", Double.valueOf(lobby.dir));
+                arenaConf.addDefault("Lobby.X", Double.valueOf(lobby.getX()));
+                arenaConf.addDefault("Lobby.Y", Double.valueOf(lobby.getY()));
+                arenaConf.addDefault("Lobby.Z", Double.valueOf(lobby.getZ()));
+                arenaConf.addDefault("Lobby.Dir", Double.valueOf(lobby.getDir()));
                 
                 try {
                     arenaConf.options().copyDefaults(true);

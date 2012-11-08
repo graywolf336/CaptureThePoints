@@ -7,6 +7,7 @@ import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Rewards;
 import me.dalton.capturethepoints.beans.Spawn;
@@ -54,6 +55,8 @@ public class CaptureThePoints extends JavaPlugin {
 	public static Permission permission = null;
     public static Economy economyHandler = null;
 
+    //TODO: Remove all instances of store Player, we can end up with "ghost" players like this - switch to name.
+    
     public static boolean UsePermissions;
 
     /** "plugins/CaptureThePoints" */
@@ -355,7 +358,7 @@ public class CaptureThePoints extends JavaPlugin {
             playerData.get(p).team = null;
             playerData.get(p).isInArena = false;
             playerData.get(p).isInLobby = true;
-            mainArena.lobby.playersinlobby.put(p, false);
+            mainArena.lobby.getPlayersInLobby().put(p, false);
             playerData.get(p).isReady = false;
             playerData.get(p).justJoined = true; // Flag for teleport
             playerData.get(p).lobbyJoinTime = System.currentTimeMillis();     
@@ -371,8 +374,8 @@ public class CaptureThePoints extends JavaPlugin {
             p.updateInventory();
         
             // Get lobby location and move player to it.
-            Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
-            loc.setYaw((float) mainArena.lobby.dir);
+            Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.getX(), mainArena.lobby.getY() + 1, mainArena.lobby.getZ());
+            loc.setYaw((float) mainArena.lobby.getDir());
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             p.teleport(loc); // Teleport player to lobby
             Util.sendMessageToPlayers(this, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
@@ -1021,7 +1024,7 @@ public class CaptureThePoints extends JavaPlugin {
             }
         }
         
-        this.mainArena.lobby.playersinlobby.remove(player);
+        this.mainArena.lobby.getPlayersInLobby().remove(player);
         this.blockListener.restoreThings(player);
         this.previousLocation.remove(player);
         this.playerData.remove(player);
@@ -1250,7 +1253,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arenaConf.getDouble("Lobby.Z", 0.0D),
                     arenaConf.getDouble("Lobby.Dir", 0.0D));
             arena.lobby = lobby;
-            if ((lobby.x == 0.0D) && (lobby.y == 0.0D) && (lobby.z == 0.0D) && (lobby.dir == 0.0D)) {
+            if ((lobby.getX() == 0.0D) && (lobby.getY() == 0.0D) && (lobby.getZ() == 0.0D) && (lobby.getDir() == 0.0D)) {
                 arena.lobby = null;
             }
 
@@ -1400,7 +1403,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
 
         if (playerData.isEmpty()) {
-            mainArena.lobby.playersinlobby.clear();   //Reset if first to come
+            mainArena.lobby.getPlayersInLobby().clear();   //Reset if first to come
         }
 
         if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
@@ -1440,8 +1443,8 @@ public class CaptureThePoints extends JavaPlugin {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        mainArena.lobby.playersinlobby.put(player, false); // Kj
-        mainArena.lobby.playerswhowereinlobby.add(player); // Kj
+        mainArena.lobby.getPlayersInLobby().put(player, false); // Kj
+        mainArena.lobby.getPlayersWhoWereInLobby().add(player); // Kj
 
         //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
         player.setHealth(mainArena.co.maxPlayerHealth);
@@ -1449,8 +1452,8 @@ public class CaptureThePoints extends JavaPlugin {
     	CaptureThePoints.pluginManager.callEvent(regen);
         
         // Get lobby location and move player to it.
-        Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.x, mainArena.lobby.y + 1, mainArena.lobby.z);
-        loc.setYaw((float) mainArena.lobby.dir);
+        Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.getX(), mainArena.lobby.getY() + 1, mainArena.lobby.getZ());
+        loc.setYaw((float) mainArena.lobby.getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());
         }

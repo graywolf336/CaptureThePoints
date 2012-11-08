@@ -22,7 +22,7 @@ public class RejoinCommand extends CTPCommand {
     public void perform() {
         if (!ctp.blockListener.isAlreadyInGame(player)) {
             if (ctp.isGameRunning()) {
-                if (ctp.mainArena.lobby.playerswhowereinlobby.contains(player)) {
+                if (ctp.mainArena.lobby.getPlayersWhoWereInLobby().contains(player)) {
                     ctp.moveToLobby(player);
                 } else {
                     sendMessage(ChatColor.RED + "Cannot rejoin -- you haven't disconnected from this game.");

@@ -1,7 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.Lobby;
+import me.dalton.capturethepoints.beans.Lobby;
+
 import org.bukkit.ChatColor;
 
 public class StartCommand extends CTPCommand {

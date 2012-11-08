@@ -729,7 +729,7 @@ public class CaptureThePointsBlockListener implements Listener {
 
         Location loc = ctp.previousLocation.get(p);
         //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
-        loc.setYaw((float) ctp.mainArena.lobby.dir);
+        loc.setYaw((float) ctp.mainArena.lobby.getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());
             //Packet packet = new Packet51MapChunk((int)loc.getX() - 5, (int)loc.getY() - 2, (int)loc.getZ() - 5, (int)loc.getX() + 5, (int)loc.getY() + 2, (int)loc.getZ() + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);

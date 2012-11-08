@@ -11,10 +11,10 @@ import me.dalton.capturethepoints.ArenaData;
 import me.dalton.capturethepoints.CTPPotionEffect;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.Lobby;
 import me.dalton.capturethepoints.PlayerData;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
@@ -159,7 +159,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         Util.sendMessageToPlayers(ctp, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
                     }
                     ctp.playerData.get(p).isReady = true;
-                    ctp.mainArena.lobby.playersinlobby.put(p, true); // Kj
+                    ctp.mainArena.lobby.getPlayersInLobby().put(p, true); // Kj
                     checkLobby(p);
                 } else {
                 	ctp.sendMessage(p, ChatColor.RED + "Please select a role.");
@@ -191,7 +191,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                      */
                     
                     // Player is in Lobby choosing role.
-                    if (ctp.mainArena.lobby.playersinlobby.containsKey(p)) {
+                    if (ctp.mainArena.lobby.getPlayersInLobby().containsKey(p)) {
                         // Kj's
                         if (role.equalsIgnoreCase("random")) {
                             int size = ctp.roles.size();
@@ -230,7 +230,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         }
                         
                         ctp.playerData.get(p).isReady = false; // Un-ready the player
-                        ctp.mainArena.lobby.playersinlobby.put(p, false);
+                        ctp.mainArena.lobby.getPlayersInLobby().put(p, false);
                         return;
 
                         // Player is in game choosing role.
@@ -342,7 +342,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if(!ctp.isGameRunning() && ctp.playerData.get(p).isInLobby) {
             ctp.playerData.get(p).isInArena = false;
             ctp.playerData.get(p).isInLobby = false;
-            ctp.mainArena.lobby.playersinlobby.remove(p);
+            ctp.mainArena.lobby.getPlayersInLobby().remove(p);
             event.setRespawnLocation(ctp.previousLocation.get(p));
             ctp.leaveGame(p);
             p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
@@ -365,7 +365,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         event.setCancelled(true);
                         ctp.playerData.get(event.getPlayer()).isInArena = false;
                         ctp.playerData.get(event.getPlayer()).isInLobby = false;
-                        ctp.mainArena.lobby.playersinlobby.remove(event.getPlayer());
+                        ctp.mainArena.lobby.getPlayersInLobby().remove(event.getPlayer());
                         ctp.leaveGame(event.getPlayer());
                         event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
                     }
@@ -453,7 +453,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             ArenaData mainArenaTmp = ctp.mainArena;
                             if (ctp.hasSuitableArena(readypeople)) {
                                 Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + ctp.mainArena.minimumPlayers + " players, found " + readypeople + "].");
-                                List<Player> transport = new LinkedList<Player>(lobby.playersinlobby.keySet());
+                                List<Player> transport = new LinkedList<Player>(lobby.getPlayersInLobby().keySet());
                                 ctp.blockListener.endGame(true);
                                 ctp.chooseSuitableArena(readypeople);
                                 for (Player aPlayer : transport) {
@@ -468,7 +468,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         }
                     } else {
                     	String notReady = "";
-                    	for(Player player: lobby.playersinlobby.keySet()){
+                    	for(Player player: lobby.getPlayersInLobby().keySet()){
                     		
                     		if(!ctp.playerData.get(player).isReady){
                     			notReady+= player.getName()+", ";
@@ -487,13 +487,13 @@ public class CaptureThePointsPlayerListener implements Listener {
                     }
 
                     // Player is ready.
-                    if (lobby.playersinlobby.get(p)) {
+                    if (lobby.getPlayersInLobby().get(p)) {
                         if (ctp.mainArena.co.exactTeamMemberCount) {
                             // Uneven number of people and balanced teams is on.  
                             if (ctp.mainArena.getPlayersPlaying(ctp).size() % ctp.mainArena.teams.size() != 0) {
                                 moveToSpawns(p);
                                 return; 
-                            } else if (lobby.playersinlobby.get(p)) { // Even number of people and balanced teams is on.  
+                            } else if (lobby.getPlayersInLobby().get(p)) { // Even number of people and balanced teams is on.  
                                 if (waitingToMove.size() < ctp.mainArena.teams.size() - 1) {
                                     if(waitingToMove.contains(p)) {
                                     	ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "[CTP] There is an even number of players. Please wait or do /ctp leave.");
@@ -804,7 +804,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if (!teleport) {
             player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float) spawn.getDir()));
         }
-        ctp.mainArena.lobby.playersinlobby.remove(player);
+        ctp.mainArena.lobby.getPlayersInLobby().remove(player);
         ctp.playerData.get(player).isInLobby = false;
         ctp.playerData.get(player).isInArena = true;
     }
@@ -979,7 +979,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public void selectTeam (PlayerInteractEvent event, Player p) {
-        if(ctp.isGameRunning() || !ctp.mainArena.lobby.playersinlobby.containsKey(p))
+        if(ctp.isGameRunning() || !ctp.mainArena.lobby.getPlayersInLobby().containsKey(p))
             return;
         
         if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.WOOL)) {
@@ -1095,7 +1095,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 ctp.playerData.get(p).team = null;
                 ctp.playerData.get(p).isInArena = false;
                 ctp.playerData.get(p).isInLobby = true;
-                ctp.mainArena.lobby.playersinlobby.put(p, true);
+                ctp.mainArena.lobby.getPlayersInLobby().put(p, true);
                 ctp.playerData.get(p).isReady = true;
                 ctp.playerData.get(p).justJoined = true; // Flag for teleport
                 ctp.playerData.get(p).lobbyJoinTime = System.currentTimeMillis();
@@ -1103,8 +1103,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                 waitingToMove.add(p);
 
                 // Get lobby location and move player to it.
-                Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.lobby.x, ctp.mainArena.lobby.y + 1, ctp.mainArena.lobby.z);
-                loc.setYaw((float) ctp.mainArena.lobby.dir);
+                Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), ctp.mainArena.lobby.getX(), ctp.mainArena.lobby.getY() + 1, ctp.mainArena.lobby.getZ());
+                loc.setYaw((float) ctp.mainArena.lobby.getDir());
                 loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
                 p.teleport(loc); // Teleport player to lobby
                 

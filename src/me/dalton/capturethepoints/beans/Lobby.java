@@ -1,4 +1,4 @@
-package me.dalton.capturethepoints;
+package me.dalton.capturethepoints.beans;
 
 // Kjhf's
 import java.util.ArrayList;
@@ -8,30 +8,79 @@ import org.bukkit.entity.Player;
 
 /** A Lobby in a CTP arena */
 public class Lobby {
-    /** List of Players and their ready status */
-    public HashMap<Player, Boolean> playersinlobby = new HashMap<Player, Boolean>();
-    
-    /** List of Players who have been in this ctp lobby. They may still be in the Lobby. */
-    public List<Player> playerswhowereinlobby = new ArrayList<Player>();
-    
-    /** X co-ordinate of this lobby's spawn */
-    public double x = 0D;
-    
-    /** Y co-ordinate of this lobby's spawn */
-    public double y = 0D;
-    
-    /** Z co-ordinate of this lobby's spawn */
-    public double z = 0D;
-    
-    /** Direction players spawn in this lobby */
-    public double dir = 0D;
+    private HashMap<Player, Boolean> playersinlobby = new HashMap<Player, Boolean>();
+    private List<Player> playerswhowereinlobby = new ArrayList<Player>();
+    private double x = 0D;
+    private double y = 0D;
+    private double z = 0D;
+    private double dir = 0D;
 
-    /** A Lobby in a CTP arena */
+    /** Creates a Lobby in a CTP arena and sets all the coordinate points. */
     public Lobby(double x, double y, double z, double dir) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.dir = dir;
+    }
+    
+    /** Sets the X coordinate of this lobby's spawn */
+    public void setX(double x) {
+    	this.x = x;
+    }
+    
+    /** Gets the X coordinate of this lobby's spawn */
+    public double getX() {
+    	return this.x;
+    }
+    
+    /** Sets the Y coordinate of this lobby's spawn */
+    public void setY(double y) {
+    	this.y = y;
+    }
+    
+    /** Gets the Y coordinate of this lobby's spawn */
+    public double getY() {
+    	return this.y;
+    }
+    
+    /** Sets the Z coordinate of this lobby's spawn */
+    public void setZ(double z) {
+    	this.z = z;
+    }
+    
+    /** Gets the Z coordinate of this lobby's spawn */
+    public double getZ() {
+    	return this.z;
+    }
+    
+    /** Sets the direction in which players spawn in this lobby. */
+    public void setDir(double dir) {
+    	this.dir = dir;
+    }
+    
+    /** Gets the direction in which players spawn in this lobby. */
+    public double getDir() {
+    	return this.dir;
+    }
+    
+    /** Sets the list of Players who have been in this ctp lobby. They may still be in the Lobby. */
+    public void setPlayersWhoWereInLobby(List<Player> players) {
+    	this.playerswhowereinlobby = players;
+    }
+    
+    /** Gets the list of Players who have been in this ctp lobby. They may still be in the Lobby. */
+    public List<Player> getPlayersWhoWereInLobby() {
+    	return this.playerswhowereinlobby;
+    }
+    
+    /** Sets the list of Players and their ready status */
+    public void setPlayersInLobby(HashMap<Player, Boolean> players) {
+    	this.playersinlobby = players;
+    }
+    
+    /** Gets the list of Players and their ready status */
+    public HashMap<Player, Boolean> getPlayersInLobby() {
+    	return this.playersinlobby;
     }
         
     /** Returns boolean stating whether any players in the lobby hashmap have "false" as their ready status boolean. */
