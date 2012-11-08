@@ -5,16 +5,17 @@ CaptureThePoints
 
 If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
 
-### Update: 1.4.3 ###
-* Rewrote the CTPPotionEffect to use Craftbukkit's APIs
+### Update: 1.4.5 ###
+* Rewrote the CTPPotionEffect to use Craftbukkit APIs
+* Rewrote several classes and moved things around to be organized in the code.
 * Removed a bunch of commented out code, if you want it back look up the stuff in the github history prior to this commit.
-* Tried to get all the sendMessage to use the one on the main class, and to try and get all the other sendMessages to look the same across the board.
 * Made when we setHealth to trigger a new regain health event, although I'm still finding these throughout the plugin.
-* Made the plugin respect unix's hidden files, thanks to Psithief
-* Made sure that UsePermissions was set to true if using Vault
-* Made sure that only ops by default get the ctp.admin permission node
 * Made it so that when you first load the plugin (or you haven't made any arenas yet) it doesn't automatically generate an Arenas.yml file in the Arenas folder which in the past would throw errors and confuse you.
+* Fixed permissions not being used
+* Fixed the random chance of everyone getting ctp.admin node, now only ops get it
+* Fixed the plugin not respecting unix hidden files, thanks to Psithief
+* Fixed a lot of NPEs that only occur on the first run of the plugin
+* Fixed NPEs being thrown when there weren't any arenas
 * Added an option to disallow regenerating health due to their hunger bar being satisfied
-* Added a message to be displayed when the wasn't any arenas in the arenalist
-* Temporary workaround for a NPE that only happens at certain times.
 * Cleaned up how messages are logged to the console
+* Cleaned up the formatting of sending messages to the players, now the same across the plugin
