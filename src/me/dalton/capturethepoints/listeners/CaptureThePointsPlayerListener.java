@@ -207,7 +207,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             }
                         }
                         
-                        PotionManagement.removeAllEffectsNew(p);
+                        PotionManagement.removeAllEffects(p);
                         
                         String oldRole = "";
                         

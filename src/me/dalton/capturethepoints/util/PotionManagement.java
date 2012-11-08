@@ -17,7 +17,7 @@ public class PotionManagement {
      * 
      * @param player The player in which to remove potion effects from.
      */
-    public static void removeAllEffectsNew(Player player) {
+    public static void removeAllEffects(Player player) {
          for (PotionEffect pef : player.getActivePotionEffects()) {
          	player.removePotionEffect(pef.getType());
          }
@@ -29,7 +29,7 @@ public class PotionManagement {
      * @param player Player to store the effects for.
      * @return A List of the potion effects.
      */
-	public static List<PotionEffect> storePlayerPotionEffectsNew(Player player) {
+	public static List<PotionEffect> storePlayerPotionEffects(Player player) {
         List<PotionEffect> effects = new ArrayList<PotionEffect>();
         
         Collection<PotionEffect> potions = player.getActivePotionEffects();
@@ -47,7 +47,7 @@ public class PotionManagement {
 	 * @param player The player who we need to restore them back to.
 	 * @param effects A List<CTPPotionEffect> of the potions that need to be restored.
 	 */
-	public static void restorePotionEffectsNew(Player player, List<PotionEffect> effects) {
+	public static void restorePotionEffects(Player player, List<PotionEffect> effects) {
 		for(PotionEffect effect : effects) {
 			player.addPotionEffect(effect);
 		}

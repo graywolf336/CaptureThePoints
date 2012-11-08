@@ -461,7 +461,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             ctp.checkForKillMSG(player, true);
         }
 
-        PotionManagement.removeAllEffectsNew(player);
+        PotionManagement.removeAllEffects(player);
         //TODO: Set this to the event
         player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
         player.setFoodLevel(20);

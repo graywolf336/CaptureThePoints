@@ -744,8 +744,8 @@ public class CaptureThePointsBlockListener implements Listener {
             return;
         }
         
-        PotionManagement.removeAllEffectsNew(p);
-        PotionManagement.restorePotionEffectsNew(p, ctp.playerData.get(p).getPotionEffects());
+        PotionManagement.removeAllEffects(p);
+        PotionManagement.restorePotionEffects(p, ctp.playerData.get(p).getPotionEffects());
 
         p.setFoodLevel(ctp.playerData.get(p).getFoodLevel());
         if (ctp.playerData.get(p).wasInCreative()) {
