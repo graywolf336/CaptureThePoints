@@ -89,8 +89,7 @@ public class BuildCommand extends CTPCommand {
                     sendMessage(ChatColor.GREEN + "/ctp b removepoint <Point name> " + ChatColor.WHITE + "- removes an existing capture point");
                 }
             } 
-            else if (pagenumber.equals("2"))
-            {
+            else if (pagenumber.equals("2")) {
                 sendMessage(ChatColor.RED + "CTP Build Commands: " + ChatColor.GOLD + " Page 2/3");
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.removespawn", "ctp.admin"})) {
                     sendMessage(ChatColor.GREEN + "/ctp b removespawn <Team color> " + ChatColor.WHITE + "- removes spawn point of selected color");
@@ -113,8 +112,7 @@ public class BuildCommand extends CTPCommand {
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.setspawn", "ctp.admin"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b setspawn <Team color> " + ChatColor.WHITE + "- sets the place people are teleported to when they die or when they join the game");
                 }
-            }
-            else if(pagenumber.equals("3")) {
+            } else if(pagenumber.equals("3")) {
             	ctp.sendMessage(player, ChatColor.RED + "CTP Build Commands: " + ChatColor.GOLD + " Page 3/3");
             	
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.save", "ctp.admin"})) {
@@ -145,10 +143,12 @@ public class BuildCommand extends CTPCommand {
                 	ctp.sendMessage(player, ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build setspawn <Team color> ");
                     return;
                 }
+                
                 if (ctp.editingArena == null || ctp.editingArena.name.isEmpty()) {
                 	ctp.sendMessage(player, ChatColor.RED + "No arena selected!");
                     return;
                 }
+                
                 Location loc = player.getLocation();
 
                 File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.name + ".yml");
@@ -174,20 +174,22 @@ public class BuildCommand extends CTPCommand {
                     String aWorld = arenaConf.getString("World");
                     if (aWorld == null) {
                         arenaConf.addDefault("World", player.getWorld().getName());
-                    } 
-                    else if (!aWorld.equals(player.getWorld().getName())) {
+                    } else if (!aWorld.equals(player.getWorld().getName())) {
                     	ctp.sendMessage(player, ChatColor.RED + "Please build arena lobby in same world as its spawns and capture points!");
                         return;
                     }
+                    
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".X", Double.valueOf(loc.getX()));
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".Y", Double.valueOf(loc.getY()));
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".Z", Double.valueOf(loc.getZ()));
                     arenaConf.addDefault("Team-Spawns." + arg2 + ".Dir", Double.valueOf(spawn.getDir()));
+                    
                     try {
                         arenaConf.options().copyDefaults(true);
                         arenaConf.save(arenaFile);
                     } catch (IOException ex) {
-                        Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    	ex.printStackTrace();
+                    	ctp.logSevere("Was unable to save the config file for the arena \"" + ctp.editingArena.name + "\", please see the above Stacktrace.");
                     }
 
                     if (ctp.mainArena.world == null) {
@@ -527,18 +529,18 @@ public class BuildCommand extends CTPCommand {
                     sendMessage(ChatColor.RED + "This arena already exists! -----> " + ChatColor.GREEN + arg2); // Kj -- typo
                     return;
                 }
+                
                 ctp.editingArena.name = arg2;
                 FileConfiguration config = ctp.load();
-                //Seting main arena if this is first arena
-
-                if (!config.contains("Arena"))
-                {
+                //Setting main arena if this is first arena
+                if (!config.contains("Arena")) {
                     config.addDefault("Arena", arg2);
                     try {
                         config.options().copyDefaults(true);
                         config.save(CaptureThePoints.globalConfigFile);
                     } catch (IOException ex) {
-                        Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    	ex.printStackTrace();
+                    	ctp.logSevere("Unable to save the main config file.");
                     }
 
                     ctp.mainArena = new ArenaData();
@@ -547,10 +549,16 @@ public class BuildCommand extends CTPCommand {
                 }
 
                 ctp.arena_list.add(arg2);
+                
+                //Loads the default config options on creation of it, this way the 'co' isn't null
+                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.name + ".yml");
+                ctp.editingArena.co = ctp.getArenaConfigOptions(arenaFile);
+                
                 sendMessage("You created arena: " + ChatColor.GREEN + arg2);
 
                 return;
             }
+            
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }

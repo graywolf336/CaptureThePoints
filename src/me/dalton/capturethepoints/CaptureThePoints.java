@@ -944,8 +944,8 @@ public class CaptureThePoints extends JavaPlugin {
             config.options().copyDefaults(true);
             config.save(arenafile);
         } catch (IOException ex) {
-            getLogger().severe("Error saving the arena file.");
-            getLogger().severe(ex.getMessage());
+            ex.printStackTrace();
+            logSevere("Error saving the config file for an arena config file.");
         }
     }
 
