@@ -1403,12 +1403,12 @@ public class CaptureThePoints extends JavaPlugin {
             mainArena.lobby.playersinlobby.clear();   //Reset if first to come
         }
 
-        if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
+        if(economyHandler != null && this.mainArena.co != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
             EconomyResponse r = economyHandler.bankWithdraw(player.getName(), mainArena.co.economyMoneyCostForJoiningArena);
             if(r.transactionSuccess()) {
                 sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.name + ChatColor.WHITE + " arena.");
             } else {
-                sendMessage(player, "You dont have enought money to join arena!");
+                sendMessage(player, "You dont have enough money to join arena!");
                 return;
             }
         }
