@@ -1026,7 +1026,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         this.mainArena.lobby.getPlayersInLobby().remove(player);
         this.blockListener.restoreThings(player);
-        this.previousLocation.remove(player);
+        this.previousLocation.remove(player.getName());
         this.playerData.remove(player);
 
         // Check for player replacement if there is somone waiting to join the game
