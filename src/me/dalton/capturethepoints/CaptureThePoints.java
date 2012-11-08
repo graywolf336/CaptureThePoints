@@ -9,6 +9,7 @@ import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.ArenaData;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Lobby;
+import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Rewards;
 import me.dalton.capturethepoints.beans.SchedulerIds;
@@ -213,18 +214,18 @@ public class CaptureThePoints extends JavaPlugin {
 
                 for (Player player : playerData.keySet()) {
                     PlayerData data = playerData.get(player);
-                    if (data.isInLobby && !data.isReady) {
+                    if (data.inLobby() && !data.isReady()) {
                         // Kj -- Time inactivity warning.
-                        if (((System.currentTimeMillis() - data.lobbyJoinTime) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.warnedAboutActivity) {
+                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
                             sendMessage(player, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
-                            data.warnedAboutActivity = true;
+                            data.isWarned(true);
                         }
 
                         // Kj -- Time inactive in the lobby is greater than the lobbyKickTime specified in config (in ms)
-                        if ((System.currentTimeMillis() - data.lobbyJoinTime >= (globalConfigOptions.lobbyKickTime * 1000)) && data.warnedAboutActivity) {
-                            data.isInLobby = false;
-                            data.isInArena = false;
-                            data.warnedAboutActivity = false;
+                        if ((System.currentTimeMillis() - data.getLobbyJoinTime() >= (globalConfigOptions.lobbyKickTime * 1000)) && data.hasBeenWarned()) {
+                            data.setInLobby(false);
+                            data.setInArena(false);
+                            data.isWarned(false);
                             leaveGame(player);
                             sendMessage(player, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
                         }
@@ -355,17 +356,17 @@ public class CaptureThePoints extends JavaPlugin {
         // Reseting player data       
         if (newTeam == null) {
             // Moving to Lobby
-            playerData.get(p).team.substractOneMemeberCount();
+            playerData.get(p).getTeam().substractOneMemeberCount();
             //playerData.get(p).color = null;
-            playerData.get(p).team = null;
-            playerData.get(p).isInArena = false;
-            playerData.get(p).isInLobby = true;
+            playerData.get(p).setTeam(null);
+            playerData.get(p).setInArena(false);
+            playerData.get(p).setInLobby(true);
             mainArena.getLobby().getPlayersInLobby().put(p, false);
-            playerData.get(p).isReady = false;
-            playerData.get(p).justJoined = true; // Flag for teleport
-            playerData.get(p).lobbyJoinTime = System.currentTimeMillis();     
-            playerData.get(p).warnedAboutActivity = false;
-            playerData.get(p).role = null;
+            playerData.get(p).setReady(false);
+            playerData.get(p).setJustJoined(true); // Flag for teleport
+            playerData.get(p).setLobbyJoinTime(System.currentTimeMillis());     
+            playerData.get(p).isWarned(false);
+            playerData.get(p).setRole(null);
             
             // Remove Helmet
             p.getInventory().setHelmet(null);
@@ -384,11 +385,11 @@ public class CaptureThePoints extends JavaPlugin {
             
         } else {
             // Moving to other Team
-            String oldteam = playerData.get(p).team.getColor();
-            ChatColor oldcc = playerData.get(p).team.getChatColor();
+            String oldteam = playerData.get(p).getTeam().getColor();
+            ChatColor oldcc = playerData.get(p).getTeam().getChatColor();
             
-            playerData.get(p).team.substractOneMemeberCount();
-            playerData.get(p).team = newTeam;
+            playerData.get(p).getTeam().substractOneMemeberCount();
+            playerData.get(p).setTeam(newTeam);
             //playerData.get(p).color = newTeam.color;
                                    
             // Change wool colour and Helmet
@@ -423,7 +424,7 @@ public class CaptureThePoints extends JavaPlugin {
             Spawn spawn =
                     mainArena.getTeamSpawns().get(newTeam.getColor()) != null ?
                     mainArena.getTeamSpawns().get(newTeam.getColor()) :
-                    newTeam.spawn;
+                    newTeam.getSpawn();
             Location loc = new Location(getServer().getWorld(mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
             loc.setYaw((float) spawn.getDir());
             getServer().getWorld(mainArena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
@@ -465,17 +466,17 @@ public class CaptureThePoints extends JavaPlugin {
     public void checkForKillMSG (Player player, boolean died) {
         PlayerData data = playerData.get(player);
         if (died) {
-            data.deaths++;
-            data.deathsInARow++;
-            data.killsInARow = 0;
+            data.addOneDeath();
+            data.addOneDeathInARow();
+            data.setKillsInARow(0);
         } else {
-            data.kills++;
-            data.killsInARow++;
-            data.deathsInARow = 0;
-            String message = mainArena.getConfigOptions().killStreakMessages.getMessage(data.killsInARow);
+            data.addOneKill();
+            data.addOneKillInARow();
+            data.setDeathsInARow(0);
+            String message = mainArena.getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
 
             if (!message.isEmpty()) {
-                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player).team.getChatColor() + player.getName() + ChatColor.WHITE));
+                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE));
             }
         }
 
@@ -1017,9 +1018,9 @@ public class CaptureThePoints extends JavaPlugin {
         
         Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
-        if (playerData.get(player).team != null) {
+        if (playerData.get(player).getTeam() != null) {
             for (int i = 0; i < mainArena.getTeams().size(); i++) {
-                if (mainArena.getTeams().get(i) == (playerData.get(player).team)) {
+                if (mainArena.getTeams().get(i) == (playerData.get(player).getTeam())) {
                     mainArena.getTeams().get(i).substractOneMemeberCount();
                     break;
                 }
@@ -1035,7 +1036,7 @@ public class CaptureThePoints extends JavaPlugin {
         boolean wasReplaced = false;
         if (mainArena.getConfigOptions().exactTeamMemberCount && isGameRunning()) {
             for (Player play : playerData.keySet()) {
-                if (playerData.get(play).isInLobby && playerData.get(play).isReady) {
+                if (playerData.get(play).inLobby() && playerData.get(play).isReady()) {
                     this.playerListener.moveToSpawns(play);
                     wasReplaced = true;
                     break;
@@ -1216,7 +1217,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arena.getTeamSpawns().put(spawn.getName(), spawn);
 
                     Team team = new Team();
-                    team.spawn = spawn;
+                    team.setSpawn(spawn);
                     team.setColor(spawn.getName());
                     team.setMemberCount(0);
                     
@@ -1421,20 +1422,20 @@ public class CaptureThePoints extends JavaPlugin {
         
         // Assign player's PlayerData
         PlayerData data = new PlayerData();
-        data.deaths = 0;
-        data.deathsInARow = 0;
-        data.kills = 0;
-        data.killsInARow = 0;
-        data.money = mainArena.getConfigOptions().moneyAtTheLobby;
-        data.pointCaptures = 0;
-        data.isReady = false;
-        data.isInArena = false;
-        data.foodLevel = player.getFoodLevel();
-        data.health = player.getHealth();
-        data.lobbyJoinTime = System.currentTimeMillis();
+        data.setDeaths(0);
+        data.setDeathsInARow(0);
+        data.setKills(0);
+        data.setKillsInARow(0);
+        data.setMoney(mainArena.getConfigOptions().moneyAtTheLobby);
+        data.setPointsCaptured(0);
+        data.setReady(false);
+        data.setInArena(false);
+        data.setFoodLevel(player.getFoodLevel());
+        data.setHealth(player.getHealth());
+        data.setLobbyJoinTime(System.currentTimeMillis());
         
         // Store and remove potion effects on player
-        data.potionEffects = CTPPotionEffect.storePlayerPotionEffectsNew(player);
+        data.setPotionEffects(CTPPotionEffect.storePlayerPotionEffectsNew(player));
         CTPPotionEffect.removeAllEffectsNew(player);
         
         playerData.put(player, data);
@@ -1442,7 +1443,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Save player's previous state 
         player.setFoodLevel(20);
         if (player.getGameMode() == GameMode.CREATIVE) {
-            data.isInCreativeMode = true;
+            data.inCreative(true);
             player.setGameMode(GameMode.SURVIVAL);
         }
 
@@ -1473,7 +1474,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
         sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.getName() + ChatColor.GREEN + ".");
-        playerData.get(player).isInLobby = true;
+        playerData.get(player).setInLobby(true);
         saveInv(player);
     }
 

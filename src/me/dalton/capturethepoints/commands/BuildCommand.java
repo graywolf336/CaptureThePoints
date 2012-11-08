@@ -203,7 +203,7 @@ public class BuildCommand extends CTPCommand {
                     if (ctp.mainArena.getWorld().equals(player.getWorld().getName())) {
                         ctp.mainArena.getTeamSpawns().put(arg2, spawn);
                         Team team = new Team();
-                        team.spawn = spawn;
+                        team.setSpawn(spawn);
                         team.setColor(arg2);
                         team.setMemberCount(0);
                         try {

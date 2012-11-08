@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.PlayerData;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -383,9 +384,9 @@ public class Util {
 	@SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) {
         try {
-            player.giveExp(plugin.playerData.get(player).kills * plugin.getRewards().getExpRewardForKillingEnemy());
+            player.giveExp(plugin.playerData.get(player).getKills() * plugin.getRewards().getExpRewardForKillingEnemy());
 
-            if (plugin.playerData.get(player).winner) {
+            if (plugin.playerData.get(player).isWinner()) {
                 for (int i = 0; i < plugin.getRewards().getWinnerRewardCount(); i++) {
                     int itemCount = 0;
                     int id = random(0, plugin.getRewards().getWinnerRewards().size()); // Kj -- Took out -1
@@ -466,7 +467,7 @@ public class Util {
                 }
             }
             //reward for kills
-            for (int i = 0; i < plugin.playerData.get(player).kills; i++) {
+            for (int i = 0; i < plugin.playerData.get(player).getKills(); i++) {
                 if (plugin.getRewards().getRewardsForKill().size() > 0) {
                     int itemCount = 0;
                     int id = random(0, plugin.getRewards().getRewardsForKill().size()); // Kj -- Took out -1
@@ -507,7 +508,7 @@ public class Util {
                 }
             }
             //reward for capture
-            for (int i = 0; i < plugin.playerData.get(player).pointCaptures; i++) {
+            for (int i = 0; i < plugin.playerData.get(player).getPointsCaptured(); i++) {
                 if (plugin.getRewards().getRewardsForCapture().size() > 0) {
                     int itemCount = 0;
                     int id = random(0, plugin.getRewards().getRewardsForCapture().size()); // Kj -- Took out -1

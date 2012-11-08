@@ -3,7 +3,7 @@ package me.dalton.capturethepoints.commands;
 import java.util.ArrayList;
 import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.PlayerData;
+import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Team;
 
 import org.bukkit.ChatColor;
@@ -35,13 +35,13 @@ public class TeamCommand extends CTPCommand {
             return;
         }
         
-        if (!ctp.blockListener.isAlreadyInGame(player) || ctp.playerData.get(player).team == null) {
+        if (!ctp.blockListener.isAlreadyInGame(player) || ctp.playerData.get(player).getTeam() == null) {
             sendMessage(ChatColor.RED + "You have not yet been assigned a team!");
             return;
         }
         
         PlayerData data = ctp.playerData.get(player);
-        String teamcolour = data.team.getColor().trim();
+        String teamcolour = data.getTeam().getColor().trim();
         
         List<String> playernames = new ArrayList<String>();
         ChatColor cc = ChatColor.GREEN;
@@ -54,9 +54,9 @@ public class TeamCommand extends CTPCommand {
         
         sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
         if (!ctp.mainArena.getConfigOptions().useScoreGeneration) {
-            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.getControlledPoints() + ChatColor.GREEN + " points!");
+            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).getTeam().getControlledPoints() + ChatColor.GREEN + " points!");
         } else {
-            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.getScore() + "!");
+            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).getTeam().getScore() + "!");
         }
         return;
     }

@@ -1,7 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.PlayerData;
+import me.dalton.capturethepoints.beans.PlayerData;
+
 import org.bukkit.ChatColor;
 
 public class StatsCommand extends CTPCommand {
@@ -28,21 +29,21 @@ public class StatsCommand extends CTPCommand {
         }
         
         PlayerData pdata = ctp.playerData.get(player);
-        ChatColor cc = pdata.team.getChatColor(), white = ChatColor.WHITE, green = ChatColor.GREEN;
+        ChatColor cc = pdata.getTeam().getChatColor(), white = ChatColor.WHITE, green = ChatColor.GREEN;
         
         sendMessage(cc + "Your Stats: ");
-        sendMessage(cc + "  Kills: " + white + pdata.kills + " (Streak: " + pdata.killsInARow + ")");
-        sendMessage(cc + "  Deaths: " + white + pdata.deaths + " (Streak: " + pdata.deathsInARow + ")");
+        sendMessage(cc + "  Kills: " + white + pdata.getKills() + " (Streak: " + pdata.getKillsInARow() + ")");
+        sendMessage(cc + "  Deaths: " + white + pdata.getDeaths() + " (Streak: " + pdata.getDeathsInARow() + ")");
         
         double kd = 0D; 
-        if (pdata.deaths == 0) {
+        if (pdata.getDeaths() == 0) {
            // Avoid divding by 0
-            kd = pdata.kills;
+            kd = pdata.getKills();
        
         } else {
            // Calculate KD normally
-            double kills = (double)pdata.kills * 100D; // Example: 4 kills -> 400
-            double deaths = (double)pdata.deaths; // Example: 3 deaths
+            double kills = (double)pdata.getKills() * 100D; // Example: 4 kills -> 400
+            double deaths = (double)pdata.getDeaths(); // Example: 3 deaths
             kd = Math.round(kills/deaths); // Example: (400 / 3) = 133.333... Rounded -> 133.
             kd /= 100; // Example: 133 -> 1.33.
         }
@@ -59,7 +60,7 @@ public class StatsCommand extends CTPCommand {
         }
         
         sendMessage(cc + "  K/D: " + goodKD + String.valueOf(kd));
-        sendMessage(cc + "  Money: " + green + pdata.money);
+        sendMessage(cc + "  Money: " + green + pdata.getMoney());
         return;
     }
 }

@@ -101,7 +101,7 @@ public class DebugCommand extends CTPCommand {
             } else {
                 isReady = ctp.mainArena.getLobby().getPlayersInLobby().get(p);
             }
-            if (ctp.playerData.get(p).isReady != isReady) {
+            if (ctp.playerData.get(p).isReady() != isReady) {
                 error = true; // Needs to be separate otherwise for loop will spam.
             }
         }

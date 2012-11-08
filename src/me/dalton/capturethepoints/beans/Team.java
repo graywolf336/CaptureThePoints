@@ -17,7 +17,7 @@ public class Team {
     private int memberCount;
     private int score;
     private int controlledPoints;
-    public Spawn spawn;
+    private Spawn spawn;
     
     /** Sets the associated ChatColor of this Team.
      * @see ChatColor
@@ -123,11 +123,11 @@ public class Team {
 
         Set<Player> players = ctp.playerData.keySet();
         for (Player p : players) {
-            if (ctp.playerData.get(p).team == null) {
+            if (ctp.playerData.get(p).getTeam() == null) {
                 continue; // Player is not yet in game.
             }
             
-            if (ctp.playerData.get(p).team.getColor().equalsIgnoreCase(this.color)) {
+            if (ctp.playerData.get(p).getTeam().getColor().equalsIgnoreCase(this.color)) {
                 teamplayers.add(p);
             }
         }
@@ -146,11 +146,11 @@ public class Team {
 
         Set<Player> players = ctp.playerData.keySet();
         for (Player p : players) {
-            if (ctp.playerData.get(p).team == null || ctp.playerData.get(p).team.color == null) {
+            if (ctp.playerData.get(p).getTeam() == null || ctp.playerData.get(p).getTeam().color == null) {
                 continue; // Player is not yet in game.
             }
             
-            if (ctp.playerData.get(p).team == this && ctp.playerData.get(p).team.color.equalsIgnoreCase(this.color)) {
+            if (ctp.playerData.get(p).getTeam() == this && ctp.playerData.get(p).getTeam().color.equalsIgnoreCase(this.color)) {
                 teamplayers.add(p.getName());
             }
         }
