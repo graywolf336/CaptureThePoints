@@ -528,9 +528,7 @@ public class CaptureThePoints extends JavaPlugin {
      * Note, it will not change the mainArena if useSelectedArenaOnly is set to true.
      * @param numberofplayers The number of players that want to play.
      * @return The name of the selected mainArena, else empty String. */
-    public String chooseSuitableArena (int numberofplayers) {
-    	if(mainArena.co == null) return mainArena.name; //temporary workaround for the NPE that happens sometimes three lines below 
-    	
+    public String chooseSuitableArena (int numberofplayers) {    	
         // Is the config set to allow the random choosing of arenas?
         if (!mainArena.co.useSelectedArenaOnly) {
             int size = arena_list.size();
@@ -1403,7 +1401,7 @@ public class CaptureThePoints extends JavaPlugin {
             mainArena.lobby.playersinlobby.clear();   //Reset if first to come
         }
 
-        if(economyHandler != null && this.mainArena.co != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
+        if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
             EconomyResponse r = economyHandler.bankWithdraw(player.getName(), mainArena.co.economyMoneyCostForJoiningArena);
             if(r.transactionSuccess()) {
                 sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.name + ChatColor.WHITE + " arena.");
