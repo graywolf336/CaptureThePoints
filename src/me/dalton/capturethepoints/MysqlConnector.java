@@ -15,10 +15,10 @@ public class MysqlConnector {
     }
 
     public boolean checkMysqlData() {
-        if(ctp.globalConfigOptions.mysqlAddress == null
-        		|| ctp.globalConfigOptions.mysqlDatabase == null
-        		|| ctp.globalConfigOptions.mysqlPass == null
-                || ctp.globalConfigOptions.mysqlUser == null) {
+        if(ctp.getGlobalConfigOptions().mysqlAddress == null
+        		|| ctp.getGlobalConfigOptions().mysqlDatabase == null
+        		|| ctp.getGlobalConfigOptions().mysqlPass == null
+                || ctp.getGlobalConfigOptions().mysqlUser == null) {
         	return false;
         }
 
@@ -35,13 +35,13 @@ public class MysqlConnector {
         
         try {
             con = DriverManager.getConnection("jdbc:mysql://"
-            		+ ctp.globalConfigOptions.mysqlAddress
-            		+ ":" + ctp.globalConfigOptions.mysqlPort
+            		+ ctp.getGlobalConfigOptions().mysqlAddress
+            		+ ":" + ctp.getGlobalConfigOptions().mysqlPort
             		+ "/"
-                    + ctp.globalConfigOptions.mysqlDatabase
+                    + ctp.getGlobalConfigOptions().mysqlDatabase
                     + "?user="
-                    + ctp.globalConfigOptions.mysqlUser
-                    + "&password=" + ctp.globalConfigOptions.mysqlPass);
+                    + ctp.getGlobalConfigOptions().mysqlUser
+                    + "&password=" + ctp.getGlobalConfigOptions().mysqlPass);
 
             stmt = con.createStatement();
             
@@ -54,12 +54,12 @@ public class MysqlConnector {
                 rs = stmt.executeQuery("SELECT * FROM Sign");
             }
             catch (Exception e) {
-                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Arena` ( `name` TEXT NOT NULL , `world` TEXT NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=latin1");
-                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Simple_block` ( `data` INT NOT NULL , `x` INT NOT NULL , `y` INT NOT NULL , `z` INT NOT NULL, `z2` INT NOT NULL, `arena_name` TEXT NOT NULL , `block_type` INT NOT NULL , `id` INT NOT NULL AUTO_INCREMENT, `direction` TEXT NOT NULL , PRIMARY KEY ( `id` )) ENGINE=MyISAM DEFAULT CHARSET=latin1");
-                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Note_block` ( `block_ID` INT NOT NULL , `note_type` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
-                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Spawner_block` (  `block_ID` INT NOT NULL , `creature_type` TEXT NOT NULL , `delay` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
-                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Item` (  `type` INT NOT NULL , `block_ID` INT NOT NULL , `durability` INT NOT NULL, `amount` INT NOT NULL, `place_in_inv` INT NOT NULL, `data` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
-                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.globalConfigOptions.mysqlDatabase + "`.`Sign` (  `block_ID` INT NOT NULL , `first_line` TEXT NOT NULL , `second_line` TEXT NOT NULL, `third_line` TEXT NOT NULL, `fourth_line` TEXT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
+                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.getGlobalConfigOptions().mysqlDatabase + "`.`Arena` ( `name` TEXT NOT NULL , `world` TEXT NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=latin1");
+                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.getGlobalConfigOptions().mysqlDatabase + "`.`Simple_block` ( `data` INT NOT NULL , `x` INT NOT NULL , `y` INT NOT NULL , `z` INT NOT NULL, `z2` INT NOT NULL, `arena_name` TEXT NOT NULL , `block_type` INT NOT NULL , `id` INT NOT NULL AUTO_INCREMENT, `direction` TEXT NOT NULL , PRIMARY KEY ( `id` )) ENGINE=MyISAM DEFAULT CHARSET=latin1");
+                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.getGlobalConfigOptions().mysqlDatabase + "`.`Note_block` ( `block_ID` INT NOT NULL , `note_type` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
+                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.getGlobalConfigOptions().mysqlDatabase + "`.`Spawner_block` (  `block_ID` INT NOT NULL , `creature_type` TEXT NOT NULL , `delay` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
+                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.getGlobalConfigOptions().mysqlDatabase + "`.`Item` (  `type` INT NOT NULL , `block_ID` INT NOT NULL , `durability` INT NOT NULL, `amount` INT NOT NULL, `place_in_inv` INT NOT NULL, `data` INT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
+                stmt.executeUpdate("CREATE TABLE  IF NOT EXISTS `" + ctp.getGlobalConfigOptions().mysqlDatabase + "`.`Sign` (  `block_ID` INT NOT NULL , `first_line` TEXT NOT NULL , `second_line` TEXT NOT NULL, `third_line` TEXT NOT NULL, `fourth_line` TEXT NOT NULL ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
             }
         }
         catch (Exception e) { e.printStackTrace(); }
@@ -68,7 +68,7 @@ public class MysqlConnector {
     }
 
     public void connectToMySql() {
-        if(ctp.globalConfigOptions.enableHardArenaRestore) {
+        if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");  //try to register the mysql jdbc driver
             } catch (Exception e) {
@@ -77,8 +77,8 @@ public class MysqlConnector {
             }
             
             try {
-                con = DriverManager.getConnection("jdbc:mysql://" + ctp.globalConfigOptions.mysqlAddress + ":" + ctp.globalConfigOptions.mysqlPort + "/"
-                        + ctp.globalConfigOptions.mysqlDatabase + "?user=" + ctp.globalConfigOptions.mysqlUser + "&password=" + ctp.globalConfigOptions.mysqlPass);
+                con = DriverManager.getConnection("jdbc:mysql://" + ctp.getGlobalConfigOptions().mysqlAddress + ":" + ctp.getGlobalConfigOptions().mysqlPort + "/"
+                        + ctp.getGlobalConfigOptions().mysqlDatabase + "?user=" + ctp.getGlobalConfigOptions().mysqlUser + "&password=" + ctp.getGlobalConfigOptions().mysqlPass);
             } catch (Exception e) {
             	e.printStackTrace();
             	ctp.logSevere("Error connecting to the database, pleaes check your creditals.");

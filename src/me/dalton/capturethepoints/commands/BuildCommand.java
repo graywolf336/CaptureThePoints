@@ -14,6 +14,7 @@ import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.util.ConfigTools;
 import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
@@ -349,7 +350,7 @@ public class BuildCommand extends CTPCommand {
                     }
                     switch (direction) {
                         case NORTH:
-                            Util.buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, ctp.globalConfigOptions.ringBlock);
+                            Util.buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
@@ -358,7 +359,7 @@ public class BuildCommand extends CTPCommand {
                             tmps.setPointDirection("NORTH");
                             break;
                         case EAST:
-                            Util.buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, ctp.globalConfigOptions.ringBlock);
+                            Util.buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
@@ -367,7 +368,7 @@ public class BuildCommand extends CTPCommand {
                             tmps.setPointDirection("EAST");
                             break;
                         case SOUTH:
-                            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, ctp.globalConfigOptions.ringBlock);
+                            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
@@ -376,7 +377,7 @@ public class BuildCommand extends CTPCommand {
                             tmps.setPointDirection("SOUTH");
                             break;
                         case WEST:
-                            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, ctp.globalConfigOptions.ringBlock);
+                            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
@@ -393,7 +394,7 @@ public class BuildCommand extends CTPCommand {
                     for (int x = start_x + 2; x >= start_x - 1; x--) {
                         for (int y = start_y - 1; y <= start_y; y++) {
                             for (int z = start_z - 1; z <= start_z + 2; z++) {
-                                player.getWorld().getBlockAt(x, y, z).setTypeId(ctp.globalConfigOptions.ringBlock);
+                                player.getWorld().getBlockAt(x, y, z).setTypeId(ctp.getGlobalConfigOptions().ringBlock);
                             }
                         }
                     }
@@ -493,7 +494,7 @@ public class BuildCommand extends CTPCommand {
                     for (int x = start_x + 2; x >= start_x - 1; x--) {
                         for (int y = start_y - 1; y <= start_y; y++) {
                             for (int z = start_z - 1; z <= start_z + 2; z++) {
-                                if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.globalConfigOptions.ringBlock) {
+                                if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.getGlobalConfigOptions().ringBlock) {
                                     player.getWorld().getBlockAt(x, y, z).setTypeId(0);
                                 }
                             }
@@ -501,7 +502,7 @@ public class BuildCommand extends CTPCommand {
                     }
                 } else {
                     String direction = arenaConf.getString("Points." + arg2 + ".Dir");
-                    Util.removeVertPoint(player, direction, start_x, start_y, start_z, ctp.globalConfigOptions.ringBlock);
+                    Util.removeVertPoint(player, direction, start_x, start_y, start_z, ctp.getGlobalConfigOptions().ringBlock);
                 }
 
                 arenaConf.set("Points." + arg2, null);
@@ -537,7 +538,7 @@ public class BuildCommand extends CTPCommand {
                 
                 //Loads the default config options on creation of it, this way the 'co' isn't null
                 File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
-                ctp.editingArena.setConfigOptions(ctp.getArenaConfigOptions(arenaFile));
+                ctp.editingArena.setConfigOptions(ConfigTools.getArenaConfigOptions(arenaFile));
                 
                 if (!config.contains("Arena")) {
                     config.addDefault("Arena", arg2);
@@ -598,7 +599,7 @@ public class BuildCommand extends CTPCommand {
                             for (int x = start_x + 2; x >= start_x - 1; x--) {
                                 for (int y = start_y - 1; y <= start_y; y++) {
                                     for (int z = start_z - 1; z <= start_z + 2; z++) {
-                                        if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.globalConfigOptions.ringBlock) {
+                                        if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.getGlobalConfigOptions().ringBlock) {
                                             player.getWorld().getBlockAt(x, y, z).setTypeId(0);
                                         }
                                     }
@@ -606,14 +607,14 @@ public class BuildCommand extends CTPCommand {
                             }
                         } else {
                             String direction = arenaConf.getString(str + ".Dir");
-                            Util.removeVertPoint(player, direction, start_x, start_y, start_z, ctp.globalConfigOptions.ringBlock);
+                            Util.removeVertPoint(player, direction, start_x, start_y, start_z, ctp.getGlobalConfigOptions().ringBlock);
                         }
                     }
                 }
 
                 //Delete mysql data
                 ctp.arenaRestore.arenaToDelete = arg2;
-                if(ctp.globalConfigOptions.enableHardArenaRestore) {
+                if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
                     ctp.getServer().getScheduler().scheduleAsyncDelayedTask(ctp, new Runnable() {
                         public void run () {
                             ctp.mysqlConnector.connectToMySql();
@@ -761,7 +762,6 @@ public class BuildCommand extends CTPCommand {
 
                 ctp.editingArena.setLobby(lobby);
 
-                //TODO: Change to this in the build class for setting the configoptions
                 if(ctp.editingArena.getName().equalsIgnoreCase(ctp.mainArena.getName())) {
                     ctp.mainArena.setLobby(lobby);
                 }
@@ -1043,7 +1043,7 @@ public class BuildCommand extends CTPCommand {
 
         if (arg.equalsIgnoreCase("save")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
-                if(ctp.globalConfigOptions.enableHardArenaRestore && ctp.editingArena.getX2() != 0 && ctp.editingArena.getY2() != 0 && ctp.editingArena.getZ2() != 0 && ctp.editingArena.getX1() != 0 && ctp.editingArena.getY1() != 0 && ctp.editingArena.getZ1() != 0) {
+                if(ctp.getGlobalConfigOptions().enableHardArenaRestore && ctp.editingArena.getX2() != 0 && ctp.editingArena.getY2() != 0 && ctp.editingArena.getZ2() != 0 && ctp.editingArena.getX1() != 0 && ctp.editingArena.getY1() != 0 && ctp.editingArena.getZ1() != 0) {
                     ctp.getServer().getScheduler().scheduleAsyncDelayedTask(ctp, new Runnable() {
                         public void run () {
                             int xlow = ctp.editingArena.getX1();
@@ -1133,7 +1133,7 @@ public class BuildCommand extends CTPCommand {
         }
 
         if (arg.equalsIgnoreCase("restore")) {
-            if(!ctp.globalConfigOptions.enableHardArenaRestore) {
+            if(!ctp.getGlobalConfigOptions().enableHardArenaRestore) {
                 sendMessage(ChatColor.RED + "Hard arena restore is not enabled.");
                 return;
             }

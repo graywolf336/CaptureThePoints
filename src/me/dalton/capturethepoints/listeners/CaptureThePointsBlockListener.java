@@ -43,8 +43,8 @@ public class CaptureThePointsBlockListener implements Listener {
         this.ctp = ctp;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onBlockBreak (BlockBreakEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
@@ -72,7 +72,7 @@ public class CaptureThePointsBlockListener implements Listener {
                 }, 5L);  //I think one second is too much and can cause some troubles if player break another block
             }
             event.setCancelled(true);
-            if(ctp.globalConfigOptions.debugMessages)
+            if(ctp.getGlobalConfigOptions().debugMessages)
             	ctp.getLogger().info("Just cancelled a BlockBreakEvent because the player tried to break a block in the Lobby.");
             return;
         }
@@ -88,7 +88,7 @@ public class CaptureThePointsBlockListener implements Listener {
 
                     player.sendMessage(ChatColor.RED + "You do not have permission to do that.");
                     event.setCancelled(true);
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a BlockBreakEvent because the player tried to break a block that was the arena but the player wasn't playing.");
                     return;
                 }
@@ -106,7 +106,7 @@ public class CaptureThePointsBlockListener implements Listener {
             // check for sign destroy
             if (state instanceof Sign) {
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a BlockBreakEvent because the player tried to break a sign while playing the game.");
                 return;
             }
@@ -125,7 +125,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).getTeam().getColor())) {
                             player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
-                            if(ctp.globalConfigOptions.debugMessages)
+                            if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a BlockBreakEvent because the player tried to break a block that the playing player's team couldn't capture.");
                             return;
                         }
@@ -138,7 +138,7 @@ public class CaptureThePointsBlockListener implements Listener {
                             if (checkForFill(point, loc, ctp.playerData.get(player).getTeam().getColor(), ((Wool) data).getColor().toString(), true)) {
                                 if (ctp.playerData.get(player).getTeam().getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
-                                    if(ctp.globalConfigOptions.debugMessages)
+                                    if(ctp.getGlobalConfigOptions().debugMessages)
                                     	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
                                     return;
                                 }
@@ -152,7 +152,7 @@ public class CaptureThePointsBlockListener implements Listener {
                             if (checkForFillVert(point, loc, ctp.playerData.get(player).getTeam().getColor(), ((Wool) data).getColor().toString(), true))  {
                                 if (ctp.playerData.get(player).getTeam().getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
                                     event.setCancelled(true);
-                                    if(ctp.globalConfigOptions.debugMessages)
+                                    if(ctp.getGlobalConfigOptions().debugMessages)
                                     	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
                                     return;
                                 }
@@ -171,12 +171,12 @@ public class CaptureThePointsBlockListener implements Listener {
             // Kj -- block breaking checker blocks breaking of anything not in the CTPPoint if the config has set AllowBlockBreak to false.
             if (!ctp.mainArena.getConfigOptions().allowBlockBreak && !inPoint) {
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a BlockBreakEvent because you have allowBlockBreak set to false.");
                 return;
             }
             
-            if(!ctp.globalConfigOptions.enableHardArenaRestore) {
+            if(!ctp.getGlobalConfigOptions().enableHardArenaRestore) {
                 ctp.arenaRestore.addBlock(block, false);
             }
 
@@ -194,7 +194,7 @@ public class CaptureThePointsBlockListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace (BlockPlaceEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
@@ -202,7 +202,7 @@ public class CaptureThePointsBlockListener implements Listener {
         // If it tries to place in lobby
         if (ctp.playerData.containsKey(player) && ctp.playerData.get(player).inLobby()) {
             event.setCancelled(true);
-            if(ctp.globalConfigOptions.debugMessages)
+            if(ctp.getGlobalConfigOptions().debugMessages)
             	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block in the lobby.");
             return;
         }
@@ -216,7 +216,7 @@ public class CaptureThePointsBlockListener implements Listener {
 
                     player.sendMessage(ChatColor.RED + "You do not have permission to do that.");
                     event.setCancelled(true);
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block that was inside arena but the player wasn't playing.");
                     return;
                 }
@@ -243,7 +243,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player).getTeam().getColor())) {
                             player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
-                            if(ctp.globalConfigOptions.debugMessages)
+                            if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player's team couldn't capture this point.");
                             return;
                         }
@@ -262,7 +262,7 @@ public class CaptureThePointsBlockListener implements Listener {
                             //Check if wool is placed on top of point
                             if (checkForWoolOnTopHorizontal(loc, point)) {
                                 event.setCancelled(true);
-                                if(ctp.globalConfigOptions.debugMessages)
+                                if(ctp.getGlobalConfigOptions().debugMessages)
                                 	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block on top of a point.");
                                 return;
                             }
@@ -286,7 +286,7 @@ public class CaptureThePointsBlockListener implements Listener {
                             //Check if wool is placed on top of point
                             if (checkForWoolOnTopVertical(loc, point)) {
                                 event.setCancelled(true);
-                                if(ctp.globalConfigOptions.debugMessages)
+                                if(ctp.getGlobalConfigOptions().debugMessages)
                                 	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block on top of a point.");
                                 return;
                             }
@@ -313,18 +313,18 @@ public class CaptureThePointsBlockListener implements Listener {
             // Kj -- block placement checker blocks placement of anything not in the CTPPoint if the config has set AllowBlockPlacement to false.
             if (!ctp.mainArena.getConfigOptions().allowBlockPlacement && !inPoint) {
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a BlockBreakEvent because you have allowBlockPlacement set to false.");
                 return;
             }
             
-            if(!ctp.globalConfigOptions.enableHardArenaRestore) {
+            if(!ctp.getGlobalConfigOptions().enableHardArenaRestore) {
                 ctp.arenaRestore.addBlock(block, false);
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onSignChange (SignChangeEvent event) {
         if (!ctp.isGameRunning()) {
             return;
@@ -332,7 +332,7 @@ public class CaptureThePointsBlockListener implements Listener {
         if (isAlreadyInGame(event.getPlayer())) {
             event.getPlayer().sendMessage(ChatColor.RED + "Cannot break sign whilst playing.");
             event.setCancelled(true);
-            if(ctp.globalConfigOptions.debugMessages)
+            if(ctp.getGlobalConfigOptions().debugMessages)
             	ctp.getLogger().info("Just cancelled a SignChangeEvent because the player was playing a game.");
             return;
         }
@@ -643,7 +643,7 @@ public class CaptureThePointsBlockListener implements Listener {
             }
         }
         //Arena restore
-        if(ctp.globalConfigOptions.enableHardArenaRestore) {
+        if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
             ctp.arenaRestore.restoreMySQLBlocks();
         } else {
             ctp.arenaRestore.restoreAllBlocks();

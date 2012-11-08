@@ -44,11 +44,11 @@ public class CaptureThePointsEntityListener  implements Listener {
     }
 
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityExplode(EntityExplodeEvent event) {
         if (!ctp.isGameRunning())
             return;
-        if(ctp.globalConfigOptions.enableHardArenaRestore)
+        if(ctp.getGlobalConfigOptions().enableHardArenaRestore)
             return;
 
         if (ctp.playerListener.isInside(event.getLocation().getBlockX(), ctp.mainArena.getX1(), ctp.mainArena.getX2()) && ctp.playerListener.isInside(event.getLocation().getBlockY(), ctp.mainArena.getY1(), ctp.mainArena.getY2()) && ctp.playerListener.isInside(event.getLocation().getBlockZ(), ctp.mainArena.getZ1(), ctp.mainArena.getZ2()) && event.getLocation().getWorld().getName().equalsIgnoreCase(ctp.mainArena.getWorld())) {
@@ -86,7 +86,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             	 if(!ctp.mainArena.getConfigOptions().regainHealth) {
 	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
 	             		event.setCancelled(true);
-	             		if(ctp.globalConfigOptions.debugMessages)
+	             		if(ctp.getGlobalConfigOptions().debugMessages)
 	                    	ctp.getLogger().info("Just cancelled a EntityRegainHealthEvent you have it turned off during the game.");
 	             	}else return;
             	 }else return;
@@ -191,7 +191,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 // lobby damage check
                 if (this.ctp.playerData.get(playa).inLobby() || (attacker != null && this.ctp.playerData.get(attacker) != null && this.ctp.playerData.get(attacker).inLobby())) {
                     event.setCancelled(true);
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
                     return;
                 }
@@ -203,7 +203,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                     }
                     
                     event.setCancelled(true);
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in his/her spawn area.");
                     return;
                 }
@@ -214,14 +214,14 @@ public class CaptureThePointsEntityListener  implements Listener {
                         if (this.ctp.playerData.get(playa).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(attacker).getTeam().getColor())) {
                         	ctp.sendMessage(attacker, ctp.playerData.get(playa).getTeam().getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
                             event.setCancelled(true);
-                            if(ctp.globalConfigOptions.debugMessages)
+                            if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
                             return;
                         } else {
                         	// This is if there exists something like factions group protection
                             if (event.isCancelled()) {
                                 event.setCancelled(false);
-                                if(ctp.globalConfigOptions.debugMessages)
+                                if(ctp.getGlobalConfigOptions().debugMessages)
                                 	ctp.getLogger().info("Just uncancelled a EntityDamageEvent because the event was cancelled by some other plugin.");
                             }
                         }
@@ -231,7 +231,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 //Player has "died"
                 if ((this.ctp.playerData.get(playa) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
                     event.setCancelled(true);
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
                     respawnPlayer(playa, attacker);
                 }
@@ -239,7 +239,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
         if (ctp.playerData.get((Player) event.getEntity()) != null && ctp.playerData.get((Player) event.getEntity()).inLobby()) {
             event.setCancelled(true);
-            if(ctp.globalConfigOptions.debugMessages)
+            if(ctp.getGlobalConfigOptions().debugMessages)
             	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
         }
     }
@@ -443,7 +443,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     
     public void respawnPlayer (Player player, Player attacker) {
         if (attacker != null) {
-            if(!ctp.globalConfigOptions.disableKillMessages) {
+            if(!ctp.getGlobalConfigOptions().disableKillMessages) {
                 Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ctp.playerData.get(attacker).getTeam().getChatColor() + attacker.getName());
             }
@@ -454,7 +454,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             ctp.checkForKillMSG(attacker, false);
             ctp.checkForKillMSG(player, true);
         } else {
-            if(!ctp.globalConfigOptions.disableKillMessages)
+            if(!ctp.getGlobalConfigOptions().disableKillMessages)
                 Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
             ctp.sendMessage(player, ChatColor.RED + "Please do not remove your Helmet.");

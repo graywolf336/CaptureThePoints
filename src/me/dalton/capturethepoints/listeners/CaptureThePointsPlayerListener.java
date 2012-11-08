@@ -69,13 +69,13 @@ public class CaptureThePointsPlayerListener implements Listener {
                     && !args[0].equalsIgnoreCase("/ctp")) {
             	ctp.sendMessage(player, ChatColor.RED + "You can't use commands while playing!");
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a PlayerCommandPreprocessEvent because the player is playing.");
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDropItem (PlayerDropItemEvent event) {
         if (ctp.playerData.containsKey(event.getPlayer())) {
             Player player = event.getPlayer();
@@ -83,14 +83,14 @@ public class CaptureThePointsPlayerListener implements Listener {
             //Player in the lobby
             if (ctp.playerData.get(player).inLobby()) {
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a PlayerDropItemEvent because the player is in the lobby.");
                 ctp.sendMessage(player, ChatColor.RED + "You cannot drop items in the lobby!");
                 return;
             }
             if (!ctp.mainArena.getConfigOptions().allowDropItems) {
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a PlayerDropItemEvent because you have the config option allowDropItems set to false.");
                 ctp.sendMessage(player, ChatColor.RED + "You may not drop items.");
                 return;
@@ -106,15 +106,15 @@ public class CaptureThePointsPlayerListener implements Listener {
 			if (event.getInventory().getName().equalsIgnoreCase("container.crafting") && event.getRawSlot() == 5 && event.getSlotType() == SlotType.ARMOR) {
 				ctp.sendMessage(p, ChatColor.RED + "You can't remove your helmet.");
 				event.setCancelled(true);
-				if(ctp.globalConfigOptions.debugMessages)
-                	ctp.getLogger().info("Just cancelled a InventoryClickEvent because the player tried to remove his/her helmet.");
+				if(ctp.getGlobalConfigOptions().debugMessages)
+                	ctp.getLogger().info("Just cancelled a InventoryClickEvent because the player tried to remove their helmet.");
 				return;
 			}
 		}else return;
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract (PlayerInteractEvent event){
         if (ctp.mainArena == null) return;
         if (ctp.mainArena.getLobby() == null) return;
@@ -125,7 +125,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             if (ctp.playerData.get(p).inLobby() && p.getItemInHand().getTypeId() == 373){
             	if (event.hasBlock() && !((event.getClickedBlock().getState()) instanceof Sign) && event.getClickedBlock().getTypeId() != 42){
                    event.setCancelled(true);
-                   if(ctp.globalConfigOptions.debugMessages)
+                   if(ctp.getGlobalConfigOptions().debugMessages)
                    	ctp.getLogger().info("Just cancelled a PlayerInteractEvent because the player tried to throw a potion in the lobby.");
                    ctp.sendMessage(p, ChatColor.RED + "You cannot throw potions in the Lobby!");
                    p.updateInventory();
@@ -137,13 +137,13 @@ public class CaptureThePointsPlayerListener implements Listener {
             		if(event.getClickedBlock().getState() instanceof Sign || event.getClickedBlock().getTypeId() == 42){
                         p.updateInventory();
             			event.setCancelled(true);
-            			if(ctp.globalConfigOptions.debugMessages)
+            			if(ctp.getGlobalConfigOptions().debugMessages)
                            	ctp.getLogger().info("Just cancelled a PlayerInteractEvent because the player tried to throw a potion in the lobby.");
             		}
             	}else if(event.getAction() == Action.RIGHT_CLICK_AIR){
                     event.setCancelled(true);
                     ctp.sendMessage(p, ChatColor.RED + "You cannot throw potions in the Lobby!");
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                        	ctp.getLogger().info("Just cancelled a PlayerInteractEvent because the player tried to throw a potion in the lobby.");
                     p.updateInventory();
                     return;
@@ -298,8 +298,8 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerMove (PlayerMoveEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerMove(PlayerMoveEvent event) {
         if (!(ctp.isGameRunning())) return;
         Location loc = event.getTo();
         Player p = event.getPlayer();
@@ -350,7 +350,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleport (PlayerTeleportEvent event) {
         if (!(ctp.isGameRunning())) {
             if (this.ctp.playerData.get(event.getPlayer()) != null && ctp.playerData.get(event.getPlayer()).inLobby()) {
@@ -398,7 +398,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             } else {
                 // The player is teleporting out of the arena!
                 event.setCancelled(true);
-                if(ctp.globalConfigOptions.debugMessages)
+                if(ctp.getGlobalConfigOptions().debugMessages)
                    	ctp.getLogger().info("Just cancelled a PlayerTeleportEvent because the player tried to teleport out of the arena.");
                 ctp.sendMessage(play, ChatColor.RED + "Not allowed to teleport out of the arena!");
             }
@@ -906,7 +906,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Material mat = p.getItemInHand().getType();
             
-            if(ctp.globalConfigOptions.debugMessages) ctp.sendMessage(p, "The material in hand is: " + mat.toString());
+            if(ctp.getGlobalConfigOptions().debugMessages) ctp.sendMessage(p, "The material in hand is: " + mat.toString());
             
             for (HealingItems item : ctp.healingItems) {
                 if (item.item.getItem() == mat) {
@@ -969,7 +969,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     
                     // Cancel event to not heal like with golden apple
                     event.setCancelled(true);
-                    if(ctp.globalConfigOptions.debugMessages)
+                    if(ctp.getGlobalConfigOptions().debugMessages)
                        	ctp.getLogger().info("Just cancelled a PlayerInteractEvent because the player just 'consumed' an item.");
                     return;
                 }
