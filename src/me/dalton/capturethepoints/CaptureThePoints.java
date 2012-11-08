@@ -11,6 +11,7 @@ import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Rewards;
+import me.dalton.capturethepoints.beans.SchedulerIds;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.*;

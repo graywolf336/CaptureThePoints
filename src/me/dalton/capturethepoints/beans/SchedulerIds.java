@@ -1,4 +1,4 @@
-package me.dalton.capturethepoints;
+package me.dalton.capturethepoints.beans;
 
 /** The schedulers used by CTP */
 public class SchedulerIds {
