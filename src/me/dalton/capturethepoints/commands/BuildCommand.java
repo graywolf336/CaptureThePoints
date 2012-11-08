@@ -533,6 +533,11 @@ public class BuildCommand extends CTPCommand {
                 ctp.editingArena.name = arg2;
                 FileConfiguration config = ctp.load();
                 //Setting main arena if this is first arena
+                
+                //Loads the default config options on creation of it, this way the 'co' isn't null
+                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.name + ".yml");
+                ctp.editingArena.co = ctp.getArenaConfigOptions(arenaFile);
+                
                 if (!config.contains("Arena")) {
                     config.addDefault("Arena", arg2);
                     try {
@@ -546,14 +551,10 @@ public class BuildCommand extends CTPCommand {
                     ctp.mainArena = new ArenaData();
                     ctp.mainArena.name = arg2;
                     ctp.mainArena.world = null;
+                    ctp.mainArena.co = ctp.editingArena.co;
                 }
 
                 ctp.arena_list.add(arg2);
-                
-                //Loads the default config options on creation of it, this way the 'co' isn't null
-                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.name + ".yml");
-                ctp.editingArena.co = ctp.getArenaConfigOptions(arenaFile);
-                
                 sendMessage("You created arena: " + ChatColor.GREEN + arg2);
 
                 return;

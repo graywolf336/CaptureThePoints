@@ -815,8 +815,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Score mod
         co.useScoreGeneration = config.getBoolean(pointCaptureWithScore + "UseScoreGeneration", globalConfigOptions.useScoreGeneration);
         co.scoreMyltiplier = config.getInt(pointCaptureWithScore + "ScoreMultiplier", globalConfigOptions.scoreMyltiplier);
-        if(co.scoreMyltiplier < 1)
-        {
+        if(co.scoreMyltiplier < 1) {
             co.scoreMyltiplier = 2;
             config.addDefault(pointCaptureWithScore + "ScoreMultiplier", co.scoreMyltiplier);
         }
@@ -852,7 +851,6 @@ public class CaptureThePoints extends JavaPlugin {
         co.protectionDistance = config.getInt(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         co.ringBlock = globalConfigOptions.ringBlock;
         co.useSelectedArenaOnly = globalConfigOptions.useSelectedArenaOnly;
-
         KillStreakMessages ksm = new KillStreakMessages();
 
         HashMap<Integer, String> hm = new HashMap<Integer, String>();
@@ -1373,7 +1371,8 @@ public class CaptureThePoints extends JavaPlugin {
             config.options().copyDefaults(true);
             config.save(globalConfigFile);
         } catch (IOException ex) {
-            Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            logSevere("Unable to save the global config file, please see the above StackTrace.");
         }
     }
 
