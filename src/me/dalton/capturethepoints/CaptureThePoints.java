@@ -124,7 +124,7 @@ public class CaptureThePoints extends JavaPlugin {
     private Rewards rewards = new Rewards();
 
     /** The timers used by CTP. */
-    public CTPScheduler CTP_Scheduler = new CTPScheduler();
+    public SchedulerIds CTP_Scheduler = new SchedulerIds();
 
     public int arenaRestoreTimesRestored = 0;
     public int arenaRestoreMaxRestoreTimes = 0;

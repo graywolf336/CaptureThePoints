@@ -1,8 +1,7 @@
 package me.dalton.capturethepoints;
 
 /** The schedulers used by CTP */
-public class CTPScheduler
-{
+public class SchedulerIds {
     
   /** The timer used to give players money every x seconds */
   public int money_Score;
