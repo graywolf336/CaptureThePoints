@@ -25,7 +25,7 @@ public class TeamCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (ctp.mainArena.teams.size() <= 0) {
+        if (ctp.mainArena.getTeams().size() <= 0) {
             sendMessage(ChatColor.RED + "There are no teams - has a game been started?");
             return;
         }
@@ -45,7 +45,7 @@ public class TeamCommand extends CTPCommand {
         
         List<String> playernames = new ArrayList<String>();
         ChatColor cc = ChatColor.GREEN;
-        for (Team aTeam : ctp.mainArena.teams) {
+        for (Team aTeam : ctp.mainArena.getTeams()) {
             if (teamcolour.equalsIgnoreCase(aTeam.getColor())) {
                 cc = aTeam.getChatColor();
                 playernames = aTeam.getTeamPlayerNames(ctp);
@@ -53,7 +53,7 @@ public class TeamCommand extends CTPCommand {
         }
         
         sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
-        if (!ctp.mainArena.co.useScoreGeneration) {
+        if (!ctp.mainArena.getConfigOptions().useScoreGeneration) {
             sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player).team.getControlledPoints() + ChatColor.GREEN + " points!");
         } else {
             sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player).team.getScore() + "!");

@@ -3,8 +3,9 @@ package me.dalton.capturethepoints.commands;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.dalton.capturethepoints.ArenaData;
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.beans.ArenaData;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -41,8 +42,8 @@ public class SelectCommand extends CTPCommand {
             return;            
         }
 
-        if (ctp.mainArena != null && !ctp.mainArena.name.isEmpty()) {
-            sendMessage(ChatColor.GREEN + "Changed selected arena from " + ctp.mainArena.name + " to " + newarena + " to play.");
+        if (ctp.mainArena != null && !ctp.mainArena.getName().isEmpty()) {
+            sendMessage(ChatColor.GREEN + "Changed selected arena from " + ctp.mainArena.getName() + " to " + newarena + " to play.");
         } else {
             sendMessage(ChatColor.GREEN + "Selected " + newarena + " for playing.");
         }

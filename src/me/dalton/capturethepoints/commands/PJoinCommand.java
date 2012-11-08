@@ -34,7 +34,7 @@ public class PJoinCommand extends CTPCommand {
                 sendMessage(ChatColor.RED + "Please create an arena first");
                 return;
             }
-            if (ctp.mainArena.lobby == null) {
+            if (ctp.mainArena.getLobby() == null) {
                 sendMessage(ChatColor.RED + "Please create arena lobby");
                 return;
             }

@@ -91,8 +91,8 @@ public class ArenaRestore {
                 // delete data from mysql
                 deleteArenaData(arenaName);
             } else {
-                String arenaCodedName = arenaName + "." + ctp.mainArena.x1 + "." + ctp.mainArena.y1 + "." + ctp.mainArena.z1 + "." + ctp.mainArena.x2 +
-                        "." + ctp.mainArena.y2 + "." + ctp.mainArena.z2;
+                String arenaCodedName = arenaName + "." + ctp.mainArena.getX1() + "." + ctp.mainArena.getY1() + "." + ctp.mainArena.getZ1() + "." + ctp.mainArena.getX2() +
+                        "." + ctp.mainArena.getY2() + "." + ctp.mainArena.getZ2();
                 ctp.mysqlConnector.modifyData("INSERT INTO `Arena` (`name`, `world`) VALUES ( '" + arenaCodedName + "','" + world + "');");
             }
         } catch (SQLException ex) {
@@ -357,11 +357,11 @@ public class ArenaRestore {
 
     public void restoreMySQLBlocks() {
         try {
-            ResultSet rs1 = ctp.mysqlConnector.getData("SELECT * FROM Arena WHERE name like '"+ ctp.mainArena.name +"%'");
+            ResultSet rs1 = ctp.mysqlConnector.getData("SELECT * FROM Arena WHERE name like '" + ctp.mainArena.getName() + "%'");
 
             if (rs1.next()) {
             	ResultSet blockCountRez = ctp.mysqlConnector.getData("SELECT COUNT(*) FROM (((Simple_block LEFT JOIN Sign on Sign.block_ID = id) LEFT JOIN Note_block on Note_block.block_ID = id)"+
-            			" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.name + "' and `block_type` NOT IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
+            			" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.getName() + "' and `block_type` NOT IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
                         "50, 51, 55, 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 81, 83, 90, 92, 93, 94, 96, 104, 105, 111, 115, 117, 342, 343, 328, 333)");
 
                 int count = 0;
@@ -378,7 +378,7 @@ public class ArenaRestore {
 
                 // For second time :/
                 blockCountRez = ctp.mysqlConnector.getData("SELECT COUNT(*) FROM (((Simple_block LEFT JOIN Sign on Sign.block_ID = id) LEFT JOIN Note_block on Note_block.block_ID = id)"+
-                		" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.name + "' and `block_type` IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
+                		" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.getName() + "' and `block_type` IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
                         "50, 51, 55, 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 81, 83, 90, 92, 93, 94, 96, 104, 105, 111, 115, 117, 342, 343, 328, 333)");
 
                 count = 0;
@@ -393,43 +393,34 @@ public class ArenaRestore {
                 ctp.arenaRestoreMaxRestoreTimesSec = count / restoreCount;
                 if((count % restoreCount) != 0)
                     ctp.arenaRestoreMaxRestoreTimesSec++;
-            }
-            else
-            {
+            } else {
                 return;
             }
-        }
-        catch (SQLException ex)
-        {
-            Logger.getLogger(ArenaRestore.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            ctp.logSevere("An error happened while attempting to restore some blocks, see the StackTrace for more information.");
         }
 
-        ctp.CTP_Scheduler.arenaRestore = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable()
-        {
-            public void run ()
-            {
+        ctp.CTP_Scheduler.arenaRestore = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
+            public void run() {
                 ctp.mysqlConnector.connectToMySql();
-                ctp.arenaRestore.restore(ctp.mainArena.name, ctp.arenaRestoreTimesRestored, false);
+                ctp.arenaRestore.restore(ctp.mainArena.getName(), ctp.arenaRestoreTimesRestored, false);
                 ctp.arenaRestoreTimesRestored++;
 
-                if(ctp.arenaRestoreTimesRestored == ctp.arenaRestoreMaxRestoreTimes)
-                {
+                if(ctp.arenaRestoreTimesRestored == ctp.arenaRestoreMaxRestoreTimes) {
                     ctp.arenaRestoreTimesRestored = 0;
                     ctp.arenaRestoreMaxRestoreTimes = 0;
                     ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.arenaRestore);
                     ctp.CTP_Scheduler.arenaRestore = 0;
 
                     // For second time
-                    ctp.CTP_Scheduler.arenaRestoreSec  = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable()
-                    {
-                        public void run ()
-                        {
+                    ctp.CTP_Scheduler.arenaRestoreSec  = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
+                        public void run() {
                             ctp.mysqlConnector.connectToMySql();
-                            ctp.arenaRestore.restore(ctp.mainArena.name, ctp.arenaRestoreTimesRestoredSec, true);
+                            ctp.arenaRestore.restore(ctp.mainArena.getName(), ctp.arenaRestoreTimesRestoredSec, true);
                             ctp.arenaRestoreTimesRestoredSec++;
 
-                            if(ctp.arenaRestoreTimesRestoredSec == ctp.arenaRestoreMaxRestoreTimesSec)
-                            {
+                            if(ctp.arenaRestoreTimesRestoredSec == ctp.arenaRestoreMaxRestoreTimesSec) {
                                 ctp.arenaRestoreTimesRestoredSec = 0;
                                 ctp.arenaRestoreMaxRestoreTimesSec = 0;
                                 ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.arenaRestoreSec);
@@ -444,16 +435,14 @@ public class ArenaRestore {
 
 
     // Returns if blocks can be stacked in one entry at database.
-    public boolean canStackBlocksToMySQL(int id, int blockToRestore, boolean first, int data, int newBlockData)
-    {
+    public boolean canStackBlocksToMySQL(int id, int blockToRestore, boolean first, int data, int newBlockData) {
         if(id != blockToRestore && !first)
             return false;
         if(data != newBlockData && !first)  // If block data is not equal
             return false;
 
         int[] unstackableBlocks = { 23, 29, 33, 34, 52, 54, 61, 62, 63, 64, 68, 71, 84, 93, 94, 95, 323, 324, 342, 343, 356 };
-        for(int i = 0; i < unstackableBlocks.length; i++)
-        {
+        for(int i = 0; i < unstackableBlocks.length; i++) {
             if(unstackableBlocks[i] == id)
                 return false;
         }
@@ -463,8 +452,7 @@ public class ArenaRestore {
 
 }
 
-class CTPBlock
-{
+class CTPBlock {
     byte data;
     Location loc;
     int material;

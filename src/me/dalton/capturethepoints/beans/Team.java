@@ -108,7 +108,7 @@ public class Team {
      * @param color The team's color
      * @return The Team corresponding to this color. */
     public static Team getTeamFromColor(CaptureThePoints ctp, String color) {
-		for (Team aTeam : ctp.mainArena.teams)
+		for (Team aTeam : ctp.mainArena.getTeams())
 		    if (aTeam.getColor().equalsIgnoreCase(color))
 		        return aTeam;
 		
@@ -139,7 +139,7 @@ public class Team {
      * @param ctp CaptureThePoints instance
      * @return The playername list */
     public List<String> getTeamPlayerNames(CaptureThePoints ctp) {
-        if (!ctp.mainArena.teams.contains(this)) {
+        if (!ctp.mainArena.getTeams().contains(this)) {
             return null;
         }
         List<String> teamplayers = new ArrayList<String>();

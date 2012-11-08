@@ -6,6 +6,7 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
+import me.dalton.capturethepoints.beans.ArenaData;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
@@ -305,7 +306,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         int difference = 0;
 
-        for (Team aTeam : mainArena.teams) {
+        for (Team aTeam : mainArena.getTeams()) {
             if (lowestmembercount == -1) {
                 lowestmembercount = aTeam.getMemberCount();
                 lowestTeam = aTeam;
@@ -335,7 +336,7 @@ public class CaptureThePoints extends JavaPlugin {
             return true;
         }
 
-        if (difference % mainArena.teams.size() == 0) {
+        if (difference % mainArena.getTeams().size() == 0) {
             // The teams balance evenly.
             balancePlayer(highestTeam.getRandomPlayer(this), lowestTeam); // Move one player from the team with the higher number of players to the lower.
         } else {
@@ -358,7 +359,7 @@ public class CaptureThePoints extends JavaPlugin {
             playerData.get(p).team = null;
             playerData.get(p).isInArena = false;
             playerData.get(p).isInLobby = true;
-            mainArena.lobby.getPlayersInLobby().put(p, false);
+            mainArena.getLobby().getPlayersInLobby().put(p, false);
             playerData.get(p).isReady = false;
             playerData.get(p).justJoined = true; // Flag for teleport
             playerData.get(p).lobbyJoinTime = System.currentTimeMillis();     
@@ -374,8 +375,8 @@ public class CaptureThePoints extends JavaPlugin {
             p.updateInventory();
         
             // Get lobby location and move player to it.
-            Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.getX(), mainArena.lobby.getY() + 1, mainArena.lobby.getZ());
-            loc.setYaw((float) mainArena.lobby.getDir());
+            Location loc = new Location(getServer().getWorld(mainArena.getWorld()), mainArena.getLobby().getX(), mainArena.getLobby().getY() + 1, mainArena.getLobby().getZ());
+            loc.setYaw((float) mainArena.getLobby().getDir());
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             p.teleport(loc); // Teleport player to lobby
             Util.sendMessageToPlayers(this, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
@@ -419,12 +420,12 @@ public class CaptureThePoints extends JavaPlugin {
             
             // Get team spawn location and move player to it.
             Spawn spawn =
-                    mainArena.teamSpawns.get(newTeam.getColor()) != null ?
-                    mainArena.teamSpawns.get(newTeam.getColor()) :
+                    mainArena.getTeamSpawns().get(newTeam.getColor()) != null ?
+                    mainArena.getTeamSpawns().get(newTeam.getColor()) :
                     newTeam.spawn;
-            Location loc = new Location(getServer().getWorld(mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
+            Location loc = new Location(getServer().getWorld(mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
             loc.setYaw((float) spawn.getDir());
-            getServer().getWorld(mainArena.world).loadChunk(loc.getBlockX(), loc.getBlockZ());
+            getServer().getWorld(mainArena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
             boolean teleport = p.teleport(loc);
             if (!teleport) {
                 p.teleport(new Location(p.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
@@ -440,12 +441,12 @@ public class CaptureThePoints extends JavaPlugin {
         if (this.playerData.size() < 2 && !isPreGame()) {
             //maybe dc or something. it should be moved to cheking to see players who left the game
             boolean zeroPlayers = true;
-            for (int i = 0; i < mainArena.teams.size(); i++) {
-                if (mainArena.teams.get(i).getMemberCount() == 1) {
+            for (int i = 0; i < mainArena.getTeams().size(); i++) {
+                if (mainArena.getTeams().get(i).getMemberCount() == 1) {
                     zeroPlayers = false;
                     Util.sendMessageToPlayers(this, "The game has stopped because there are too few players. "
-                            + mainArena.teams.get(i).getChatColor() + mainArena.teams.get(i).getColor().toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
-                            + mainArena.teams.get(i).getScore() + ")");
+                            + mainArena.getTeams().get(i).getChatColor() + mainArena.getTeams().get(i).getColor().toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
+                            + mainArena.getTeams().get(i).getScore() + ")");
                     blockListener.endGame(true);
                     break;
                 }
@@ -470,7 +471,7 @@ public class CaptureThePoints extends JavaPlugin {
             data.kills++;
             data.killsInARow++;
             data.deathsInARow = 0;
-            String message = mainArena.co.killStreakMessages.getMessage(data.killsInARow);
+            String message = mainArena.getConfigOptions().killStreakMessages.getMessage(data.killsInARow);
 
             if (!message.isEmpty()) {
                 Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player).team.getChatColor() + player.getName() + ChatColor.WHITE));
@@ -501,24 +502,24 @@ public class CaptureThePoints extends JavaPlugin {
             return "An arena hasn't been built yet, try again later when an arena has been built.";
         }
         
-        if (arena.lobby == null) {
-            return "No lobby for main arena " + arena.name + ".";
+        if (arena.getLobby() == null) {
+            return "No lobby for main arena " + arena.getName() + ".";
         }
         
-        if (getServer().getWorld(arena.world) == null) {
+        if (getServer().getWorld(arena.getWorld()) == null) {
             if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                return "The arena config is incorrect. The world \"" + arena.world + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
+                return "The arena config is incorrect. The world \"" + arena.getWorld() + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
             } else {
                 return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
             }
         }
         
         // Kj -- Test that the spawn points are within the map boundaries
-        for (Spawn aSpawn : arena.teamSpawns.values()) {
-            if (!playerListener.isInside((int) aSpawn.getX(), arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.getZ(), arena.z1, arena.z2)) {
+        for (Spawn aSpawn : arena.getTeamSpawns().values()) {
+            if (!playerListener.isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !playerListener.isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
                 if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                    return "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. "
-                            + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.x1 + "<==>" + arena.x2 + ", " + arena.z1 + "<==>" + arena.z2 + "].";
+                    return "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
+                            + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.getX1() + "<==>" + arena.getX2() + ", " + arena.getZ1() + "<==>" + arena.getZ2() + "].";
                 } else {
                     return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
                 }
@@ -533,7 +534,7 @@ public class CaptureThePoints extends JavaPlugin {
      * @return The name of the selected mainArena, else empty String. */
     public String chooseSuitableArena (int numberofplayers) {    	
         // Is the config set to allow the random choosing of arenas?
-        if (!mainArena.co.useSelectedArenaOnly) {
+        if (!mainArena.getConfigOptions().useSelectedArenaOnly) {
             int size = arena_list.size();
 
             if (size > 1) {
@@ -541,7 +542,7 @@ public class CaptureThePoints extends JavaPlugin {
                 List<String> arenas = new ArrayList<String>();
                 for (String arena : arena_list) {
                     ArenaData loadArena = loadArena(arena);
-                    if (loadArena.maximumPlayers >= numberofplayers && loadArena.minimumPlayers <= numberofplayers) {
+                    if (loadArena.getMaxPlayers() >= numberofplayers && loadArena.getMinPlayers() <= numberofplayers) {
                         arenas.add(arena);
                         mainArena = loadArena; // Change the mainArena based on this.
                     }
@@ -556,10 +557,10 @@ public class CaptureThePoints extends JavaPlugin {
 
                 // else ctp.mainArena = ctp.mainArena;
             }
-            getLogger().info("The selected arena, " + mainArena.name + ", has a minimum of " + mainArena.minimumPlayers + ", and a maximum of " + mainArena.maximumPlayers + ".");
-            return mainArena.name;
+            getLogger().info("The selected arena, " + mainArena.getName() + ", has a minimum of " + mainArena.getMinPlayers() + ", and a maximum of " + mainArena.getMaxPlayers() + ".");
+            return mainArena.getName();
         }
-        return mainArena.name == null ? "" : mainArena.name;
+        return mainArena.getName() == null ? "" : mainArena.getName();
     }
 
     public void clearConfig () {
@@ -959,20 +960,20 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         // Is the config set to allow the random choosing of arenas?
-        if (!mainArena.co.useSelectedArenaOnly) {
+        if (!mainArena.getConfigOptions().useSelectedArenaOnly) {
             int size = arena_list.size();
             if (size > 1) {
                 // If there is more than 1 arena to choose from
                 for (String arena : arena_list) {
                     ArenaData loadArena = loadArena(arena);
-                    if (loadArena.maximumPlayers >= numberofplayers && loadArena.minimumPlayers <= numberofplayers) {
+                    if (loadArena.getMaxPlayers() >= numberofplayers && loadArena.getMinPlayers() <= numberofplayers) {
                         return true;
                     }
                 }
             }
             return false;
         } else {
-            if (mainArena.maximumPlayers >= numberofplayers && mainArena.minimumPlayers <= numberofplayers) {
+            if (mainArena.getMaxPlayers() >= numberofplayers && mainArena.getMinPlayers() <= numberofplayers) {
                 return true;
             } else {
                 return false;
@@ -1016,22 +1017,22 @@ public class CaptureThePoints extends JavaPlugin {
         Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
         if (playerData.get(player).team != null) {
-            for (int i = 0; i < mainArena.teams.size(); i++) {
-                if (mainArena.teams.get(i) == (playerData.get(player).team)) {
-                    mainArena.teams.get(i).substractOneMemeberCount();
+            for (int i = 0; i < mainArena.getTeams().size(); i++) {
+                if (mainArena.getTeams().get(i) == (playerData.get(player).team)) {
+                    mainArena.getTeams().get(i).substractOneMemeberCount();
                     break;
                 }
             }
         }
         
-        this.mainArena.lobby.getPlayersInLobby().remove(player);
+        this.mainArena.getLobby().getPlayersInLobby().remove(player);
         this.blockListener.restoreThings(player);
         this.previousLocation.remove(player.getName());
         this.playerData.remove(player);
 
         // Check for player replacement if there is somone waiting to join the game
         boolean wasReplaced = false;
-        if (mainArena.co.exactTeamMemberCount && isGameRunning()) {
+        if (mainArena.getConfigOptions().exactTeamMemberCount && isGameRunning()) {
             for (Player play : playerData.keySet()) {
                 if (playerData.get(play).isInLobby && playerData.get(play).isReady) {
                     this.playerListener.moveToSpawns(play);
@@ -1047,9 +1048,9 @@ public class CaptureThePoints extends JavaPlugin {
         }
             
         //If there was no replacement we should move one member to lobby
-        if (!wasReplaced && mainArena.co.exactTeamMemberCount && this.isGameRunning()) {
-            if (mainArena.co.balanceTeamsWhenPlayerLeaves > 0) {
-                balanceTeams(0, mainArena.co.balanceTeamsWhenPlayerLeaves);
+        if (!wasReplaced && mainArena.getConfigOptions().exactTeamMemberCount && this.isGameRunning()) {
+            if (mainArena.getConfigOptions().balanceTeamsWhenPlayerLeaves > 0) {
+                balanceTeams(0, mainArena.getConfigOptions().balanceTeamsWhenPlayerLeaves);
             }
         }
     }
@@ -1090,15 +1091,15 @@ public class CaptureThePoints extends JavaPlugin {
             ArenaData tmp = loadArena(arena_list.get(i));
             ArenaBoundaries tmpBound = new ArenaBoundaries();
             //tmpBound.arenaName = tmp.name;
-            tmpBound.setWorld(tmp.world);
-            tmpBound.setx1(tmp.x1);
-            tmpBound.setx2(tmp.x2);
-            tmpBound.sety1(tmp.y1);
-            tmpBound.sety2(tmp.y2);
-            tmpBound.setz1(tmp.z1);
-            tmpBound.setz2(tmp.z2);
+            tmpBound.setWorld(tmp.getWorld());
+            tmpBound.setx1(tmp.getX1());
+            tmpBound.setx2(tmp.getX2());
+            tmpBound.sety1(tmp.getY1());
+            tmpBound.sety2(tmp.getY2());
+            tmpBound.setz1(tmp.getZ1());
+            tmpBound.setz2(tmp.getZ2());
 
-            arenasBoundaries.put(tmp.name, tmpBound);
+            arenasBoundaries.put(tmp.getName(), tmpBound);
         }
 
         globalConfigOptions = getConfigOptions(globalConfigFile);
@@ -1143,7 +1144,7 @@ public class CaptureThePoints extends JavaPlugin {
             // Kj -- check the world to see if it exists. 
             try {
                 getServer().getWorld(world);
-                arena.world = world;
+                arena.setWorld(world);
             } catch (Exception ex) {
             	getLogger().warning("WARNING: " + name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
                 List<String> worlds = new LinkedList<String>();
@@ -1151,22 +1152,23 @@ public class CaptureThePoints extends JavaPlugin {
                     worlds.add(aWorld.getName());
                 }
                 if (worlds.size() == 1) {
-                    arena.world = worlds.get(0);
-                    getLogger().info("Successfully resolved the world. \"" + arena.world + "\" will be used.");
+                    arena.setWorld(worlds.get(0));
+                    getLogger().info("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
                 } else {
                 	getLogger().info("This usually happens on the first load, create an arena and this message should go away.");
                 	getLogger().info("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
                 }
             }
 
-            arena.name = name;
+            arena.setName(name);
+            
             if(!arenaConf.contains("MaximumPlayers"))
                 arenaConf.set("MaximumPlayers", 9999);
             if(!arenaConf.contains("MinimumPlayers"))
                 arenaConf.set("MinimumPlayers", 4);
 
-            arena.maximumPlayers = arenaConf.getInt("MaximumPlayers", 9999);
-            arena.minimumPlayers = arenaConf.getInt("MinimumPlayers", 4);
+            arena.setMaxPlayers(arenaConf.getInt("MaximumPlayers", 9999));
+            arena.setMinPlayers(arenaConf.getInt("MinimumPlayers", 4));
             if (arenaConf.contains("Points")) {
                 for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
                     Points tmps = new Points();
@@ -1198,7 +1200,7 @@ public class CaptureThePoints extends JavaPlugin {
                     if (arenaConf.contains(str + ".Dir")) {
                         tmps.setPointDirection(arenaConf.getString(str + ".Dir"));
                     }
-                    arena.capturePoints.add(tmps);
+                    arena.getCapturePoints().add(tmps);
                 }
             }
             if (arenaConf.contains("Team-Spawns")) {
@@ -1210,7 +1212,7 @@ public class CaptureThePoints extends JavaPlugin {
                     spawn.setY(arenaConf.getDouble(str + ".Y", 0.0D));
                     spawn.setZ(arenaConf.getDouble(str + ".Z", 0.0D));
                     spawn.setDir(arenaConf.getDouble(str + ".Dir", 0.0D));
-                    arena.teamSpawns.put(spawn.getName(), spawn);
+                    arena.getTeamSpawns().put(spawn.getName(), spawn);
 
                     Team team = new Team();
                     team.spawn = spawn;
@@ -1226,7 +1228,7 @@ public class CaptureThePoints extends JavaPlugin {
                     // Check if this spawn is already in the list
                     boolean hasTeam = false;
 
-                    for (Team aTeam : arena.teams) {
+                    for (Team aTeam : arena.getTeams()) {
                         if (aTeam.getColor().equalsIgnoreCase(spawn.getName())) {
                             hasTeam = true;
                             break;
@@ -1234,17 +1236,17 @@ public class CaptureThePoints extends JavaPlugin {
                     }
 
                     if (!hasTeam) {
-                        arena.teams.add(team);
+                        arena.getTeams().add(team);
                     }
                 }
             }
             // Arena boundaries
-            arena.x1 = arenaConf.getInt("Boundarys.X1", 0);
-            arena.y1 = arenaConf.getInt("Boundarys.Y1", 0);
-            arena.z1 = arenaConf.getInt("Boundarys.Z1", 0);
-            arena.x2 = arenaConf.getInt("Boundarys.X2", 0);
-            arena.y2 = arenaConf.getInt("Boundarys.Y2", 0);
-            arena.z2 = arenaConf.getInt("Boundarys.Z2", 0);
+            arena.setX1(arenaConf.getInt("Boundarys.X1", 0));
+            arena.setY1(arenaConf.getInt("Boundarys.Y1", 0));
+            arena.setZ1(arenaConf.getInt("Boundarys.Z1", 0));
+            arena.setX2(arenaConf.getInt("Boundarys.X2", 0));
+            arena.setY2(arenaConf.getInt("Boundarys.Y2", 0));
+            arena.setZ2(arenaConf.getInt("Boundarys.Z2", 0));
 
 
             Lobby lobby = new Lobby(
@@ -1252,15 +1254,15 @@ public class CaptureThePoints extends JavaPlugin {
                     arenaConf.getDouble("Lobby.Y", 0.0D),
                     arenaConf.getDouble("Lobby.Z", 0.0D),
                     arenaConf.getDouble("Lobby.Dir", 0.0D));
-            arena.lobby = lobby;
+            arena.setLobby(lobby);
             if ((lobby.getX() == 0.0D) && (lobby.getY() == 0.0D) && (lobby.getZ() == 0.0D) && (lobby.getDir() == 0.0D)) {
-                arena.lobby = null;
+                arena.setLobby(null);
             }
 
             // Kj -- Test that the spawn points are within the map boundaries
-            for (Spawn aSpawn : arena.teamSpawns.values()) {
-                if (!playerListener.isInside((int) aSpawn.getX(), arena.x1, arena.x2) || !playerListener.isInside((int) aSpawn.getZ(), arena.z1, arena.z2)) {
-                	getLogger().warning("WARNING: The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.name + "\" is out of the arena boundaries. ###");
+            for (Spawn aSpawn : arena.getTeamSpawns().values()) {
+                if (!playerListener.isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !playerListener.isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
+                	getLogger().warning("WARNING: The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
                     continue;
                 }
             }
@@ -1272,7 +1274,7 @@ public class CaptureThePoints extends JavaPlugin {
                 Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            arena.co = getArenaConfigOptions(arenaFile);
+            arena.setConfigOptions(getArenaConfigOptions(arenaFile));
 
             return arena;
         } else {
@@ -1403,13 +1405,13 @@ public class CaptureThePoints extends JavaPlugin {
         }
 
         if (playerData.isEmpty()) {
-            mainArena.lobby.getPlayersInLobby().clear();   //Reset if first to come
+            mainArena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
         }
 
-        if(economyHandler != null && this.mainArena.co.economyMoneyCostForJoiningArena != 0) {
-            EconomyResponse r = economyHandler.bankWithdraw(player.getName(), mainArena.co.economyMoneyCostForJoiningArena);
+        if(economyHandler != null && this.mainArena.getConfigOptions().economyMoneyCostForJoiningArena != 0) {
+            EconomyResponse r = economyHandler.bankWithdraw(player.getName(), mainArena.getConfigOptions().economyMoneyCostForJoiningArena);
             if(r.transactionSuccess()) {
-                sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.name + ChatColor.WHITE + " arena.");
+                sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + mainArena.getName() + ChatColor.WHITE + " arena.");
             } else {
                 sendMessage(player, "You dont have enough money to join arena!");
                 return;
@@ -1422,7 +1424,7 @@ public class CaptureThePoints extends JavaPlugin {
         data.deathsInARow = 0;
         data.kills = 0;
         data.killsInARow = 0;
-        data.money = mainArena.co.moneyAtTheLobby;
+        data.money = mainArena.getConfigOptions().moneyAtTheLobby;
         data.pointCaptures = 0;
         data.isReady = false;
         data.isInArena = false;
@@ -1443,17 +1445,17 @@ public class CaptureThePoints extends JavaPlugin {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        mainArena.lobby.getPlayersInLobby().put(player, false); // Kj
-        mainArena.lobby.getPlayersWhoWereInLobby().add(player); // Kj
+        mainArena.getLobby().getPlayersInLobby().put(player, false); // Kj
+        mainArena.getLobby().getPlayersWhoWereInLobby().add(player); // Kj
 
         //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
-        player.setHealth(mainArena.co.maxPlayerHealth);
-        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, mainArena.co.maxPlayerHealth, RegainReason.CUSTOM);
+        player.setHealth(mainArena.getConfigOptions().maxPlayerHealth);
+        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, mainArena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
     	CaptureThePoints.pluginManager.callEvent(regen);
         
         // Get lobby location and move player to it.
-        Location loc = new Location(getServer().getWorld(mainArena.world), mainArena.lobby.getX(), mainArena.lobby.getY() + 1, mainArena.lobby.getZ());
-        loc.setYaw((float) mainArena.lobby.getDir());
+        Location loc = new Location(getServer().getWorld(mainArena.getWorld()), mainArena.getLobby().getX(), mainArena.getLobby().getY() + 1, mainArena.getLobby().getZ());
+        loc.setYaw((float) mainArena.getLobby().getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());
         }
@@ -1469,7 +1471,7 @@ public class CaptureThePoints extends JavaPlugin {
 
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
-        sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.name + ChatColor.GREEN + ".");
+        sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.getName() + ChatColor.GREEN + ".");
         playerData.get(player).isInLobby = true;
         saveInv(player);
     }

@@ -35,8 +35,8 @@ public class DebugCommand extends CTPCommand {
                 ctp.logInfo("-----------========== ######### ==========-----------");
                 return;
             } else {
-                ctp.logInfo(ctp.mainArena.name+"'s Config Options:");
-                ConfigOptions co = ctp.mainArena.co;
+                ctp.logInfo(ctp.mainArena.getName() + "'s Config Options:");
+                ConfigOptions co = ctp.mainArena.getConfigOptions();
                 ctp.logInfo("   PointsToWin: " + co.pointsToWin);
                 ctp.logInfo("   PlayTime: " + co.playTime);
                 ctp.logInfo("   UseScoreGeneration: " + co.useScoreGeneration);
@@ -83,8 +83,8 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo("Running sanity checks ... ");
         
         List<String> result = new ArrayList<String>();
-        if (ctp.mainArena.getPlayers(ctp).size() != ctp.playerData.size() || ctp.playerData.size() != (ctp.mainArena.lobby.getPlayersInLobby().size() + ctp.mainArena.getPlayersPlaying(ctp).size())) {
-            result.add("Inconsistant number of Players: ["+ctp.mainArena.getPlayersPlaying(ctp).size()+" | "+ctp.playerData.size()+" | "+(ctp.mainArena.lobby.countAllPeople() + ctp.mainArena.getPlayersPlaying(ctp).size())+"]");
+        if (ctp.mainArena.getPlayers(ctp).size() != ctp.playerData.size() || ctp.playerData.size() != (ctp.mainArena.getLobby().getPlayersInLobby().size() + ctp.mainArena.getPlayersPlaying(ctp).size())) {
+            result.add("Inconsistant number of Players: [" + ctp.mainArena.getPlayersPlaying(ctp).size() + " | " + ctp.playerData.size() + " | " + (ctp.mainArena.getLobby().countAllPeople() + ctp.mainArena.getPlayersPlaying(ctp).size()) + "]");
         }
         if (!ctp.hasSuitableArena(ctp.mainArena.getPlayersPlaying(ctp).size()) && ctp.isGameRunning()) {
             result.add("No suitable arena for the number of people playing: "+ctp.mainArena.getPlayersPlaying(ctp).size());
@@ -96,10 +96,10 @@ public class DebugCommand extends CTPCommand {
                 continue;
             }
             boolean isReady = false;
-            if (ctp.mainArena.lobby.getPlayersInLobby().get(p) == null) {
+            if (ctp.mainArena.getLobby().getPlayersInLobby().get(p) == null) {
                 isReady = true;
             } else {
-                isReady = ctp.mainArena.lobby.getPlayersInLobby().get(p);
+                isReady = ctp.mainArena.getLobby().getPlayersInLobby().get(p);
             }
             if (ctp.playerData.get(p).isReady != isReady) {
                 error = true; // Needs to be separate otherwise for loop will spam.
@@ -109,7 +109,7 @@ public class DebugCommand extends CTPCommand {
             result.add("There is a discrepancy between playerData ready and the player's ready status in the lobby.");
         }
         
-        for (Team aTeam : ctp.mainArena.teams) {
+        for (Team aTeam : ctp.mainArena.getTeams()) {
             boolean insane = aTeam.sanityCheck(ctp);
             if (insane) {
                 int players = aTeam.getTeamPlayers(ctp) == null ? 0 : aTeam.getTeamPlayers(ctp).size(); 
@@ -117,8 +117,8 @@ public class DebugCommand extends CTPCommand {
             }
         }          
         
-        if (ctp.mainArena.minimumPlayers > ctp.mainArena.maximumPlayers) {
-            result.add("Minimum players greater than maximum players! ["+ctp.mainArena.minimumPlayers+" > "+ctp.mainArena.maximumPlayers+"]");
+        if (ctp.mainArena.getMinPlayers() > ctp.mainArena.getMaxPlayers()) {
+            result.add("Minimum players greater than maximum players! ["+ctp.mainArena.getMinPlayers()+" > "+ctp.mainArena.getMaxPlayers()+"]");
         }
         
         if (result.isEmpty()) {
@@ -131,19 +131,19 @@ public class DebugCommand extends CTPCommand {
         
         result.clear();
         
-        ctp.logInfo("Number of Arenas: "+ctp.arena_list.size()+": "+ctp.arena_list);   
-        ctp.logInfo("Current Arena: \""+ctp.mainArena.name+"\" in World \""+ctp.mainArena.world+"\"");
+        ctp.logInfo("Number of Arenas: " + ctp.arena_list.size() + ": " + ctp.arena_list);   
+        ctp.logInfo("Current Arena: \""  + ctp.mainArena.getName() + "\" in World \"" + ctp.mainArena.getWorld() + "\"");
         if (ctp.mainArena.hasLobby()) {
-            ctp.logInfo("    Lobby: " + (int)ctp.mainArena.lobby.getX() + ", " + (int)ctp.mainArena.lobby.getY() + ", " + (int)ctp.mainArena.lobby.getZ() + ".");
+            ctp.logInfo("    Lobby: " + (int)ctp.mainArena.getLobby().getX() + ", " + (int)ctp.mainArena.getLobby().getY() + ", " + (int)ctp.mainArena.getLobby().getZ() + ".");
         } else {
             ctp.logInfo("    Lobby: not made");
         }
-        ctp.logInfo("    Number of capture points: "+ctp.mainArena.capturePoints.size());
-        ctp.logInfo("    Number of teams: "+ctp.mainArena.teamSpawns.size());
-        ctp.logInfo("    Minimum Players for this arena: "+ctp.mainArena.minimumPlayers);
-        ctp.logInfo("    Maxmimum Players for this arena: "+ctp.mainArena.maximumPlayers);
-        ctp.logInfo("    Players ready in the lobby: "+ctp.mainArena.lobby.countReadyPeople()+"/"+ctp.mainArena.lobby.countAllPeople());
-        ctp.logInfo(ctp.roles.size() + " Roles found: "+ctp.roles.keySet().toString());
+        ctp.logInfo("    Number of capture points: " + ctp.mainArena.getCapturePoints().size());
+        ctp.logInfo("    Number of teams: " + ctp.mainArena.getTeamSpawns().size());
+        ctp.logInfo("    Minimum Players for this arena: " + ctp.mainArena.getMinPlayers());
+        ctp.logInfo("    Maxmimum Players for this arena: " + ctp.mainArena.getMaxPlayers());
+        ctp.logInfo("    Players ready in the lobby: " + ctp.mainArena.getLobby().countReadyPeople() + "/" + ctp.mainArena.getLobby().countAllPeople());
+        ctp.logInfo(ctp.roles.size() + " Roles found: " + ctp.roles.keySet().toString());
         
         int running = 0, total = 0;
         if (ctp.CTP_Scheduler.healingItemsCooldowns != 0) {

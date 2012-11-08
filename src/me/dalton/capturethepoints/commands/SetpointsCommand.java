@@ -29,15 +29,15 @@ public class SetpointsCommand extends CTPCommand {
             return;
         }
 
-        if (ctp.mainArena.co.useScoreGeneration) {
-            for (Team team : ctp.mainArena.teams) {
+        if (ctp.mainArena.getConfigOptions().useScoreGeneration) {
+            for (Team team : ctp.mainArena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(parameters.get(2))) {
                     team.setScore(points);
                 }
             }
             ctp.blockListener.didSomeoneWin();
         } else {
-            for (Team team : ctp.mainArena.teams) {
+            for (Team team : ctp.mainArena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(parameters.get(2))) {
                     team.setControlledPoints(points);
                 }

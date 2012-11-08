@@ -26,12 +26,12 @@ public class StartCommand extends CTPCommand {
             sendMessage(ChatColor.RED + "Please create an arena first");
             return;
         }
-        if (ctp.mainArena.lobby == null) {
+        if (ctp.mainArena.getLobby() == null) {
             sendMessage(ChatColor.RED + "Please create arena lobby");
             return;
         }
         
-        Lobby lobby = ctp.mainArena.lobby;
+        Lobby lobby = ctp.mainArena.getLobby();
         int readypeople = lobby.countReadyPeople();
             
         if (!ctp.isPreGame()) {
@@ -40,11 +40,11 @@ public class StartCommand extends CTPCommand {
         }
         
         // The maximum number of players must be greater than the players already playing.
-        if (ctp.mainArena.maximumPlayers > ctp.mainArena.getPlayersPlaying(ctp).size()) {                
-            if (ctp.mainArena.co.exactTeamMemberCount) {
-                if (readypeople / ctp.mainArena.teams.size() >= 1 && readypeople >= ctp.mainArena.minimumPlayers) {
+        if (ctp.mainArena.getMaxPlayers() > ctp.mainArena.getPlayersPlaying(ctp).size()) {                
+            if (ctp.mainArena.getConfigOptions().exactTeamMemberCount) {
+                if (readypeople / ctp.mainArena.getTeams().size() >= 1 && readypeople >= ctp.mainArena.getMinPlayers()) {
                     if (lobby.hasUnreadyPeople()) {
-                        String message = readypeople % ctp.mainArena.teams.size() == 1 ? "Starting game." : "Starting game. Caution: Someone may be left at lobby due to uneven teams.";
+                        String message = readypeople % ctp.mainArena.getTeams().size() == 1 ? "Starting game." : "Starting game. Caution: Someone may be left at lobby due to uneven teams.";
                         sendMessage(ChatColor.GREEN + message);
                         ctp.playerListener.moveToSpawns();
                     } else {
@@ -52,7 +52,7 @@ public class StartCommand extends CTPCommand {
                         return;
                     }
                 }
-            } else if ((readypeople == ctp.playerData.size()) && readypeople >= ctp.mainArena.minimumPlayers) {
+            } else if ((readypeople == ctp.playerData.size()) && readypeople >= ctp.mainArena.getMinPlayers()) {
                 sendMessage(ChatColor.GREEN + "Starting game.");
                 ctp.playerListener.moveToSpawns();
             }

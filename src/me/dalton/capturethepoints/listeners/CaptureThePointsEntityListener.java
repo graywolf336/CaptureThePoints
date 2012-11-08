@@ -51,7 +51,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         if(ctp.globalConfigOptions.enableHardArenaRestore)
             return;
 
-        if (ctp.playerListener.isInside(event.getLocation().getBlockX(), ctp.mainArena.x1, ctp.mainArena.x2) && ctp.playerListener.isInside(event.getLocation().getBlockY(), ctp.mainArena.y1, ctp.mainArena.y2) && ctp.playerListener.isInside(event.getLocation().getBlockZ(), ctp.mainArena.z1, ctp.mainArena.z2) && event.getLocation().getWorld().getName().equalsIgnoreCase(ctp.mainArena.world)) {
+        if (ctp.playerListener.isInside(event.getLocation().getBlockX(), ctp.mainArena.getX1(), ctp.mainArena.getX2()) && ctp.playerListener.isInside(event.getLocation().getBlockY(), ctp.mainArena.getY1(), ctp.mainArena.getY2()) && ctp.playerListener.isInside(event.getLocation().getBlockZ(), ctp.mainArena.getZ1(), ctp.mainArena.getZ2()) && event.getLocation().getWorld().getName().equalsIgnoreCase(ctp.mainArena.getWorld())) {
             List<Block> explodedBlocks = event.blockList();
 
             for (Block block : explodedBlocks)
@@ -83,7 +83,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     	
     	 if (ctp.isGameRunning()) {
              if ((this.ctp.playerData.get((Player) event.getEntity()) != null)) {
-            	 if(!ctp.mainArena.co.regainHealth) {
+            	 if(!ctp.mainArena.getConfigOptions().regainHealth) {
 	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
 	             		event.setCancelled(true);
 	             		if(ctp.globalConfigOptions.debugMessages)
@@ -258,7 +258,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     
 	@SuppressWarnings("deprecation")
 	private boolean dropWool(Player player) {
-        if (!ctp.mainArena.co.dropWoolOnDeath) {
+        if (!ctp.mainArena.getConfigOptions().dropWoolOnDeath) {
             return false;
         }
 
@@ -430,13 +430,13 @@ public class CaptureThePointsEntityListener  implements Listener {
             return false;
         }
                             
-        Location protectionPoint = new Location(ctp.getServer().getWorld(ctp.mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
+        Location protectionPoint = new Location(ctp.getServer().getWorld(ctp.mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
         double distance = Util.getDistance(player.getLocation(), protectionPoint); // Kj -- this method is world-friendly.
         
         if (distance == Double.NaN) {
             return false; // Kj -- it will return Double.NaN if cross-world or couldn't work out distance for whatever reason.
         } else {
-            return distance <= ctp.mainArena.co.protectionDistance;
+            return distance <= ctp.mainArena.getConfigOptions().protectionDistance;
         }
     }
     
@@ -449,7 +449,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
             
             dropWool(player);
-            ctp.playerData.get(attacker).money += ctp.mainArena.co.moneyForKill;
+            ctp.playerData.get(attacker).money += ctp.mainArena.getConfigOptions().moneyForKill;
             attacker.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(attacker).money);
             ctp.checkForKillMSG(attacker, false);
             ctp.checkForKillMSG(player, true);
@@ -463,11 +463,11 @@ public class CaptureThePointsEntityListener  implements Listener {
 
         CTPPotionEffect.removeAllEffectsNew(player);
         //TODO: Set this to the event
-        player.setHealth(ctp.mainArena.co.maxPlayerHealth);
+        player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
         player.setFoodLevel(20);
         Spawn spawn = ctp.playerData.get(player).team.spawn;
 
-        if (ctp.mainArena.co.giveNewRoleItemsOnRespawn) {
+        if (ctp.mainArena.getConfigOptions().giveNewRoleItemsOnRespawn) {
             giveRoleItemsAfterDeath(player);
         }
 
@@ -482,9 +482,9 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
 
-        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.world), spawn.getX(), spawn.getY(), spawn.getZ());
+        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
         loc.setYaw((float) spawn.getDir());
-        ctp.getServer().getWorld(ctp.mainArena.world).loadChunk(loc.getBlockX(), loc.getBlockZ());
+        ctp.getServer().getWorld(ctp.mainArena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
         boolean teleport = player.teleport(loc);
         
         if (!teleport) {

@@ -25,7 +25,7 @@ public class KickCommand extends CTPCommand {
             return;
         }
         
-        if (ctp.mainArena.lobby == null) {
+        if (ctp.mainArena.getLobby() == null) {
             sendMessage(ChatColor.RED + "Please create arena lobby");
             return;
         }
