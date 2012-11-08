@@ -1,8 +1,6 @@
 package me.dalton.capturethepoints.commands;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.beans.ArenaData;
 
@@ -55,9 +53,10 @@ public class SelectCommand extends CTPCommand {
         config.addDefault("Arena", newarena);
         try {
             config.options().copyDefaults(true);
-            config.save(CaptureThePoints.globalConfigFile);
+            config.save(ctp.getGlobalConfig());
         } catch (IOException ex) {
-            Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            ctp.logSevere("Unable to save the global config file, please see the above StackTrace.");
         }
 
         return;

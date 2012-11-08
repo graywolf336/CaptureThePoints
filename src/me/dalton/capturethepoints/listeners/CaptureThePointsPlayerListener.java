@@ -945,11 +945,11 @@ public class CaptureThePointsPlayerListener implements Listener {
                     if (p.getHealth() + item.instantHeal > ctp.mainArena.getConfigOptions().maxPlayerHealth) {
                     	p.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
                     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, ctp.mainArena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
-                    	CaptureThePoints.pluginManager.callEvent(regen);
+                    	ctp.getPluginManager().callEvent(regen);
                     } else {
                     	p.setHealth(p.getHealth() + item.instantHeal);
                     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, p.getHealth() + item.instantHeal, RegainReason.CUSTOM);
-                    	CaptureThePoints.pluginManager.callEvent(regen);
+                    	ctp.getPluginManager().callEvent(regen);
                     }
 
                     if (item.duration > 0) {
@@ -1128,6 +1128,6 @@ public class CaptureThePointsPlayerListener implements Listener {
     public void healPlayerAndCallEvent(Player player, int amount) {
     	player.setHealth(amount);
     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, amount, RegainReason.CUSTOM);
-    	CaptureThePoints.pluginManager.callEvent(regen);
+    	ctp.getPluginManager().callEvent(regen);
     }
 }

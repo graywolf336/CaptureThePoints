@@ -15,16 +15,16 @@ import org.bukkit.entity.Player;
 
 public class PlayerInvData {
 
-    public final CaptureThePoints plugin;
+    public final CaptureThePoints ctp;
     public ArrayList<String> existingPlayers = new ArrayList<String>();
 
     public PlayerInvData(CaptureThePoints instance) {
-        this.plugin = instance;
+        this.ctp = instance;
         loadPlayers();
     }
 
     private void loadPlayers() {
-        File file = new File(CaptureThePoints.mainDir + File.separator + "PlayersInv");
+        File file = new File(ctp.getMainDirectory() + File.separator + "PlayersInv");
         searchFolders(file);
     }
 
@@ -49,7 +49,7 @@ public class PlayerInvData {
 
         MultiInvInventory inventory = new MultiInvInventory(player, inventoryName);
 
-        String file = CaptureThePoints.mainDir + File.separator + "PlayersInv" + File.separator + player.getName() + ".data";
+        String file = ctp.getMainDirectory() + File.separator + "PlayersInv" + File.separator + player.getName() + ".data";
         String lala = inventory.toString();
         player.sendMessage(lala);
         saveToFile(file, inventoryName, lala);
@@ -61,7 +61,7 @@ public class PlayerInvData {
         }
 
         String inventoryName = "Inventory";
-        File file = new File(CaptureThePoints.mainDir + File.separator + "PlayersInv" + File.separator + player.getName() + ".data");
+        File file = new File(ctp.getMainDirectory() + File.separator + "PlayersInv" + File.separator + player.getName() + ".data");
         String tmpInventory = loadFromProperties(file, inventoryName);
         if (tmpInventory != null) {
             MultiInvInventory inventory = new MultiInvInventory();

@@ -153,7 +153,7 @@ public class BuildCommand extends CTPCommand {
                 
                 Location loc = player.getLocation();
 
-                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
                 if ((arenaConf.getString("World") != null) && (!arenaConf.getString("World").equals(player.getWorld().getName()))) {
@@ -310,7 +310,7 @@ public class BuildCommand extends CTPCommand {
                 int start_z;
                 tmps.setZ(start_z = loc.getBlockZ());
 
-                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
                 if ((arenaConf.getString("World") != null) && (!arenaConf.getString("World").equals(player.getWorld().getName()))) {
@@ -464,7 +464,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
 
-                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
                 if (arenaConf.getString("Points." + arg2 + ".X") == null) {
@@ -536,17 +536,17 @@ public class BuildCommand extends CTPCommand {
                 //Setting main arena if this is first arena
                 
                 //Loads the default config options on creation of it, this way the 'co' isn't null
-                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
                 ctp.editingArena.setConfigOptions(ctp.getArenaConfigOptions(arenaFile));
                 
                 if (!config.contains("Arena")) {
                     config.addDefault("Arena", arg2);
                     try {
                         config.options().copyDefaults(true);
-                        config.save(CaptureThePoints.globalConfigFile);
+                        config.save(ctp.getGlobalConfig());
                     } catch (IOException ex) {
                     	ex.printStackTrace();
-                    	ctp.logSevere("Unable to save the main config file.");
+                    	ctp.logSevere("Unable to save the main config file, see the StackTrace above for more information.");
                     }
 
                     ctp.mainArena = new ArenaData();
@@ -633,7 +633,7 @@ public class BuildCommand extends CTPCommand {
                     config.set("Arena", null);
                     try {
                         config.options().copyDefaults(true);
-                        config.save(CaptureThePoints.globalConfigFile);
+                        config.save(ctp.getGlobalConfig());
                     } catch (IOException ex) {
                         Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -713,7 +713,7 @@ public class BuildCommand extends CTPCommand {
                     config.addDefault("Arena", arg2);
                     try {
                         config.options().copyDefaults(true);
-                        config.save(CaptureThePoints.globalConfigFile);
+                        config.save(ctp.getGlobalConfig());
                     } catch (IOException ex) {
                         Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -741,7 +741,7 @@ public class BuildCommand extends CTPCommand {
                     sendMessage(ChatColor.RED + "No arena selected!");
                     return;
                 }
-                File arenaFile = new File(CaptureThePoints.mainDir + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
 
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
@@ -775,7 +775,8 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
-                    Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                    ctp.logSevere("Unable to save an arena's config file, please see the StackTrace for more information.");
                 }
                 
                 sendMessage(ChatColor.GREEN + ctp.editingArena.getName() + ChatColor.WHITE + " arena lobby created");
@@ -787,9 +788,9 @@ public class BuildCommand extends CTPCommand {
 
         if (arg.equalsIgnoreCase("arenalist")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.arenalist"})) {
-                // Reload arena list (matbe there is a new arena there)
+                // Reload arena list (maybe there is a new arena there)
 
-                File file = new File(CaptureThePoints.mainDir + File.separator + "Arenas");
+                File file = new File(ctp.getMainDirectory() + File.separator + "Arenas");
                 ctp.loadArenas(file);
                 
                 String arenas = "";

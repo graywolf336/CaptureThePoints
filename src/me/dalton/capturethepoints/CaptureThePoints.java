@@ -48,7 +48,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,25 +57,21 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class CaptureThePoints extends JavaPlugin {
 	public static Permission permission = null;
     public static Economy economyHandler = null;
-
-    //TODO: Remove all instances of store Player, we can end up with "ghost" players like this - switch to name.
-    
     public static boolean UsePermissions;
+    
+    //TODO: Remove all instances of store Player, we can end up with "ghost" players like this - switch to name.
 
     /** "plugins/CaptureThePoints" */
-    public static String mainDir;
+    private String mainDir;
 
     /** "plugins/CaptureThePoints/CaptureSettings.yml" */
     //public static final File myFile = new File(mainDir + File.separator + "CaptureSettings.yml");
-    /** "plugins/CaptureThePoints/Global.yml" */
-    public static File globalConfigFile = null;
+    private File globalConfigFile = null;
 
-    public static PluginDescriptionFile info = null;
-
-    public static PluginManager pluginManager = null;
+    private PluginManager pluginManager = null;
 
     /** List of commands accepted by CTP */
-    private static List<CTPCommand> commands = new ArrayList<CTPCommand>(); // Kj
+    private List<CTPCommand> commands = new ArrayList<CTPCommand>(); // Kj
 
     public final CaptureThePointsBlockListener blockListener = new CaptureThePointsBlockListener(this);
 
@@ -110,7 +105,6 @@ public class CaptureThePoints extends JavaPlugin {
     public ArenaData mainArena = new ArenaData();
 
     /** All arenas boundaries (HashMap: Arena's name, and its boundaries)**/
-    //public List<ArenaBoundarys> arenasBoundaries = new LinkedList<ArenaBoundarys>();
     public HashMap<String, ArenaBoundaries> arenasBoundaries = new HashMap<String, ArenaBoundaries>();
 
     /** The arena currently being edited. */
@@ -140,7 +134,6 @@ public class CaptureThePoints extends JavaPlugin {
     /** Name of the player who needs teleporting. */
     public String playerNameForTeleport = ""; // Block destroy - teleport protection
 
-    //final FileConfiguration config = this.getConfig();
     /** Load from CaptureSettings.yml */
     public FileConfiguration load () { //Yaml Configuration
         return load(globalConfigFile);
@@ -167,7 +160,6 @@ public class CaptureThePoints extends JavaPlugin {
     	mainDir = this.getDataFolder().toString();
     	if(mainDir.isEmpty()) firstTime = true;
     	globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
-    	info = getDescription();
     	
         enableCTP(false);
     }
@@ -245,7 +237,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         clearConfig();
-        info = null;
         pluginManager = null;
         permission = null;
         commands.clear();
@@ -1454,7 +1445,7 @@ public class CaptureThePoints extends JavaPlugin {
         //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
         player.setHealth(mainArena.getConfigOptions().maxPlayerHealth);
         EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, mainArena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
-    	CaptureThePoints.pluginManager.callEvent(regen);
+    	pluginManager.callEvent(regen);
         
         // Get lobby location and move player to it.
         Location loc = new Location(getServer().getWorld(mainArena.getWorld()), mainArena.getLobby().getX(), mainArena.getLobby().getY() + 1, mainArena.getLobby().getZ());
@@ -1557,6 +1548,19 @@ public class CaptureThePoints extends JavaPlugin {
         	getLogger().info("Vault plugin found, economy support enabled.");
 
         return economyHandler != null;
+    }
+    
+    /** Returns the plugin manager, non statically. */
+    public PluginManager getPluginManager() {
+    	return this.pluginManager;
+    }
+    
+    public File getGlobalConfig() {
+    	return this.globalConfigFile;
+    }
+    
+    public String getMainDirectory() {
+    	return this.mainDir;
     }
     
     /**
