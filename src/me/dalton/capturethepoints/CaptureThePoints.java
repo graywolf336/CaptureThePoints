@@ -91,7 +91,7 @@ public class CaptureThePoints extends JavaPlugin {
     public Map<Player, PlayerData> playerData = new ConcurrentHashMap<Player, PlayerData>();  // To avoid concurrent modification exceptions    
 
     /** Player's previous Locations before they started playing CTP. */
-    public final HashMap<Player, Location> previousLocation = new HashMap<Player, Location>();
+    public final HashMap<String, Location> previousLocation = new HashMap<String, Location>();
 
     /** The Lobbies stored by CTP. */
     public List<Lobby> lobbies = new LinkedList<Lobby>();
@@ -1463,7 +1463,7 @@ public class CaptureThePoints extends JavaPlugin {
         Double z = Double.valueOf(player.getLocation().getZ());
 
         Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
-        previousLocation.put(player, previous);
+        previousLocation.put(player.getName(), previous);
 
         Util.sendMessageToPlayers(this, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
 

@@ -727,7 +727,7 @@ public class CaptureThePointsBlockListener implements Listener {
         ctp.playerData.get(p).justJoined = true;
         InvManagement.restoreInv(p);
 
-        Location loc = ctp.previousLocation.get(p);
+        Location loc = ctp.previousLocation.get(p.getName());
         //loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         loc.setYaw((float) ctp.mainArena.lobby.getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
@@ -735,7 +735,7 @@ public class CaptureThePointsBlockListener implements Listener {
             //Packet packet = new Packet51MapChunk((int)loc.getX() - 5, (int)loc.getY() - 2, (int)loc.getZ() - 5, (int)loc.getX() + 5, (int)loc.getY() + 2, (int)loc.getZ() + 5, ((CraftWorld)loc.getWorld()).getHandle().worldProvider.a);
             //((CraftPlayer)p).getHandle().netServerHandler.sendPacket(packet);
         }
-        p.teleport(this.ctp.previousLocation.get(p));
+        p.teleport(this.ctp.previousLocation.get(p.getName()));
 
         // do not check double signal
         if (ctp.playerData.get(p) == null) {
