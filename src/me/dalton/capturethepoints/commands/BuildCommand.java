@@ -201,9 +201,10 @@ public class BuildCommand extends CTPCommand {
                         ctp.mainArena.setName(ctp.editingArena.getName());
                     }
                     
+                    Team team = new Team();
+                    
                     if (ctp.mainArena.getWorld().equals(player.getWorld().getName())) {
                         ctp.mainArena.getTeamSpawns().put(arg2, spawn);
-                        Team team = new Team();
                         team.setSpawn(spawn);
                         team.setColor(arg2);
                         team.setMemberCount(0);
@@ -226,7 +227,7 @@ public class BuildCommand extends CTPCommand {
                             ctp.mainArena.getTeams().add(team);
                         }
                     }
-                    ctp.sendMessage(player, "You set the " + ChatColor.GREEN + arg2 + ChatColor.WHITE + " team spawn point.");
+                    ctp.sendMessage(player, "You set the " + team.getChatColor() + arg2 + ChatColor.WHITE + " team spawn point.");
                     return;
                 }
 
