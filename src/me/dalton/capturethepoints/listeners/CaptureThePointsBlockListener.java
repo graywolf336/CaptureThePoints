@@ -297,7 +297,7 @@ public class CaptureThePointsBlockListener implements Listener {
                                     Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.getName()));
                                     ctp.playerData.get(player.getName()).setPointsCaptured(
 											ctp.playerData.get(player.getName()).getPointsCaptured() + 1);
-                                    ctp.playerData.get(player).setMoney(ctp.playerData.get(player.getName()).getMoney() + ctp.mainArena.getConfigOptions().moneyForPointCapture);
+                                    ctp.playerData.get(player.getName()).setMoney(ctp.playerData.get(player.getName()).getMoney() + ctp.mainArena.getConfigOptions().moneyForPointCapture);
                                     player.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(player.getName()).getMoney());
                                     if (didSomeoneWin()) {
                                         loc.getBlock().setTypeId(0);
