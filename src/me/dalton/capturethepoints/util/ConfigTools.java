@@ -234,6 +234,10 @@ public class ConfigTools {
     //For arena config options!
     
     public static ConfigOptions getArenaConfigOptions (File arenafile) {
+    	if(globalConfigOptions == null) {
+    		globalConfigOptions = ctp.getGlobalConfigOptions();
+    	}
+    	
         setArenaConfigOptions(arenafile);
         FileConfiguration config = ctp.load(arenafile);
 
