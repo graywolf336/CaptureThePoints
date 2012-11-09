@@ -232,7 +232,7 @@ public class CaptureThePoints extends JavaPlugin {
 
         }, 200L, 200L); // 10 sec
         
-        logInfo("Loaded " + arena_list.size() + " arenas!");
+        logInfo("Loaded " + arena_list.size() + " arena" + ((arena_list.size() > 1) ? "s!" : "!"));
     }
 
     @Override
