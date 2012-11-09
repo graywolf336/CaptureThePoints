@@ -6,8 +6,6 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.beans.Team;
 
-import org.bukkit.entity.Player;
-
 public class DebugCommand extends CTPCommand {
    
     /** Output states to Console. */
@@ -90,7 +88,7 @@ public class DebugCommand extends CTPCommand {
             result.add("No suitable arena for the number of people playing: "+ctp.mainArena.getPlayersPlaying(ctp).size());
         }
         boolean error = false;
-        for (Player p : ctp.playerData.keySet()) {
+        for (String p : ctp.playerData.keySet()) {
             if (p == null) {
                 result.add("There is a null player in the playerData.");
                 continue;

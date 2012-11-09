@@ -4,12 +4,14 @@ package me.dalton.capturethepoints.beans;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /** A Lobby in a CTP arena */
 public class Lobby {
-    private HashMap<Player, Boolean> playersinlobby = new HashMap<Player, Boolean>();
-    private List<Player> playerswhowereinlobby = new ArrayList<Player>();
+    private HashMap<String, Boolean> playersinlobby = new HashMap<String, Boolean>();
+    private List<String> playerswhowereinlobby = new ArrayList<String>();
     private double x = 0D;
     private double y = 0D;
     private double z = 0D;
@@ -64,22 +66,22 @@ public class Lobby {
     }
     
     /** Sets the list of Players who have been in this ctp lobby. They may still be in the Lobby. */
-    public void setPlayersWhoWereInLobby(List<Player> players) {
+    public void setPlayersWhoWereInLobby(List<String> players) {
     	this.playerswhowereinlobby = players;
     }
     
     /** Gets the list of Players who have been in this ctp lobby. They may still be in the Lobby. */
-    public List<Player> getPlayersWhoWereInLobby() {
+    public List<String> getPlayersWhoWereInLobby() {
     	return this.playerswhowereinlobby;
     }
     
     /** Sets the list of Players and their ready status */
-    public void setPlayersInLobby(HashMap<Player, Boolean> players) {
+    public void setPlayersInLobby(HashMap<String, Boolean> players) {
     	this.playersinlobby = players;
     }
     
     /** Gets the list of Players and their ready status */
-    public HashMap<Player, Boolean> getPlayersInLobby() {
+    public HashMap<String, Boolean> getPlayersInLobby() {
     	return this.playersinlobby;
     }
         
@@ -127,9 +129,9 @@ public class Lobby {
     public List<String> getUnreadyPeople() {
         if (playersinlobby.values().contains(false)) {
             List<String> players = new ArrayList<String>();
-            for (Player player : playersinlobby.keySet()) {
+            for (String player : playersinlobby.keySet()) {
                 if (playersinlobby.get(player) == false) {
-                    players.add(player.getName());
+                    players.add(player);
                 } else {
                     continue;
                 }
@@ -156,17 +158,17 @@ public class Lobby {
      * @param canBeInLobby if true, may return someone who is still in the lobby. If false, ignores those in the lobby.
      * @return The player or null if none found. */
     public Player getLastJoiner(boolean canBeInLobby) {
-        List<Player> players = this.playerswhowereinlobby;
+        List<String> players = this.playerswhowereinlobby;
         for (int i = 1; i < players.size() ; i++) {
             if (players.get(players.size()-i) != null) {
-                Player testplayer = players.get(players.size()-i);
+                String testplayer = players.get(players.size()-i);
                 if (canBeInLobby) {
-                    return testplayer; // Don't bother checking the lobby
+                    return Bukkit.getPlayer(testplayer); // Don't bother checking the lobby
                 } else {
                     if (playersinlobby.get(testplayer) != null) {
                         continue; // Player is in the lobby.
                     } else {
-                        return testplayer; // Player not in the lobby.
+                        return Bukkit.getPlayer(testplayer); // Player not in the lobby.
                     }
                 }
             }

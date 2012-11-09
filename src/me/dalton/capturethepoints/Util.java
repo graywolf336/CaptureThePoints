@@ -135,8 +135,9 @@ public class Util {
      * @param s The message to send. "[CTP] " has been included.
      * @see PlayerData */
     public static void sendMessageToPlayers(CaptureThePoints ctp, String s) {
-        for (Player play : ctp.playerData.keySet()) {
-            play.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
+        for (String player : ctp.playerData.keySet()) {
+        	Player p = ctp.getServer().getPlayer(player);
+            p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
         }
     }
     
@@ -146,9 +147,10 @@ public class Util {
      * @param s The message to send. "[CTP] " has been included.
      * @see PlayerData */
     public static void sendMessageToPlayers(CaptureThePoints ctp, Player exclude, String s) {
-        for (Player play : ctp.playerData.keySet()) {
-            if (play != null && play != exclude) {
-                play.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
+        for (String player : ctp.playerData.keySet()) {
+        	Player p = ctp.getServer().getPlayer(player);
+            if (p != null && p != exclude) {
+                p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
             }
         }
     }
@@ -384,9 +386,9 @@ public class Util {
 	@SuppressWarnings("deprecation")
 	public static void rewardPlayer(CaptureThePoints plugin, Player player) {
         try {
-            player.giveExp(plugin.playerData.get(player).getKills() * plugin.getRewards().getExpRewardForKillingEnemy());
+            player.giveExp(plugin.playerData.get(player.getName()).getKills() * plugin.getRewards().getExpRewardForKillingEnemy());
 
-            if (plugin.playerData.get(player).isWinner()) {
+            if (plugin.playerData.get(player.getName()).isWinner()) {
                 for (int i = 0; i < plugin.getRewards().getWinnerRewardCount(); i++) {
                     int itemCount = 0;
                     int id = random(0, plugin.getRewards().getWinnerRewards().size()); // Kj -- Took out -1
@@ -467,7 +469,7 @@ public class Util {
                 }
             }
             //reward for kills
-            for (int i = 0; i < plugin.playerData.get(player).getKills(); i++) {
+            for (int i = 0; i < plugin.playerData.get(player.getName()).getKills(); i++) {
                 if (plugin.getRewards().getRewardsForKill().size() > 0) {
                     int itemCount = 0;
                     int id = random(0, plugin.getRewards().getRewardsForKill().size()); // Kj -- Took out -1
@@ -508,7 +510,7 @@ public class Util {
                 }
             }
             //reward for capture
-            for (int i = 0; i < plugin.playerData.get(player).getPointsCaptured(); i++) {
+            for (int i = 0; i < plugin.playerData.get(player.getName()).getPointsCaptured(); i++) {
                 if (plugin.getRewards().getRewardsForCapture().size() > 0) {
                     int itemCount = 0;
                     int id = random(0, plugin.getRewards().getRewardsForCapture().size()); // Kj -- Took out -1

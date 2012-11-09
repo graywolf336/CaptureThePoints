@@ -37,7 +37,7 @@ public class KickCommand extends CTPCommand {
             return;
         }
         
-        if (ctp.blockListener.isAlreadyInGame(bob)) {
+        if (ctp.blockListener.isAlreadyInGame(bob.getName())) {
             ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " kicked you from CTP game!");
             ctp.leaveGame(bob);
         } else {

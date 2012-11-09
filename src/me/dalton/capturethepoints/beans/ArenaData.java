@@ -8,8 +8,6 @@ import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 
-import org.bukkit.entity.Player;
-
 /** Arena Data of the saved arenas for playing CTP. */
 public class ArenaData {
     private String name = "";
@@ -175,8 +173,8 @@ public class ArenaData {
      * @return The playername list */
     public List<String> getPlayers(CaptureThePoints ctp) {
         List<String> players = new ArrayList<String>();
-        for (Player p : ctp.playerData.keySet()) {
-            players.add(p.getName());
+        for (String p : ctp.playerData.keySet()) {
+            players.add(p);
         }
         return players;
     }
@@ -186,11 +184,11 @@ public class ArenaData {
      * @return The playername list */
     public List<String> getPlayersPlaying(CaptureThePoints ctp) {
         List<String> players = new ArrayList<String>();
-        for (Player p : ctp.playerData.keySet()) {
+        for (String p : ctp.playerData.keySet()) {
             if(!ctp.playerData.get(p).inArena()) {
                 continue; // Player is not yet in game.
             } else {
-                players.add(p.getName());
+                players.add(p);
             }
         } return players;
     }

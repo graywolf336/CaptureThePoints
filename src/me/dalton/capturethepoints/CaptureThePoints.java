@@ -87,8 +87,8 @@ public class CaptureThePoints extends JavaPlugin {
 
     private HashMap<Player, ItemStack[]> armor = new HashMap<Player, ItemStack[]>();
 
-    /** The PlayerData stored by CTP. (HashMap: Player, and their data) */
-    public Map<Player, PlayerData> playerData = new ConcurrentHashMap<Player, PlayerData>();  // To avoid concurrent modification exceptions    
+    /** The PlayerData stored by CTP. (HashMap: PlayerName, and their data) */
+    public Map<String, PlayerData> playerData = new ConcurrentHashMap<String, PlayerData>();  // To avoid concurrent modification exceptions    
 
     /** Player's previous Locations before they started playing CTP. */
     public final HashMap<String, Location> previousLocation = new HashMap<String, Location>();
@@ -208,12 +208,13 @@ public class CaptureThePoints extends JavaPlugin {
                     return;
                 }
 
-                for (Player player : playerData.keySet()) {
+                for (String player : playerData.keySet()) {
                     PlayerData data = playerData.get(player);
+                    Player p = getServer().getPlayer(player);
                     if (data.inLobby() && !data.isReady()) {
                         // Kj -- Time inactivity warning.
                         if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
-                            sendMessage(player, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
+                            sendMessage(p, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
                             data.isWarned(true);
                         }
 
@@ -222,8 +223,8 @@ public class CaptureThePoints extends JavaPlugin {
                             data.setInLobby(false);
                             data.setInArena(false);
                             data.isWarned(false);
-                            leaveGame(player);
-                            sendMessage(player, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
+                            leaveGame(p);
+                            sendMessage(p, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
                         }
                     }
                 }
@@ -347,7 +348,7 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
 	@SuppressWarnings("deprecation")
-	private void balancePlayer (Player p, Team newTeam) {      
+	private void balancePlayer (String p, Team newTeam) {      
         // Reseting player data       
         if (newTeam == null) {
             // Moving to Lobby
@@ -363,20 +364,22 @@ public class CaptureThePoints extends JavaPlugin {
             playerData.get(p).isWarned(false);
             playerData.get(p).setRole(null);
             
+            Player player = getServer().getPlayer(p);
+            
             // Remove Helmet
-            p.getInventory().setHelmet(null);
-            p.getInventory().remove(Material.WOOL);
+            player.getInventory().setHelmet(null);
+            player.getInventory().remove(Material.WOOL);
             
             
             //It's deprecated but it's currently the only way to get the desired effect.
-            p.updateInventory();
+            player.updateInventory();
         
             // Get lobby location and move player to it.
             Location loc = new Location(getServer().getWorld(mainArena.getWorld()), mainArena.getLobby().getX(), mainArena.getLobby().getY() + 1, mainArena.getLobby().getZ());
             loc.setYaw((float) mainArena.getLobby().getDir());
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
-            p.teleport(loc); // Teleport player to lobby
-            Util.sendMessageToPlayers(this, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
+            player.teleport(loc); // Teleport player to lobby
+            Util.sendMessageToPlayers(this, ChatColor.GREEN + p + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
             
         } else {
             // Moving to other Team
@@ -385,10 +388,11 @@ public class CaptureThePoints extends JavaPlugin {
             
             playerData.get(p).getTeam().substractOneMemeberCount();
             playerData.get(p).setTeam(newTeam);
-            //playerData.get(p).color = newTeam.color;
+            
+            Player player = getServer().getPlayer(p);
                                    
             // Change wool colour and Helmet
-            ItemStack[] contents = p.getInventory().getContents();
+            ItemStack[] contents = player.getInventory().getContents();
             int amountofwool = 0;
             for (ItemStack item : contents) {
                 if (item == null) {
@@ -400,20 +404,20 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
             
-            p.getInventory().remove(Material.WOOL);
+            player.getInventory().remove(Material.WOOL);
             
             //Give wool
             DyeColor color1 = DyeColor.valueOf(newTeam.getColor().toUpperCase());
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
-            p.getInventory().setHelmet(helmet);
+            player.getInventory().setHelmet(helmet);
             
             if (amountofwool !=0) {
                 ItemStack wool = new ItemStack(Material.WOOL, amountofwool, color1.getData());
-                p.getInventory().addItem(wool);
+                player.getInventory().addItem(wool);
             }
 
             //It's deprecated but it's currently the only way to get the desired effect.
-            p.updateInventory();
+            player.updateInventory();
             
             // Get team spawn location and move player to it.
             Spawn spawn =
@@ -423,12 +427,12 @@ public class CaptureThePoints extends JavaPlugin {
             Location loc = new Location(getServer().getWorld(mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
             loc.setYaw((float) spawn.getDir());
             getServer().getWorld(mainArena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
-            boolean teleport = p.teleport(loc);
+            boolean teleport = player.teleport(loc);
             if (!teleport) {
-                p.teleport(new Location(p.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
+            	player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
             }
             Util.sendMessageToPlayers(this, 
-                    newTeam.getChatColor() + p.getName() + ChatColor.WHITE + " changed teams from " 
+                    newTeam.getChatColor() + player.getName() + ChatColor.WHITE + " changed teams from " 
                     + oldcc + oldteam + ChatColor.WHITE + " to "+ newTeam.getChatColor() + newTeam.getColor() + ChatColor.WHITE + "! [Team-balancing]");
             newTeam.addOneMemeberCount();
         }
@@ -459,7 +463,7 @@ public class CaptureThePoints extends JavaPlugin {
      * @param player The player
      * @param died If they died (false if they were the killer). */
     public void checkForKillMSG (Player player, boolean died) {
-        PlayerData data = playerData.get(player);
+        PlayerData data = playerData.get(player.getName());
         if (died) {
             data.addOneDeath();
             data.addOneDeathInARow();
@@ -471,11 +475,11 @@ public class CaptureThePoints extends JavaPlugin {
             String message = mainArena.getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
 
             if (!message.isEmpty()) {
-                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE));
+                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE));
             }
         }
 
-        playerData.put(player, data);
+        playerData.put(player.getName(), data);
     }
 
     /** Checks whether the current mainArena is fit for purpose.
@@ -566,9 +570,10 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         if (!this.playerData.isEmpty()) {
-            for (Player players : playerData.keySet()) {
-                blockListener.restoreThings(players);
-                sendMessage(players, ChatColor.RED + "Reloading plugin configuration. The CTP game has been terminated.");  // Kj
+            for (String player : playerData.keySet()) {
+            	Player p = getServer().getPlayer(player);
+                blockListener.restoreThings(p);
+                sendMessage(p, ChatColor.RED + "Reloading plugin configuration. The CTP game has been terminated.");  // Kj
             }
         }
         
@@ -635,15 +640,15 @@ public class CaptureThePoints extends JavaPlugin {
 
     public void leaveGame (Player player) {
         //On exit we get double sygnal
-        if (playerData.get(player) == null) {
+        if (playerData.get(player.getName()) == null) {
             return;
         }
         
         if (playerListener.waitingToMove != null && !playerListener.waitingToMove.isEmpty()) {
-            if (player == playerListener.waitingToMove.get(0) && playerListener.waitingToMove.size() == 1) {
+            if (player.getName() == playerListener.waitingToMove.get(0) && playerListener.waitingToMove.size() == 1) {
                 playerListener.clearWaitingQueue(); // The player who left was someone in the lobby waiting to join. We need to remove them from the queue
             } else {
-                playerListener.waitingToMove.remove(player);
+                playerListener.waitingToMove.remove(player.getName());
             }
         }
 
@@ -660,26 +665,26 @@ public class CaptureThePoints extends JavaPlugin {
         
         Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
-        if (playerData.get(player).getTeam() != null) {
+        if (playerData.get(player.getName()).getTeam() != null) {
             for (int i = 0; i < mainArena.getTeams().size(); i++) {
-                if (mainArena.getTeams().get(i) == (playerData.get(player).getTeam())) {
+                if (mainArena.getTeams().get(i) == (playerData.get(player.getName()).getTeam())) {
                     mainArena.getTeams().get(i).substractOneMemeberCount();
                     break;
                 }
             }
         }
         
-        this.mainArena.getLobby().getPlayersInLobby().remove(player);
+        this.mainArena.getLobby().getPlayersInLobby().remove(player.getName());
         this.blockListener.restoreThings(player);
         this.previousLocation.remove(player.getName());
-        this.playerData.remove(player);
+        this.playerData.remove(player.getName());
 
         // Check for player replacement if there is somone waiting to join the game
         boolean wasReplaced = false;
         if (mainArena.getConfigOptions().exactTeamMemberCount && isGameRunning()) {
-            for (Player play : playerData.keySet()) {
-                if (playerData.get(play).inLobby() && playerData.get(play).isReady()) {
-                    this.playerListener.moveToSpawns(play);
+            for (String playerName : playerData.keySet()) {
+                if (playerData.get(playerName).inLobby() && playerData.get(playerName).isReady()) {
+                    this.playerListener.moveToSpawns(playerName);
                     wasReplaced = true;
                     break;
                 }
@@ -1080,7 +1085,7 @@ public class CaptureThePoints extends JavaPlugin {
         data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));
         PotionManagement.removeAllEffects(player);
         
-        playerData.put(player, data);
+        playerData.put(player.getName(), data);
 
         // Save player's previous state 
         player.setFoodLevel(20);
@@ -1089,8 +1094,8 @@ public class CaptureThePoints extends JavaPlugin {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        mainArena.getLobby().getPlayersInLobby().put(player, false); // Kj
-        mainArena.getLobby().getPlayersWhoWereInLobby().add(player); // Kj
+        mainArena.getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
+        mainArena.getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj
 
         //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
         player.setHealth(mainArena.getConfigOptions().maxPlayerHealth);
@@ -1116,7 +1121,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
         sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.getName() + ChatColor.GREEN + ".");
-        playerData.get(player).setInLobby(true);
+        playerData.get(player.getName()).setInLobby(true);
         saveInv(player);
     }
 

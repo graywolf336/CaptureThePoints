@@ -23,12 +23,12 @@ public class StatsCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (!ctp.blockListener.isAlreadyInGame(player)) {
+        if (!ctp.blockListener.isAlreadyInGame(player.getName())) {
             sendMessage(ChatColor.RED + "You are not in a CTP game!");
             return;
         }
         
-        PlayerData pdata = ctp.playerData.get(player);
+        PlayerData pdata = ctp.playerData.get(player.getName());
         ChatColor cc = pdata.getTeam().getChatColor(), white = ChatColor.WHITE, green = ChatColor.GREEN;
         
         sendMessage(cc + "Your Stats: ");

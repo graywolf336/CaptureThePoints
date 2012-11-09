@@ -64,10 +64,10 @@ public class CaptureThePointsEntityListener  implements Listener {
         if (!(event.getEntity() instanceof Player))
             return;
         
-        if((this.ctp.playerData.get((Player) event.getEntity()) == null))
+        if((this.ctp.playerData.get(((Player) event.getEntity()).getName()) == null))
             return;
         
-        if(!ctp.isGameRunning() && this.ctp.playerData.get((Player) event.getEntity()).inLobby())  {
+        if(!ctp.isGameRunning() && this.ctp.playerData.get(((Player) event.getEntity()).getName()).inLobby())  {
             event.setDroppedExp(0);
             event.getDrops().clear();
             return;
@@ -82,7 +82,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     	if (!(event.getEntity() instanceof Player)) return;
     	
     	 if (ctp.isGameRunning()) {
-             if ((this.ctp.playerData.get((Player) event.getEntity()) != null)) {
+             if ((this.ctp.playerData.get(((Player) event.getEntity()).getName()) != null)) {
             	 if(!ctp.mainArena.getConfigOptions().regainHealth) {
 	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
 	             		event.setCancelled(true);
@@ -102,7 +102,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         if (ctp.isGameRunning()) {
             Player thrower = (Player) event.getEntity().getShooter();
             
-            if ((this.ctp.playerData.get(thrower) != null)) {
+            if (ctp.playerData.get(thrower.getName()) != null) {
                 ThrownPotion potion = event.getEntity();
                 PotionEffect effect = null;
                 boolean harmful = false;
@@ -110,7 +110,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 	effect = e;
                 }
                 
-                harmful = isHarmful(effect);
+                harmful = PotionManagement.isHarmful(effect);
                 for(Iterator<LivingEntity> iter = event.getAffectedEntities().iterator(); iter.hasNext();){
                 	LivingEntity hitPlayerEntity = iter.next();
                 	Player hitPlayer = (Player)hitPlayerEntity;
@@ -122,7 +122,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 			event.setIntensity(hitPlayerEntity, 0); 
                 		}
                 		//Is thrower on the same team as player hit
-                		if (this.ctp.playerData.get(thrower).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).getTeam().getColor())){ // Yes
+                		if (this.ctp.playerData.get(thrower.getName()).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer.getName()).getTeam().getColor())){ // Yes
                 			event.setIntensity(hitPlayerEntity, 0); 
                 		}else{ // No
                             if (isProtected(hitPlayer)) {
@@ -148,13 +148,13 @@ public class CaptureThePointsEntityListener  implements Listener {
                         		damage++;
                         	}
                         	
-                            if ((this.ctp.playerData.get(hitPlayer) != null) && (hitPlayer.getHealth() - damage <= 0)) {
+                            if ((this.ctp.playerData.get(hitPlayer.getName()) != null) && (hitPlayer.getHealth() - damage <= 0)) {
                             	event.setIntensity(hitPlayerEntity, 0); 
                                 respawnPlayer(hitPlayer, thrower);
                             }
                         }
                 	}else{                            //Positive
-                		if (!this.ctp.playerData.get(thrower).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer).getTeam().getColor())){ 
+                		if (!this.ctp.playerData.get(thrower.getName()).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer.getName()).getTeam().getColor())){ 
                 			event.setIntensity(hitPlayerEntity, 0); 
                 		}
                 	}
@@ -174,7 +174,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         //Only check if game is running
         if (ctp.isGameRunning()) {
             Player attacker = null;
-            if ((this.ctp.playerData.get((Player) event.getEntity()) != null)) {
+            if ((this.ctp.playerData.get(((Player) event.getEntity()).getName()) != null)) {
 
                 // for melee
                 if (checkForPlayerEvent(event)) {
@@ -189,7 +189,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 Player playa = (Player) event.getEntity();
 
                 // lobby damage check
-                if (this.ctp.playerData.get(playa).inLobby() || (attacker != null && this.ctp.playerData.get(attacker) != null && this.ctp.playerData.get(attacker).inLobby())) {
+                if (this.ctp.playerData.get(playa.getName()).inLobby() || (attacker != null && this.ctp.playerData.get(attacker.getName()) != null && this.ctp.playerData.get(attacker.getName()).inLobby())) {
                     event.setCancelled(true);
                     if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
@@ -210,9 +210,9 @@ public class CaptureThePointsEntityListener  implements Listener {
 
                 //disable pvp damage
                 if (attacker != null) {
-                    if ((this.ctp.playerData.get(playa) != null) && (this.ctp.playerData.get(attacker) != null)) {
-                        if (this.ctp.playerData.get(playa).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(attacker).getTeam().getColor())) {
-                        	ctp.sendMessage(attacker, ctp.playerData.get(playa).getTeam().getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
+                    if ((this.ctp.playerData.get(playa.getName()) != null) && (this.ctp.playerData.get(attacker.getName()) != null)) {
+                        if (this.ctp.playerData.get(playa.getName()).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(attacker.getName()).getTeam().getColor())) {
+                        	ctp.sendMessage(attacker, ctp.playerData.get(playa.getName()).getTeam().getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
                             event.setCancelled(true);
                             if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
@@ -229,7 +229,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 }
 
                 //Player has "died"
-                if ((this.ctp.playerData.get(playa) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
+                if ((this.ctp.playerData.get(playa.getName()) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
                     event.setCancelled(true);
                     if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
@@ -237,7 +237,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                 }
             }
         }
-        if (ctp.playerData.get((Player) event.getEntity()) != null && ctp.playerData.get((Player) event.getEntity()).inLobby()) {
+        if (ctp.playerData.get(((Player) event.getEntity()).getName()) != null && ctp.playerData.get(((Player) event.getEntity()).getName()).inLobby()) {
             event.setCancelled(true);
             if(ctp.getGlobalConfigOptions().debugMessages)
             	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
@@ -266,7 +266,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         int ownedWool = 0;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
-                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).getTeam().getColor())) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player.getName()).getTeam().getColor())) {
                     inv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
@@ -278,7 +278,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         inv.remove(Material.WOOL);
         
         if (ownedWool != 0) {
-            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).getTeam().getColor().toUpperCase());
+            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player.getName()).getTeam().getColor().toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
             
@@ -297,7 +297,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         int ownedWool = 0;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
-                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player).getTeam().getColor())) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player.getName()).getTeam().getColor())) {
                     inv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
@@ -308,7 +308,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
         inv.clear(); // Removes inventory
         
-        for (Items item : ctp.roles.get(ctp.playerData.get(player).getRole())) {
+        for (Items item : ctp.roles.get(ctp.playerData.get(player.getName()).getRole())) {
             if(item.getItem().equals(Material.AIR))
                 continue;
 
@@ -401,9 +401,10 @@ public class CaptureThePointsEntityListener  implements Listener {
                 }
             }
         }
+        
         //Re-add Wool
         if (ownedWool != 0) {
-            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player).getTeam().getColor().toUpperCase());
+            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player.getName()).getTeam().getColor().toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
         }
@@ -417,14 +418,14 @@ public class CaptureThePointsEntityListener  implements Listener {
         if (ctp.mainArena == null || player == null) {
             return false;
         }
-        if (ctp.playerData.get(player) == null) {
+        if (ctp.playerData.get(player.getName()) == null) {
             return false;
         }
 
         Spawn spawn = new Spawn();
 
         try {
-            spawn = ctp.playerData.get(player).getTeam().getSpawn();
+            spawn = ctp.playerData.get(player.getName()).getTeam().getSpawn();
         } catch(Exception e) { // For debugging
             System.out.println("[ERROR][CTP] Team spawn could not be found!  Player Name: " + player.getName());
             return false;
@@ -440,22 +441,21 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
     }
     
-    
-    public void respawnPlayer (Player player, Player attacker) {
+    public void respawnPlayer(Player player, Player attacker) {
         if (attacker != null) {
             if(!ctp.getGlobalConfigOptions().disableKillMessages) {
-                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
-                        + " was killed by " + ctp.playerData.get(attacker).getTeam().getChatColor() + attacker.getName());
+                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                        + " was killed by " + ctp.playerData.get(attacker.getName()).getTeam().getChatColor() + attacker.getName());
             }
             
             dropWool(player);
-            ctp.playerData.get(attacker).setMoney(ctp.playerData.get(attacker).getMoney() + ctp.mainArena.getConfigOptions().moneyForKill);
-            attacker.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(attacker).getMoney());
+            ctp.playerData.get(attacker.getName()).setMoney(ctp.playerData.get(attacker.getName()).getMoney() + ctp.mainArena.getConfigOptions().moneyForKill);
+            attacker.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(attacker.getName()).getMoney());
             ctp.checkForKillMSG(attacker, false);
             ctp.checkForKillMSG(player, true);
         } else {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
-                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
             ctp.sendMessage(player, ChatColor.RED + "Please do not remove your Helmet.");
             ctp.checkForKillMSG(player, true);
@@ -465,7 +465,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         //TODO: Set this to the event
         player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
         player.setFoodLevel(20);
-        Spawn spawn = ctp.playerData.get(player).getTeam().getSpawn();
+        Spawn spawn = ctp.playerData.get(player.getName()).getTeam().getSpawn();
 
         if (ctp.mainArena.getConfigOptions().giveNewRoleItemsOnRespawn) {
             giveRoleItemsAfterDeath(player);
@@ -491,37 +491,4 @@ public class CaptureThePointsEntityListener  implements Listener {
             player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
         }
     }
-    
-
-    private boolean isHarmful(PotionEffect effect) {
-		
-    	PotionEffectType type = effect.getType();
-
-    	if (type.equals(PotionEffectType.HARM)){
-    		return true;
-    	}
-    	if (type.equals(PotionEffectType.HEAL)){
-    		return false;
-    	}
-    	if (type.equals(PotionEffectType.WEAKNESS)){
-    		return true;
-    	}
-    	if (type.equals(PotionEffectType.REGENERATION)){
-    		return false;
-    	}
-    	if (type.equals(PotionEffectType.INCREASE_DAMAGE)){
-    		return false;
-    	}
-    	if (type.equals(PotionEffectType.SPEED)){
-    		return false;
-    	}
-    	if (type.equals(PotionEffectType.SLOW)){
-    		return true;
-    	}
-    	if (type.equals(PotionEffectType.POISON)){
-    		return true;
-    	}
-    	
-		return false;
-	}
 }

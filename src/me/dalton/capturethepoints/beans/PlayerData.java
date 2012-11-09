@@ -258,10 +258,11 @@ public class PlayerData {
      * @return The Player */
     public Player getPlayer(CaptureThePoints ctp) {
         if (ctp.playerData.containsValue(this)) {
-            Set<Player> players = ctp.playerData.keySet();
-            for (Player p : players) {
+            Set<String> players = ctp.playerData.keySet();
+            for (String p : players) {
                 if (ctp.playerData.get(p) == this) {
-                    return p;
+                	Player player = ctp.getServer().getPlayer(p);
+                    return player;
                 }
             }
         }

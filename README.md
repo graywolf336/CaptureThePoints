@@ -9,6 +9,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Rewrote how potions are handled completely, let craftbukkit do it for us.
 * Rewrote several classes and moved things around to be organized in the code.
 * Removed a bunch of commented out code, if you want it back look up the stuff in the github history prior to this commit.
+* Removed as many storing of player instances as I can see atm, __I probably did break the plugin__
 * Made when we setHealth to trigger a new regain health event, although I'm still finding these throughout the plugin.
 * Made it so that when you first load the plugin (or you haven't made any arenas yet) it doesn't automatically generate an Arenas.yml file in the Arenas folder which in the past would throw errors and confuse you.
 * Fixed permissions not being used

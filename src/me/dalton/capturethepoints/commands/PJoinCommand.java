@@ -45,7 +45,7 @@ public class PJoinCommand extends CTPCommand {
             return;
         }
         
-        if (!ctp.blockListener.isAlreadyInGame(bob)) {
+        if (!ctp.blockListener.isAlreadyInGame(bob.getName())) {
             if (!(sender instanceof ConsoleCommandSender)) {
                 // If the command issuer is not from console
                 ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " forced you to join CTP!");

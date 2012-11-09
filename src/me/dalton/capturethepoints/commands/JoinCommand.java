@@ -21,7 +21,7 @@ public class JoinCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (!ctp.blockListener.isAlreadyInGame(player)) {
+        if (!ctp.blockListener.isAlreadyInGame(player.getName())) {
             ctp.moveToLobby(player);
             return;
         }

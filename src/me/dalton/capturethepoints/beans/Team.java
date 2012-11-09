@@ -8,7 +8,6 @@ import java.util.Set;
 import me.dalton.capturethepoints.CaptureThePoints;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 /** A CTP Team */
 public class Team {
@@ -118,11 +117,11 @@ public class Team {
     /** Get all Players in this team as a list of Players
      * @param ctp CaptureThePoints instance
      * @return The Player list */
-    public List<Player> getTeamPlayers(CaptureThePoints ctp) {
-        List<Player> teamplayers = new ArrayList<Player>();
+    public List<String> getTeamPlayers(CaptureThePoints ctp) {
+        List<String> teamplayers = new ArrayList<String>();
 
-        Set<Player> players = ctp.playerData.keySet();
-        for (Player p : players) {
+        Set<String> players = ctp.playerData.keySet();
+        for (String p : players) {
             if (ctp.playerData.get(p).getTeam() == null) {
                 continue; // Player is not yet in game.
             }
@@ -144,14 +143,14 @@ public class Team {
         }
         List<String> teamplayers = new ArrayList<String>();
 
-        Set<Player> players = ctp.playerData.keySet();
-        for (Player p : players) {
+        Set<String> players = ctp.playerData.keySet();
+        for (String p : players) {
             if (ctp.playerData.get(p).getTeam() == null || ctp.playerData.get(p).getTeam().color == null) {
                 continue; // Player is not yet in game.
             }
             
             if (ctp.playerData.get(p).getTeam() == this && ctp.playerData.get(p).getTeam().color.equalsIgnoreCase(this.color)) {
-                teamplayers.add(p.getName());
+                teamplayers.add(p);
             }
         }
         return teamplayers;
@@ -160,8 +159,8 @@ public class Team {
     /** Get a Random Player in this Team
      * @param ctp CaptureThePoints instance
      * @return The Player */
-    public Player getRandomPlayer(CaptureThePoints ctp) {
-        List<Player> teamPlayers = getTeamPlayers(ctp);
+    public String getRandomPlayer(CaptureThePoints ctp) {
+        List<String> teamPlayers = getTeamPlayers(ctp);
         Random random = new Random();
         int nextInt = random.nextInt(teamPlayers.size());
         return teamPlayers.get(nextInt);

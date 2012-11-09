@@ -20,7 +20,7 @@ public class LateJoinCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (!ctp.blockListener.isAlreadyInGame(player)) {
+        if (!ctp.blockListener.isAlreadyInGame(player.getName())) {
             if (ctp.isGameRunning()) {
                 ctp.moveToLobby(player);
             } else {
