@@ -3,7 +3,6 @@ package me.dalton.capturethepoints.beans;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 
@@ -119,9 +118,8 @@ public class Team {
      * @return The Player list */
     public List<String> getTeamPlayers(CaptureThePoints ctp) {
         List<String> teamplayers = new ArrayList<String>();
-
-        Set<String> players = ctp.playerData.keySet();
-        for (String p : players) {
+        
+        for (String p : ctp.playerData.keySet()) {
             if (ctp.playerData.get(p).getTeam() == null) {
                 continue; // Player is not yet in game.
             }
@@ -143,8 +141,7 @@ public class Team {
         }
         List<String> teamplayers = new ArrayList<String>();
 
-        Set<String> players = ctp.playerData.keySet();
-        for (String p : players) {
+        for (String p : ctp.playerData.keySet()) {
             if (ctp.playerData.get(p).getTeam() == null || ctp.playerData.get(p).getTeam().color == null) {
                 continue; // Player is not yet in game.
             }

@@ -643,6 +643,7 @@ public class CaptureThePointsBlockListener implements Listener {
                 Util.rewardPlayer(ctp, p);
             }
         }
+        
         //Arena restore
         if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
             ctp.arenaRestore.restoreMySQLBlocks();

@@ -830,7 +830,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
         // If sign requires team color to buy
         if(!teamcolor.isEmpty()) {
-            if (ctp.playerData.get(p).getTeam() == null || ctp.playerData.get(p.getName()).getTeam().getColor() == null) {
+            if (ctp.playerData.get(p.getName()).getTeam() == null || ctp.playerData.get(p.getName()).getTeam().getColor() == null) {
                 return;
             }
 

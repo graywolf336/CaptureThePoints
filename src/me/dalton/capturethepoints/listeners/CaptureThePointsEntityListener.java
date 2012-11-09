@@ -87,7 +87,7 @@ public class CaptureThePointsEntityListener  implements Listener {
 	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
 	             		event.setCancelled(true);
 	             		if(ctp.getGlobalConfigOptions().debugMessages)
-	                    	ctp.getLogger().info("Just cancelled a EntityRegainHealthEvent you have it turned off during the game.");
+	                    	ctp.getLogger().info("Just cancelled a EntityRegainHealthEvent as you have it turned off during the game.");
 	             	}else return;
             	 }else return;
              }else return;
