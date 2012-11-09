@@ -43,7 +43,6 @@ public class CaptureThePointsEntityListener  implements Listener {
         this.ctp = plugin;
     }
 
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityExplode(EntityExplodeEvent event) {
         if (!ctp.isGameRunning())
@@ -462,8 +461,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
 
         PotionManagement.removeAllEffects(player);
-        //TODO: Set this to the event
-        player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
+        setFullHealthPlayerAndCallEvent(player);
         player.setFoodLevel(20);
         Spawn spawn = ctp.playerData.get(player.getName()).getTeam().getSpawn();
 
@@ -490,5 +488,20 @@ public class CaptureThePointsEntityListener  implements Listener {
         if (!teleport) {
             player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
         }
+    }
+    
+    /**
+     * Heal the player (set the health) and cause an event to happen from it, thus improving relations with other plugins.
+     * 
+     * @param player The player to heal.
+     * @param amount The amount to heal the player.
+     */
+    public void setFullHealthPlayerAndCallEvent(Player player) {
+    	int gained = ctp.mainArena.getConfigOptions().maxPlayerHealth - player.getHealth();
+    	
+    	player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
+    	
+    	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, gained, RegainReason.CUSTOM);
+    	ctp.getPluginManager().callEvent(regen);
     }
 }
