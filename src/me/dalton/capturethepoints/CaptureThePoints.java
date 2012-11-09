@@ -231,6 +231,8 @@ public class CaptureThePoints extends JavaPlugin {
             }
 
         }, 200L, 200L); // 10 sec
+        
+        logInfo("Loaded " + arena_list.size() + " arenas!");
     }
 
     @Override
