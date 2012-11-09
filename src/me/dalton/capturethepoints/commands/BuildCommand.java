@@ -211,8 +211,10 @@ public class BuildCommand extends CTPCommand {
                         try {
                             team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase())); // Kj -- init teamchat colour
                         } catch (Exception ex) {
-                        	if(spawn.getName().equalsIgnoreCase("teal")) team.setChatColor(ChatColor.DARK_AQUA);
-                            team.setChatColor(ChatColor.GREEN);
+                        	if(spawn.getName().equalsIgnoreCase("teal"))
+                        		team.setChatColor(ChatColor.DARK_AQUA);
+                        	else
+                        		team.setChatColor(ChatColor.GREEN);
                         }
                         
                         // Check if this spawn is already in the list
