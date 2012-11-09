@@ -135,13 +135,17 @@ public class CaptureThePointsBlockListener implements Listener {
                         }
 
                         if (point.getPointDirection() == null) {
-                            if (checkForFill(point, loc, ctp.playerData.get(player.getName()).getTeam().getColor(), ((Wool) data).getColor().toString(), true)) {
+                            if (checkForFillHor(point, loc, ctp.playerData.get(player.getName()).getTeam().getColor(), ((Wool) data).getColor().toString(), true)) {
                                 if (ctp.playerData.get(player.getName()).getTeam().getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
-                                    event.setCancelled(true);
-                                    if(ctp.getGlobalConfigOptions().debugMessages)
-                                    	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
-                                    return;
+                                	if(!ctp.mainArena.getConfigOptions().allowBreakingOwnCapturedPointWool) {
+                                        event.setCancelled(true);
+                                        ctp.sendMessage(player, ChatColor.RED + "Why would you want to uncapture your own point?!");
+                                        if(ctp.getGlobalConfigOptions().debugMessages)
+                                        	ctp.logInfo("Just cancelled a BlockBreakEvent because a player tried to break their own wool in a horizontal point they captured.");
+                                        return;
+                                	}
                                 }
+                                
                                 if (point.getControlledByTeam() != null) {
                                     point.setControlledByTeam(null);
                                     Util.sendMessageToPlayers(ctp, subtractPoints(((Wool) data).getColor().toString(), point.getName()));
@@ -151,10 +155,13 @@ public class CaptureThePointsBlockListener implements Listener {
                         } else {
                             if (checkForFillVert(point, loc, ctp.playerData.get(player.getName()).getTeam().getColor(), ((Wool) data).getColor().toString(), true))  {
                                 if (ctp.playerData.get(player.getName()).getTeam().getColor().equalsIgnoreCase(((Wool) data).getColor().toString())) {
-                                    event.setCancelled(true);
-                                    if(ctp.getGlobalConfigOptions().debugMessages)
-                                    	ctp.logInfo("Just cancelled a BlockBreakEvent...not sure why yet, will check later."); //TODO
-                                    return;
+                                	if(!ctp.mainArena.getConfigOptions().allowBreakingOwnCapturedPointWool) {
+                                        event.setCancelled(true);
+                                        ctp.sendMessage(player, ChatColor.RED + "Why would you want to uncapture your own point?!");
+                                        if(ctp.getGlobalConfigOptions().debugMessages)
+                                        	ctp.logInfo("Just cancelled a BlockBreakEvent because a player tried to break their own wool in a vertical point they captured.");
+                                        return;
+                                	}
                                 }
                                 
                                 if (point.getControlledByTeam() != null) {
@@ -241,7 +248,7 @@ public class CaptureThePointsBlockListener implements Listener {
                     if (distance < 5)  {// Found nearest point ( points can't be closer than 5 blocks)
                         // Check if player team can capture point
                         if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player.getName()).getTeam().getColor())) {
-                            player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
+                            ctp.sendMessage(player, ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player's team couldn't capture this point.");
@@ -267,7 +274,7 @@ public class CaptureThePointsBlockListener implements Listener {
                                 return;
                             }
 
-                            if (checkForFill(point, loc, ctp.playerData.get(player.getName()).getTeam().getColor(), ((Wool) data).getColor().toString(), false)) {
+                            if (checkForFillHor(point, loc, ctp.playerData.get(player.getName()).getTeam().getColor(), ((Wool) data).getColor().toString(), false)) {
                                 if (point.getControlledByTeam() == null) {
                                     point.setControlledByTeam(ctp.playerData.get(player.getName()).getTeam().getColor());
                                     Util.sendMessageToPlayers(ctp, addPoints(((Wool) data).getColor().toString(), point.getName()));
@@ -438,7 +445,7 @@ public class CaptureThePointsBlockListener implements Listener {
         return color1.toString().equalsIgnoreCase(color) && color2.toString().equalsIgnoreCase(color) && color3.toString().equalsIgnoreCase(color);
     }
 
-    private boolean checkForFill (Points point, Location loc, String color, String placedWoolColor, boolean onBlockBreak) {
+    private boolean checkForFillHor(Points point, Location loc, String color, String placedWoolColor, boolean onBlockBreak) {
         //If player is placing not his own wool
         if ((!onBlockBreak) && (!placedWoolColor.equalsIgnoreCase(color))) {
             return false;

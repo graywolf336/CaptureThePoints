@@ -2,7 +2,6 @@ package me.dalton.capturethepoints.beans;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 

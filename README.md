@@ -19,5 +19,6 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Fixed NPEs being thrown when there weren't any arenas
 * Added an option to disallow regenerating health due to their hunger bar being satisfied
 * Added a message of how many arenas were loaded.
+* Added an option to allow players to break their own wool in a point they have captured.
 * Cleaned up how messages are logged to the console
 * Cleaned up the formatting of sending messages to the players, now the same across the plugin

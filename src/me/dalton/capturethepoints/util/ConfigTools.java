@@ -3,13 +3,10 @@ package me.dalton.capturethepoints.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.KillStreakMessages;
-import me.dalton.capturethepoints.commands.BuildCommand;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -73,11 +70,13 @@ public class ConfigTools {
         // Kj -- documentation for the different options, including their default values, can be found under the ConfigOptions class.
         co.allowBlockBreak = config.getBoolean(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
         co.allowBlockPlacement = config.getBoolean(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
+        co.allowBreakingOwnCapturedPointWool = config.getBoolean(global + "AllowBreakingOwnCapturedPointWool", globalConfigOptions.allowBreakingOwnCapturedPointWool);
         co.allowCommands = config.getBoolean(global + "AllowCommands", globalConfigOptions.allowCommands);
         co.allowDropItems = config.getBoolean(global + "AllowDropItems", globalConfigOptions.allowDropItems);
         co.allowLateJoin = config.getBoolean(global + "AllowLateJoin", globalConfigOptions.allowLateJoin);
         co.autoStart = config.getBoolean(global + "AutoStart", globalConfigOptions.autoStart);
         co.breakingBlocksDropsItems = config.getBoolean(global + "BreakingBlocksDropsItems", globalConfigOptions.breakingBlocksDropsItems);
+        co.protectionDistance = config.getInt(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         co.disableKillMessages = config.getBoolean(global + "DisableKillMessages", globalConfigOptions.disableKillMessages);
         co.dropWoolOnDeath = config.getBoolean(global + "DropWoolOnDeath", globalConfigOptions.dropWoolOnDeath);
         co.enableHardArenaRestore = config.getBoolean(global + "EnableHardArenaRestore", globalConfigOptions.enableHardArenaRestore);
@@ -95,7 +94,6 @@ public class ConfigTools {
         co.moneyEvery30Sec = config.getInt(global + "MoneyEvery30sec", globalConfigOptions.moneyEvery30Sec);
         co.moneyForKill = config.getInt(global + "MoneyForKill", globalConfigOptions.moneyForKill);
         co.moneyForPointCapture = config.getInt(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
-        co.protectionDistance = config.getInt(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         co.ringBlock = config.getInt(global + "RingBlock", globalConfigOptions.ringBlock);
         co.useSelectedArenaOnly = config.getBoolean(global + "UseSelectedArenaOnly", globalConfigOptions.useSelectedArenaOnly);
 
@@ -117,7 +115,7 @@ public class ConfigTools {
             config.save(arenafile);
         } catch (IOException ex) {
             ex.printStackTrace();
-            ctp.logSevere("Unabled to save the config file.");
+            ctp.logSevere("Unabled to save the global config file, please see the StackTrace above.");
         }
 
         return co;
@@ -176,6 +174,8 @@ public class ConfigTools {
             config.set(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
         if(!config.contains(global + "AllowBlockPlacement"))
             config.set(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
+        if(!config.contains(global + "AllowBreakingOwnCapturedPointWool"))
+            config.set(global + "AllowBreakingOwnCapturedPointWool", globalConfigOptions.allowBreakingOwnCapturedPointWool);
         if(!config.contains(global + "AllowCommands"))
             config.set(global + "AllowCommands", globalConfigOptions.allowCommands);
         if(!config.contains(global + "AllowDropItems"))
@@ -186,6 +186,8 @@ public class ConfigTools {
             config.set(global + "AutoStart", globalConfigOptions.autoStart);
         if(!config.contains(global + "BreakingBlocksDropsItems"))
             config.set(global + "BreakingBlocksDropsItems", globalConfigOptions.breakingBlocksDropsItems);
+        if(!config.contains(global + "DamageImmunityNearSpawnDistance"))
+            config.set(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         if(!config.contains(global + "DisableKillMessages"))
             config.set(global + "DisableKillMessages", globalConfigOptions.disableKillMessages);
         if(!config.contains(global + "DropWoolOnDeath"))
@@ -216,8 +218,6 @@ public class ConfigTools {
             config.set(global + "MoneyForKill", globalConfigOptions.moneyForKill);
         if(!config.contains(global + "MoneyForPointCapture"))
             config.set(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
-        if(!config.contains(global + "DamageImmunityNearSpawnDistance"))
-            config.set(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         if(!config.contains(global + "RingBlock"))
             config.set(global + "RingBlock", globalConfigOptions.ringBlock);
         if(!config.contains(global + "UseSelectedArenaOnly"))
@@ -227,7 +227,8 @@ public class ConfigTools {
             config.options().copyDefaults(true);
             config.save(arenafile);
         } catch (IOException ex) {
-            Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            ctp.logSevere("Unable to save the global config, please see the StackTrace above.");
         }
     }
     
@@ -267,11 +268,13 @@ public class ConfigTools {
         // Kj -- documentation for the different options, including their default values, can be found under the ConfigOptions class.
         co.allowBlockBreak = config.getBoolean(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
         co.allowBlockPlacement = config.getBoolean(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
+        co.allowBreakingOwnCapturedPointWool = config.getBoolean(global + "AllowBreakingOwnCapturedPointWool", globalConfigOptions.allowBreakingOwnCapturedPointWool);
         co.allowCommands = globalConfigOptions.allowCommands;
         co.allowDropItems = config.getBoolean(global + "AllowDropItems", globalConfigOptions.allowDropItems);
         co.allowLateJoin = globalConfigOptions.allowLateJoin;
         co.autoStart = globalConfigOptions.autoStart;
         co.breakingBlocksDropsItems = config.getBoolean(global + "BreakingBlocksDropsItems", globalConfigOptions.breakingBlocksDropsItems);
+        co.protectionDistance = config.getInt(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         co.dropWoolOnDeath = config.getBoolean(global + "DropWoolOnDeath", globalConfigOptions.dropWoolOnDeath);
         co.exactTeamMemberCount = config.getBoolean(global + "ExactTeamMemberCount", globalConfigOptions.exactTeamMemberCount);
         co.economyMoneyCostForJoiningArena = config.getInt(global + "EconomyMoneyCostForJoiningArena", globalConfigOptions.economyMoneyCostForJoiningArena);
@@ -287,7 +290,6 @@ public class ConfigTools {
         co.moneyEvery30Sec = config.getInt(global + "MoneyEvery30sec", globalConfigOptions.moneyEvery30Sec);
         co.moneyForKill = config.getInt(global + "MoneyForKill", globalConfigOptions.moneyForKill);
         co.moneyForPointCapture = config.getInt(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
-        co.protectionDistance = config.getInt(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         co.ringBlock = globalConfigOptions.ringBlock;
         co.useSelectedArenaOnly = globalConfigOptions.useSelectedArenaOnly;
         KillStreakMessages ksm = new KillStreakMessages();
@@ -307,7 +309,8 @@ public class ConfigTools {
             config.options().copyDefaults(true);
             config.save(arenafile);
         } catch (IOException ex) {
-            Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            ctp.logSevere("Unable to save the config file for an arena, see the StackTrace above.");
         }
 
         return co;
@@ -344,10 +347,14 @@ public class ConfigTools {
             config.set(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
         if(!config.contains(global + "AllowBlockPlacement"))
             config.set(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
+        if(!config.contains(global + "AllowBreakingOwnCapturedPointWool"))
+            config.set(global + "AllowBreakingOwnCapturedPointWool", globalConfigOptions.allowBreakingOwnCapturedPointWool);
         if(!config.contains(global + "AllowDropItems"))
             config.set(global + "AllowDropItems", globalConfigOptions.allowDropItems);
         if(!config.contains(global + "BreakingBlocksDropsItems"))
             config.set(global + "BreakingBlocksDropsItems", globalConfigOptions.breakingBlocksDropsItems);
+        if(!config.contains(global + "DamageImmunityNearSpawnDistance"))
+            config.set(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
         if(!config.contains(global + "DropWoolOnDeath"))
             config.set(global + "DropWoolOnDeath", globalConfigOptions.dropWoolOnDeath);
         if(!config.contains(global + "ExactTeamMemberCount"))
@@ -372,8 +379,6 @@ public class ConfigTools {
             config.set(global + "MoneyForKill", globalConfigOptions.moneyForKill);
         if(!config.contains(global + "MoneyForPointCapture"))
             config.set(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
-        if(!config.contains(global + "DamageImmunityNearSpawnDistance"))
-            config.set(global + "DamageImmunityNearSpawnDistance", globalConfigOptions.protectionDistance);
 
         try {
             config.options().copyDefaults(true);

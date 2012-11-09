@@ -8,6 +8,9 @@ public class ConfigOptions {
     /** Allow placement of blocks during a ctp game /||/ Disallow placement of blocks during a ctp game (except for capturing points) [Default: true] */
     public boolean allowBlockPlacement = true; // Kjhf
     
+    /** Allow the breaking of their own team mate's wool in a point they have captured /||/ Disallow breaking their own captured point wool. [Default: false] */
+    public boolean allowBreakingOwnCapturedPointWool = false;
+    
     /** Allow use of commands during a ctp game /||/ Disallow use of commands during a ctp game (excludes /ctp) [Default: false] */
     public boolean allowCommands = false;
     
