@@ -16,7 +16,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Fixed the random chance of everyone getting ctp.admin node, now only ops get it
 * Fixed the plugin not respecting unix hidden files, thanks to Psithief
 * Fixed a lot of NPEs that only occur on the first run of the plugin
-* Fixed NPEs being thrown when there weren't any arenas
+* Fixed a couple NPEs being thrown when there weren't any arenas (still finding some more)
 * Added an option to disallow regenerating health due to their hunger bar being satisfied
 * Added a message of how many arenas were loaded.
 * Added an option to allow players to break their own wool in a point they have captured.

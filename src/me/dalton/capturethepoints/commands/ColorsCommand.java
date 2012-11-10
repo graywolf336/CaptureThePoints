@@ -30,6 +30,11 @@ public class ColorsCommand extends CTPCommand {
             sendMessage(ChatColor.GREEN + "WHITE, LIGHTGRAY, GRAY, BLACK, RED, ORANGE, YELLOW, LIME, LIGHTBLUE, GREEN, CYAN, BLUE, PURPLE, MAGENTA, PINK, BROWN");
         }
         
+        if(ctp.mainArena == null) {
+        	sendMessage(ChatColor.RED + "There are currently no arenas to join.");
+        	return;
+        }
+        
         if (ctp.mainArena.getTeams().size() > 0) {
             String theteams = "";
             for (int i = 0; i < ctp.mainArena.getTeams().size(); i++) {
