@@ -248,7 +248,7 @@ public class CaptureThePointsBlockListener implements Listener {
                     if (distance < 5)  {// Found nearest point ( points can't be closer than 5 blocks)
                         // Check if player team can capture point
                         if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player.getName()).getTeam().getColor())) {
-                            ctp.sendMessage(player, ChatColor.RED + " Your team can't capture this point.");
+                            ctp.sendMessage(player, ChatColor.RED + "Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player's team couldn't capture this point.");
