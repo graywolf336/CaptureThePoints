@@ -123,7 +123,7 @@ public class CaptureThePointsBlockListener implements Listener {
                     if (distance < 5.0D) {
                         // Check if player team can capture point
                         if(point.getNotAllowedToCaptureTeams() != null && Util.containsTeam(point.getNotAllowedToCaptureTeams(), ctp.playerData.get(player.getName()).getTeam().getColor())) {
-                            player.sendMessage("[CTP]" + ChatColor.RED + " Your team can't capture this point.");
+                            ctp.sendMessage(player, ChatColor.RED + " Your team can't capture this point.");
                             event.setCancelled(true);
                             if(ctp.getGlobalConfigOptions().debugMessages)
                             	ctp.getLogger().info("Just cancelled a BlockBreakEvent because the player tried to break a block that the playing player's team couldn't capture.");
