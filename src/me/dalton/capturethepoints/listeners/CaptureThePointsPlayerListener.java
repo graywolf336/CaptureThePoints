@@ -948,10 +948,12 @@ public class CaptureThePointsPlayerListener implements Listener {
 
                     if (p.getHealth() + item.instantHeal > ctp.mainArena.getConfigOptions().maxPlayerHealth) {
                     	p.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
+                    	p.setFoodLevel(20);
                     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, ctp.mainArena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
                     	ctp.getPluginManager().callEvent(regen);
                     } else {
                     	p.setHealth(p.getHealth() + item.instantHeal);
+                    	p.setFoodLevel(20);
                     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(p, p.getHealth() + item.instantHeal, RegainReason.CUSTOM);
                     	ctp.getPluginManager().callEvent(regen);
                     }
