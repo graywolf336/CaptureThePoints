@@ -1034,6 +1034,7 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
+                	ex.printStackTrace();
                 	ctp.logSevere("Unable to save the config file for the arena: " + ctp.editingArena.getName());
                 }
 
@@ -1045,7 +1046,6 @@ public class BuildCommand extends CTPCommand {
             return;
         }
         
-        // Kj
         if (arg.equalsIgnoreCase("pointstowin") || arg.equalsIgnoreCase("ptw") || arg.equalsIgnoreCase("pointsneeded")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pointstowin"})) {
                 if (parameters.size() < 4) {
@@ -1078,7 +1078,7 @@ public class BuildCommand extends CTPCommand {
                 }
 
                 ctp.editingArena.getConfigOptions().pointsToWin = amount;
-                sendMessage(ChatColor.GREEN + "Set minimum players of " + ctp.editingArena.getName() + " to " + amount + ".");
+                sendMessage(ChatColor.GREEN + "Set the number of points needed to win " + ctp.editingArena.getName() + " to " + amount + ".");
                 return;
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
