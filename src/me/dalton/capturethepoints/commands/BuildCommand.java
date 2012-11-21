@@ -1034,10 +1034,50 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
-                    Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                	ctp.logSevere("Unable to save the config file for the arena: " + ctp.editingArena.getName());
                 }
 
                 ctp.editingArena.setMinPlayers(amount);
+                sendMessage(ChatColor.GREEN + "Set minimum players of " + ctp.editingArena.getName() + " to " + amount + ".");
+                return;
+            }
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
+        }
+        
+        // Kj
+        if (arg.equalsIgnoreCase("pointstowin") || arg.equalsIgnoreCase("ptw") || arg.equalsIgnoreCase("pointsneeded")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pointstowin"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build pointstowin <number>");
+                    return;
+                }
+                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
+                    sendMessage(ChatColor.RED + "No arena selected!");
+                    return;
+                }
+
+                int amount = 0;
+                try {
+                    amount = Integer.parseInt(arg2);
+                } catch (Exception ex) {
+                    sendMessage(ChatColor.WHITE + arg2 + " is not a number.");
+                    return;
+                }
+
+                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
+                arenaConf.addDefault("GlobalSettings.GameMode.PointCapture.PointsToWin", amount);
+                
+                try {
+                    arenaConf.options().copyDefaults(true);
+                    arenaConf.save(arenaFile);
+                } catch (IOException ex) {
+                	ex.printStackTrace();
+                    ctp.logSevere("Unable to save the config file for the arena: " + ctp.editingArena.getName());
+                }
+
+                ctp.editingArena.getConfigOptions().pointsToWin = amount;
                 sendMessage(ChatColor.GREEN + "Set minimum players of " + ctp.editingArena.getName() + " to " + amount + ".");
                 return;
             }
