@@ -338,10 +338,24 @@ public class CaptureThePoints extends JavaPlugin {
 
         if (difference % mainArena.getTeams().size() == 0) {
             // The teams balance evenly.
-            balancePlayer(highestTeam.getRandomPlayer(this), lowestTeam); // Move one player from the team with the higher number of players to the lower.
+        	String player = highestTeam.getRandomPlayer(this);
+        	if(player != null) {
+        		balancePlayer(player, lowestTeam); // Move one player from the team with the higher number of players to the lower.
+        	}else {
+        		loop++;
+        		return false;
+        	}
+            
         } else {
-            // The teams balance unevenly.
-            balancePlayer(highestTeam.getRandomPlayer(this), null); // Move one player from the team with the higher number of players to lobby.
+        	String player = highestTeam.getRandomPlayer(this);
+        	if(player != null) {
+        		// The teams balance unevenly.
+                balancePlayer(player, null); // Move one player from the team with the higher number of players to lobby.
+        	}else {
+        		loop++;
+        		return false;
+        	}
+            
         }
         
         loop++;
@@ -640,7 +654,7 @@ public class CaptureThePoints extends JavaPlugin {
         return this.blockListener.preGame;
     }
 
-    public void leaveGame (Player player) {
+    public void leaveGame(Player player) {
         //On exit we get double sygnal
         if (playerData.get(player.getName()) == null) {
             return;

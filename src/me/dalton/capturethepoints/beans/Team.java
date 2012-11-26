@@ -158,6 +158,8 @@ public class Team {
      * @return The Player */
     public String getRandomPlayer(CaptureThePoints ctp) {
         List<String> teamPlayers = getTeamPlayers(ctp);
+        if(teamPlayers.size() == 0) return null;
+        
         Random random = new Random();
         int nextInt = random.nextInt(teamPlayers.size());
         return teamPlayers.get(nextInt);
@@ -167,7 +169,7 @@ public class Team {
      * @return boolean Has error? */
     public boolean sanityCheck(CaptureThePoints ctp) {
         if (this.getTeamPlayers(ctp) == null) {
-            return this.memberCount != 0;
+            return this.getMemberCount() != 0;
         } else {
             return this.getTeamPlayers(ctp).size() != this.memberCount;    
         }
