@@ -385,7 +385,9 @@ public class CaptureThePointsEntityListener  implements Listener {
                             inv.addItem(stack);
                         }
                     } else if (Util.LEGGINGS_TYPE.contains(item.getItem())) {
-                        if (inv.getLeggings().getType() == item.getItem()) {
+                        if (inv.getLeggings().getType()
+                        		==
+                        		item.getItem()) {
                             inv.setLeggings(stack);
                         } else {
                             inv.addItem(stack);
