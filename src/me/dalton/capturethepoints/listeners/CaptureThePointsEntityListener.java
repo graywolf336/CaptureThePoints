@@ -305,6 +305,9 @@ public class CaptureThePointsEntityListener  implements Listener {
                 }
             }
         }
+        
+        ctp.logInfo("The chestplate id is: " + inv.getChestplate().getTypeId());
+        
         inv.clear(); // Removes inventory
         
         for (Items item : ctp.roles.get(ctp.playerData.get(player.getName()).getRole())) {
@@ -368,8 +371,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                     }
                     
                     inv.addItem(stack);
-                } 
-                else {// find if there is something equipped
+                } else {// find if there is something equipped
                     ItemStack stack = new ItemStack(item.getItem(), item.getAmount());
 
                     // Add enchantments
@@ -377,7 +379,6 @@ public class CaptureThePointsEntityListener  implements Listener {
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     }
                     
-
                     if (Util.BOOTS_TYPE.contains(item.getItem())) {
                         if (inv.getBoots().getType() == item.getItem()) {
                             inv.setBoots(stack);
