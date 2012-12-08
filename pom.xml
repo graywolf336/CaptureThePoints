@@ -24,12 +24,13 @@
   
   <repositories>
     <repository>
+		<id>vault-repo</id>
+		<url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+	</repository>
+	
+    <repository>
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>spout-repo</id>
-      <url>http://nexus.spout.org/content/groups/public/</url>
     </repository>
   </repositories>
   
@@ -37,14 +38,14 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>RELEASE</version>
+      <version>1.4.5-R0.3-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     
     <dependency>
-      <groupId>net.milkbowl</groupId>
-      <artifactId>vault</artifactId>
-      <version>RELEASE</version>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>Vault</artifactId>
+      <version>1.2.21-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
   </dependencies>
