@@ -306,7 +306,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
         
-        ctp.logInfo("The chestplate id is: " + inv.getChestplate().getTypeId());
+        ctp.logInfo("The chestplate id is: " + inv.getChestplate().toString());
         
         inv.clear(); // Removes inventory
         
