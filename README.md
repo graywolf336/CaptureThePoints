@@ -18,6 +18,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Fixed a lot of NPEs that only occur on the first run of the plugin
 * Fixed a couple NPEs being thrown when there weren't any arenas (still finding some more)
 * Fixed a NPE thrown when trying to balance teams when there are no players.
+* Fixed a NPE thrown when we try to restore role items but a player has taken off their armor
 * Added an option to disallow regenerating health due to their hunger bar being satisfied
 * Added a message of how many arenas were loaded.
 * Added an option to allow players to break their own wool in a point they have captured.
