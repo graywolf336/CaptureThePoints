@@ -380,25 +380,20 @@ public class CaptureThePointsEntityListener  implements Listener {
                     }
                     
                     if (Util.BOOTS_TYPE.contains(item.getItem())) {
-                        if (inv.getBoots().getType() == item.getItem()) {
+                        if (inv.getBoots() != null || inv.getBoots().getType() == item.getItem())
                             inv.setBoots(stack);
-                        } else {
+                        else
                             inv.addItem(stack);
-                        }
                     } else if (Util.LEGGINGS_TYPE.contains(item.getItem())) {
-                        if (inv.getLeggings().getType()
-                        		==
-                        		item.getItem()) {
+                        if (inv.getLeggings() != null || inv.getLeggings().getType() == item.getItem())
                             inv.setLeggings(stack);
-                        } else {
+                        else
                             inv.addItem(stack);
-                        }
                     } else if (Util.CHESTPLATES_TYPE.contains(item.getItem())) {
-                        if (inv.getChestplate().getType() == item.getItem()) {
+                        if (inv.getChestplate() != null || inv.getChestplate().getType() == item.getItem())
                             inv.setChestplate(stack);
-                        } else {
+                        else
                             inv.addItem(stack);
-                        }
                     }
                 }
             }
