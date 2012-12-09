@@ -306,8 +306,6 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
         
-        ctp.logInfo("The chestplate id is: " + (inv.getChestplate() == null ? "null" : inv.getChestplate().getTypeId()));
-        
         inv.clear(); // Removes inventory
         
         for (Items item : ctp.roles.get(ctp.playerData.get(player.getName()).getRole())) {
@@ -375,22 +373,29 @@ public class CaptureThePointsEntityListener  implements Listener {
                     ItemStack stack = new ItemStack(item.getItem(), item.getAmount());
 
                     // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    for(int j = 0; j < item.getEnchantments().size(); j++)
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    }
                     
+                    //If the armour slot is the role's thing, reset it to reset the durability but if it isn't (besides being null) then we just add this to their inventory.
+                    //This way players keep their extra armor that they could have bought from the in game store.
                     if (Util.BOOTS_TYPE.contains(item.getItem())) {
-                        if (inv.getBoots() != null || inv.getBoots().getType() == item.getItem())
+                    	if(inv.getBoots() == null)
+                    		inv.setBoots(stack);
+                    	else if (inv.getBoots().getType() == item.getItem())
                             inv.setBoots(stack);
                         else
                             inv.addItem(stack);
                     } else if (Util.LEGGINGS_TYPE.contains(item.getItem())) {
-                        if (inv.getLeggings() != null || inv.getLeggings().getType() == item.getItem())
+                    	if (inv.getLeggings() == null)
+                    		inv.setLeggings(stack);
+                    	else if (inv.getLeggings().getType() == item.getItem())
                             inv.setLeggings(stack);
                         else
                             inv.addItem(stack);
                     } else if (Util.CHESTPLATES_TYPE.contains(item.getItem())) {
-                        if (inv.getChestplate() != null || inv.getChestplate().getType() == item.getItem())
+                    	if (inv.getChestplate() == null)
+                    		inv.setChestplate(stack);
+                    	else if (inv.getChestplate().getType() == item.getItem())
                             inv.setChestplate(stack);
                         else
                             inv.addItem(stack);
