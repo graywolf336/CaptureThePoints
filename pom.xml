@@ -5,7 +5,7 @@
   <version>1.4.5-SNAPSHOT</version>
   <name>CaptureThePoints</name>
   <url>http://dev.bukkit.org/server-mods/capturethepoints/</url>
-  <description>Capture the points arena plugin, a unquie style of pvp arenas.</description>
+  <description>Capture the points arena plugin, a unique style of pvp arenas.</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.4.5-R0.3-SNAPSHOT</version>
+      <version>1.4.6-R0.1-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     
