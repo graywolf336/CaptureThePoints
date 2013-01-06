@@ -11,7 +11,7 @@ import org.bukkit.event.HandlerList;
  * A custom event called <strong>after</strong> the player has been teleported to the arena.
  * 
  * @author graywolf336
- * @since 1.5.0-b103
+ * @since 1.5.0-b104
  * @version 1.0.0
  * @see CTPPlayerLeaveEvent
  *
@@ -28,7 +28,7 @@ public class CTPPlayerJoinEvent extends Event {
 	 * @param player	The player in which has joined a game of CTP.
 	 * @param arenadata {@link ArenaData}
 	 * @param playerdata {@link PlayerData}
-	 * @since 1.5.0-b103
+	 * @since 1.5.0-b104
 	 */
 	public CTPPlayerJoinEvent(Player player, ArenaData arenadata, PlayerData playerdata) {
 		this.arenadata = arenadata;
