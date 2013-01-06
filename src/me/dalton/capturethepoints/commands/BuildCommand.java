@@ -619,7 +619,7 @@ public class BuildCommand extends CTPCommand {
                 //Delete mysql data
                 ctp.arenaRestore.arenaToDelete = arg2;
                 if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
-                    ctp.getServer().getScheduler().scheduleAsyncDelayedTask(ctp, new Runnable() {
+                    ctp.getServer().getScheduler().runTaskLaterAsynchronously(ctp, new Runnable() {
                         public void run () {
                             ctp.mysqlConnector.connectToMySql();
                             ctp.arenaRestore.deleteArenaData(ctp.arenaRestore.arenaToDelete);
@@ -1088,7 +1088,7 @@ public class BuildCommand extends CTPCommand {
         if (arg.equalsIgnoreCase("save")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
                 if(ctp.getGlobalConfigOptions().enableHardArenaRestore && ctp.editingArena.getX2() != 0 && ctp.editingArena.getY2() != 0 && ctp.editingArena.getZ2() != 0 && ctp.editingArena.getX1() != 0 && ctp.editingArena.getY1() != 0 && ctp.editingArena.getZ1() != 0) {
-                    ctp.getServer().getScheduler().scheduleAsyncDelayedTask(ctp, new Runnable() {
+                    ctp.getServer().getScheduler().runTaskLaterAsynchronously(ctp, new Runnable() {
                         public void run () {
                             int xlow = ctp.editingArena.getX1();
                             int xhigh = ctp.editingArena.getX2();
