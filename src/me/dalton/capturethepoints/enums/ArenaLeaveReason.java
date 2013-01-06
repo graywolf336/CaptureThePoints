@@ -4,7 +4,7 @@ package me.dalton.capturethepoints.enums;
  * Reasons for why the player left a CTP game.
  * 
  * @author graywolf336
- * @since 1.5.0-b103
+ * @since 1.5.0-b104
  * @version 1.0.0
  *
  */

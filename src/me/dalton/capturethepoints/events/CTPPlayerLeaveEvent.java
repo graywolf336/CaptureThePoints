@@ -12,7 +12,7 @@ import org.bukkit.event.HandlerList;
  * A custom event called <strong>after</strong> the player has been teleported back to where they were.
  * 
  * @author graywolf336
- * @since 1.5.0-b103
+ * @since 1.5.0-b104
  * @version 1.0.0
  * @see CTPPlayerJoinEvent
  *
@@ -31,7 +31,7 @@ public class CTPPlayerLeaveEvent extends Event {
 	 * @param arenadata {@link ArenaData}
 	 * @param playerdata {@link PlayerData}
 	 * @param reason {@link ArenaLeaveReason}, defaults to UNKNOWN.
-	 * @since 1.5.0-b103
+	 * @since 1.5.0-b104
 	 */
 	public CTPPlayerLeaveEvent(Player player, ArenaData arenadata, PlayerData playerdata, ArenaLeaveReason reason) {
 		this.arenadata = arenadata;
