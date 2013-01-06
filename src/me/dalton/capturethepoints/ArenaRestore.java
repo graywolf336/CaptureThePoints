@@ -281,6 +281,7 @@ public class ArenaRestore {
                                 sign.setLine(2, line3);
                             if(line4 != null && !line4.equalsIgnoreCase("NULL"))
                                 sign.setLine(3, line4);
+                            sign.update(); //Force the client to get the new sign information.
                             break;
                         }
 
