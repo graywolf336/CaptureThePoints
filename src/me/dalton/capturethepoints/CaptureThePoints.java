@@ -18,6 +18,9 @@ import me.dalton.capturethepoints.beans.SchedulerIds;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.*;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
+import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -223,7 +226,7 @@ public class CaptureThePoints extends JavaPlugin {
                             data.setInLobby(false);
                             data.setInArena(false);
                             data.isWarned(false);
-                            leaveGame(p);
+                            leaveGame(p, ArenaLeaveReason.SERVER_STOP);
                             sendMessage(p, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
                         }
                     }
@@ -654,8 +657,8 @@ public class CaptureThePoints extends JavaPlugin {
         return this.blockListener.preGame;
     }
 
-    public void leaveGame(Player player) {
-        //On exit we get double sygnal
+    public void leaveGame(Player player, ArenaLeaveReason reason) {
+        //On exit we get double signal
         if (playerData.get(player.getName()) == null) {
             return;
         }
@@ -681,6 +684,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
+        //Remove the number count from the teamdata
         if (playerData.get(player.getName()).getTeam() != null) {
             for (int i = 0; i < mainArena.getTeams().size(); i++) {
                 if (mainArena.getTeams().get(i) == (playerData.get(player.getName()).getTeam())) {
@@ -689,13 +693,16 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
         }
+
+        CTPPlayerLeaveEvent event = new CTPPlayerLeaveEvent(player, editingArena, playerData.get(player.getName()), reason);
+        getPluginManager().callEvent(event);
         
         this.mainArena.getLobby().getPlayersInLobby().remove(player.getName());
         this.blockListener.restoreThings(player);
         this.previousLocation.remove(player.getName());
         this.playerData.remove(player.getName());
 
-        // Check for player replacement if there is somone waiting to join the game
+        // Check for player replacement if there is someone waiting to join the game
         boolean wasReplaced = false;
         if (mainArena.getConfigOptions().exactTeamMemberCount && isGameRunning()) {
             for (String playerName : playerData.keySet()) {
@@ -1139,6 +1146,10 @@ public class CaptureThePoints extends JavaPlugin {
         sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.getName() + ChatColor.GREEN + ".");
         playerData.get(player.getName()).setInLobby(true);
         saveInv(player);
+        
+        //Call a custom event for when players join the arena
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, editingArena, playerData.get(player.getName()));
+        getPluginManager().callEvent(event);
     }
 
     /** Add the CTP commands to the master commands list */

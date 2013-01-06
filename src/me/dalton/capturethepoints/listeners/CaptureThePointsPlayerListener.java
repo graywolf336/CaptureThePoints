@@ -19,6 +19,7 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.PJoinCommand;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.Permissions;
 
@@ -327,7 +328,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         Player player = event.getPlayer();
 
         if (this.ctp.playerData.get(player.getName()) != null) {
-            ctp.leaveGame(player);
+            ctp.leaveGame(player, ArenaLeaveReason.PLAYER_QUIT);
         }
     }
 
@@ -343,7 +344,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             ctp.playerData.get(p.getName()).setInLobby(false);
             ctp.mainArena.getLobby().getPlayersInLobby().remove(p.getName());
             event.setRespawnLocation(ctp.previousLocation.get(p.getName()));
-            ctp.leaveGame(p);
+            ctp.leaveGame(p, ArenaLeaveReason.PLAYER_RESPAWN);
             p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
             return;
         }
@@ -367,7 +368,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         ctp.playerData.get(play.getName()).setInArena(false);
                         ctp.playerData.get(play.getName()).setInLobby(false);
                         ctp.mainArena.getLobby().getPlayersInLobby().remove(play.getName());
-                        ctp.leaveGame(play);
+                        ctp.leaveGame(play, ArenaLeaveReason.PLAYER_TELEPORT);
                         ctp.sendMessage(play, ChatColor.LIGHT_PURPLE + "You left the CTP game.");
                     }
                 }

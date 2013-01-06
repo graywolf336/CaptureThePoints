@@ -8,6 +8,7 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.events.CTPPlayerDeathEvent;
 import me.dalton.capturethepoints.util.PotionManagement;
 
 import org.bukkit.ChatColor;
@@ -233,6 +234,10 @@ public class CaptureThePointsEntityListener  implements Listener {
                     if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
                     respawnPlayer(playa, attacker);
+                    
+                    //Throw a custom event for when the player dies in the arena
+                    CTPPlayerDeathEvent CTPevent = new CTPPlayerDeathEvent(playa, ctp.mainArena, ctp.playerData.get(playa.getName()));
+                    ctp.getPluginManager().callEvent(CTPevent);
                 }
             }
         }

@@ -1,9 +1,13 @@
 CaptureThePoints
 ==========
 
-# DO NOT USE THIS, AS IT WILL BREAK YOUR SERVER...i think
-
 If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
+
+### Update: 1.5.0 ###
+* Add three custom events
+* - CTPPlayerLeaveEvent
+* - CTPPlayerJoinEvent
+* - CTPPlayerDeathEvent
 
 ### Update: 1.4.5 ###
 * Rewrote how potions are handled completely, let craftbukkit do it for us.

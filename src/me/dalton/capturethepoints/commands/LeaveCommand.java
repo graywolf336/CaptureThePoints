@@ -1,6 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+
 import org.bukkit.ChatColor;
 
 public class LeaveCommand extends CTPCommand {
@@ -28,7 +30,7 @@ public class LeaveCommand extends CTPCommand {
             return;
         }
         
-        ctp.leaveGame(player);
+        ctp.leaveGame(player, ArenaLeaveReason.PLAYER_LEAVE_COMMAND);
         return;
     }
 }

@@ -24,7 +24,7 @@ public class LateJoinCommand extends CTPCommand {
             if (ctp.isGameRunning()) {
                 ctp.moveToLobby(player);
             } else {
-                sendMessage(ChatColor.RED + "Game not started yet.");
+                sendMessage(ChatColor.RED + "Game not started yet. Try just doing " + ChatColor.AQUA + "/ctp join");
             }
             return;
         }

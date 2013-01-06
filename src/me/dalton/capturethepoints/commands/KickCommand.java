@@ -1,6 +1,8 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -39,7 +41,7 @@ public class KickCommand extends CTPCommand {
         
         if (ctp.blockListener.isAlreadyInGame(bob.getName())) {
             ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " kicked you from CTP game!");
-            ctp.leaveGame(bob);
+            ctp.leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
         } else {
             sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is not playing CTP!");
         }
