@@ -15,7 +15,7 @@ import org.bukkit.event.HandlerList;
  * If you want to see when a player leaves the arena, then see the event {@link CTPPlayerLeaveEvent}
  * 
  * @author graywolf336
- * @since 1.5.0-b103
+ * @since 1.5.0-b104
  * @version 1.0.0
  *
  */
@@ -35,7 +35,7 @@ public class CTPPlayerDeathEvent extends Event {
 	 * @param player	The player in which has joined a game of CTP.
 	 * @param arenadata {@link ArenaData}
 	 * @param playerdata {@link PlayerData}
-	 * @since 1.5.0-b103
+	 * @since 1.5.0-b104
 	 */
 	public CTPPlayerDeathEvent(Player player, ArenaData arenadata, PlayerData playerdata) {
 		this.arenadata = arenadata;
