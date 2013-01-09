@@ -1241,6 +1241,28 @@ public class CaptureThePoints extends JavaPlugin {
     }
     
     /**
+     * Returns the hashmap of arenas.
+     * 
+     * @return The hashmap of arenas.
+     * @since 1.5.0-b114
+     */
+    public HashMap<String, Arena> getArenas() {
+    	return this.arenas;
+    }
+    
+    /**
+     * Returns the Arena for the name specified.
+     *  
+     * @param name The name of the arena to get.
+     * @return The Arena we wanted, null if none
+     * @see {@link Arena}
+     * @since 1.5.0-b114
+     */
+    public Arena getArena(String name) {
+    	return this.arenas.get(name);
+    }
+    
+    /**
      * Returns the Rewards data.
      * @see Rewards
      */

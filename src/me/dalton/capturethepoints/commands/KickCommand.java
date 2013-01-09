@@ -15,27 +15,32 @@ public class KickCommand extends CTPCommand {
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin.kick", "ctp.admin"};
         super.senderMustBePlayer = false;
-        super.minParameters = 3;
-        super.maxParameters = 3;
-        super.usageTemplate = "/ctp kick <player>";
+        super.minParameters = 4;
+        super.maxParameters = 4;
+        super.usageTemplate = "/ctp kick <arena> <player>";
     }
 
     @Override
     public void perform() {
-        if (ctp.mainArena == null) {
-            sendMessage(ChatColor.RED + "Please create an arena first");
+        if (ctp.getArenas().isEmpty()) {
+            sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
             return;
         }
         
-        if (ctp.mainArena.getLobby() == null) {
+        if(ctp.getArena(parameters.get(2)) == null) {
+        	sendMessage(ChatColor.RED + "Please enter a valid arena name to kick someone from.");
+        	return;
+        }
+        
+        if (ctp.getArena(parameters.get(2)).getLobby() == null) {
             sendMessage(ChatColor.RED + "Please create arena lobby");
             return;
         }
             
-        Player bob = ctp.getServer().getPlayer(parameters.get(2));
+        Player bob = ctp.getServer().getPlayer(parameters.get(3));
         
         if (bob == null) {
-            sendMessage(ChatColor.RED + "Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");
+            sendMessage(ChatColor.RED + "Could not find the online player " + ChatColor.GOLD + parameters.get(3) + ChatColor.RED +".");
             return;
         }
         
@@ -43,7 +48,7 @@ public class KickCommand extends CTPCommand {
             ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " kicked you from CTP game!");
             ctp.leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
         } else {
-            sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is not playing CTP!");
+            sendMessage(ChatColor.GOLD + parameters.get(3) + ChatColor.RED +" is not playing CTP!");
         }
         return;
     }
