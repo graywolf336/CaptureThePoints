@@ -15,23 +15,29 @@ public class StartCommand extends CTPCommand {
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin.start", "ctp.admin"};
         super.senderMustBePlayer = false;
-        super.minParameters = 2;
-        super.maxParameters = 2;
-        super.usageTemplate = "/ctp start";
+        super.minParameters = 3;
+        super.maxParameters = 3;
+        super.usageTemplate = "/ctp start <arena>";
     }
 
     @Override
     public void perform() {
-        if (ctp.mainArena == null) {
-            sendMessage(ChatColor.RED + "Please create an arena first");
+        if (ctp.getArenas().isEmpty()) {
+            sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
             return;
         }
-        if (ctp.mainArena.getLobby() == null) {
+        
+        if(ctp.getArena(parameters.get(2)) == null) {
+        	sendMessage(ChatColor.RED + "Please enter a valid arena name to start.");
+        	return;
+        }
+        
+        if (ctp.getArena(parameters.get(2)).getLobby() == null) {
             sendMessage(ChatColor.RED + "Please create arena lobby");
             return;
         }
         
-        Lobby lobby = ctp.mainArena.getLobby();
+        Lobby lobby = ctp.getArena(parameters.get(2)).getLobby();
         int readypeople = lobby.countReadyPeople();
             
         if (!ctp.isPreGame()) {
@@ -40,11 +46,11 @@ public class StartCommand extends CTPCommand {
         }
         
         // The maximum number of players must be greater than the players already playing.
-        if (ctp.mainArena.getMaxPlayers() > ctp.mainArena.getPlayersPlaying(ctp).size()) {                
-            if (ctp.mainArena.getConfigOptions().exactTeamMemberCount) {
-                if (readypeople / ctp.mainArena.getTeams().size() >= 1 && readypeople >= ctp.mainArena.getMinPlayers()) {
+        if (ctp.getArena(parameters.get(2)).getMaxPlayers() > ctp.getArena(parameters.get(2)).getPlayersPlaying(ctp).size()) {                
+            if (ctp.getArena(parameters.get(2)).getConfigOptions().exactTeamMemberCount) {
+                if (readypeople / ctp.getArena(parameters.get(2)).getTeams().size() >= 1 && readypeople >= ctp.getArena(parameters.get(2)).getMinPlayers()) {
                     if (lobby.hasUnreadyPeople()) {
-                        String message = readypeople % ctp.mainArena.getTeams().size() == 1 ? "Starting game." : "Starting game. Caution: Someone may be left at lobby due to uneven teams.";
+                        String message = readypeople % ctp.getArena(parameters.get(2)).getTeams().size() == 1 ? "Starting game." : "Starting game. Caution: Someone may be left at lobby due to uneven teams.";
                         sendMessage(ChatColor.GREEN + message);
                         ctp.playerListener.moveToSpawns();
                     } else {
@@ -52,7 +58,7 @@ public class StartCommand extends CTPCommand {
                         return;
                     }
                 }
-            } else if ((readypeople == ctp.playerData.size()) && readypeople >= ctp.mainArena.getMinPlayers()) {
+            } else if ((readypeople == ctp.playerData.size()) && readypeople >= ctp.getArena(parameters.get(2)).getMinPlayers()) {
                 sendMessage(ChatColor.GREEN + "Starting game.");
                 ctp.playerListener.moveToSpawns();
             }
