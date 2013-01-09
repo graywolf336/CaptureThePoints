@@ -19,19 +19,19 @@ import org.bukkit.event.HandlerList;
 public class CTPPlayerJoinEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Player player;
-	private Arena arenadata;
+	private Arena arena;
 	private PlayerData playerdata;
 	
 	/**
 	 * A custom event called <strong>after</strong> the player has been teleported to the arena.
 	 * 
 	 * @param player	The player in which has joined a game of CTP.
-	 * @param arenadata {@link Arena}
+	 * @param arena {@link Arena}
 	 * @param playerdata {@link PlayerData}
 	 * @since 1.5.0-b104
 	 */
-	public CTPPlayerJoinEvent(Player player, Arena arenadata, PlayerData playerdata) {
-		this.arenadata = arenadata;
+	public CTPPlayerJoinEvent(Player player, Arena arena, PlayerData playerdata) {
+		this.arena = arena;
 		this.player = player;
 		this.playerdata = playerdata;
 	}
@@ -41,7 +41,7 @@ public class CTPPlayerJoinEvent extends Event {
 	}
 	
 	public Arena getArenaData() {
-		return arenadata;
+		return arena;
 	}
 	
 	public PlayerData getPlayerData() {

@@ -20,7 +20,7 @@ import org.bukkit.event.HandlerList;
 public class CTPPlayerLeaveEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Player player;
-	private Arena arenadata;
+	private Arena arena;
 	private PlayerData playerdata;
 	private ArenaLeaveReason reason = ArenaLeaveReason.UNKNOWN;
 	
@@ -28,13 +28,13 @@ public class CTPPlayerLeaveEvent extends Event {
 	 * A custom event called <strong>after</strong> the player has been teleported back to where they were.
 	 * 
 	 * @param player	The player in which has joined a game of CTP.
-	 * @param arenadata {@link Arena}
+	 * @param arena {@link Arena}
 	 * @param playerdata {@link PlayerData}
 	 * @param reason {@link ArenaLeaveReason}, defaults to UNKNOWN.
 	 * @since 1.5.0-b104
 	 */
-	public CTPPlayerLeaveEvent(Player player, Arena arenadata, PlayerData playerdata, ArenaLeaveReason reason) {
-		this.arenadata = arenadata;
+	public CTPPlayerLeaveEvent(Player player, Arena arena, PlayerData playerdata, ArenaLeaveReason reason) {
+		this.arena = arena;
 		this.player = player;
 		this.playerdata = playerdata;
 		this.reason = reason;
@@ -45,7 +45,7 @@ public class CTPPlayerLeaveEvent extends Event {
 	}
 	
 	public Arena getArenaData() {
-		return arenadata;
+		return arena;
 	}
 	
 	public PlayerData getPlayerData() {

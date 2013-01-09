@@ -22,7 +22,7 @@ import org.bukkit.event.HandlerList;
 public class CTPPlayerDeathEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Player player;
-	private Arena arenadata;
+	private Arena arena;
 	private PlayerData playerdata;
 	
 	/**
@@ -33,12 +33,12 @@ public class CTPPlayerDeathEvent extends Event {
 	 * If you want to see when a player leaves the arena, then see the event {@link CTPPlayerLeaveEvent}
 	 * 
 	 * @param player	The player in which has joined a game of CTP.
-	 * @param arenadata {@link Arena}
+	 * @param arena {@link Arena}
 	 * @param playerdata {@link PlayerData}
 	 * @since 1.5.0-b104
 	 */
-	public CTPPlayerDeathEvent(Player player, Arena arenadata, PlayerData playerdata) {
-		this.arenadata = arenadata;
+	public CTPPlayerDeathEvent(Player player, Arena arena, PlayerData playerdata) {
+		this.arena = arena;
 		this.player = player;
 		this.playerdata = playerdata;
 	}
@@ -48,7 +48,7 @@ public class CTPPlayerDeathEvent extends Event {
 	}
 	
 	public Arena getArenaData() {
-		return arenadata;
+		return arena;
 	}
 	
 	public PlayerData getPlayerData() {
