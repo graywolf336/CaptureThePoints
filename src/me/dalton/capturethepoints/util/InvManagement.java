@@ -12,6 +12,11 @@ public class InvManagement {
 		ctp = instance;
 	}
 	
+	/**
+	 * Restore the player's inventory and armor that we stored when they joined.
+	 * 
+	 * @param player The player to restore to
+	 */
 	@SuppressWarnings("deprecation")
 	public static void restoreInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
@@ -39,7 +44,7 @@ public class InvManagement {
 	/**
 	 * Save the player's inventory when they join to a hashmap.
 	 * 
-	 * @param player The player to save the inventory for.
+	 * @param player The player to save for
 	 */
     public static void saveInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
