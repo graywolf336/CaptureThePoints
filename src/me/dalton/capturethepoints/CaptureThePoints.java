@@ -51,7 +51,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -84,9 +83,9 @@ public class CaptureThePoints extends JavaPlugin {
     public ArenaRestore arenaRestore = new ArenaRestore(this);
     public MysqlConnector mysqlConnector = new MysqlConnector(this);
 
-    private final HashMap<Player, ItemStack[]> Inventories = new HashMap<Player, ItemStack[]>();
+    private final HashMap<String, ItemStack[]> Inventories = new HashMap<String, ItemStack[]>();
 
-    private HashMap<Player, ItemStack[]> armor = new HashMap<Player, ItemStack[]>();
+    private HashMap<String, ItemStack[]> armor = new HashMap<String, ItemStack[]>();
 
     /** The PlayerData stored by CTP. (HashMap: PlayerName, and their data) */
     public Map<String, PlayerData> playerData = new ConcurrentHashMap<String, PlayerData>();  // To avoid concurrent modification exceptions    
@@ -1139,7 +1138,7 @@ public class CaptureThePoints extends JavaPlugin {
         player.teleport(loc); // Teleport player to lobby
         sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + mainArena.getName() + ChatColor.GREEN + ".");
         playerData.get(player.getName()).setInLobby(true);
-        saveInv(player);
+        InvManagement.saveInv(player);
         
         //Call a custom event for when players join the arena
         CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, editingArena, playerData.get(player.getName()));
@@ -1180,18 +1179,6 @@ public class CaptureThePoints extends JavaPlugin {
         //Load existing arenas
         File dir = new File(mainDir + File.separator + "Arenas");
         loadArenas(dir);
-    }
-
-    public void saveInv (Player player) {
-        PlayerInventory PlayerInv = player.getInventory();
-        this.Inventories.put(player, PlayerInv.getContents());
-        PlayerInv.clear();
-        
-        this.armor.put(player, PlayerInv.getArmorContents());
-        PlayerInv.setHelmet(null);
-        PlayerInv.setChestplate(null);
-        PlayerInv.setLeggings(null);
-        PlayerInv.setBoots(null);
     }
     
     private boolean setupPermissions() {
@@ -1252,12 +1239,12 @@ public class CaptureThePoints extends JavaPlugin {
     }
     
     /** Returns the Hashmap of the player inventories. */
-    public HashMap<Player, ItemStack[]> getInventories() {
+    public HashMap<String, ItemStack[]> getInventories() {
     	return this.Inventories;
     }
     
     /** Returns the Hashmap of the armor stored. */
-    public HashMap<Player, ItemStack[]> getArmor() {
+    public HashMap<String, ItemStack[]> getArmor() {
     	return this.armor;
     }
     
