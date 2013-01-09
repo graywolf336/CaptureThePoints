@@ -7,7 +7,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 
 ### Branch: newArenas ###
 * The way we handle more than one arena will be improved
-* Joining arenas will be done with **/ctp j <arena>**
+* Joining arenas will be done with **/ctp j \<arena\>**
 
 #### ToDo ####
 * Store PlayerData per arena name in a hashmap<string, playerdata> where string is the arena name
