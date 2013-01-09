@@ -18,6 +18,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Add a method to get a certain arena
 * Fix the kick command
 * Fix the start command
+* Fix the colors command
 
 ### Update: 1.5.0 ###
 * Add three custom events
@@ -25,6 +26,13 @@ If for some reason you'd like to test this out, you can download the latest buil
 * - CTPPlayerJoinEvent
 * - CTPPlayerDeathEvent
 * Force clients to get the sign updates that we do when restoring an arena, thanks to Bubelbub
+* Revamped how multiple arenas are handled
+* Changed some commands to fix the new system
+* - `/ctp j <arena>` if no `<arena>` is given, we will send them to the default arena or the one arena (if there is only one)
+* - `/ctp kick <arena> <player`
+* - `/ctp start <arena>`
+* - `/ctp colors <arena>` if no `<arena>` is given, it will list out all your arenas for you.
+
 
 ### Update: 1.4.5 ###
 * Rewrote how potions are handled completely, let craftbukkit do it for us.

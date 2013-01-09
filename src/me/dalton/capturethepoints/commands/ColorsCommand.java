@@ -18,34 +18,42 @@ public class ColorsCommand extends CTPCommand {
         super.notOpCommand = true;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.colors"};
         super.senderMustBePlayer = true;
-        super.minParameters = 2;
-        super.maxParameters = 2;
-        super.usageTemplate = "/ctp colors";
+        super.minParameters = 3;
+        super.maxParameters = 3;
+        super.usageTemplate = "/ctp colors <arena>";
     }
 
     @Override
     public void perform() {       
         if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin"})) {
-            sendMessage(ChatColor.RED + "Admin: " + ChatColor.BLUE +"Available team colors:"); // Kj -- typo ;)
+            sendMessage(ChatColor.RED + "Admin: " + ChatColor.BLUE + "Available team colors:"); // Kj -- typo ;)
             sendMessage(ChatColor.GREEN + "WHITE, LIGHTGRAY, GRAY, BLACK, RED, ORANGE, YELLOW, LIME, LIGHTBLUE, GREEN, CYAN, BLUE, PURPLE, MAGENTA, PINK, BROWN");
         }
         
-        if(ctp.mainArena == null) {
-        	sendMessage(ChatColor.RED + "There are currently no arenas to join.");
+        if(ctp.getArenas().isEmpty()) {
+        	sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
         	return;
         }
         
-        if (ctp.mainArena.getTeams().size() > 0) {
+        if(ctp.getArena(parameters.get(2)) == null) {
+        	 sendMessage(ChatColor.RED + "Please enter a valid arena name to start.");
+        	 sendMessage(ChatColor.RED + "Try one of these arenas: ");
+        	 for(String a : ctp.getArenas().keySet())
+        		 sendMessage(ChatColor.GOLD + "  - " + a);
+        	 return;
+        }
+        
+        if (ctp.getArena(parameters.get(2)).getTeams().size() > 0) {
             String theteams = "";
-            for (int i = 0; i < ctp.mainArena.getTeams().size(); i++) {
-                theteams = theteams + ctp.mainArena.getTeams().get(i).getChatColor() + ctp.mainArena.getTeams().get(i).getColor() + ChatColor.WHITE + ", "; // Kj -- added colour, changed team to team color (its name)
+            for (int i = 0; i < ctp.getArena(parameters.get(2)).getTeams().size(); i++) {
+                theteams = theteams + ctp.getArena(parameters.get(2)).getTeams().get(i).getChatColor() + ctp.getArena(parameters.get(2)).getTeams().get(i).getColor() + ChatColor.WHITE + ", "; // Kj -- added colour, changed team to team color (its name)
             }
             
             sendMessage("Teams: " + ChatColor.GREEN + theteams.toLowerCase().substring(0, theteams.length() - 2)); // minus ", " from end
 
             String playernames = "";
             ChatColor cc = ChatColor.GREEN;
-            for (Team aTeam : ctp.mainArena.getTeams()) {
+            for (Team aTeam : ctp.getArena(parameters.get(2)).getTeams()) {
                 cc = aTeam.getChatColor();
                 playernames += cc;
                 playernames += aTeam.getTeamPlayerNames(ctp);
