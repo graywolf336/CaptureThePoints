@@ -62,8 +62,6 @@ public class CaptureThePoints extends JavaPlugin {
 	public static Permission permission = null;
     public static Economy economyHandler = null;
     public static boolean UsePermissions;
-    
-    //TODO: Remove all instances of store Player, we can end up with "ghost" players like this - switch to name.
 
     /** "plugins/CaptureThePoints" */
     private String mainDir;
