@@ -26,6 +26,14 @@ public class Arena {
     private int minimumPlayers = 2;
     private int maximumPlayers = 9999;
     
+    public Arena() {
+    	//blank for the old styles.
+    }
+    
+    public Arena(String name) {
+    	setName(name);
+    }
+    
     /** Sets the name of this arena. */
     public void setName(String name) {
     	this.name = name;

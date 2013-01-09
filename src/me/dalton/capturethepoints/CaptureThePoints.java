@@ -95,11 +95,18 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** The global config options for CTP. */
     private ConfigOptions globalConfigOptions = new ConfigOptions();
+    
+    /** Hashmap of all the arenas, identifier is their name. */
+    private HashMap<String, Arena> arenas = new HashMap<String, Arena>();
 
-    /** The list of arena names stored by CTP. */
+    /** The list of arena names stored by CTP.
+     * @deprecated
+     */
     public List<String> arena_list = new LinkedList<String>();
 
-    /** The selected arena for playing. */
+    /** The selected arena for playing.
+     * @deprecated
+     */
     public Arena mainArena = new Arena();
 
     /** All arenas boundaries (HashMap: Arena's name, and its boundaries)**/
@@ -229,7 +236,7 @@ public class CaptureThePoints extends JavaPlugin {
 
         }, 200L, 200L); // 10 sec
         
-        logInfo("Loaded " + arena_list.size() + " arena" + ((arena_list.size() > 1) ? "s!" : "!"));
+        logInfo("Loaded " + arenas.size() + " arena" + ((arenas.size() > 1) ? "s!" : "!"));
     }
 
     @Override
@@ -360,7 +367,6 @@ public class CaptureThePoints extends JavaPlugin {
         return balanced;
     }
 
-	@SuppressWarnings("deprecation")
 	private void balancePlayer (String p, Team newTeam) {      
         // Reseting player data       
         if (newTeam == null) {
@@ -495,9 +501,13 @@ public class CaptureThePoints extends JavaPlugin {
         playerData.put(player.getName(), data);
     }
 
+	//TODO: Change this up to the new way.
+    
     /** Checks whether the current mainArena is fit for purpose.
      * @param p Player doing the checking
-     * @return An error message, else empty if the arena is safe. */
+     * @return An error message, else empty if the arena is safe.
+     * @deprecated
+     */
     public String checkMainArena (CommandSender sender, Arena arena) {
         if (arena == null) {
             // Arenas were loaded but a main arena wasn't selected.
@@ -737,9 +747,9 @@ public class CaptureThePoints extends JavaPlugin {
     
     public void loadArena(File file) {
     	String fileName = file.getName().split("\\.")[0];
-        if (!arena_list.contains(fileName)) {
-            arena_list.add(fileName);
-        }
+    	if(!arenas.containsKey(fileName)) {
+    		arenas.put(fileName, new Arena(fileName));
+    	}
     }
 
     public void loadConfigFiles () {
