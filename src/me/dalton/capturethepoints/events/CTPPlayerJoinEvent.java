@@ -1,6 +1,6 @@
 package me.dalton.capturethepoints.events;
 
-import me.dalton.capturethepoints.beans.ArenaData;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.PlayerData;
 
 import org.bukkit.entity.Player;
@@ -19,18 +19,18 @@ import org.bukkit.event.HandlerList;
 public class CTPPlayerJoinEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Player player;
-	private ArenaData arenadata;
+	private Arena arenadata;
 	private PlayerData playerdata;
 	
 	/**
 	 * A custom event called <strong>after</strong> the player has been teleported to the arena.
 	 * 
 	 * @param player	The player in which has joined a game of CTP.
-	 * @param arenadata {@link ArenaData}
+	 * @param arenadata {@link Arena}
 	 * @param playerdata {@link PlayerData}
 	 * @since 1.5.0-b104
 	 */
-	public CTPPlayerJoinEvent(Player player, ArenaData arenadata, PlayerData playerdata) {
+	public CTPPlayerJoinEvent(Player player, Arena arenadata, PlayerData playerdata) {
 		this.arenadata = arenadata;
 		this.player = player;
 		this.playerdata = playerdata;
@@ -40,7 +40,7 @@ public class CTPPlayerJoinEvent extends Event {
 		return player;
 	}
 	
-	public ArenaData getArenaData() {
+	public Arena getArenaData() {
 		return arenadata;
 	}
 	

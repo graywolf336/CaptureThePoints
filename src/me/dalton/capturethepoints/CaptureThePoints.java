@@ -8,7 +8,7 @@ import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
-import me.dalton.capturethepoints.beans.ArenaData;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.PlayerData;
@@ -106,13 +106,13 @@ public class CaptureThePoints extends JavaPlugin {
     public List<String> arena_list = new LinkedList<String>();
 
     /** The selected arena for playing. */
-    public ArenaData mainArena = new ArenaData();
+    public Arena mainArena = new Arena();
 
     /** All arenas boundaries (HashMap: Arena's name, and its boundaries)**/
     public HashMap<String, ArenaBoundaries> arenasBoundaries = new HashMap<String, ArenaBoundaries>();
 
     /** The arena currently being edited. */
-    public ArenaData editingArena = new ArenaData();
+    public Arena editingArena = new Arena();
 
     /** The roles/classes stored by CTP. (HashMap: Role's name, and the Items it contains) 
      * @see Items */
@@ -504,7 +504,7 @@ public class CaptureThePoints extends JavaPlugin {
     /** Checks whether the current mainArena is fit for purpose.
      * @param p Player doing the checking
      * @return An error message, else empty if the arena is safe. */
-    public String checkMainArena (CommandSender sender, ArenaData arena) {
+    public String checkMainArena (CommandSender sender, Arena arena) {
         if (arena == null) {
             // Arenas were loaded but a main arena wasn't selected.
             if (arena_list == null) {
@@ -561,7 +561,7 @@ public class CaptureThePoints extends JavaPlugin {
                 // If there is more than 1 arena to choose from
                 List<String> arenas = new ArrayList<String>();
                 for (String arena : arena_list) {
-                    ArenaData loadArena = loadArena(arena);
+                    Arena loadArena = loadArena(arena);
                     if (loadArena.getMaxPlayers() >= numberofplayers && loadArena.getMinPlayers() <= numberofplayers) {
                         arenas.add(arena);
                         mainArena = loadArena; // Change the mainArena based on this.
@@ -633,7 +633,7 @@ public class CaptureThePoints extends JavaPlugin {
             if (size > 1) {
                 // If there is more than 1 arena to choose from
                 for (String arena : arena_list) {
-                    ArenaData loadArena = loadArena(arena);
+                    Arena loadArena = loadArena(arena);
                     if (loadArena.getMaxPlayers() >= numberofplayers && loadArena.getMinPlayers() <= numberofplayers) {
                         return true;
                     }
@@ -760,7 +760,7 @@ public class CaptureThePoints extends JavaPlugin {
 
         // Load arenas boundaries
         for(int i = 0; i < arena_list.size(); i++) {
-            ArenaData tmp = loadArena(arena_list.get(i));
+            Arena tmp = loadArena(arena_list.get(i));
             ArenaBoundaries tmpBound = new ArenaBoundaries();
             //tmpBound.arenaName = tmp.name;
             tmpBound.setWorld(tmp.getWorld());
@@ -804,8 +804,8 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
     /**Loads ArenaData data ready for assignment to mainArena */
-    public ArenaData loadArena (String name) {
-        ArenaData arena = new ArenaData();
+    public Arena loadArena (String name) {
+        Arena arena = new Arena();
 
         if (arena_list.contains(name))  {
             File arenaFile = new File(mainDir + File.separator + "Arenas" + File.separator + name + ".yml");

@@ -2,7 +2,7 @@ package me.dalton.capturethepoints.commands;
 
 import java.io.IOException;
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.beans.ArenaData;
+import me.dalton.capturethepoints.beans.Arena;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,7 +33,7 @@ public class SelectCommand extends CTPCommand {
             return;
         }
         
-        ArenaData loadArena = ctp.loadArena(newarena);
+        Arena loadArena = ctp.loadArena(newarena);
         
         if (loadArena == null) {
             sendMessage(ChatColor.RED + "Could not load arena " + ChatColor.GOLD + newarena + ChatColor.RED + " because it isn't finished yet. Check your config file and existing arenas.");

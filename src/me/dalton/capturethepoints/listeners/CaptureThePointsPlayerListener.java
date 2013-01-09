@@ -10,7 +10,7 @@ import java.util.Random;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
-import me.dalton.capturethepoints.beans.ArenaData;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.PlayerData;
@@ -451,7 +451,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         } 
                         else {
                             //Save variable for minor bug that results from player error
-                            ArenaData mainArenaTmp = ctp.mainArena;
+                            Arena mainArenaTmp = ctp.mainArena;
                             if (ctp.hasSuitableArena(readypeople)) {
                                 Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + ctp.mainArena.getMinPlayers() + " players, found " + readypeople + "].");
                                 List<String> transport = new LinkedList<String>(lobby.getPlayersInLobby().keySet());

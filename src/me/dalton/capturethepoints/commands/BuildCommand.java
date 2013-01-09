@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.dalton.capturethepoints.*;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
-import me.dalton.capturethepoints.beans.ArenaData;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
@@ -133,11 +133,11 @@ public class BuildCommand extends CTPCommand {
 
         // Kj -- if the arena being edited is null, make a new one to avoid NPEs.
         if (ctp.editingArena == null) {
-            ctp.editingArena = new ArenaData();
+            ctp.editingArena = new Arena();
         }
         // Kj -- if the mainArena is null, make a new one to avoid NPEs.
         if (ctp.mainArena == null) {
-            ctp.mainArena = new ArenaData();
+            ctp.mainArena = new Arena();
         }
 
         if (arg.equalsIgnoreCase("setspawn")) {
@@ -554,7 +554,7 @@ public class BuildCommand extends CTPCommand {
                     	ctp.logSevere("Unable to save the main config file, see the StackTrace above for more information.");
                     }
 
-                    ctp.mainArena = new ArenaData();
+                    ctp.mainArena = new Arena();
                     ctp.mainArena.setName(arg2);
                     ctp.mainArena.setWorld(null);
                     ctp.mainArena.setConfigOptions(ctp.editingArena.getConfigOptions());
@@ -688,7 +688,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
 
-                ArenaData arena = ctp.loadArena(arg2);
+                Arena arena = ctp.loadArena(arg2);
                 boolean canLoad = true;
                 if (arena.getCapturePoints().size() < 1) {
                     sendMessage(ChatColor.RED + "Please add at least one capture point");

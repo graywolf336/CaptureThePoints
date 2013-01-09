@@ -9,7 +9,7 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 
 /** Arena Data of the saved arenas for playing CTP. */
-public class ArenaData {
+public class Arena {
     private String name = "";
     private String world;
     private HashMap<String, Spawn> teamSpawns = new HashMap<String, Spawn>();
