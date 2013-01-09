@@ -12,6 +12,12 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Store PlayerData per arena name in a hashmap<string, playerdata> where string is the arena name
 * Store a variable for the default arena for when players don't type just _/ctp j_
 
+#### Done ####
+* Add a method to get the arenas
+* Add a method to get a certain arena
+* Fix the kick command
+* Fix the start command
+
 ### Update: 1.5.0 ###
 * Add three custom events
 * - CTPPlayerLeaveEvent
