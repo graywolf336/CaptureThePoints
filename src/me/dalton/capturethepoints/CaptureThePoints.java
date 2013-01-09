@@ -94,9 +94,6 @@ public class CaptureThePoints extends JavaPlugin {
     /** Player's previous Locations before they started playing CTP. */
     public final HashMap<String, Location> previousLocation = new HashMap<String, Location>();
 
-    /** The Lobbies stored by CTP. */
-    public List<Lobby> lobbies = new LinkedList<Lobby>();
-
     /** The global config options for CTP. */
     private ConfigOptions globalConfigOptions = new ConfigOptions();
 
@@ -596,7 +593,6 @@ public class CaptureThePoints extends JavaPlugin {
         
         clearSchedule();
         arena_list.clear();
-        lobbies.clear();
         playerData.clear();
         healingItems.clear();
         rewards = null;
