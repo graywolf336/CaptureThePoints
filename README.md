@@ -3,11 +3,15 @@ CaptureThePoints
 
 If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
 
+### Branch: newArenas ###
+* The way we handle more than one arena will be improved
+
 ### Update: 1.5.0 ###
 * Add three custom events
 * - CTPPlayerLeaveEvent
 * - CTPPlayerJoinEvent
 * - CTPPlayerDeathEvent
+* Force clients to get the sign updates that we do when restoring an arena, thanks to Bubelbub
 
 ### Update: 1.4.5 ###
 * Rewrote how potions are handled completely, let craftbukkit do it for us.
