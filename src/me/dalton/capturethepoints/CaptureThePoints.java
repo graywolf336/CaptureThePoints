@@ -551,7 +551,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
         return "";
     }
-
+    
     /** This method changes the mainArena to a suitable arena using the number of players you have.
      * Note, it will not change the mainArena if useSelectedArenaOnly is set to true.
      * @param numberofplayers The number of players that want to play.
@@ -1059,6 +1059,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
+    /** @deprecated */
     public void moveToLobby (Player player) {
         String mainArenaCheckError = checkMainArena(player, mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
         if (!mainArenaCheckError.isEmpty()) {

@@ -15,33 +15,31 @@ public class PJoinCommand extends CTPCommand {
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin.pjoin", "ctp.admin"};
         super.senderMustBePlayer = false;
-        super.minParameters = 3;
-        super.maxParameters = 3;
-        super.usageTemplate = "/ctp pjoin <player>";
+        super.minParameters = 4;
+        super.maxParameters = 4; //0 1    2           3
+        super.usageTemplate = "/ctp pjoin <player> <arena>";
     }
 
     @Override
     public void perform() {
-        if (sender instanceof Player) {
-            String error = ctp.checkMainArena(player, ctp.mainArena);
-            if (!error.isEmpty()) {
-                sendMessage(error);
-                return;
-            }
-            
-        } else {
-            if (ctp.mainArena == null) {
-                sendMessage(ChatColor.RED + "Please create an arena first");
-                return;
-            }
-            if (ctp.mainArena.getLobby() == null) {
-                sendMessage(ChatColor.RED + "Please create arena lobby");
-                return;
-            }
+        if (ctp.getArenas().isEmpty()) {
+            sendMessage(ChatColor.RED + "Please create an arena first");
+            return;
         }
+        
+        if(ctp.getArena(parameters.get(3)) == null) {
+        	sendMessage(ChatColor.RED + "Please enter a valid arena to force this player to join.");
+        	return;
+        }
+        
+        if (ctp.getArena(parameters.get(3)).getLobby() == null) {
+            sendMessage(ChatColor.RED + "Please create the lobby for the arena " + parameters.get(3));
+            return;
+        }
+            
         Player bob = ctp.getServer().getPlayer(parameters.get(2));
         if (bob == null) {
-            sendMessage(ChatColor.RED+"Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");
+            sendMessage(ChatColor.RED + "Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");
             return;
         }
         
@@ -51,7 +49,7 @@ public class PJoinCommand extends CTPCommand {
                 ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " forced you to join CTP!");
             }
             
-            ctp.moveToLobby(bob);
+            ctp.moveToLobby(bob);//TODO Fix the moveToLobby!
         } else {
             sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is already playing CTP!");
         }
