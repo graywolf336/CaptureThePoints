@@ -101,18 +101,6 @@ public class Team {
     	return this.spawn;
     }
     
-    /** Get a Team from its color 
-     * @param ctp CaptureThePoints instance
-     * @param color The team's color
-     * @return The Team corresponding to this color. */
-    public static Team getTeamFromColor(CaptureThePoints ctp, String color) {
-		for (Team aTeam : ctp.mainArena.getTeams())
-		    if (aTeam.getColor().equalsIgnoreCase(color))
-		        return aTeam;
-		
-		return null;
-    }
-    
     /** Get all Players in this team as a list of Players
      * @param ctp CaptureThePoints instance
      * @return The Player list */
@@ -131,7 +119,6 @@ public class Team {
         return teamplayers;
     }
 
-    // Kjhf
     /** Get all Players in this team as a list of playername strings
      * @param ctp CaptureThePoints instance
      * @return The playername list */

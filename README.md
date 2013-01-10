@@ -15,6 +15,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 
 #### Started but not done ####
 * PJoinCommand (gotta fix the moveToLobby)
+* Clean up the Team bean and move the utilities to it's own util class.
 
 #### Done ####
 * Add a method to get the arenas
