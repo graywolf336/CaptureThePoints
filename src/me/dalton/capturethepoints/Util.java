@@ -133,7 +133,8 @@ public class Util {
     /** Send message to Players that are playing CTP (specifically, have playerData)
      * @param ctp The CTP instance
      * @param s The message to send. "[CTP] " has been included.
-     * @see PlayerData */
+     * @see PlayerData
+     */
     public static void sendMessageToPlayers(CaptureThePoints ctp, String s) {
         for (String player : ctp.playerData.keySet()) {
         	Player p = ctp.getServer().getPlayer(player);
@@ -509,6 +510,7 @@ public class Util {
                     player.getInventory().addItem(stack);
                 }
             }
+            
             //reward for capture
             for (int i = 0; i < plugin.playerData.get(player.getName()).getPointsCaptured(); i++) {
                 if (plugin.getRewards().getRewardsForCapture().size() > 0) {

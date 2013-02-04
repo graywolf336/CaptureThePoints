@@ -22,17 +22,17 @@ public class KickCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (ctp.getArenas().isEmpty()) {
+        if (ctp.getArenaMaster().getArenas().isEmpty()) {
             sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
             return;
         }
         
-        if(ctp.getArena(parameters.get(2)) == null) {
+        if(ctp.getArenaMaster().getArena(parameters.get(2)) == null) {
         	sendMessage(ChatColor.RED + "Please enter a valid arena name to kick someone from.");
         	return;
         }
         
-        if (ctp.getArena(parameters.get(2)).getLobby() == null) {
+        if (ctp.getArenaMaster().getArena(parameters.get(2)).getLobby() == null) {
             sendMessage(ChatColor.RED + "Please create arena lobby");
             return;
         }
@@ -44,7 +44,7 @@ public class KickCommand extends CTPCommand {
             return;
         }
         
-        if (ctp.blockListener.isAlreadyInGame(bob.getName())) {
+        if (ctp.getArenaMaster().isPlayerInAnArena(bob.getName())) {
             ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " kicked you from CTP game!");
             ctp.leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
         } else {

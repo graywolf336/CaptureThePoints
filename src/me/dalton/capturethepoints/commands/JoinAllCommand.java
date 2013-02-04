@@ -22,23 +22,23 @@ public class JoinAllCommand extends CTPCommand {
     @Override
     public void perform() {
         if (sender instanceof Player) {
-            String error = ctp.checkMainArena(player, ctp.mainArena);
+            String error = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena());
             if (!error.isEmpty()) {
                 sendMessage(error);
                 return;
             }
         } else {
-            if (ctp.mainArena == null) {
+            if (ctp.getArenaMaster().getSelectedArena() == null) {
                 sendMessage(ChatColor.RED + "Please create an arena first");
                 return;
             }
-            if (ctp.mainArena.getLobby() == null) {
+            if (ctp.getArenaMaster().getSelectedArena().getLobby() == null) {
                 sendMessage(ChatColor.RED + "Please create arena lobby");
                 return;
             }
         }
             
-        if (ctp.isGameRunning()) {
+        if (ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
             ctp.blockListener.endGame(true);
         }
         

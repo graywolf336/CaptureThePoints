@@ -14,7 +14,7 @@ public class ArenaUtils {
      * @since 1.5.0-b122
      */
     public static Team getTeamFromColor(CaptureThePoints ctp, String arena, String color) {
-    	for (Team t : ctp.getArena(arena).getTeams())
+    	for (Team t : ctp.getArenaMaster().getArena(arena).getTeams())
     		if(t.getColor().equalsIgnoreCase(color))
     			return t;
     	

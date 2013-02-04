@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Spawn;
 
 import org.bukkit.Location;
@@ -87,12 +88,13 @@ public class ArenaRestore {
         // lets find arena name
         ResultSet lala = ctp.mysqlConnector.getData("SELECT * FROM Arena WHERE name LIKE '"+ arenaName +".%'");
         try {
-            if (lala.next()) {  // We found an egzisting arena
+            if (lala.next()) {  // We found an existing arena
                 // delete data from mysql
                 deleteArenaData(arenaName);
             } else {
-                String arenaCodedName = arenaName + "." + ctp.mainArena.getX1() + "." + ctp.mainArena.getY1() + "." + ctp.mainArena.getZ1() + "." + ctp.mainArena.getX2() +
-                        "." + ctp.mainArena.getY2() + "." + ctp.mainArena.getZ2();
+                String arenaCodedName = arenaName + "." + ctp.getArenaMaster().getArena(arenaName).getX1() + "." + ctp.getArenaMaster().getArena(arenaName).getY1() +
+                		"." + ctp.getArenaMaster().getArena(arenaName).getZ1() + "." + ctp.getArenaMaster().getArena(arenaName).getX2() +
+                        "." + ctp.getArenaMaster().getArena(arenaName).getY2() + "." + ctp.getArenaMaster().getArena(arenaName).getZ2();
                 ctp.mysqlConnector.modifyData("INSERT INTO `Arena` (`name`, `world`) VALUES ( '" + arenaCodedName + "','" + world + "');");
             }
         } catch (SQLException ex) {
@@ -356,13 +358,13 @@ public class ArenaRestore {
     }
 
 
-    public void restoreMySQLBlocks() {
+    public void restoreMySQLBlocks(final Arena arena) {
         try {
-            ResultSet rs1 = ctp.mysqlConnector.getData("SELECT * FROM Arena WHERE name like '" + ctp.mainArena.getName() + "%'");
+            ResultSet rs1 = ctp.mysqlConnector.getData("SELECT * FROM Arena WHERE name like '" + arena.getName() + "%'");
 
             if (rs1.next()) {
             	ResultSet blockCountRez = ctp.mysqlConnector.getData("SELECT COUNT(*) FROM (((Simple_block LEFT JOIN Sign on Sign.block_ID = id) LEFT JOIN Note_block on Note_block.block_ID = id)"+
-            			" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.getName() + "' and `block_type` NOT IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
+            			" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + arena.getName() + "' and `block_type` NOT IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
                         "50, 51, 55, 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 81, 83, 90, 92, 93, 94, 96, 104, 105, 111, 115, 117, 342, 343, 328, 333)");
 
                 int count = 0;
@@ -379,7 +381,7 @@ public class ArenaRestore {
 
                 // For second time :/
                 blockCountRez = ctp.mysqlConnector.getData("SELECT COUNT(*) FROM (((Simple_block LEFT JOIN Sign on Sign.block_ID = id) LEFT JOIN Note_block on Note_block.block_ID = id)"+
-                		" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + ctp.mainArena.getName() + "' and `block_type` IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
+                		" LEFT JOIN Spawner_block on Spawner_block.block_ID = id) where arena_name = '" + arena.getName() + "' and `block_type` IN(6, 8, 9, 10, 11, 27, 28, 31, 32," +
                         "50, 51, 55, 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 81, 83, 90, 92, 93, 94, 96, 104, 105, 111, 115, 117, 342, 343, 328, 333)");
 
                 count = 0;
@@ -405,7 +407,7 @@ public class ArenaRestore {
         ctp.CTP_Scheduler.arenaRestore = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             public void run() {
                 ctp.mysqlConnector.connectToMySql();
-                ctp.arenaRestore.restore(ctp.mainArena.getName(), ctp.arenaRestoreTimesRestored, false);
+                ctp.arenaRestore.restore(arena.getName(), ctp.arenaRestoreTimesRestored, false);
                 ctp.arenaRestoreTimesRestored++;
 
                 if(ctp.arenaRestoreTimesRestored == ctp.arenaRestoreMaxRestoreTimes) {
@@ -418,7 +420,7 @@ public class ArenaRestore {
                     ctp.CTP_Scheduler.arenaRestoreSec  = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
                         public void run() {
                             ctp.mysqlConnector.connectToMySql();
-                            ctp.arenaRestore.restore(ctp.mainArena.getName(), ctp.arenaRestoreTimesRestoredSec, true);
+                            ctp.arenaRestore.restore(arena.getName(), ctp.arenaRestoreTimesRestoredSec, true);
                             ctp.arenaRestoreTimesRestoredSec++;
 
                             if(ctp.arenaRestoreTimesRestoredSec == ctp.arenaRestoreMaxRestoreTimesSec) {

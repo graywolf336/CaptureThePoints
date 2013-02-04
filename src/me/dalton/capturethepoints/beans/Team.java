@@ -104,15 +104,15 @@ public class Team {
     /** Get all Players in this team as a list of Players
      * @param ctp CaptureThePoints instance
      * @return The Player list */
-    public List<String> getTeamPlayers(CaptureThePoints ctp) {
+    public List<String> getTeamPlayers(Arena arena) {
         List<String> teamplayers = new ArrayList<String>();
         
-        for (String p : ctp.playerData.keySet()) {
-            if (ctp.playerData.get(p).getTeam() == null) {
+        for (String p : arena.getPlayersData().keySet()) {
+            if (arena.getPlayerData(p).getTeam() == null) {
                 continue; // Player is not yet in game.
             }
             
-            if (ctp.playerData.get(p).getTeam().getColor().equalsIgnoreCase(this.color)) {
+            if (arena.getPlayerData(p).getTeam().getColor().equalsIgnoreCase(this.color)) {
                 teamplayers.add(p);
             }
         }

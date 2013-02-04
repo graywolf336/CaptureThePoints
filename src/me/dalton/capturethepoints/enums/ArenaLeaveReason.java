@@ -42,6 +42,10 @@ public enum ArenaLeaveReason {
 	 */
 	SERVER_STOP,
 	/**
+	 * The arena was forced to stop, either from a shut down or a command.
+	 */
+	FORECE_STOP,
+	/**
 	 * Default reason, only happens when we have no clue what happened or any error happened.
 	 */
 	UNKNOWN;

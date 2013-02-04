@@ -35,10 +35,6 @@ import org.bukkit.material.Wool;
 public class CaptureThePointsBlockListener implements Listener {
     private final CaptureThePoints ctp;
 
-    public boolean capturegame = false;
-
-    public boolean preGame = true;
-
     public CaptureThePointsBlockListener (CaptureThePoints ctp) {
         this.ctp = ctp;
     }
@@ -671,10 +667,6 @@ public class CaptureThePointsBlockListener implements Listener {
         }
     }
 
-    public boolean isAlreadyInGame(String player) {
-        return ctp.playerData.get(player) != null;
-    }
-
     private boolean isInsidePoint (Points point, Location loc) {
         if (loc.getBlockX() == point.getX() || loc.getBlockX() == point.getX() + 1) {
             if (loc.getBlockY() == point.getY()) {
@@ -732,39 +724,6 @@ public class CaptureThePointsBlockListener implements Listener {
             return wool.getColor();
         }
         return null;
-    }
-
-    public void restoreThings(Player p) {
-        ctp.playerData.get(p.getName()).setJustJoined(true);
-        InvManagement.restoreInv(p);
-
-        Location loc = ctp.previousLocation.get(p.getName());
-        loc.setYaw((float) ctp.mainArena.getLobby().getDir());
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
-        	loc.getWorld().loadChunk(loc.getChunk());
-        }
-        
-        p.teleport(this.ctp.previousLocation.get(p.getName()));
-
-        // do not check double signal
-        if (ctp.playerData.get(p.getName()) == null) {
-            return;
-        }
-        
-        PotionManagement.removeAllEffects(p);
-        PotionManagement.restorePotionEffects(p, ctp.playerData.get(p.getName()).getPotionEffects());
-
-        p.setFoodLevel(ctp.playerData.get(p.getName()).getFoodLevel());
-        if (ctp.playerData.get(p.getName()).wasInCreative()) {
-            p.setGameMode(GameMode.CREATIVE);
-        }
-
-        if (ctp.playerData.get(p.getName()).getHealth() > 200 || ctp.playerData.get(p.getName()).getHealth() < 0) {
-            p.setHealth(20);
-        } else {
-            p.setHealth(ctp.playerData.get(p.getName()).getHealth());
-        }
-       
     }
 
     public String subtractPoints (String aTeam, String lostpoint) { // Kj -- remade.

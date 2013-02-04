@@ -3,9 +3,6 @@ package me.dalton.capturethepoints.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.dalton.capturethepoints.CaptureThePoints;
-
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 /** Player Data of the people playing CTP. */
@@ -250,20 +247,5 @@ public class PlayerData {
     
     public List<PotionEffect> getPotionEffects() {
     	return this.potionEffects;
-    }
-    
-    /** Get the player associated with this PlayerData
-     * @param ctp CaptureThePoints instance
-     * @return The Player */
-    public Player getPlayer(CaptureThePoints ctp) {
-        if (ctp.playerData.containsValue(this)) {
-            for (String p : ctp.playerData.keySet()) {
-                if (ctp.playerData.get(p) == this) {
-                	Player player = ctp.getServer().getPlayer(p);
-                    return player;
-                }
-            }
-        }
-        return null;
     }
 }

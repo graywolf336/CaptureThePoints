@@ -1,6 +1,7 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.PlayerData;
 
 import org.bukkit.ChatColor;
@@ -23,12 +24,13 @@ public class StatsCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (!ctp.blockListener.isAlreadyInGame(player.getName())) {
+        if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
             sendMessage(ChatColor.RED + "You are not in a CTP game!");
             return;
         }
         
-        PlayerData pdata = ctp.playerData.get(player.getName());
+        Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(player.getName());
+        PlayerData pdata = a.getPlayerData(player.getName());
         ChatColor cc = pdata.getTeam().getChatColor(), white = ChatColor.WHITE, green = ChatColor.GREEN;
         
         sendMessage(cc + "Your Stats: ");

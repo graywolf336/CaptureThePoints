@@ -4,33 +4,52 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
+import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
+import me.dalton.capturethepoints.util.InvManagement;
 
 /** Arena Data of the saved arenas for playing CTP. */
 public class Arena {
+	//general
+	private CaptureThePoints ctp;
     private String name = "";
     private String world;
-    private HashMap<String, Spawn> teamSpawns = new HashMap<String, Spawn>();
-    private List<Team> teams = new ArrayList<Team>();
-    private List<Points> capturePoints = new LinkedList<Points>();
-    private Lobby lobby;
+    
+    //config
     private ConfigOptions co;
-    private int x1 = 0;
-    private int y1 = 0;
-    private int z1 = 0;
-    private int x2 = 0;
-    private int y2 = 0;
-    private int z2 = 0;
+    
+    @SuppressWarnings("unused")
+	private boolean enabled = true, edit = false, running = false;
+    
+    private HashMap<String, Spawn> teamSpawns;
+    private List<Team> teams;
+    private List<Points> capturePoints;
+    @SuppressWarnings("unused")
+    private List<String> notReadyPlayers;
+    private Map<String, PlayerData> players;
+    private Lobby lobby;
+    
+    private int x1 = 0, y1 = 0, z1 = 0, x2 = 0, y2 = 0, z2 = 0;
     private int minimumPlayers = 2;
     private int maximumPlayers = 9999;
     
-    public Arena() {
-    	//blank for the old styles.
-    }
-    
-    public Arena(String name) {
+    public Arena(CaptureThePoints plugin, String name) {
+    	this.ctp = plugin;
+    	this.teamSpawns = new HashMap<String, Spawn>();
+    	this.teams = new ArrayList<Team>();
+    	this.capturePoints = new LinkedList<Points>();
+    	this.players = new ConcurrentHashMap<String, PlayerData>();
+    	this.notReadyPlayers = new ArrayList<String>();
+    	
     	setName(name);
     }
     
@@ -52,6 +71,18 @@ public class Arena {
     /** Gets the name of the world this arena is in. */
     public String getWorld() {
     	return this.world;
+    }
+    
+    /** Sets the arena's config options
+     * @see ConfigOptions */
+    public void setConfigOptions(ConfigOptions co) {
+    	this.co = co;
+    }
+    
+    /** Gets the arena's config options
+     * @see ConfigOptions */
+    public ConfigOptions getConfigOptions() {
+    	return this.co;
     }
     
     /** Gets the teamspawns this arena has (Hashmap of Teamcolor, Spawn). 
@@ -82,18 +113,6 @@ public class Arena {
      * @see Lobby */
     public Lobby getLobby() {
     	return this.lobby;
-    }
-    
-    /** Sets the arena's config options
-     * @see ConfigOptions */
-    public void setConfigOptions(ConfigOptions co) {
-    	this.co = co;
-    }
-    
-    /** Gets the arena's config options
-     * @see ConfigOptions */
-    public ConfigOptions getConfigOptions() {
-    	return this.co;
     }
     
     /** Sets the first X coordinate representing the boundary of this arena. */
@@ -176,34 +195,173 @@ public class Arena {
     	return this.maximumPlayers;
     }
     
-    /** Get all Players in this arena, including those in lobby, as a list of playername strings
-     * @param ctp CaptureThePoints instance
-     * @return The playername list */
-    public List<String> getPlayers(CaptureThePoints ctp) {
-        List<String> players = new ArrayList<String>();
-        for (String p : ctp.playerData.keySet()) {
-            players.add(p);
-        }
-        return players;
+    /**
+     * Sets if the game is running or not.
+     * 
+     * @param running True if running, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b123
+     */
+    public void setRunning(boolean running) {
+    	this.running = running;
+    }
+    
+    /**
+     * Returns if the game is running or not.
+     * <p />
+     * 
+     * @return True if the game is running, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b123
+     */
+    public boolean isGameRunning() {
+    	return this.running;
+    }
+    
+    /** Returns a list of all the players in the arena, including the lobby, as a List of Strings of their name.
+     * <p />
+     * 
+     * @return The player name list
+     * @author graywolf336
+     * @since 1.5.0-b123
+     */
+    public List<String> getPlayerList() {
+        List<String> toReturn = new ArrayList<String>();
+        
+        for (String p : players.keySet())
+            toReturn.add(p);
+            
+        return toReturn;
+    }
+    
+    /**
+     * Returns the given player's arena data.
+     * <p />
+     * 
+     * @param player The player who's data to get.
+     * @return The player data, null if nothing.
+     * @author graywolf336
+     * @since 1.5.0-b123
+     */
+    public PlayerData getPlayerData(String player) {
+    	return this.players.get(player);
+    }
+    
+    /**
+     * Returns a Map of all the players in the arena and their corresponding data.
+     * <p />
+     * 
+     * @return Every player in this arena's data.
+     * @author graywolf336
+     * @since 1.5.0-b123
+     */
+    public Map<String, PlayerData> getPlayersData() {
+    	return this.players;
     }
     
     /** Get all Players that are playing in this arena as a list of playername strings
+     * <p />
+     * 
      * @param ctp CaptureThePoints instance
-     * @return The playername list */
-    public List<String> getPlayersPlaying(CaptureThePoints ctp) {
-        List<String> players = new ArrayList<String>();
-        for (String p : ctp.playerData.keySet()) {
-            if(!ctp.playerData.get(p).inArena()) {
-                continue; // Player is not yet in game.
-            } else {
-                players.add(p);
-            }
-        } return players;
+     * @return The player name list */
+    public List<String> getPlayersPlaying() {
+        List<String> toReturn = new ArrayList<String>();
+        
+        for (String p : players.keySet()) {
+        	if(!players.get(p).inLobby())
+        		toReturn.add(p);
+        	else
+        		continue;
+        }
+        
+        return toReturn;
     }
     
     /** Check to see if this Arena has a lobby.
-     * @return true if Arena has a lobby, else false. */
+     * <p />
+     * 
+     * @return true if Arena has a lobby, else false.
+     */
     public boolean hasLobby() {
         return this.lobby != null;
+    }
+    
+    public void leaveGame(Player p, ArenaLeaveReason reason) {
+        //On exit we get double signal
+        if (players.get(p.getName()) == null) {
+            return;
+        }
+        
+        if (ctp.waitingToMove != null && !ctp.waitingToMove.isEmpty()) {
+            if (p.getName() == ctp.waitingToMove.get(0) && ctp.waitingToMove.size() == 1) {
+                ctp.clearWaitingQueue(); // The player who left was someone in the lobby waiting to join. We need to remove them from the queue
+            } else {
+                ctp.waitingToMove.remove(p.getName());
+            }
+        }
+        
+        InvManagement.removeCoolDowns(p.getName());
+        
+        Util.sendMessageToPlayers(ctp, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
+        
+        //Remove the number count from the teamdata
+        if (players.get(p.getName()).getTeam() != null) {
+            for (int i = 0; i < getTeams().size(); i++) {
+                if (getTeams().get(i) == (players.get(p.getName()).getTeam())) {
+                    getTeams().get(i).substractOneMemeberCount();
+                    break;
+                }
+            }
+        }
+
+        CTPPlayerLeaveEvent event = new CTPPlayerLeaveEvent(p, this, players.get(p.getName()), reason);
+        ctp.getPluginManager().callEvent(event);
+        
+        getLobby().getPlayersInLobby().remove(p.getName());
+        InvManagement.restoreThings(p);
+        ctp.previousLocation.remove(p.getName());
+        players.remove(p.getName());
+
+        // Check for player replacement if there is someone waiting to join the game
+        boolean wasReplaced = false;
+        if (getConfigOptions().exactTeamMemberCount && isGameRunning()) {
+            for (String playerName : players.keySet()) {
+                if (players.get(playerName).inLobby() && players.get(playerName).isReady()) {
+                    //this.playerListener.moveToSpawns(playerName);//TODO
+                    wasReplaced = true;
+                    break;
+                }
+            }
+        }
+
+        //check for player count, only then were no replacement
+        if (!wasReplaced) {
+            ctp.checkForGameEndThenPlayerLeft();
+        }
+            
+        //If there was no replacement we should move one member to lobby
+        if (!wasReplaced && getConfigOptions().exactTeamMemberCount && isGameRunning()) {
+            if (getConfigOptions().balanceTeamsWhenPlayerLeaves > 0) {
+                ctp.balanceTeams(0, getConfigOptions().balanceTeamsWhenPlayerLeaves); //TODO
+            }
+        }
+    }
+    
+    /**
+     * Forces the current arena game to stop.
+     * 
+     * @return True if successful, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b123
+     */
+    public boolean forceEnd() {
+    	if(!isGameRunning()) return false; //it's not running, thus we didn't shut it down.
+    	
+    	for(String p : players.keySet()) {
+    		ctp.leaveGame(ctp.getServer().getPlayer(p), ArenaLeaveReason.FORECE_STOP); //TODO: Clean up here and make it smoother
+    		players.remove(p);
+    	}
+    	
+    	return true;
     }
 }

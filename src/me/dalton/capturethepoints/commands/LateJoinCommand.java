@@ -13,18 +13,18 @@ public class LateJoinCommand extends CTPCommand {
         super.notOpCommand = true;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.latejoin"};
         super.senderMustBePlayer = true;
-        super.minParameters = 2;
-        super.maxParameters = 2;
-        super.usageTemplate = "/ctp latejoin";
+        super.minParameters = 3;
+        super.maxParameters = 3;
+        super.usageTemplate = "/ctp latejoin <arena>";
     }
 
     @Override
     public void perform() {
-        if (!ctp.blockListener.isAlreadyInGame(player.getName())) {
-            if (ctp.isGameRunning()) {
+        if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
+            if (ctp.getArenaMaster().getArena(parameters.get(2)).isGameRunning()) {
                 ctp.moveToLobby(player);
             } else {
-                sendMessage(ChatColor.RED + "Game not started yet. Try just doing " + ChatColor.AQUA + "/ctp join");
+                sendMessage(ChatColor.RED + "Game not started yet. Try just doing " + ChatColor.AQUA + "/ctp join <arena>");
             }
             return;
         }

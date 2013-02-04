@@ -70,15 +70,16 @@ public class CaptureThePoints extends JavaPlugin {
     private File globalConfigFile = null;
 
     private PluginManager pluginManager = null;
+    
+    /** The master control over most of the arena related stuff. */
+    private ArenaMaster arenaMaster = null;
 
     /** List of commands accepted by CTP */
     private List<CTPCommand> commands = new ArrayList<CTPCommand>(); // Kj
 
-    public final CaptureThePointsBlockListener blockListener = new CaptureThePointsBlockListener(this);
-
-    public final CaptureThePointsEntityListener entityListener = new CaptureThePointsEntityListener(this);
-
-    public final CaptureThePointsPlayerListener playerListener = new CaptureThePointsPlayerListener(this);
+    private final CaptureThePointsBlockListener blockListener = new CaptureThePointsBlockListener(this);
+    private final CaptureThePointsEntityListener entityListener = new CaptureThePointsEntityListener(this);
+    private final CaptureThePointsPlayerListener playerListener = new CaptureThePointsPlayerListener(this);
 
     public ArenaRestore arenaRestore = new ArenaRestore(this);
     public MysqlConnector mysqlConnector = new MysqlConnector(this);
@@ -87,33 +88,14 @@ public class CaptureThePoints extends JavaPlugin {
 
     private HashMap<String, ItemStack[]> armor = new HashMap<String, ItemStack[]>();
 
-    /** The PlayerData stored by CTP. (HashMap: PlayerName, and their data) */
-    public Map<String, PlayerData> playerData = new ConcurrentHashMap<String, PlayerData>();  // To avoid concurrent modification exceptions    
-
     /** Player's previous Locations before they started playing CTP. */
     public final HashMap<String, Location> previousLocation = new HashMap<String, Location>();
 
     /** The global config options for CTP. */
     private ConfigOptions globalConfigOptions = new ConfigOptions();
-    
-    /** Hashmap of all the arenas, identifier is their name. */
-    private HashMap<String, Arena> arenas = new HashMap<String, Arena>();
-
-    /** The list of arena names stored by CTP.
-     * @deprecated
-     */
-    public List<String> arena_list = new LinkedList<String>();
-
-    /** The selected arena for playing.
-     * @deprecated
-     */
-    public Arena mainArena = new Arena();
 
     /** All arenas boundaries (HashMap: Arena's name, and its boundaries)**/
     public HashMap<String, ArenaBoundaries> arenasBoundaries = new HashMap<String, ArenaBoundaries>();
-
-    /** The arena currently being edited. */
-    public Arena editingArena = new Arena();
 
     /** The roles/classes stored by CTP. (HashMap: Role's name, and the Items it contains) 
      * @see Items */
@@ -121,6 +103,8 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** The list of Healing Items stored by CTP. */
     public List<HealingItems> healingItems = new LinkedList<HealingItems>();
+    
+    public List<String> waitingToMove = new LinkedList<String>();
 
     /** The list of Rewards stored by CTP. */
     private Rewards rewards = new Rewards();
@@ -166,6 +150,8 @@ public class CaptureThePoints extends JavaPlugin {
     	if(mainDir.isEmpty()) firstTime = true;
     	globalConfigFile = new File(mainDir + File.separator + "CaptureSettings.yml");
     	
+    	arenaMaster = new ArenaMaster(this);
+    	
         enableCTP(false);
     }
 
@@ -191,7 +177,7 @@ public class CaptureThePoints extends JavaPlugin {
         Util.setCTP(this);
         InvManagement.setCTP(this);
         
-        loadConfigFiles();
+        loadConfigFiles(reloading);
 
         // Checks for mysql
         if(this.globalConfigOptions.enableHardArenaRestore)
@@ -200,43 +186,39 @@ public class CaptureThePoints extends JavaPlugin {
         //Kj: LobbyActivity timer.
         CTP_Scheduler.lobbyActivity = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run () {
-                if (playerData == null) {
-                    return;
-                }
-                
-                if (playerData.isEmpty()) {
-                    return;
-                }
-                
+            	if(arenaMaster.getArenas().isEmpty()) return; //if we don't have any arenas, return and do nothing
+            	
                 if (globalConfigOptions.lobbyKickTime <= 0) {
                     return;
                 }
 
-                for (String player : playerData.keySet()) {
-                    PlayerData data = playerData.get(player);
-                    Player p = getServer().getPlayer(player);
-                    if (data.inLobby() && !data.isReady()) {
-                        // Kj -- Time inactivity warning.
-                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
-                            sendMessage(p, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
-                            data.isWarned(true);
-                        }
-
-                        // Kj -- Time inactive in the lobby is greater than the lobbyKickTime specified in config (in ms)
-                        if ((System.currentTimeMillis() - data.getLobbyJoinTime() >= (globalConfigOptions.lobbyKickTime * 1000)) && data.hasBeenWarned()) {
-                            data.setInLobby(false);
-                            data.setInArena(false);
-                            data.isWarned(false);
-                            leaveGame(p, ArenaLeaveReason.SERVER_STOP);
-                            sendMessage(p, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
-                        }
-                    }
+                for(Arena a : arenaMaster.getArenas()) {
+	                for (String player : a.getPlayersData().keySet()) {
+	                    PlayerData data = a.getPlayerData(player);
+	                    Player p = getServer().getPlayer(player);
+	                    if (data.inLobby() && !data.isReady()) {
+	                        // Kj -- Time inactivity warning.
+	                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
+	                            sendMessage(p, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
+	                            data.isWarned(true);
+	                        }
+	
+	                        // Kj -- Time inactive in the lobby is greater than the lobbyKickTime specified in config (in ms)
+	                        if ((System.currentTimeMillis() - data.getLobbyJoinTime() >= (globalConfigOptions.lobbyKickTime * 1000)) && data.hasBeenWarned()) {
+	                            data.setInLobby(false);
+	                            data.setInArena(false);
+	                            data.isWarned(false);
+	                            leaveGame(p, ArenaLeaveReason.SERVER_STOP);
+	                            sendMessage(p, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
+	                        }
+	                    }
+	                }
                 }
             }
 
         }, 200L, 200L); // 10 sec
         
-        logInfo("Loaded " + arenas.size() + " arena" + ((arenas.size() > 1) ? "s!" : "!"));
+        logInfo("Loaded " + arenaMaster.getArenas().size() + " arena" + ((arenaMaster.getArenas().size() > 1) ? "s!" : "!"));
     }
 
     @Override
@@ -367,7 +349,7 @@ public class CaptureThePoints extends JavaPlugin {
         return balanced;
     }
 
-	private void balancePlayer (String p, Team newTeam) {      
+	private void balancePlayer (String p, Team newTeam) {
         // Reseting player data       
         if (newTeam == null) {
             // Moving to Lobby
@@ -457,7 +439,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void checkForGameEndThenPlayerLeft () {
+    public void checkForGameEndThenPlayerLeft() {
         if (this.playerData.size() < 2 && !isPreGame()) {
             //maybe dc or something. it should be moved to cheking to see players who left the game
             boolean zeroPlayers = true;
@@ -601,18 +583,13 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         clearSchedule();
-        arena_list.clear();
-        playerData.clear();
         healingItems.clear();
         rewards = null;
-        mainArena = null;
-        editingArena = null;
         roles.clear();
     }
 
     public void clearSchedule () {
         CTP_Scheduler.healingItemsCooldowns = 0;
-        CTP_Scheduler.helmChecker = 0;
         CTP_Scheduler.lobbyActivity = 0;
         CTP_Scheduler.money_Score = 0;
         CTP_Scheduler.playTimer = 0;
@@ -652,14 +629,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public boolean isGameRunning() {
-        return this.blockListener.capturegame;
-    }
-
-    public boolean isPreGame() {
-        return this.blockListener.preGame;
-    }
-
     public void leaveGame(Player player, ArenaLeaveReason reason) {
         //On exit we get double signal
         if (playerData.get(player.getName()) == null) {
@@ -673,17 +642,8 @@ public class CaptureThePoints extends JavaPlugin {
                 playerListener.waitingToMove.remove(player.getName());
             }
         }
-
-        // Removing player cooldowns
-        for (HealingItems item : healingItems) {
-            if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
-                for (String playName : item.cooldowns.keySet()) {
-                    if (playName.equalsIgnoreCase(player.getName())) {
-                        item.cooldowns.remove(playName);
-                    }
-                }
-            }
-        }
+        
+        InvManagement.removeCoolDowns(player.getName());
         
         Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
@@ -730,42 +690,47 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void loadArenas (File file) {
-        if (file.isDirectory()) {
+    /**
+     * Loads all the files in the given <strong>directory</strong>.
+     * 
+     * @param directory The <strong>directory</strong> to load the arena files from.
+     */
+    private void loadArenas(File directory) {
+        if (directory.isDirectory()) {
         	if(firstTime) {
-        		file.mkdirs();
+        		directory.mkdirs();
         		return;
-        	}else {
-                String[] internalNames = file.list();
-                for (String name : internalNames) {
+        	}else
+                for (String name : directory.list())
                 	if (!name.startsWith("."))
-                		loadArena(new File(file.getAbsolutePath() + File.separator + name));
-                }
-        	}
+                		loadArena(new File(directory.getAbsolutePath() + File.separator + name));
         }
     }
     
-    public void loadArena(File file) {
+    private void loadArena(File file) {
     	String fileName = file.getName().split("\\.")[0];
-    	if(!arenas.containsKey(fileName)) {
-    		arenas.put(fileName, new Arena(fileName));
-    	}
+    	if(arenaMaster.getArena(fileName) == null)
+    		arenaMaster.getArenas().add(loadArena(fileName));//MEAT OF THE PLUGIN! Loads all the settings and stuff, important we do this.
     }
 
-    public void loadConfigFiles () {
+    private void loadConfigFiles(boolean reloading) {
+    	if(reloading) {
+    		for(Arena a : arenaMaster.getArenas())
+    			a.forceEnd(); //TODO: Clean up here and make it smoother
+    		arenaMaster.resetArenas();
+    	}
+    	
         loadRoles();
         loadRewards();
         loadHealingItems();
 
         //Load existing arenas
-        File dir = new File(mainDir + File.separator + "Arenas");
-        loadArenas(dir);
+        loadArenas(new File(mainDir + File.separator + "Arenas"));
 
         // Load arenas boundaries
-        for(int i = 0; i < arena_list.size(); i++) {
-            Arena tmp = loadArena(arena_list.get(i));
+        for(int i = 0; i < arenaMaster.getArenas().size(); i++) {
+            Arena tmp = loadArena(arenaMaster.getArenas().get(i).getName());
             ArenaBoundaries tmpBound = new ArenaBoundaries();
-            //tmpBound.arenaName = tmp.name;
             tmpBound.setWorld(tmp.getWorld());
             tmpBound.setx1(tmp.getX1());
             tmpBound.setx2(tmp.getX2());
@@ -781,36 +746,23 @@ public class CaptureThePoints extends JavaPlugin {
         FileConfiguration globalConfig = load();
 
         String arenaName = globalConfig.getString("Arena");
-        if (arenaName == null) {
-            mainArena = null;
-        } else {
-            mainArena = loadArena(arenaName);
-        }
-        editingArena = mainArena;
-        if (mainArena == null) {
-            globalConfig.set("Arena", null);
-            try {
-                globalConfig.options().copyDefaults(true);
-                globalConfig.save(globalConfigFile);
-            } catch (IOException ex) {
-               ex.printStackTrace();
-               getLogger().severe("Error while saving the main arena config.");
-            }
-        }
+        if (arenaName == null)
+            arenaMaster.setSelectedArena(null);
+        else
+            arenaMaster.setSelectedArena(loadArena(arenaName));
 
         CTP_Scheduler.money_Score = 0;
         CTP_Scheduler.playTimer = 0;
         CTP_Scheduler.pointMessenger = 0;
-        CTP_Scheduler.helmChecker = 0;
         CTP_Scheduler.lobbyActivity = 0;
         CTP_Scheduler.healingItemsCooldowns = 0;
     }
 
     /**Loads ArenaData data ready for assignment to mainArena */
-    public Arena loadArena (String name) {
-        Arena arena = new Arena();
+    public Arena loadArena(String name) {
+        Arena arena = new Arena(this, name);
 
-        if (arena_list.contains(name))  {
+        if (arenaMaster.getArenas().contains(name)) {
             File arenaFile = new File(mainDir + File.separator + "Arenas" + File.separator + name + ".yml");
             FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
             
@@ -826,6 +778,7 @@ public class CaptureThePoints extends JavaPlugin {
                 for (World aWorld : getServer().getWorlds()) {
                     worlds.add(aWorld.getName());
                 }
+                
                 if (worlds.size() == 1) {
                     arena.setWorld(worlds.get(0));
                     getLogger().info("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
@@ -878,6 +831,7 @@ public class CaptureThePoints extends JavaPlugin {
                     arena.getCapturePoints().add(tmps);
                 }
             }
+            
             if (arenaConf.contains("Team-Spawns")) {
                 for (String str : arenaConf.getConfigurationSection("Team-Spawns").getKeys(false)) {
                     Spawn spawn = new Spawn();
@@ -915,6 +869,7 @@ public class CaptureThePoints extends JavaPlugin {
                     }
                 }
             }
+            
             // Arena boundaries
             arena.setX1(arenaConf.getInt("Boundarys.X1", 0));
             arena.setY1(arenaConf.getInt("Boundarys.Y1", 0));
@@ -1171,7 +1126,6 @@ public class CaptureThePoints extends JavaPlugin {
         commands.add(new LateJoinCommand(this));
         commands.add(new LeaveCommand(this));
         commands.add(new PJoinCommand(this));
-        commands.add(new RejoinCommand(this));
         commands.add(new ReloadCommand(this));
         //commands.add(new SaveCommand(this));
         commands.add(new SelectCommand(this));
@@ -1182,14 +1136,6 @@ public class CaptureThePoints extends JavaPlugin {
         commands.add(new StopCommand(this));
         commands.add(new TeamCommand(this));
         commands.add(new VersionCommand(this));
-    }
-
-    public void resetArenaList () {
-        arena_list.clear();
-        
-        //Load existing arenas
-        File dir = new File(mainDir + File.separator + "Arenas");
-        loadArenas(dir);
     }
     
     private boolean setupPermissions() {
@@ -1229,6 +1175,11 @@ public class CaptureThePoints extends JavaPlugin {
     	return this.pluginManager;
     }
     
+    /** Returns the ArenaMaster instance */
+    public ArenaMaster getArenaMaster() {
+    	return this.arenaMaster;
+    }
+    
     public File getGlobalConfig() {
     	return this.globalConfigFile;
     }
@@ -1239,28 +1190,6 @@ public class CaptureThePoints extends JavaPlugin {
     
     public ConfigOptions getGlobalConfigOptions() {
     	return this.globalConfigOptions;
-    }
-    
-    /**
-     * Returns the hashmap of arenas.
-     * 
-     * @return The hashmap of arenas.
-     * @since 1.5.0-b114
-     */
-    public HashMap<String, Arena> getArenas() {
-    	return this.arenas;
-    }
-    
-    /**
-     * Returns the Arena for the name specified.
-     *  
-     * @param name The name of the arena to get.
-     * @return The Arena we wanted, null if none
-     * @see {@link Arena}
-     * @since 1.5.0-b114
-     */
-    public Arena getArena(String name) {
-    	return this.arenas.get(name);
     }
     
     /**
@@ -1279,6 +1208,12 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the Hashmap of the armor stored. */
     public HashMap<String, ItemStack[]> getArmor() {
     	return this.armor;
+    }
+    
+    public void clearWaitingQueue() {
+        if (waitingToMove != null) {
+            waitingToMove.clear();
+        }
     }
     
     /**
