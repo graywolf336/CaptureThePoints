@@ -10,8 +10,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * Joining arenas will be done with `/ctp j <arena>`
 
 #### ToDo ####
-* Store PlayerData per arena name in a hashmap<string, playerdata> where string is the arena name
-* Store a variable for the default arena for when players don't type just `/ctp j`
+* Store only a name of the "selected arena" which is the default arena.
 
 #### Started but not done ####
 * PJoinCommand (gotta fix the moveToLobby)

@@ -10,7 +10,7 @@ public class ArenaMaster {
 	private CaptureThePoints ctp;
 	
 	private List<Arena> arenas;
-	private Arena selectedArena;
+	private String selectedArena;
 	
 	public ArenaMaster(CaptureThePoints plugin) {
 		this.ctp = plugin;
@@ -22,12 +22,12 @@ public class ArenaMaster {
 		return this.ctp;
 	}
 	
-	public void setSelectedArena(Arena a) {
+	public void setSelectedArena(String a) {
 		this.selectedArena = a;
 	}
 	
 	public Arena getSelectedArena() {
-		return this.selectedArena;
+		return this.getArena(this.selectedArena);
 	}
 	
 	public Arena getArena(String name) {
