@@ -2,11 +2,17 @@ package me.dalton.capturethepoints.util;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
+import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Arena;
+import me.dalton.capturethepoints.beans.Items;
 
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class InvManagement {
@@ -114,5 +120,87 @@ public class InvManagement {
                 }
             }
         }
+    }
+    
+    /**
+     * This assigns a new role role to the given player.
+     * <p />
+     * 
+     * @param a The arena the player is in.
+     * @param p The player whom to change.
+     * @param role The role to change to.
+     * @return True if we could assign a new role, false if not.
+     */
+	@SuppressWarnings("deprecation")
+	public static boolean assignRole(Arena a, Player p, String role) {
+        // role changing cooldown
+        if(a.getPlayerData(p.getName()).getClassChangeTime() == 0) {
+        	a.getPlayerData(p.getName()).setClassChangeTime(System.currentTimeMillis());
+        } else if((System.currentTimeMillis() - a.getPlayerData(p.getName()).getClassChangeTime() <= 1000)) { // 1 sec 
+            ctp.sendMessage(p, ChatColor.RED + "You can change roles only every 1 sec!");
+            return false;
+        } else {
+        	a.getPlayerData(p.getName()).setClassChangeTime(System.currentTimeMillis());
+        }
+
+        p.setHealth(20);
+        PlayerInventory inv = p.getInventory();
+        inv.clear();
+        inv.setHelmet(null);
+        if(a.getPlayerData(p.getName()).getTeam() != null) {
+            DyeColor color1 = DyeColor.valueOf(a.getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
+
+            ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
+            p.getInventory().setHelmet(helmet);
+        }
+
+        inv.setChestplate(null);
+        inv.setLeggings(null);
+        inv.setBoots(null);
+        
+		//It's deprecated but it's currently the only way to get the desired effect.
+		p.updateInventory();
+
+		a.getPlayerData(p.getName()).setRole(role);
+
+        for (Items item : ctp.roles.get(role.toLowerCase())) {
+            if (Util.ARMORS_TYPE.contains(item.getItem()) && (!Util.HELMETS_TYPE.contains(item.getItem()))) {
+                ItemStack i = new ItemStack(item.getItem(), 1);
+                
+                // Add enchantments
+                for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    i.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                }
+                
+                Util.equipArmorPiece(i, inv);
+            } else {
+                ItemStack stack;
+                // If something is wrong in config file
+                try {
+                    // If exp or economy money - do not allow to pass(only for rewards)
+                    if(item.getItem().equals(Material.AIR))
+                        continue;
+
+                    stack = new ItemStack(item.getItem());
+                    stack.setAmount(item.getAmount());
+                    if(item.getType() != -1)
+                        stack.setDurability(item.getType());
+
+                    // Add enchantments
+                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                    }
+                } catch(Exception e) {
+                    ctp.logInfo("There is error in your config file, with roles. Please check them!");
+                    return false;
+                }
+                inv.addItem(stack);
+            }
+        }
+        
+		//It's deprecated but it's currently the only way to get the desired effect.
+		p.updateInventory();
+
+        return true;
     }
 }
