@@ -203,4 +203,23 @@ public class InvManagement {
 
         return true;
     }
+	
+	/**
+	 * Fixes the helmet on the player, puts the correct color of wool back on.
+	 * <p />
+	 * 
+	 * @param p The player to fix the helmet for.
+	 */
+	@SuppressWarnings("deprecation")
+	public static void fixHelmet(Player p) {
+        PlayerInventory inv = p.getInventory();
+        ctp.sendMessage(p, ChatColor.RED + "Do not remove your helmet.");
+        DyeColor color1 = DyeColor.valueOf(ctp.getArenaMaster().getArenaPlayerIsIn(p.getName()).getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
+        ItemStack helmet = new ItemStack(Material.WOOL, 1, (short) color1.getData());
+
+        inv.remove(Material.WOOL);
+        p.getInventory().setHelmet(helmet);
+        
+		p.updateInventory();
+    }
 }

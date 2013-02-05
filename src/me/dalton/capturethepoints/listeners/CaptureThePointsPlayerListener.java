@@ -20,6 +20,7 @@ import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.Permissions;
 
@@ -216,7 +217,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         	oldRole = a.getPlayerData(p.getName()).getRole();
                         }
                         
-                        if(!ctp.blockListener.assignRole(p, role.toLowerCase())) // Try to assign new role TODO
+                        if(!InvManagement.assignRole(a, p, role.toLowerCase()))
                             return;
 
                         if (a.getPlayerData(p.getName()).getRole() != null && !a.getPlayerData(p.getName()).getRole().isEmpty() && !oldRole.isEmpty()) {
@@ -267,7 +268,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "Changing your role from " + ChatColor.GOLD + oldRole.substring(0, 1).toUpperCase() + oldRole.substring(1).toLowerCase()
                                     + ChatColor.LIGHT_PURPLE + " to " + ChatColor.GOLD + role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase() + ChatColor.LIGHT_PURPLE + ".");
 
-                            ctp.blockListener.assignRole(p, role.toLowerCase()); // Assign new role TODO
+                            InvManagement.assignRole(a, p, role.toLowerCase());
                         } else {
                             if (canPay(p.getName(), price)) {
                                 chargeAccount(p.getName(), price);
@@ -275,7 +276,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "Successfully bought new role for " + ChatColor.GREEN + price + ChatColor.LIGHT_PURPLE + ". "
                                         + "You changed from " + ChatColor.GOLD + oldRole.substring(0, 1).toUpperCase() + oldRole.substring(1).toLowerCase()
                                         + ChatColor.LIGHT_PURPLE + " to " + ChatColor.GOLD + role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase() + ChatColor.LIGHT_PURPLE + ".");
-                                ctp.blockListener.assignRole(p, role.toLowerCase()); // Assign new role TODO
+                                InvManagement.assignRole(a, p, role.toLowerCase());
                                 return;
                             } else {
                                 String message =
@@ -353,21 +354,23 @@ public class CaptureThePointsPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleport (PlayerTeleportEvent event) {
     	Player play = event.getPlayer();
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(play.getName())) return;
+    	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(play.getName());
     	
-        if (!(ctp.isGameRunning())) {
-            if (this.ctp.playerData.get(play.getName()) != null && ctp.playerData.get(play.getName()).inLobby()) {
-                if (isInside(event.getTo().getBlockX(), ctp.mainArena.getX1(), ctp.mainArena.getX2()) && isInside(event.getTo().getBlockY(), ctp.mainArena.getY1(), ctp.mainArena.getY2()) && isInside(event.getTo().getBlockZ(), ctp.mainArena.getZ1(), ctp.mainArena.getZ2()) && event.getTo().getWorld().getName().equalsIgnoreCase(ctp.mainArena.getWorld())) {
-                    ctp.playerData.get(play.getName()).setJustJoined(false);
+        if (!(a.isGameRunning())) {
+            if (a.getPlayerData(play.getName()) != null && a.getPlayerData(play.getName()).inLobby()) {
+                if (isInside(event.getTo().getBlockX(), a.getX1(), a.getX2()) && isInside(event.getTo().getBlockY(), a.getY1(), a.getY2()) && isInside(event.getTo().getBlockZ(), a.getZ1(), a.getZ2()) && event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld())) {
+                	a.getPlayerData(play.getName()).setJustJoined(false);
                     return;
                 } else {
-                    if (this.ctp.playerData.get(play.getName()).getJustJoined()) { // allowed to teleport
-                        this.ctp.playerData.get(play.getName()).setJustJoined(false);
+                    if (a.getPlayerData(play.getName()).getJustJoined()) { // allowed to teleport
+                    	a.getPlayerData(play.getName()).setJustJoined(false);
                         return;
                     } else {
                         event.setCancelled(true);
-                        ctp.playerData.get(play.getName()).setInArena(false);
-                        ctp.playerData.get(play.getName()).setInLobby(false);
-                        ctp.mainArena.getLobby().getPlayersInLobby().remove(play.getName());
+                        a.getPlayerData(play.getName()).setInArena(false);
+                        a.getPlayerData(play.getName()).setInLobby(false);
+                        a.getLobby().getPlayersInLobby().remove(play.getName());
                         ctp.leaveGame(play, ArenaLeaveReason.PLAYER_TELEPORT);
                         ctp.sendMessage(play, ChatColor.LIGHT_PURPLE + "You left the CTP game.");
                     }
@@ -376,24 +379,24 @@ public class CaptureThePointsPlayerListener implements Listener {
             return;
         }
 
-        if (ctp.playerData.get(play.getName()) == null) {
+        if (a.getPlayerData(play.getName()) == null) {
             return;
         }
 
         //If ctp leave command
-        if (ctp.playerData.get(play.getName()).getJustJoined()) {
-            ctp.playerData.get(play.getName()).setJustJoined(false);
+        if (a.getPlayerData(play.getName()).getJustJoined()) {
+        	a.getPlayerData(play.getName()).setJustJoined(false);
             return;
         }
 
         // Find if player is in arena
-        if (ctp.playerData.get(play.getName()).inArena()) {
-            Spawn playerspawn = ctp.playerData.get(play.getName()).getTeam().getSpawn(); // Get the player's spawnpoint
+        if (a.getPlayerData(play.getName()).inArena()) {
+            Spawn playerspawn = a.getPlayerData(play.getName()).getTeam().getSpawn(); // Get the player's spawnpoint
             if (event.getTo().getX() == playerspawn.getX() && event.getTo().getZ() == playerspawn.getZ()) {
                 // The player is going to their spawn.
                 return;
             }
-            if (isInside(event.getTo().getBlockX(), ctp.mainArena.getX1(), ctp.mainArena.getX2()) && isInside(event.getTo().getBlockZ(), ctp.mainArena.getZ1(), ctp.mainArena.getZ2()) && event.getTo().getWorld().getName().equalsIgnoreCase(ctp.mainArena.getWorld())) {
+            if (isInside(event.getTo().getBlockX(), a.getX1(), a.getX2()) && isInside(event.getTo().getBlockZ(), a.getZ1(), a.getZ2()) && event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld())) {
                 // The player is teleporting in the arena.
                 return;
             } else {
@@ -407,12 +410,12 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
 
     /** Check if the player can afford this price */
-    public boolean canPay(String player, int price) {
+    private boolean canPay(String player, int price) {
         return (price != Integer.MAX_VALUE && ctp.playerData.get(player).getMoney() >= price);
     }
 
     /** Deduct the price from the player's account. Returns boolean whether play had enough funds to do so. */
-    public boolean chargeAccount(String player, int price) {
+    private boolean chargeAccount(String player, int price) {
         if (ctp.playerData.get(player).getMoney() >= price) {
         	ctp.playerData.get(player).setMoney(ctp.playerData.get(player).getMoney() - price);
             return true;
@@ -530,19 +533,6 @@ public class CaptureThePointsPlayerListener implements Listener {
                 return;
             }
         }
-    }
-
-	public void fixHelmet(Player p) {
-        PlayerInventory inv = p.getInventory();
-        ctp.sendMessage(p, ChatColor.RED + "Do not remove your helmet.");
-        DyeColor color1 = DyeColor.valueOf(ctp.playerData.get(p.getName()).getTeam().getColor().toUpperCase());
-        ItemStack helmet = new ItemStack(Material.WOOL, 1, (short) color1.getData());
-
-        inv.remove(Material.WOOL);
-        p.getInventory().setHelmet(helmet);
-        
-		//It's deprecated but it's currently the only way to get the desired effect.
-		p.updateInventory();
     }
 
     public boolean isInside(int loc, int first, int second) {
