@@ -277,8 +277,9 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** Attempt to balance the teams.
      * @param loop Times this has recursed (prevents overruns).
-     * @return Whether the teams are balanced. */
-    public boolean balanceTeams(int loop, int balanceThreshold) {
+     * @return Whether the teams are balanced.
+     */
+    public boolean balanceTeams(Arena a, int loop, int balanceThreshold) {
         if (loop > 5) {
         	getLogger().warning("balanceTeams hit over 5 recursions. Aborting.");
             return false;
@@ -292,7 +293,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         int difference = 0;
 
-        for (Team aTeam : mainArena.getTeams()) {
+        for (Team aTeam : a.getTeams()) {
             if (lowestmembercount == -1) {
                 lowestmembercount = aTeam.getMemberCount();
                 lowestTeam = aTeam;
@@ -322,7 +323,7 @@ public class CaptureThePoints extends JavaPlugin {
             return true;
         }
 
-        if (difference % mainArena.getTeams().size() == 0) {
+        if (difference % a.getTeams().size() == 0) {
             // The teams balance evenly.
         	String player = highestTeam.getRandomPlayer(this);
         	if(player != null) {
@@ -345,7 +346,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         loop++;
-        boolean balanced = balanceTeams(loop, balanceThreshold); // Check Teams again to check if balanced.
+        boolean balanced = balanceTeams(a, loop, balanceThreshold); // Check Teams again to check if balanced.
         return balanced;
     }
 
@@ -569,10 +570,10 @@ public class CaptureThePoints extends JavaPlugin {
         return mainArena.getName() == null ? "" : mainArena.getName();
     }
 
-    public void clearConfig () {
-        if (this.blockListener.capturegame) {
-            this.blockListener.endGame(true);
-        }
+    public void clearConfig() {
+    	for(Arena a : getArenaMaster().getArenas())
+    		if(a.isGameRunning())
+    			this.blockListener.endGame(true); //TODO: End the game via the arena, not some method in the blockListener class
         
         if (!this.playerData.isEmpty()) {
             for (String player : playerData.keySet()) {
@@ -728,8 +729,8 @@ public class CaptureThePoints extends JavaPlugin {
         loadArenas(new File(mainDir + File.separator + "Arenas"));
 
         // Load arenas boundaries
-        for(int i = 0; i < arenaMaster.getArenas().size(); i++) {
-            Arena tmp = loadArena(arenaMaster.getArenas().get(i).getName());
+        for(int i = 0; i < getArenaMaster().getArenas().size(); i++) {
+            Arena tmp = loadArena(getArenaMaster().getArenas().get(i).getName());
             ArenaBoundaries tmpBound = new ArenaBoundaries();
             tmpBound.setWorld(tmp.getWorld());
             tmpBound.setx1(tmp.getX1());
@@ -747,9 +748,11 @@ public class CaptureThePoints extends JavaPlugin {
 
         String arenaName = globalConfig.getString("Arena");
         if (arenaName == null)
-            arenaMaster.setSelectedArena(null);
+        	getArenaMaster().setSelectedArena(null);
+        else if (getArenaMaster().getArena(arenaName) == null)
+        	getArenaMaster().setSelectedArena(null);
         else
-            arenaMaster.setSelectedArena(loadArena(arenaName));
+        	getArenaMaster().setSelectedArena(arenaName);
 
         CTP_Scheduler.money_Score = 0;
         CTP_Scheduler.playTimer = 0;
@@ -762,7 +765,7 @@ public class CaptureThePoints extends JavaPlugin {
     public Arena loadArena(String name) {
         Arena arena = new Arena(this, name);
 
-        if (arenaMaster.getArenas().contains(name)) {
+        if (getArenaMaster().getArenas().contains(name)) {
             File arenaFile = new File(mainDir + File.separator + "Arenas" + File.separator + name + ".yml");
             FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
             
@@ -787,8 +790,6 @@ public class CaptureThePoints extends JavaPlugin {
                 	getLogger().info("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
                 }
             }
-
-            arena.setName(name);
             
             if(!arenaConf.contains("MaximumPlayers"))
                 arenaConf.set("MaximumPlayers", 9999);
@@ -892,7 +893,7 @@ public class CaptureThePoints extends JavaPlugin {
             // Kj -- Test that the spawn points are within the map boundaries
             for (Spawn aSpawn : arena.getTeamSpawns().values()) {
                 if (!playerListener.isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !playerListener.isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-                	getLogger().warning("WARNING: The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
+                	getLogger().warning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
                     continue;
                 }
             }

@@ -568,7 +568,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         balanceTeamsFromLobby();
 
         ctp.blockListener.capturegame = true;
-        ctp.getServer().broadcastMessage(ChatColor.AQUA+"[CTP]"+ChatColor.WHITE+" A Capture The Points game has started!");
+        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP]" + ChatColor.WHITE + " A Capture The Points game has started!");
         ctp.blockListener.preGame = false;
         ctp.blockListener.didSomeoneWin();
 
@@ -935,7 +935,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         }else return;
     }
 
-	public void selectTeam (PlayerInteractEvent event, Player p) {
+	public void selectTeam(PlayerInteractEvent event, Player p) {
         if(ctp.isGameRunning() || !ctp.mainArena.getLobby().getPlayersInLobby().containsKey(p.getName()))
             return;
         

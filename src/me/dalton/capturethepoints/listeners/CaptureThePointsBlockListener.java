@@ -45,7 +45,7 @@ public class CaptureThePointsBlockListener implements Listener {
         Block block = event.getBlock();
 
         // If it tries to break in lobby
-        if (ctp.playerData.containsKey(player.getName()) && ctp.playerData.get(player.getName()).inLobby()) {
+        if (ctp.getArenaMaster().isPlayerInAnArena(player.getName()) && ctp.getArenaMaster().getArenaPlayerIsIn(player.getName()).getPlayerData(player.getName()).inLobby()) {
             // breaks block beneath player(it causes teleport event if you cancel action)
             int playerLocX = player.getLocation().getBlockX();
             int playerLocY = player.getLocation().getBlockY() - 1;
@@ -328,7 +328,7 @@ public class CaptureThePointsBlockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onSignChange (SignChangeEvent event) {
+    public void onSignChange(SignChangeEvent event) {
         if (!ctp.isGameRunning()) {
             return;
         }
@@ -534,7 +534,7 @@ public class CaptureThePointsBlockListener implements Listener {
         return true;
     }
 
-    public void endGame (boolean noRewards) {
+    public void endGame(boolean noRewards) {
         Util.sendMessageToPlayers(ctp, "A Capture The Points game has ended!");
 
         // Task canceling

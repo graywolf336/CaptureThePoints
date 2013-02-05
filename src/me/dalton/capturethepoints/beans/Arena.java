@@ -42,15 +42,21 @@ public class Arena {
     private int minimumPlayers = 2;
     private int maximumPlayers = 9999;
     
+    /**
+     * Initiates a new arena instance.
+     * <p />
+     * 
+     * @param plugin The CTP plugin instance.
+     * @param name The name of the arena.
+     */
     public Arena(CaptureThePoints plugin, String name) {
     	this.ctp = plugin;
+    	this.name = name;
     	this.teamSpawns = new HashMap<String, Spawn>();
     	this.teams = new ArrayList<Team>();
     	this.capturePoints = new LinkedList<Points>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
     	this.notReadyPlayers = new ArrayList<String>();
-    	
-    	setName(name);
     }
     
     /** Sets the name of this arena. */
@@ -342,7 +348,7 @@ public class Arena {
         //If there was no replacement we should move one member to lobby
         if (!wasReplaced && getConfigOptions().exactTeamMemberCount && isGameRunning()) {
             if (getConfigOptions().balanceTeamsWhenPlayerLeaves > 0) {
-                ctp.balanceTeams(0, getConfigOptions().balanceTeamsWhenPlayerLeaves); //TODO
+                ctp.balanceTeams(this, 0, getConfigOptions().balanceTeamsWhenPlayerLeaves); //TODO
             }
         }
     }
