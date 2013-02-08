@@ -657,7 +657,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                     if (ctp.getServer().getPlayer(playName).getHealth() + item.hotHeal > ctp.mainArena.getConfigOptions().maxPlayerHealth) {
                                     	healPlayerAndCallEvent(player, ctp.mainArena.getConfigOptions().maxPlayerHealth);
                                     } else {
-                                    	healPlayerAndCallEvent(player, player.getHealth() + item.hotHeal);
+                                    	ctp.getArenaUtil().healPlayerAndCallEvent(player, player.getHealth() + item.hotHeal);
                                     }
                                     data.setIntervalTimeLeft(item.hotInterval);
                                     data.setHealingTimesLeft(data.getHealingTimesLeft() - 1);
@@ -1054,17 +1054,5 @@ public class CaptureThePointsPlayerListener implements Listener {
                 Util.sendMessageToPlayers(ctp, ChatColor.GREEN + p + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
             }
         }
-    }
-    
-    /**
-     * Heal the player (set the health) and cause an event to happen from it, thus improving relations with other plugins.
-     * 
-     * @param player The player to heal.
-     * @param amount The amount to heal the player.
-     */
-    public void healPlayerAndCallEvent(Player player, int amount) {
-    	player.setHealth(amount);
-    	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, amount, RegainReason.CUSTOM);
-    	ctp.getPluginManager().callEvent(regen);
     }
 }
