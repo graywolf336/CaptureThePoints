@@ -270,8 +270,8 @@ public class CaptureThePointsPlayerListener implements Listener {
 
                             InvManagement.assignRole(a, p, role.toLowerCase());
                         } else {
-                            if (canPay(p.getName(), price)) {
-                                chargeAccount(p.getName(), price);
+                            if (ctp.getMoneyUtil().canPay(p.getName(), price)) {
+                            	ctp.getMoneyUtil().chargeAccount(p.getName(), price);
                                 String oldRole = a.getPlayerData(p.getName()).getRole();
                                 ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "Successfully bought new role for " + ChatColor.GREEN + price + ChatColor.LIGHT_PURPLE + ". "
                                         + "You changed from " + ChatColor.GOLD + oldRole.substring(0, 1).toUpperCase() + oldRole.substring(1).toLowerCase()
@@ -407,20 +407,6 @@ public class CaptureThePointsPlayerListener implements Listener {
                 ctp.sendMessage(play, ChatColor.RED + "Not allowed to teleport out of the arena!");
             }
         }
-    }
-
-    /** Check if the player can afford this price */
-    private boolean canPay(String player, int price) {
-        return (price != Integer.MAX_VALUE && ctp.playerData.get(player).getMoney() >= price);
-    }
-
-    /** Deduct the price from the player's account. Returns boolean whether play had enough funds to do so. */
-    private boolean chargeAccount(String player, int price) {
-        if (ctp.playerData.get(player).getMoney() >= price) {
-        	ctp.playerData.get(player).setMoney(ctp.playerData.get(player).getMoney() - price);
-            return true;
-        }
-        return false;
     }
 
     // Ideally we want to take out the Player parameter (without losing its purpose, of course).

@@ -4,6 +4,7 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.util.ConfigTools;
+import me.dalton.capturethepoints.util.MoneyUtils;
 import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
@@ -80,6 +81,7 @@ public class CaptureThePoints extends JavaPlugin {
     private final CaptureThePointsBlockListener blockListener = new CaptureThePointsBlockListener(this);
     private final CaptureThePointsEntityListener entityListener = new CaptureThePointsEntityListener(this);
     private final CaptureThePointsPlayerListener playerListener = new CaptureThePointsPlayerListener(this);
+    private MoneyUtils mUtil = new MoneyUtils(this);
 
     public ArenaRestore arenaRestore = new ArenaRestore(this);
     public MysqlConnector mysqlConnector = new MysqlConnector(this);
@@ -1179,6 +1181,11 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the ArenaMaster instance */
     public ArenaMaster getArenaMaster() {
     	return this.arenaMaster;
+    }
+    
+    /** Returns the MoneyUtils instance. */
+    public MoneyUtils getMoneyUtil() {
+    	return this.mUtil;
     }
     
     public File getGlobalConfig() {
