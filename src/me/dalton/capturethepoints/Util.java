@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
- *
  * @author Humsas
  */
 public class Util {
@@ -114,7 +113,7 @@ public class Util {
 
 
     /** Helper method for equipping armor pieces. */
-    public static void equipArmorPiece(ItemStack stack, PlayerInventory inv) {
+    public void equipArmorPiece(ItemStack stack, PlayerInventory inv) {
         Material type = stack.getType();
 
         if (HELMETS_TYPE.contains(type)) {
@@ -131,7 +130,7 @@ public class Util {
     /** Send message to Players that are playing in an arena
      * <p />
      * 
-     * @param Arena The arena to send the message to it's players.
+     * @param arena The arena to send the message to it's players.
      * @param message The message to send. "[CTP] " has been included.
      * @see PlayerData
      * @see Arena
@@ -143,17 +142,22 @@ public class Util {
         }
     }
     
-    /** Send message to Players that are playing CTP (specifically, have playerData) but exclude a person.
-     * @param ctp The CTP instance
+    /** Send message to Players that are playing in the given arena but exclude a person.
+     * <p />
+     * 
+     * @param arena The arena to send the message to it's players.
      * @param exclude The Player to exclude
      * @param s The message to send. "[CTP] " has been included.
-     * @see PlayerData */
-    public static void sendMessageToPlayers(CaptureThePoints ctp, Player exclude, String s) {
-        for (String player : ctp.playerData.keySet()) {
+     * @see PlayerData
+     * @see Arena
+     */
+    public void sendMessageToPlayers(Arena arena, Player exclude, String s) {
+        for (String player : arena.getPlayersData().keySet()) {
+        	if(player.equalsIgnoreCase(exclude.getName())) continue;
+        	
         	Player p = ctp.getServer().getPlayer(player);
-            if (p != null && p != exclude) {
+            if (p != null)
                 p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
-            }
         }
     }
     
@@ -161,7 +165,7 @@ public class Util {
      * Takes a comma-separated list of items in the <type>:<amount> format and
      * returns a list of ItemStacks created from that data.
      */
-    public static List<ItemStack> makeItemStackList(String string) {
+    public List<ItemStack> makeItemStackList(String string) {
         List<ItemStack> result = new LinkedList<ItemStack>();
         if (string == null || string.isEmpty()) {
             return result;
@@ -215,7 +219,7 @@ public class Util {
     }
 
     /** Helper methods for making ItemStacks out of strings and ints */
-    public static ItemStack makeItemStack(String name, int amount, String data) {
+    public ItemStack makeItemStack(String name, int amount, String data) {
         try {
             byte offset = 0;
 
@@ -238,12 +242,12 @@ public class Util {
     }
 
     /** Short for makeItemStack(name, amount, "0") */
-    public static ItemStack makeItemStack(String name, int amount) {
+    public ItemStack makeItemStack(String name, int amount) {
         return makeItemStack(name, amount, "0");
     }
 
     /** Returns whether String is a number. */
-    public static boolean isItInteger(String text) {
+    public boolean isItInteger(String text) {
         @SuppressWarnings("unused")
 		int id = 0;
         try {
@@ -255,7 +259,7 @@ public class Util {
     }
 
     //mine
-    public static List<Items> getItemListFromString(String text) {
+    public List<Items> getItemListFromString(String text) {
         // Trim commas and whitespace, and split items by commas
         text = text.toUpperCase();
         text = text.trim();
@@ -290,13 +294,13 @@ public class Util {
             getEnchantments(parts, i);
 
             if (parts.length == 1) {
-                if (Util.isItInteger(parts[0])) {
+                if (isItInteger(parts[0])) {
                     i.setItem(Material.getMaterial(Integer.parseInt(parts[0])));
                 } else {
                     i.setItem(Material.getMaterial(parts[0]));
                 }
             } else if (parts.length == 2 && parts[1].matches("(-)?[0-9]+")) {
-                if (Util.isItInteger(parts[0])) {
+                if (isItInteger(parts[0])) {
                     i.setItem(Material.getMaterial(Integer.parseInt(parts[0])));
                     i.setAmount(Integer.parseInt(parts[1]));
                 } else {
@@ -306,7 +310,7 @@ public class Util {
             } else if (parts.length == 3 && parts[2].matches("(-)?[0-9]+")) { // For dyes
                 i.setAmount(Integer.parseInt(parts[2]));
                 i.setType(Short.parseShort(parts[1]));
-                if (Util.isItInteger(parts[0])) {
+                if (isItInteger(parts[0])) {
                     i.setItem(Material.getMaterial(Integer.parseInt(parts[0])));
                 } else {
                     i.setItem(Material.getMaterial(parts[0]));
@@ -322,7 +326,7 @@ public class Util {
         return list;
     }
 
-    public static void getEnchantments(String[] enchantmentsString, Items item) {
+    public void getEnchantments(String[] enchantmentsString, Items item) {
         List<Enchantment> enchantments = new LinkedList<Enchantment>();
         List<Integer> enchLevels = new LinkedList<Integer>();
         try {
@@ -365,7 +369,7 @@ public class Util {
         }
     }
 
-    public static void getMoney(String string, Items item) {
+    public void getMoney(String string, Items item) {
         if(CaptureThePoints.economyHandler == null)
             return;
 
@@ -376,7 +380,7 @@ public class Util {
         }
     }
 
-    public static void getExperience(String string, Items item){
+    public void getExperience(String string, Items item){
         if(string.contains("EXP")){
             item.setItem(Material.AIR);
             item.setExpReward(Integer.parseInt(string.substring(string.indexOf("EXP") + 4)));
@@ -386,7 +390,7 @@ public class Util {
 
 // Tingiu mazint :/
 	@SuppressWarnings("deprecation")
-	public static void rewardPlayer(CaptureThePoints plugin, Player player) {
+	public void rewardPlayer(CaptureThePoints plugin, Player player) {
         try {
             player.giveExp(plugin.playerData.get(player.getName()).getKills() * plugin.getRewards().getExpRewardForKillingEnemy());
 
@@ -564,7 +568,7 @@ public class Util {
      * @param startV Starting boundary
      * @param endV End boundary
      * @return A number generated in the boundary between startV to endV */
-    public static int random(int startV, int endV) { // Kj -- n must be positive checking
+    public int random(int startV, int endV) { // Kj -- n must be positive checking
         if (endV > startV) {
             return new Random().nextInt(endV) + startV;
         } else if (startV > endV) {
@@ -575,7 +579,7 @@ public class Util {
     }
 
     /** Builds a vertical gate */
-    public static void buildVert(Player player, int start_x, int start_y, int start_z, int plusX, int plusY, int plusZ, int blockID) {
+    public void buildVert(Player player, int start_x, int start_y, int start_z, int plusX, int plusY, int plusZ, int blockID) {
         for (int x = start_x; x < start_x + plusX; x++) {
             for (int y = start_y; y < start_y + plusY; y++) {
                 for (int z = start_z; z < start_z + plusZ; z++) {
@@ -586,20 +590,20 @@ public class Util {
     }
 
     /** Removes a vertical point */
-    public static void removeVertPoint(Player player, String dir, int start_x, int start_y, int start_z, int blockID) {
+    public void removeVertPoint(Player player, String dir, int start_x, int start_y, int start_z, int blockID) {
         if (dir.equals("NORTH")) {
-            Util.buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, 0);
+            buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, 0);
         } else if (dir.equals("EAST")) {
-            Util.buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, 0);
+            buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, 0);
         } else if (dir.equals("SOUTH")) {
-            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, 0);
+            buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, 0);
         } else if (dir.equals("WEST")) {
-            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, 0);
+            buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, 0);
         }
     }
 
     /** Get the direction of facing from a Location's yaw. */
-    public static BlockFace getFace(Location loc) {
+    public BlockFace getFace(Location loc) {
         BlockFace direction;
         double yaw = loc.getYaw();
 
@@ -625,7 +629,7 @@ public class Util {
      * @param loc2 The second Location
      * @return Returns a double of the distance between them. Returns NaN if the Locations are not on the same World or distance is too great.
      */
-     public static double getDistance(Location loc1, Location loc2) { // Kjhf's
+     public double getDistance(Location loc1, Location loc2) { // Kjhf's
         if (loc1 != null && loc2 != null && loc1.getWorld() == loc2.getWorld()) {
             return loc1.distance(loc2);
         }
@@ -633,7 +637,7 @@ public class Util {
     }
 
     // Checks if there is a team color in a list
-    public static boolean containsTeam(List<String> teams, String color) {
+    public boolean containsTeam(List<String> teams, String color) {
         for(String teamColor : teams) {
             if(teamColor.equalsIgnoreCase(color))
                 return true;

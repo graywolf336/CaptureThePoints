@@ -84,6 +84,7 @@ public class CaptureThePoints extends JavaPlugin {
     private final CaptureThePointsPlayerListener playerListener = new CaptureThePointsPlayerListener(this);
     private ArenaUtils aUtil = new ArenaUtils(this);
     private MoneyUtils mUtil = new MoneyUtils(this);
+    private Util util = new Util(this);
 
     public ArenaRestore arenaRestore = new ArenaRestore(this);
     public MysqlConnector mysqlConnector = new MysqlConnector(this);
@@ -178,7 +179,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         ConfigTools.setCTP(this);
-        Util.setCTP(this);
         InvManagement.setCTP(this);
         
         loadConfigFiles(reloading);
@@ -385,7 +385,7 @@ public class CaptureThePoints extends JavaPlugin {
             loc.setYaw((float) mainArena.getLobby().getDir());
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             player.teleport(loc); // Teleport player to lobby
-            Util.sendMessageToPlayers(this, ChatColor.GREEN + p + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
+            getUtil().sendMessageToPlayers(this, ChatColor.GREEN + p + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
             
         } else {
             // Moving to other Team
@@ -437,7 +437,7 @@ public class CaptureThePoints extends JavaPlugin {
             if (!teleport) {
             	player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
             }
-            Util.sendMessageToPlayers(this, 
+            getUtil().sendMessageToPlayers(this, 
                     newTeam.getChatColor() + player.getName() + ChatColor.WHITE + " changed teams from " 
                     + oldcc + oldteam + ChatColor.WHITE + " to "+ newTeam.getChatColor() + newTeam.getColor() + ChatColor.WHITE + "! [Team-balancing]");
             newTeam.addOneMemeberCount();
@@ -451,7 +451,7 @@ public class CaptureThePoints extends JavaPlugin {
             for (int i = 0; i < mainArena.getTeams().size(); i++) {
                 if (mainArena.getTeams().get(i).getMemberCount() == 1) {
                     zeroPlayers = false;
-                    Util.sendMessageToPlayers(this, "The game has stopped because there are too few players. "
+                    getUtil().sendMessageToPlayers(this, "The game has stopped because there are too few players. "
                             + mainArena.getTeams().get(i).getChatColor() + mainArena.getTeams().get(i).getColor().toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
                             + mainArena.getTeams().get(i).getScore() + ")");
                     blockListener.endGame(true);
@@ -459,7 +459,7 @@ public class CaptureThePoints extends JavaPlugin {
                 }
             }
             if (zeroPlayers == true) {
-                Util.sendMessageToPlayers(this, "No players left. Resetting game.");
+            	getUtil().sendMessageToPlayers(this, "No players left. Resetting game.");
                 blockListener.endGame(true);
             }
         }
@@ -481,7 +481,7 @@ public class CaptureThePoints extends JavaPlugin {
             String message = mainArena.getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
 
             if (!message.isEmpty()) {
-                Util.sendMessageToPlayers(this, message.replace("%player", playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE));
+            	getUtil().sendMessageToPlayers(this, message.replace("%player", playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE));
             }
         }
 
@@ -650,7 +650,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         InvManagement.removeCoolDowns(player.getName());
         
-        Util.sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
+        getUtil().sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
         //Remove the number count from the teamdata
         if (playerData.get(player.getName()).getTeam() != null) {
@@ -943,7 +943,7 @@ public class CaptureThePoints extends JavaPlugin {
             itemNR++;
             HealingItems hItem = new HealingItems();
             try {
-                hItem.item = Util.getItemListFromString(str).get(0);
+                hItem.item = getUtil().getItemListFromString(str).get(0);
                 hItem.instantHeal = config.getInt("HealingItems." + str + ".InstantHeal", 0);
                 hItem.hotHeal = config.getInt("HealingItems." + str + ".HOTHeal", 0);
                 hItem.hotInterval = config.getInt("HealingItems." + str + ".HOTInterval", 0);
@@ -977,7 +977,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         for (String str : config.getConfigurationSection("Roles").getKeys(false)) {
             String text = config.getString("Roles." + str + ".Items");
-            roles.put(str.toLowerCase(), Util.getItemListFromString(text));
+            roles.put(str.toLowerCase(), getUtil().getItemListFromString(text));
         }
         
         try {
@@ -1004,11 +1004,11 @@ public class CaptureThePoints extends JavaPlugin {
         rewards = new Rewards();
         rewards.setExpRewardForKillingEnemy(config.getInt("Rewards.ExpRewardForKillingOneEnemy", 0));
         rewards.setWinnerRewardCount(config.getInt("Rewards.WinnerTeam.ItemCount", 2));
-        rewards.setWinnerRewards(Util.getItemListFromString(config.getString("Rewards.WinnerTeam.Items")));
+        rewards.setWinnerRewards(getUtil().getItemListFromString(config.getString("Rewards.WinnerTeam.Items")));
         rewards.setOtherTeamRewardCount(config.getInt("Rewards.OtherTeams.ItemCount", 1));
-        rewards.setLooserRewards(Util.getItemListFromString(config.getString("Rewards.OtherTeams.Items")));
-        rewards.setRewardsForCapture(Util.getItemListFromString(config.getString("Rewards.ForCapturingThePoint")));
-        rewards.setRewardsForKill(Util.getItemListFromString(config.getString("Rewards.ForKillingEnemy")));
+        rewards.setLooserRewards(getUtil().getItemListFromString(config.getString("Rewards.OtherTeams.Items")));
+        rewards.setRewardsForCapture(getUtil().getItemListFromString(config.getString("Rewards.ForCapturingThePoint")));
+        rewards.setRewardsForKill(getUtil().getItemListFromString(config.getString("Rewards.ForKillingEnemy")));
         
         try {
             config.options().copyDefaults(true);
@@ -1103,7 +1103,7 @@ public class CaptureThePoints extends JavaPlugin {
         Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
         previousLocation.put(player.getName(), previous);
 
-        Util.sendMessageToPlayers(this, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
+        getUtil().sendMessageToPlayers(this, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
 
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
@@ -1193,6 +1193,11 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the MoneyUtils instance. */
     public MoneyUtils getMoneyUtil() {
     	return this.mUtil;
+    }
+    
+    /** Returns the Util instance. */
+    public Util getUtil() {
+    	return this.util;
     }
     
     public File getGlobalConfig() {
