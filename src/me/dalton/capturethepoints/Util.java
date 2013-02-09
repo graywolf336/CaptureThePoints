@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.PlayerData;
 
@@ -22,13 +23,10 @@ import org.bukkit.inventory.PlayerInventory;
  * @author Humsas
  */
 public class Util {
-    //Some data from MobArena utils, to make item, functions easier
-    // Weapons
+	private CaptureThePoints ctp;
 	
-	private static CaptureThePoints ctp;
-	
-	public static void setCTP(CaptureThePoints instance) {
-		ctp = instance;
+	public Util(CaptureThePoints ctp) {
+		this.ctp = ctp;
 	}
 	
     public static final List<Material> WEAPONS_TYPE = new LinkedList<Material>();
@@ -130,15 +128,18 @@ public class Util {
         }
     }
 
-    /** Send message to Players that are playing CTP (specifically, have playerData)
-     * @param ctp The CTP instance
-     * @param s The message to send. "[CTP] " has been included.
+    /** Send message to Players that are playing in an arena
+     * <p />
+     * 
+     * @param Arena The arena to send the message to it's players.
+     * @param message The message to send. "[CTP] " has been included.
      * @see PlayerData
+     * @see Arena
      */
-    public static void sendMessageToPlayers(CaptureThePoints ctp, String s) {
-        for (String player : ctp.playerData.keySet()) {
+    public void sendMessageToPlayers(Arena arena, String message) {
+        for (String player : arena.getPlayersData().keySet()) {
         	Player p = ctp.getServer().getPlayer(player);
-            p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
+            p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message); // Kj
         }
     }
     
