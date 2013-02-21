@@ -388,17 +388,17 @@ public class Util {
         }
     }
 
-// Tingiu mazint :/
 	@SuppressWarnings("deprecation")
-	public void rewardPlayer(CaptureThePoints plugin, Player player) {
+	public void rewardPlayer(Arena arena, Player player) {
+		PlayerData pd = arena.getPlayerData(player.getName());
         try {
-            player.giveExp(plugin.playerData.get(player.getName()).getKills() * plugin.getRewards().getExpRewardForKillingEnemy());
+            player.giveExp(pd.getKills() * ctp.getRewards().getExpRewardForKillingEnemy());
 
-            if (plugin.playerData.get(player.getName()).isWinner()) {
-                for (int i = 0; i < plugin.getRewards().getWinnerRewardCount(); i++) {
+            if (pd.isWinner()) {
+                for (int i = 0; i < ctp.getRewards().getWinnerRewardCount(); i++) {
                     int itemCount = 0;
-                    int id = random(0, plugin.getRewards().getWinnerRewards().size()); // Kj -- Took out -1
-                    Items item = plugin.getRewards().getWinnerRewards().get(id);
+                    int id = random(0, ctp.getRewards().getWinnerRewards().size()); // Kj -- Took out -1
+                    Items item = ctp.getRewards().getWinnerRewards().get(id);
 
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
@@ -435,10 +435,10 @@ public class Util {
                     player.getInventory().addItem(stack);
                 }
             } else {
-                for (int i = 0; i < plugin.getRewards().getOtherTeamRewardCount(); i++) {
+                for (int i = 0; i < ctp.getRewards().getOtherTeamRewardCount(); i++) {
                     int itemCount = 0;
-                    int id = random(0, plugin.getRewards().getLooserRewards().size()); // Kj -- Took out -1
-                    Items item = plugin.getRewards().getLooserRewards().get(id);
+                    int id = random(0, ctp.getRewards().getLooserRewards().size()); // Kj -- Took out -1
+                    Items item = ctp.getRewards().getLooserRewards().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
                         if(CaptureThePoints.economyHandler != null) {
@@ -475,11 +475,11 @@ public class Util {
                 }
             }
             //reward for kills
-            for (int i = 0; i < plugin.playerData.get(player.getName()).getKills(); i++) {
-                if (plugin.getRewards().getRewardsForKill().size() > 0) {
+            for (int i = 0; i < pd.getKills(); i++) {
+                if (ctp.getRewards().getRewardsForKill().size() > 0) {
                     int itemCount = 0;
-                    int id = random(0, plugin.getRewards().getRewardsForKill().size()); // Kj -- Took out -1
-                    Items item = plugin.getRewards().getRewardsForKill().get(id);
+                    int id = random(0, ctp.getRewards().getRewardsForKill().size()); // Kj -- Took out -1
+                    Items item = ctp.getRewards().getRewardsForKill().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
                         if(CaptureThePoints.economyHandler != null) {
@@ -517,11 +517,11 @@ public class Util {
             }
             
             //reward for capture
-            for (int i = 0; i < plugin.playerData.get(player.getName()).getPointsCaptured(); i++) {
-                if (plugin.getRewards().getRewardsForCapture().size() > 0) {
+            for (int i = 0; i < pd.getPointsCaptured(); i++) {
+                if (ctp.getRewards().getRewardsForCapture().size() > 0) {
                     int itemCount = 0;
-                    int id = random(0, plugin.getRewards().getRewardsForCapture().size()); // Kj -- Took out -1
-                    Items item = plugin.getRewards().getRewardsForCapture().get(id);
+                    int id = random(0, ctp.getRewards().getRewardsForCapture().size()); // Kj -- Took out -1
+                    Items item = ctp.getRewards().getRewardsForCapture().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
                         if(CaptureThePoints.economyHandler != null) {
@@ -556,10 +556,10 @@ public class Util {
                 }
             }
             
-          //It's deprecated but it's currently the only way to get the desired effect.
+            //It's deprecated but it's currently the only way to get the desired effect.
             player.updateInventory();
         } catch(Exception e) {
-            ctp.logWarning("Error occured while rewarding players");
+            ctp.logWarning("An error occured while rewarding " + player.getName());
         }
 
     }
