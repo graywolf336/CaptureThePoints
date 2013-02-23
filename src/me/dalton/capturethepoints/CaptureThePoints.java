@@ -605,38 +605,6 @@ public class CaptureThePoints extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
     }
 
-    /** This method finds if a suitable arena exists.
-     * If useSelectedArenaOnly is true, this method will only search the main arena.
-     * @param numberofplayers The number of players that want to play.
-     * @return If a suitable arena exists, else false. */
-    public boolean hasSuitableArena (int numberofplayers) {
-        // No arenas built
-        if (arena_list == null || arena_list.isEmpty()) {
-            return false;
-        }
-        
-        // Is the config set to allow the random choosing of arenas?
-        if (!mainArena.getConfigOptions().useSelectedArenaOnly) {
-            int size = arena_list.size();
-            if (size > 1) {
-                // If there is more than 1 arena to choose from
-                for (String arena : arena_list) {
-                    Arena loadArena = loadArena(arena);
-                    if (loadArena.getMaxPlayers() >= numberofplayers && loadArena.getMinPlayers() <= numberofplayers) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } else {
-            if (mainArena.getMaxPlayers() >= numberofplayers && mainArena.getMinPlayers() <= numberofplayers) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
     /**
      * Loads all the files in the given <strong>directory</strong>.
      * 
