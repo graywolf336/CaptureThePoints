@@ -85,6 +85,9 @@ public class CaptureThePoints extends JavaPlugin {
     private ArenaUtils aUtil = new ArenaUtils(this);
     private MoneyUtils mUtil = new MoneyUtils(this);
     private Util util = new Util(this);
+    
+    //General scheduler ids
+    private int lobbyActivity = 0;
 
     public ArenaRestore arenaRestore = new ArenaRestore(this);
     public MysqlConnector mysqlConnector = new MysqlConnector(this);
@@ -113,9 +116,6 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** The list of Rewards stored by CTP. */
     private Rewards rewards = new Rewards();
-
-    /** The timers used by CTP. */
-    public SchedulerIds CTP_Scheduler = new SchedulerIds();
 
     public int arenaRestoreTimesRestored = 0;
     public int arenaRestoreMaxRestoreTimes = 0;
@@ -188,7 +188,7 @@ public class CaptureThePoints extends JavaPlugin {
             mysqlConnector.checkMysqlData();
 
         //Kj: LobbyActivity timer.
-        CTP_Scheduler.lobbyActivity = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+        lobbyActivity = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run () {
             	if(arenaMaster.getArenas().isEmpty()) return; //if we don't have any arenas, return and do nothing
             	
@@ -227,10 +227,13 @@ public class CaptureThePoints extends JavaPlugin {
 
     @Override
     public void onDisable () {
-        if (CTP_Scheduler.lobbyActivity != 0) {
-            getServer().getScheduler().cancelTask(CTP_Scheduler.lobbyActivity);
-            CTP_Scheduler.lobbyActivity = 0;
+        if (lobbyActivity != 0) {
+            getServer().getScheduler().cancelTask(lobbyActivity);
+            lobbyActivity = 0;
         }
+        
+        for(Arena a : getArenaMaster().getArenas()) //when shutting down, end the game.
+        	a.endGame(false);//don't give rewards, as the game was unfinished
         
         clearConfig();
         pluginManager = null;
@@ -634,67 +637,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void leaveGame(Player player, ArenaLeaveReason reason) {
-        //On exit we get double signal
-        if (playerData.get(player.getName()) == null) {
-            return;
-        }
-        
-        if (playerListener.waitingToMove != null && !playerListener.waitingToMove.isEmpty()) {
-            if (player.getName() == playerListener.waitingToMove.get(0) && playerListener.waitingToMove.size() == 1) {
-                playerListener.clearWaitingQueue(); // The player who left was someone in the lobby waiting to join. We need to remove them from the queue
-            } else {
-                playerListener.waitingToMove.remove(player.getName());
-            }
-        }
-        
-        InvManagement.removeCoolDowns(player.getName());
-        
-        getUtil().sendMessageToPlayers(this, player, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
-        
-        //Remove the number count from the teamdata
-        if (playerData.get(player.getName()).getTeam() != null) {
-            for (int i = 0; i < mainArena.getTeams().size(); i++) {
-                if (mainArena.getTeams().get(i) == (playerData.get(player.getName()).getTeam())) {
-                    mainArena.getTeams().get(i).substractOneMemeberCount();
-                    break;
-                }
-            }
-        }
-
-        CTPPlayerLeaveEvent event = new CTPPlayerLeaveEvent(player, editingArena, playerData.get(player.getName()), reason);
-        getPluginManager().callEvent(event);
-        
-        this.mainArena.getLobby().getPlayersInLobby().remove(player.getName());
-        this.blockListener.restoreThings(player);
-        this.previousLocation.remove(player.getName());
-        this.playerData.remove(player.getName());
-
-        // Check for player replacement if there is someone waiting to join the game
-        boolean wasReplaced = false;
-        if (mainArena.getConfigOptions().exactTeamMemberCount && isGameRunning()) {
-            for (String playerName : playerData.keySet()) {
-                if (playerData.get(playerName).inLobby() && playerData.get(playerName).isReady()) {
-                    this.playerListener.moveToSpawns(playerName);
-                    wasReplaced = true;
-                    break;
-                }
-            }
-        }
-
-        //check for player count, only then were no replacement
-        if (!wasReplaced) {
-            checkForGameEndThenPlayerLeft();
-        }
-            
-        //If there was no replacement we should move one member to lobby
-        if (!wasReplaced && mainArena.getConfigOptions().exactTeamMemberCount && this.isGameRunning()) {
-            if (mainArena.getConfigOptions().balanceTeamsWhenPlayerLeaves > 0) {
-                balanceTeams(0, mainArena.getConfigOptions().balanceTeamsWhenPlayerLeaves);
-            }
-        }
-    }
-
     /**
      * Loads all the files in the given <strong>directory</strong>.
      * 
@@ -721,7 +663,7 @@ public class CaptureThePoints extends JavaPlugin {
     private void loadConfigFiles(boolean reloading) {
     	if(reloading) {
     		for(Arena a : arenaMaster.getArenas())
-    			a.forceEnd(); //TODO: Clean up here and make it smoother
+    			a.endGame(false);
     		arenaMaster.resetArenas();
     	}
     	
@@ -757,12 +699,6 @@ public class CaptureThePoints extends JavaPlugin {
         	getArenaMaster().setSelectedArena(null);
         else
         	getArenaMaster().setSelectedArena(arenaName);
-
-        CTP_Scheduler.money_Score = 0;
-        CTP_Scheduler.playTimer = 0;
-        CTP_Scheduler.pointMessenger = 0;
-        CTP_Scheduler.lobbyActivity = 0;
-        CTP_Scheduler.healingItemsCooldowns = 0;
     }
 
     /**Loads ArenaData data ready for assignment to mainArena */

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
-import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 import me.dalton.capturethepoints.util.InvManagement;
@@ -27,14 +27,15 @@ public class Arena {
     //config
     private ConfigOptions co;
     
+    //SchedulerIds
+    int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0;
+    
     @SuppressWarnings("unused")
-	private boolean enabled = true, edit = false, running = false;
+	private boolean enabled = true, pregame = true, running = false, edit = false;
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
     private List<Points> capturePoints;
-    @SuppressWarnings("unused")
-    private List<String> notReadyPlayers;
     private Map<String, PlayerData> players;
     private Lobby lobby;
     
@@ -56,7 +57,6 @@ public class Arena {
     	this.teams = new ArrayList<Team>();
     	this.capturePoints = new LinkedList<Points>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
-    	this.notReadyPlayers = new ArrayList<String>();
     }
     
     /** Sets the name of this arena. */
@@ -224,6 +224,29 @@ public class Arena {
     	return this.running;
     }
     
+    /**
+     * Sets if the game is in pregame or not.
+     * 
+     * @param pregame True if is pregame, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b126
+     */
+    public void setPreGame(boolean pregame) {
+    	this.pregame = pregame;
+    }
+    
+    /**
+     * Returns if the game is in pregame or not.
+     * <p />
+     * 
+     * @return True if the game is in the pregame, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b126
+     */
+    public boolean isPreGame() {
+    	return this.pregame;
+    }
+    
     /** Returns a list of all the players in the arena, including the lobby, as a List of Strings of their name.
      * <p />
      * 
@@ -308,16 +331,15 @@ public class Arena {
         
         InvManagement.removeCoolDowns(p.getName());
         
-        Util.sendMessageToPlayers(ctp, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
+        ctp.getUtil().sendMessageToPlayers(this, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
         //Remove the number count from the teamdata
         if (players.get(p.getName()).getTeam() != null) {
-            for (int i = 0; i < getTeams().size(); i++) {
-                if (getTeams().get(i) == (players.get(p.getName()).getTeam())) {
-                    getTeams().get(i).substractOneMemeberCount();
-                    break;
-                }
-            }
+        	for(Team t : getTeams())
+        		if(t == players.get(p.getName()).getTeam()) {
+        			t.substractOneMemeberCount();
+        			break;
+        		}
         }
 
         CTPPlayerLeaveEvent event = new CTPPlayerLeaveEvent(p, this, players.get(p.getName()), reason);
@@ -354,20 +376,63 @@ public class Arena {
     }
     
     /**
-     * Forces the current arena game to stop.
      * 
-     * @return True if successful, false if not.
-     * @author graywolf336
-     * @since 1.5.0-b123
+     * @param arena
+     * @param noRewards
      */
-    public boolean forceEnd() {
-    	if(!isGameRunning()) return false; //it's not running, thus we didn't shut it down.
-    	
-    	for(String p : players.keySet()) {
-    		ctp.leaveGame(ctp.getServer().getPlayer(p), ArenaLeaveReason.FORECE_STOP); //TODO: Clean up here and make it smoother
-    		players.remove(p);
-    	}
-    	
-    	return true;
+    public void endGame(boolean noRewards) {
+        ctp.getUtil().sendMessageToPlayers(this, "A Capture The Points game has ended!");
+
+        // Task canceling
+        if (playTimer != 0) {
+            ctp.getServer().getScheduler().cancelTask(playTimer);
+            playTimer = 0;
+        }
+        if (money_Score != 0) {
+            ctp.getServer().getScheduler().cancelTask(money_Score);
+            money_Score = 0;
+        }
+        if (pointMessenger != 0) {
+            ctp.getServer().getScheduler().cancelTask(pointMessenger);
+            pointMessenger = 0;
+        }
+        if (healingItemsCooldowns != 0) {
+            ctp.getServer().getScheduler().cancelTask(healingItemsCooldowns);
+            healingItemsCooldowns = 0;
+        }
+
+        for (Points s : getCapturePoints()) {
+            s.setControlledByTeam(null);
+        }
+
+        setPreGame(true);
+        setRunning(false);
+
+        for (String player : getPlayersData().keySet()) {
+        	Player p = ctp.getServer().getPlayer(player);
+            InvManagement.restoreThings(p);
+            if (!noRewards) {
+                ctp.getUtil().rewardPlayer(this, p);
+            }
+        }
+        
+        //Arena restore
+        if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
+            ctp.arenaRestore.restoreMySQLBlocks(this);
+        } else {
+            ctp.arenaRestore.restoreAllBlocks();
+        }
+
+        for (HealingItems item : ctp.healingItems)
+            if (!item.cooldowns.isEmpty())
+                item.cooldowns.clear();
+        
+        getLobby().clearLobbyPlayerData();
+        this.ctp.previousLocation.clear();
+        getPlayersData().clear();
+        getPlayerList().clear();
+        for (int i = 0; i < getTeams().size(); i++) {
+            getTeams().get(i).setMemberCount(0);
+        }
     }
 }

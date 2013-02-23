@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.dalton.capturethepoints.beans.Arena;
+import me.dalton.capturethepoints.beans.PlayerData;
 
 public class ArenaMaster {
 	//mob arena style! thanks to mob arena for being on github! :)
@@ -101,5 +102,20 @@ public class ArenaMaster {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Returns the player's PlayerData, null if nothing.
+	 * <p />
+	 * 
+	 * @param player The player to get the PlayerData for.
+	 * @return PlayerData of the given player, null if not playing.
+	 * @author graywolf336
+	 * @since 1.5.0-b126
+	 * @see PlayerData
+	 */
+	public PlayerData getPlayerData(String player) {
+		if(isPlayerInAnArena(player)) return getArenaPlayerIsIn(player).getPlayerData(player);
+		else return null;
 	}
 }

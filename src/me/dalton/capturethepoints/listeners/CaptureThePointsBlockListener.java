@@ -4,6 +4,7 @@ import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Points;
@@ -53,14 +54,14 @@ public class CaptureThePointsBlockListener implements Listener {
 
             if (playerLocX == block.getX() && playerLocY == block.getY() && playerLocZ == block.getZ()) {
                 // allow teleport
-                ctp.playerData.get(player.getName()).setJustJoined(true);
+                ctp.getArenaMaster().getPlayerData(player.getName()).setJustJoined(true);
                 ctp.playerNameForTeleport = player.getName();
 
                 // player can not drop down so we need to reset teleport flag
                 ctp.getServer().getScheduler().scheduleSyncDelayedTask(ctp, new Runnable() {
                     public void run () {
                         if (!ctp.playerNameForTeleport.isEmpty()) {
-                            ctp.playerData.get(ctp.playerNameForTeleport).setJustJoined(false);
+                        	ctp.getArenaMaster().getPlayerData(ctp.playerNameForTeleport).setJustJoined(false);
                             ctp.playerNameForTeleport = "";
                         }
                     }
@@ -74,7 +75,7 @@ public class CaptureThePointsBlockListener implements Listener {
         }
 
         
-        if (!ctp.playerData.containsKey(player.getName())) { // If tries to break arena blocks out of game
+        if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) { // If tries to break arena blocks out of game
         
             for(ArenaBoundaries bound : ctp.arenasBoundaries.values()){
                 if (ctp.playerListener.isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2()) && ctp.playerListener.isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2()) && ctp.playerListener.isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2()) && block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
@@ -534,66 +535,6 @@ public class CaptureThePointsBlockListener implements Listener {
         return true;
     }
 
-    public void endGame(boolean noRewards) {
-        Util.sendMessageToPlayers(ctp, "A Capture The Points game has ended!");
-
-        // Task canceling
-        if (ctp.CTP_Scheduler.playTimer != 0) {
-            ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.playTimer);
-            ctp.CTP_Scheduler.playTimer = 0;
-        }
-        if (ctp.CTP_Scheduler.money_Score != 0) {
-            ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.money_Score);
-            ctp.CTP_Scheduler.money_Score = 0;
-        }
-        if (ctp.CTP_Scheduler.pointMessenger != 0) {
-            ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.pointMessenger);
-            ctp.CTP_Scheduler.pointMessenger = 0;
-        }
-        if (ctp.CTP_Scheduler.helmChecker != 0) {
-            ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.helmChecker);
-            ctp.CTP_Scheduler.helmChecker = 0;
-        }
-        if (ctp.CTP_Scheduler.healingItemsCooldowns != 0) {
-            ctp.getServer().getScheduler().cancelTask(ctp.CTP_Scheduler.healingItemsCooldowns);
-            ctp.CTP_Scheduler.healingItemsCooldowns = 0;
-        }
-
-        for (Points s : ctp.mainArena.getCapturePoints()) {
-            s.setControlledByTeam(null);
-        }
-
-        this.preGame = true;
-        this.capturegame = false;
-
-        for (String player : this.ctp.playerData.keySet()) {
-        	Player p = ctp.getServer().getPlayer(player);
-            restoreThings(p);
-            if (!noRewards) {
-                Util.rewardPlayer(ctp, p);
-            }
-        }
-        
-        //Arena restore
-        if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
-            ctp.arenaRestore.restoreMySQLBlocks();
-        } else {
-            ctp.arenaRestore.restoreAllBlocks();
-        }
-
-        for (HealingItems item : ctp.healingItems) {
-            if (!item.cooldowns.isEmpty()) {
-                item.cooldowns.clear();
-            }
-        }
-        this.ctp.mainArena.getLobby().clearLobbyPlayerData();
-        this.ctp.previousLocation.clear();
-        this.ctp.playerData.clear();
-        for (int i = 0; i < ctp.mainArena.getTeams().size(); i++) {
-            ctp.mainArena.getTeams().get(i).setMemberCount(0);
-        }
-    }
-
     private boolean isInsidePoint (Points point, Location loc) {
         if (loc.getBlockX() == point.getX() || loc.getBlockX() == point.getX() + 1) {
             if (loc.getBlockY() == point.getY()) {
@@ -653,9 +594,9 @@ public class CaptureThePointsBlockListener implements Listener {
         return null;
     }
 
-    public String subtractPoints (String aTeam, String lostpoint) { // Kj -- remade.
-        if (this.capturegame) {
-            for (Team team : ctp.mainArena.getTeams()) {
+    private String subtractPoints(Arena arena, String aTeam, String lostpoint) { // Kj -- remade.
+        if (arena.isGameRunning()) {
+            for (Team team : arena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(aTeam)) {
                     team.substractOneControlledPoints();
                     if (team.getControlledPoints() < 0) {

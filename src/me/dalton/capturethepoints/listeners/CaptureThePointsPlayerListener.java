@@ -158,7 +158,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 //If this role exists
                 if (ctp.roles.containsKey(a.getPlayerData(p.getName()).getRole())) {
                     if (!a.getPlayerData(p.getName()).isReady()) {
-                        Util.sendMessageToPlayers(ctp, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
+                        ctp.getUtil().sendMessageToPlayers(a, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
                     }
                     a.getPlayerData(p.getName()).setReady(true);
                     a.getLobby().getPlayersInLobby().put(p.getName(), true);
@@ -411,26 +411,26 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     // Ideally we want to take out the Player parameter (without losing its purpose, of course).
     /** Check the lobby to see if player[s] can be transferred.  */
-    private void checkLobby(Player p) {
+    private void checkLobby(Arena arena) {
         // Kj -- If autostart is turned off, might as well ignore this. However, if a game has started and someone wants to join, that's different.
-        if (ctp.mainArena.getConfigOptions().autoStart || !ctp.isPreGame()) {
-            Lobby lobby = ctp.mainArena.getLobby();
+        if (arena.getConfigOptions().autoStart || !arena.isPreGame()) {
+            Lobby lobby = arena.getLobby();
             int readypeople = lobby.countReadyPeople();
 
             // The maximum number of players must be greater than the players already playing.
-            if (ctp.mainArena.getMaxPlayers() > ctp.mainArena.getPlayersPlaying(ctp).size()) {
+            if (arena.getMaxPlayers() > arena.getPlayersPlaying().size()) {
                 // Game not yet started
-                if (ctp.isPreGame()) {
+                if (arena.isPreGame()) {
                     if (!lobby.hasUnreadyPeople()) {
-                        if (readypeople >= ctp.mainArena.getMinPlayers()) {
-                            if (readypeople % ctp.mainArena.getTeams().size() == 0) {  // There may be more than two teams playing. 
+                        if (readypeople >= arena.getMinPlayers()) {
+                            if (readypeople % arena.getTeams().size() == 0) {  // There may be more than two teams playing. 
                                 moveToSpawns();
                             } else {
-                                if (ctp.mainArena.getConfigOptions().exactTeamMemberCount) {
-                                    if (readypeople / ctp.mainArena.getTeams().size() >= 1) {
+                                if (arena.getConfigOptions().exactTeamMemberCount) {
+                                    if (readypeople / arena.getTeams().size() >= 1) {
                                         moveToSpawns();
                                     } else {
-                                    	ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "[CTP] There are already an even number of players. Please wait for a new player to ready up."); // Kj
+                                    	ctp.getUtil().sendMessageToPlayers(arena, "There are already an odd number of players, please wait for a new player to ready up.");
                                         return;
                                     }
                                 } else {   // Does not require exact count and everyone is ready. Move them.
@@ -440,11 +440,11 @@ public class CaptureThePointsPlayerListener implements Listener {
                         } 
                         else {
                             //Save variable for minor bug that results from player error
-                            Arena mainArenaTmp = ctp.mainArena;
+                            Arena mainArenaTmp = arena;
                             if (ctp.hasSuitableArena(readypeople)) {
-                                Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + ctp.mainArena.getMinPlayers() + " players, found " + readypeople + "].");
+                                ctp.getUtil().sendMessageToPlayers(arena, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
                                 List<String> transport = new LinkedList<String>(lobby.getPlayersInLobby().keySet());
-                                ctp.blockListener.endGame(true);
+                                arena.endGame(true);
                                 ctp.chooseSuitableArena(readypeople);
                                 for (String aPlayer : transport) {
                                     PJoinCommand pj = new PJoinCommand(ctp); 
@@ -452,18 +452,18 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 }
                             } else {
                             	//Reseting main Arena back
-                            	ctp.mainArena = mainArenaTmp;
-                                Util.sendMessageToPlayers(ctp, ChatColor.RED + "Not enough players for a game. No other suitable arenas found. [Needed " + ctp.mainArena.getMinPlayers() + " players, found " + readypeople + "].");
+                            	arena = mainArenaTmp;
+                                ctp.getUtil().sendMessageToPlayers(arena, ChatColor.RED + "Not enough players for a game. No other suitable arenas found. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
                             }
                         }
                     } else {
                     	String notReady = "";
                     	for(String player : lobby.getPlayersInLobby().keySet()){
-                    		
-                    		if(!ctp.playerData.get(player).isReady()){
+                    		if(!arena.getPlayerData(player).isReady()){
                     			notReady += player + ", ";
                     		}
                     	}
+                    	
                     	if (!notReady.isEmpty()){
                     		notReady = notReady.substring(0, notReady.length() - 2);
                     	}
