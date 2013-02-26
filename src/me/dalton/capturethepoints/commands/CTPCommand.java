@@ -104,6 +104,6 @@ public abstract class CTPCommand {
 
     /** Send a message to the command sender saying they've got the parameters wrong, and give them a reminder of how the command should be written. */
     protected final void usageError() {
-        sendMessage(ChatColor.AQUA + "Try: " + ChatColor.WHITE + usageTemplate);
+        sendMessage(ChatColor.AQUA + "Try: " + ChatColor.RED + usageTemplate);
     }
 }
