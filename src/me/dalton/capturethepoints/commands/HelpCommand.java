@@ -50,7 +50,7 @@ public class HelpCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + "/ctp join " + ChatColor.WHITE + "- join the game");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.kick"})) {
-                sendMessage(ChatColor.GREEN + "/ctp kick <sender> " + ChatColor.WHITE + "- kicks player from the game");
+                sendMessage(ChatColor.GREEN + "/ctp kick <player> " + ChatColor.WHITE + "- kicks player from the game");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp leave " + ChatColor.WHITE + "- leave the game");

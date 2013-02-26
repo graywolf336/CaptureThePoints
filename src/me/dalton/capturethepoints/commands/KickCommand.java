@@ -15,28 +15,13 @@ public class KickCommand extends CTPCommand {
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin.kick", "ctp.admin"};
         super.senderMustBePlayer = false;
-        super.minParameters = 4;
-        super.maxParameters = 4;
-        super.usageTemplate = "/ctp kick <arena> <player>";
+        super.minParameters = 3;
+        super.maxParameters = 3;
+        super.usageTemplate = "/ctp kick <player>";
     }
 
     @Override
-    public void perform() {
-        if (ctp.getArenaMaster().getArenas().isEmpty()) {
-            sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
-            return;
-        }
-        
-        if(ctp.getArenaMaster().getArena(parameters.get(2)) == null) {
-        	sendMessage(ChatColor.RED + "Please enter a valid arena name to kick someone from.");
-        	return;
-        }
-        
-        if (ctp.getArenaMaster().getArena(parameters.get(2)).getLobby() == null) {
-            sendMessage(ChatColor.RED + "Please create arena lobby");
-            return;
-        }
-            
+    public void perform() {            
         Player bob = ctp.getServer().getPlayer(parameters.get(3));
         
         if (bob == null) {
