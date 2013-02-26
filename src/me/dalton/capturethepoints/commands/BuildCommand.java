@@ -121,7 +121,12 @@ public class BuildCommand extends CTPCommand {
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.restore", "ctp.admin"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b restore " + ChatColor.WHITE + "- restores arena from mySQL database");
                 }
-                ctp.sendMessage(player, ChatColor.GREEN + "/ctp b findchests <arena name>" + ChatColor.WHITE + "- shows all chests in arena");
+                if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.findchests", "ctp.admin"})) {
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b findchests <arena name>" + ChatColor.WHITE + "- shows all chests in arena");
+                }
+                if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.check", "ctp.admin"})) {
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b check" + ChatColor.WHITE + "- checks the status of the editing arena");
+                }
             }
             return;
         }
@@ -1132,7 +1137,7 @@ public class BuildCommand extends CTPCommand {
         }
 
         if (arg.equalsIgnoreCase("findchests")) {
-            if (!Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin"})) {
+            if (!Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.findchests"})) {
                 sendMessage(ChatColor.RED + "You do not have permission to do that.");
                 return;
             }
@@ -1186,7 +1191,19 @@ public class BuildCommand extends CTPCommand {
             } catch (SQLException ex) {
                 Logger.getLogger(ArenaRestore.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+        }
+        
+        if (arg.equalsIgnoreCase("check")) {
+        	if (!Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.check"})) {
+        		sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                return;
+            }
+        	
+        	String error = ctp.getArenaMaster().checkArena(ctp.getArenaMaster().getEditingArena(), player);
+        	if(error.isEmpty())
+        		sendMessage(ChatColor.GREEN + "The arena " + ctp.getArenaMaster().getEditingArena().getName() + " appears to be ready to play.");
+        	else
+        		sendMessage(error);
         }
     }
 }
