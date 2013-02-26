@@ -472,54 +472,6 @@ public class CaptureThePoints extends JavaPlugin {
 
         a.getPlayersData().put(player.getName(), data);
     }
-
-	//TODO: Change this up to the new way.
-    
-    /** Checks whether the current mainArena is fit for purpose.
-     * @param p Player doing the checking
-     * @return An error message, else empty if the arena is safe.
-     * @deprecated
-     */
-    public String checkMainArena(CommandSender sender, Arena arena) {
-        if (arena == null) {
-            // Arenas were loaded but a main arena wasn't selected.
-            if (getArenaMaster().getArenas() == null) {
-                return ChatColor.RED + "An arena hasn't been built yet.";
-            } else if (!getArenaMaster().getArenas().isEmpty() && getArenaMaster().getArenas().get(0) != null) {
-                String anArena = getArenaMaster().getArenas().get(0).getName();
-                arena = getArenaMaster().loadArena(anArena);
-                if (arena == null) {
-                    return ChatColor.RED + "An arena hasn't been built yet.";
-                }
-            }
-            return ChatColor.RED + "An arena hasn't been built yet, try again later when an arena has been built.";
-        }
-        
-        if (arena.getLobby() == null) {
-            return ChatColor.RED + "No lobby for main arena " + arena.getName() + ".";
-        }
-        
-        if (arena.getWorld() == null) {
-            if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                return ChatColor.RED + "The arena config is incorrect. The world \"" + arena.getWorld() + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
-            } else {
-                return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
-            }
-        }
-        
-        // Kj -- Test that the spawn points are within the map boundaries
-        for (Spawn aSpawn : arena.getTeamSpawns().values()) {
-            if (!getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-                if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                    return ChatColor.RED + "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
-                            + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.getX1() + "<==>" + arena.getX2() + ", " + arena.getZ1() + "<==>" + arena.getZ2() + "].";
-                } else {
-                    return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
-                }
-            }
-        }
-        return "";
-    }
     
     /** This method changes the mainArena to a suitable arena using the number of players you have.
      * Note, it will not change the mainArena if useSelectedArenaOnly is set to true.
@@ -699,7 +651,7 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** @deprecated */
     public void moveToLobby(Arena arena, Player player) {
-        String mainArenaCheckError = checkMainArena(player, arena); // Kj -- Check arena, if there is an error, an error message is returned.
+        String mainArenaCheckError = getArenaMaster().checkArena(arena, player); // Check arena, if there is an error, an error message is returned.
         if (!mainArenaCheckError.isEmpty()) {
             sendMessage(player, mainArenaCheckError);
             return;

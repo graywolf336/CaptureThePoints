@@ -22,7 +22,7 @@ public class JoinAllCommand extends CTPCommand {
     @Override
     public void perform() {
         if (sender instanceof Player) {
-            String error = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena());
+            String error = ctp.getArenaMaster().checkArena(ctp.getArenaMaster().getSelectedArena(), player);
             if (!error.isEmpty()) {
                 sendMessage(error);
                 return;

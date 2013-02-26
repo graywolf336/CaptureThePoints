@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.util.Permissions;
 
 public class ArenaMaster {
 	//mob arena style! thanks to mob arena for being on github! :)
@@ -424,5 +426,73 @@ public class ArenaMaster {
                 return false;
             }
         }
+    }
+    
+    /**
+     * Checks whether the given arena is fit to use, basically checking most things are set.
+     * 
+     * <p />
+     * 
+     * It checks the following:
+     * <ul>
+     * 	<li>The arena isn't null</li>
+     * 	<li>There are arenas</li>
+     * 	<li>The arena's name isn't null</li>
+     * 	<li>The arena's world isn't null</li>
+     * 	<li>The arena's lobby isn't null</li>
+     * 	<li>The arena's boundaries are not zero</li>
+     * 	<li>There are team spawns</li>
+     * 	<li>The team spawns are inside the boundaries of the arena</li>
+     * 	<li>There are points to capture</li>
+     * </ul>
+     * 
+     * @param arena The arena to check.
+     * @param sender The one who sent the command.
+     * @return An error message, empty if the arena is safe.
+     * @author graywolf336
+     * @since 1.5.0-b138
+     */
+    public String checkArena(Arena arena, CommandSender sender) {
+    	if(arena == null)
+    		return ChatColor.RED + "Couldn't find an arena by that name."; 
+    	
+    	if(getArenas().size() == 0)
+    		return ChatColor.RED + "There are currently no arenas made.";
+    	
+    	if(arena.getName().isEmpty())
+    		return ChatColor.RED + "Couldn't find the name of the arena, please try again.";
+    	
+    	if(arena.getWorld() == null) {
+    		if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
+                return ChatColor.RED + "The arena config is incorrect. The world \"" + arena.getWorldName() + "\" could not be found. Hint: your first world's name is \"" + ctp.getServer().getWorlds().get(0).getName() + "\".";
+            } else {
+                return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
+            }
+    	}
+    	
+    	if(arena.getLobby() == null)
+    		return ChatColor.RED + "No lobby for the arena " + arena.getName();
+    	
+    	if(arena.getX1() == 0 || arena.getX2() == 0 || arena.getY1() == 0 || arena.getY2() == 0 || arena.getZ1() == 0 || arena.getZ2() == 0)
+    		return ChatColor.RED + "The arena's boundaries are not properly set.";
+    	
+    	if(arena.getTeamSpawns().size() == 0)
+    		return ChatColor.RED + "There are currently no team spawns defined.";
+    	
+    	for(Spawn aSpawn : arena.getTeamSpawns().values()) {
+            if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
+                if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
+                    return ChatColor.RED + "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
+                            + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.getX1() + "<==>" + arena.getX2() + ", " + arena.getZ1() + "<==>" + arena.getZ2() + "].";
+                } else {
+                    return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
+                }
+            }
+        }
+    	
+    	if(arena.getCapturePoints().size() == 0)
+    		return ChatColor.RED + "No points have been defined, therefore it is hard to play a game so I can't let you join.";
+    	
+    	return "";
     }
 }

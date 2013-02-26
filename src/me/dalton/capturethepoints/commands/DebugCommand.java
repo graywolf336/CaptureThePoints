@@ -27,7 +27,7 @@ public class DebugCommand extends CTPCommand {
         if (pagenumber.equalsIgnoreCase("2")) {
             sendMessage("Outputting CTP info (2) to Console.");
             ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
-            String checkMainArena = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena()); // Kj -- Check arena, if there is an error, an error message is returned.
+            String checkMainArena = ctp.getArenaMaster().checkArena(ctp.getArenaMaster().getSelectedArena(), player); //Check arena, if there is an error, an error message is returned.
             if (!checkMainArena.isEmpty()) {
                 ctp.logInfo("Main Arena errors: " + checkMainArena);
                 ctp.logInfo("-----------========== ######### ==========-----------");
@@ -70,7 +70,7 @@ public class DebugCommand extends CTPCommand {
         sendMessage("Outputting CTP info (1) to Console.");
         ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
         ctp.logInfo("Game running (selected arena): " + ctp.getArenaMaster().getSelectedArena().isGameRunning());
-        String checkMainArena = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena()); // Kj -- Check arena, if there is an error, an error message is returned.
+        String checkMainArena = ctp.getArenaMaster().checkArena(ctp.getArenaMaster().getSelectedArena(), player); //Check arena, if there is an error, an error message is returned.
         if (!checkMainArena.isEmpty()) {
             ctp.logInfo("Main Arena errors: "+checkMainArena);
             ctp.logInfo("-----------========== ######### ==========-----------");

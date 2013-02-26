@@ -217,7 +217,7 @@ public class BuildCommand extends CTPCommand {
                     canLoad = false;
                 }
 
-                String mainArenaCheckError = ctp.checkMainArena(player, arena); // Kj -- Check arena, if there is an error, an error message is returned.
+                String mainArenaCheckError = ctp.getArenaMaster().checkArena(arena, player); //Check arena, if there is an error, an error message is returned.
                 if (!mainArenaCheckError.isEmpty() && canLoad) {
                     sendMessage(mainArenaCheckError);
                     return;
