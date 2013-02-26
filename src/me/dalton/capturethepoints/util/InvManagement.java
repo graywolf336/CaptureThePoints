@@ -172,7 +172,7 @@ public class InvManagement {
                     i.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                 }
                 
-                Util.equipArmorPiece(i, inv);
+                ctp.getUtil().equipArmorPiece(i, inv);
             } else {
                 ItemStack stack;
                 // If something is wrong in config file

@@ -27,14 +27,14 @@ public class DebugCommand extends CTPCommand {
         if (pagenumber.equalsIgnoreCase("2")) {
             sendMessage("Outputting CTP info (2) to Console.");
             ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
-            String checkMainArena = ctp.checkMainArena(player, ctp.mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
+            String checkMainArena = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena()); // Kj -- Check arena, if there is an error, an error message is returned.
             if (!checkMainArena.isEmpty()) {
                 ctp.logInfo("Main Arena errors: " + checkMainArena);
                 ctp.logInfo("-----------========== ######### ==========-----------");
                 return;
             } else {
-                ctp.logInfo(ctp.mainArena.getName() + "'s Config Options:");
-                ConfigOptions co = ctp.mainArena.getConfigOptions();
+                ctp.logInfo(ctp.getArenaMaster().getSelectedArena().getName() + "'s Config Options:");
+                ConfigOptions co = ctp.getArenaMaster().getSelectedArena().getConfigOptions();
                 ctp.logInfo("   PointsToWin: " + co.pointsToWin);
                 ctp.logInfo("   PlayTime: " + co.playTime);
                 ctp.logInfo("   UseScoreGeneration: " + co.useScoreGeneration);
@@ -69,8 +69,8 @@ public class DebugCommand extends CTPCommand {
         
         sendMessage("Outputting CTP info (1) to Console.");
         ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
-        ctp.logInfo("Game running: "+ctp.isGameRunning());
-        String checkMainArena = ctp.checkMainArena(player, ctp.mainArena); // Kj -- Check arena, if there is an error, an error message is returned.
+        ctp.logInfo("Game running (selected arena): " + ctp.getArenaMaster().getSelectedArena().isGameRunning());
+        String checkMainArena = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena()); // Kj -- Check arena, if there is an error, an error message is returned.
         if (!checkMainArena.isEmpty()) {
             ctp.logInfo("Main Arena errors: "+checkMainArena);
             ctp.logInfo("-----------========== ######### ==========-----------");
@@ -81,25 +81,26 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo("Running sanity checks ... ");
         
         List<String> result = new ArrayList<String>();
-        if (ctp.mainArena.getPlayers(ctp).size() != ctp.playerData.size() || ctp.playerData.size() != (ctp.mainArena.getLobby().getPlayersInLobby().size() + ctp.mainArena.getPlayersPlaying(ctp).size())) {
-            result.add("Inconsistant number of Players: [" + ctp.mainArena.getPlayersPlaying(ctp).size() + " | " + ctp.playerData.size() + " | " + (ctp.mainArena.getLobby().countAllPeople() + ctp.mainArena.getPlayersPlaying(ctp).size()) + "]");
+        if (ctp.getArenaMaster().getSelectedArena().getPlayerList().size() != ctp.getArenaMaster().getSelectedArena().getPlayersData().size()
+        		|| ctp.getArenaMaster().getSelectedArena().getPlayersData().size() != (ctp.getArenaMaster().getSelectedArena().getLobby().getPlayersInLobby().size() + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size())) {
+            result.add("Inconsistant number of Players: [" + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size() + " | " + ctp.getArenaMaster().getSelectedArena().getPlayersData().size() + " | " + (ctp.getArenaMaster().getSelectedArena().getLobby().countAllPeople() + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size()) + "]");
         }
-        if (!ctp.hasSuitableArena(ctp.mainArena.getPlayersPlaying(ctp).size()) && ctp.isGameRunning()) {
-            result.add("No suitable arena for the number of people playing: "+ctp.mainArena.getPlayersPlaying(ctp).size());
+        if (!ctp.getArenaMaster().hasSuitableArena(ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size()) && ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
+            result.add("No suitable arena for the number of people playing: " + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size());
         }
         boolean error = false;
-        for (String p : ctp.playerData.keySet()) {
+        for (String p : ctp.getArenaMaster().getSelectedArena().getPlayersData().keySet()) {
             if (p == null) {
                 result.add("There is a null player in the playerData.");
                 continue;
             }
             boolean isReady = false;
-            if (ctp.mainArena.getLobby().getPlayersInLobby().get(p) == null) {
+            if (ctp.getArenaMaster().getSelectedArena().getLobby().getPlayersInLobby().get(p) == null) {
                 isReady = true;
             } else {
-                isReady = ctp.mainArena.getLobby().getPlayersInLobby().get(p);
+                isReady = ctp.getArenaMaster().getSelectedArena().getLobby().getPlayersInLobby().get(p);
             }
-            if (ctp.playerData.get(p).isReady() != isReady) {
+            if (ctp.getArenaMaster().getSelectedArena().getPlayerData(p).isReady() != isReady) {
                 error = true; // Needs to be separate otherwise for loop will spam.
             }
         }
@@ -107,16 +108,16 @@ public class DebugCommand extends CTPCommand {
             result.add("There is a discrepancy between playerData ready and the player's ready status in the lobby.");
         }
         
-        for (Team aTeam : ctp.mainArena.getTeams()) {
-            boolean insane = aTeam.sanityCheck(ctp);
+        for (Team aTeam : ctp.getArenaMaster().getSelectedArena().getTeams()) {
+            boolean insane = aTeam.sanityCheck(ctp.getArenaMaster().getSelectedArena());
             if (insane) {
-                int players = aTeam.getTeamPlayers(ctp) == null ? 0 : aTeam.getTeamPlayers(ctp).size(); 
+                int players = aTeam.getTeamPlayers(ctp.getArenaMaster().getSelectedArena()) == null ? 0 : aTeam.getTeamPlayers(ctp.getArenaMaster().getSelectedArena()).size(); 
                 result.add("Team " + aTeam.getColor() + " has incorrect memberCount. It is different to TeamPlayers size: [" + players +" | " + aTeam.getMemberCount() + "]");
             }
         }          
         
-        if (ctp.mainArena.getMinPlayers() > ctp.mainArena.getMaxPlayers()) {
-            result.add("Minimum players greater than maximum players! ["+ctp.mainArena.getMinPlayers()+" > "+ctp.mainArena.getMaxPlayers()+"]");
+        if (ctp.getArenaMaster().getSelectedArena().getMinPlayers() > ctp.getArenaMaster().getSelectedArena().getMaxPlayers()) {
+            result.add("Minimum players greater than maximum players! [" + ctp.getArenaMaster().getSelectedArena().getMinPlayers() + " > " + ctp.getArenaMaster().getSelectedArena().getMaxPlayers() + "]");
         }
         
         if (result.isEmpty()) {
@@ -129,52 +130,46 @@ public class DebugCommand extends CTPCommand {
         
         result.clear();
         
-        ctp.logInfo("Number of Arenas: " + ctp.arena_list.size() + ": " + ctp.arena_list);   
-        ctp.logInfo("Current Arena: \""  + ctp.mainArena.getName() + "\" in World \"" + ctp.mainArena.getWorld() + "\"");
-        if (ctp.mainArena.hasLobby()) {
-            ctp.logInfo("    Lobby: " + (int)ctp.mainArena.getLobby().getX() + ", " + (int)ctp.mainArena.getLobby().getY() + ", " + (int)ctp.mainArena.getLobby().getZ() + ".");
+        ctp.logInfo("Number of Arenas: " + ctp.getArenaMaster().getArenas().size() + ": " + ctp.getArenaMaster().getArenas());   
+        ctp.logInfo("Current Arena: \""  + ctp.getArenaMaster().getSelectedArena().getName() + "\" in World \"" + ctp.getArenaMaster().getSelectedArena().getWorld() + "\"");
+        if (ctp.getArenaMaster().getSelectedArena().hasLobby()) {
+            ctp.logInfo("    Lobby: " + (int)ctp.getArenaMaster().getSelectedArena().getLobby().getX() + ", " + (int)ctp.getArenaMaster().getSelectedArena().getLobby().getY() + ", " + (int)ctp.getArenaMaster().getSelectedArena().getLobby().getZ() + ".");
         } else {
             ctp.logInfo("    Lobby: not made");
         }
-        ctp.logInfo("    Number of capture points: " + ctp.mainArena.getCapturePoints().size());
-        ctp.logInfo("    Number of teams: " + ctp.mainArena.getTeamSpawns().size());
-        ctp.logInfo("    Minimum Players for this arena: " + ctp.mainArena.getMinPlayers());
-        ctp.logInfo("    Maxmimum Players for this arena: " + ctp.mainArena.getMaxPlayers());
-        ctp.logInfo("    Players ready in the lobby: " + ctp.mainArena.getLobby().countReadyPeople() + "/" + ctp.mainArena.getLobby().countAllPeople());
+        ctp.logInfo("    Number of capture points: " + ctp.getArenaMaster().getSelectedArena().getCapturePoints().size());
+        ctp.logInfo("    Number of teams: " + ctp.getArenaMaster().getSelectedArena().getTeamSpawns().size());
+        ctp.logInfo("    Minimum Players for this arena: " + ctp.getArenaMaster().getSelectedArena().getMinPlayers());
+        ctp.logInfo("    Maxmimum Players for this arena: " + ctp.getArenaMaster().getSelectedArena().getMaxPlayers());
+        ctp.logInfo("    Players ready in the lobby: " + ctp.getArenaMaster().getSelectedArena().getLobby().countReadyPeople() + "/" + ctp.getArenaMaster().getSelectedArena().getLobby().countAllPeople());
         ctp.logInfo(ctp.roles.size() + " Roles found: " + ctp.roles.keySet().toString());
         
         int running = 0, total = 0;
-        if (ctp.CTP_Scheduler.healingItemsCooldowns != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getHealingItemsCooldowns() != 0) {
             running++; total++;
             result.add("Item Cooldowns");
         } else {
             total++;
         }
-        if (ctp.CTP_Scheduler.helmChecker != 0) {
-            running++; total++;
-            result.add("Helmet Checker");
-        } else {
-            total++;
-        }
-        if (ctp.CTP_Scheduler.lobbyActivity != 0) {
+        if (ctp.getLobbyActivity() != 0) {
             running++; total++;
             result.add("Lobby Activity");
         } else {
             total++;
         }
-        if (ctp.CTP_Scheduler.money_Score != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getMoneyScore() != 0) {
             running++; total++;
             result.add("Money Adder");
         } else {
             total++;
         }
-        if (ctp.CTP_Scheduler.playTimer != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getPlayTimer() != 0) {
             running++; total++;
             result.add("Play Timer");
         } else {
             total++;
         }
-        if (ctp.CTP_Scheduler.pointMessenger != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getPointMessenger() != 0) {
             running++; total++;
             result.add("Points Messenger");
         } else {

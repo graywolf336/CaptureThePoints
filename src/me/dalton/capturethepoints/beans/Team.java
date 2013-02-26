@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import me.dalton.capturethepoints.CaptureThePoints;
-
 import org.bukkit.ChatColor;
 
 /** A CTP Team */
@@ -120,20 +118,23 @@ public class Team {
     }
 
     /** Get all Players in this team as a list of playername strings
-     * @param ctp CaptureThePoints instance
-     * @return The playername list */
-    public List<String> getTeamPlayerNames(CaptureThePoints ctp) {
-        if (!ctp.mainArena.getTeams().contains(this)) {
+     * <p />
+     * 
+     * @param arena The arena the to get the team players for.
+     * @return The playername list
+     */
+    public List<String> getTeamPlayerNames(Arena arena) {
+        if (!arena.getTeams().contains(this)) {
             return null;
         }
         List<String> teamplayers = new ArrayList<String>();
 
-        for (String p : ctp.playerData.keySet()) {
-            if (ctp.playerData.get(p).getTeam() == null || ctp.playerData.get(p).getTeam().color == null) {
+        for (String p : arena.getPlayersData().keySet()) {
+            if (arena.getPlayerData(p).getTeam() == null || arena.getPlayerData(p).getTeam().color == null) {
                 continue; // Player is not yet in game.
             }
             
-            if (ctp.playerData.get(p).getTeam() == this && ctp.playerData.get(p).getTeam().color.equalsIgnoreCase(this.color)) {
+            if (arena.getPlayerData(p).getTeam() == this && arena.getPlayerData(p).getTeam().color.equalsIgnoreCase(this.color)) {
                 teamplayers.add(p);
             }
         }
@@ -141,10 +142,13 @@ public class Team {
     }
     
     /** Get a Random Player in this Team
-     * @param ctp CaptureThePoints instance
-     * @return The Player */
-    public String getRandomPlayer(CaptureThePoints ctp) {
-        List<String> teamPlayers = getTeamPlayers(ctp);
+     * <p />
+     * 
+     * @param arena The arena this team belongs to
+     * @return The Player's name
+     */
+    public String getRandomPlayer(Arena arena) {
+        List<String> teamPlayers = getTeamPlayers(arena);
         if(teamPlayers.size() == 0) return null;
         
         Random random = new Random();
@@ -154,11 +158,11 @@ public class Team {
     
     /** Check this Team for errors. Currently only checks memberCount against TeamPlayers size.
      * @return boolean Has error? */
-    public boolean sanityCheck(CaptureThePoints ctp) {
-        if (this.getTeamPlayers(ctp) == null) {
+    public boolean sanityCheck(Arena arena) {
+        if (getTeamPlayers(arena) == null) {
             return this.getMemberCount() != 0;
         } else {
-            return this.getTeamPlayers(ctp).size() != this.memberCount;    
+            return this.getTeamPlayers(arena).size() != this.memberCount;    
         }
     }
 }

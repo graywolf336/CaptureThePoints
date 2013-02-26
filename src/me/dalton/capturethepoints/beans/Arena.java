@@ -36,12 +36,30 @@ public class Arena {
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
     private List<Points> capturePoints;
+    private List<String> waitingToMove;
     private Map<String, PlayerData> players;
     private Lobby lobby;
     
     private int x1 = 0, y1 = 0, z1 = 0, x2 = 0, y2 = 0, z2 = 0;
     private int minimumPlayers = 2;
     private int maximumPlayers = 9999;
+    
+    /**
+     * Initiates a new arena instance without a name.
+     * <p />
+     * 
+     * @param plugin The CTP plugin instance.
+     * @author graywolf336
+     * @since 1.5.0-b126
+     */
+    public Arena(CaptureThePoints plugin) {
+    	this.ctp = plugin;
+    	this.teamSpawns = new HashMap<String, Spawn>();
+    	this.teams = new ArrayList<Team>();
+    	this.capturePoints = new LinkedList<Points>();
+    	this.waitingToMove = new LinkedList<String>();
+    	this.players = new ConcurrentHashMap<String, PlayerData>();
+    }
     
     /**
      * Initiates a new arena instance.
@@ -56,6 +74,7 @@ public class Arena {
     	this.teamSpawns = new HashMap<String, Spawn>();
     	this.teams = new ArrayList<Team>();
     	this.capturePoints = new LinkedList<Points>();
+    	this.waitingToMove = new LinkedList<String>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
     }
     
@@ -201,6 +220,51 @@ public class Arena {
     	return this.maximumPlayers;
     }
     
+    /** Gets the List<String> of the players waiting to be moved in this arena. */
+	public List<String> getWaitingToMove(){
+		return this.waitingToMove;
+	}
+    
+    /** Sets the scheduler id of the play timer task for this arena. */
+    public void setPlayTimer(int playtimer) {
+    	this.playTimer = playtimer;
+    }
+    
+    /** Gets the scheduler id of the play timer task for this arena. */
+    public int getPlayTimer() {
+    	return this.playTimer;
+    }
+    
+    /** Sets the scheduler id of the moneyscore task for this arena. */
+    public void setMoneyScore(int moneyscore) {
+    	this.money_Score = moneyscore;
+    }
+    
+    /** Gets the scheduler id of the moneyscore task for this arena. */
+    public int getMoneyScore() {
+    	return this.money_Score;
+    }
+    
+    /** Sets the scheduler id of the pointMessenger task for this arena. */
+    public void setPointMessenger(int pointmessager) {
+    	this.pointMessenger = pointmessager;
+    }
+    
+    /** Gets the scheduler id of the pointMessenger task for this arena. */
+    public int getPointMessenger() {
+    	return this.pointMessenger;
+    }
+    
+    /** Sets the scheduler id of the healingItemsCooldowns task for this arena. */
+    public void setHealingItemsCooldowns(int healingitems) {
+    	this.healingItemsCooldowns = healingitems;
+    }
+    
+    /** Gets the scheduler id of the healingItemsCooldowns task for this arena. */
+    public int getHealingItemsCooldowns() {
+    	return this.healingItemsCooldowns;
+    }
+    
     /**
      * Sets if the game is running or not.
      * 
@@ -274,6 +338,19 @@ public class Arena {
      */
     public PlayerData getPlayerData(String player) {
     	return this.players.get(player);
+    }
+    
+    /**
+     * Returns the given player's arena data.
+     * <p />
+     * 
+     * @param player The player who's data to get.
+     * @return The player data, null if nothing.
+     * @author graywolf336
+     * @since 1.5.0-b126
+     */
+    public PlayerData getPlayerData(Player player) {
+    	return this.getPlayerData(player.getName());
     }
     
     /**
@@ -364,7 +441,7 @@ public class Arena {
 
         //check for player count, only then were no replacement
         if (!wasReplaced) {
-            ctp.checkForGameEndThenPlayerLeft();
+            ctp.checkForGameEndThenPlayerLeft(this);
         }
             
         //If there was no replacement we should move one member to lobby
@@ -401,9 +478,8 @@ public class Arena {
             healingItemsCooldowns = 0;
         }
 
-        for (Points s : getCapturePoints()) {
+        for (Points s : getCapturePoints())
             s.setControlledByTeam(null);
-        }
 
         setPreGame(true);
         setRunning(false);
@@ -417,11 +493,10 @@ public class Arena {
         }
         
         //Arena restore
-        if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
-            ctp.arenaRestore.restoreMySQLBlocks(this);
-        } else {
-            ctp.arenaRestore.restoreAllBlocks();
-        }
+        if(ctp.getGlobalConfigOptions().enableHardArenaRestore)
+            ctp.getArenaRestore().restoreMySQLBlocks(this);
+        else
+            ctp.getArenaRestore().restoreAllBlocks();
 
         for (HealingItems item : ctp.healingItems)
             if (!item.cooldowns.isEmpty())
@@ -431,8 +506,11 @@ public class Arena {
         this.ctp.previousLocation.clear();
         getPlayersData().clear();
         getPlayerList().clear();
-        for (int i = 0; i < getTeams().size(); i++) {
-            getTeams().get(i).setMemberCount(0);
-        }
+        
+        for (Team t : getTeams()) {
+            t.setMemberCount(0);
+            t.setControlledPoints(0);
+            t.setScore(0);
+    	}
     }
 }

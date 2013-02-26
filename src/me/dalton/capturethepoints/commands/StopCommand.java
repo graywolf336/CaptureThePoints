@@ -11,13 +11,19 @@ public class StopCommand extends CTPCommand {
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin.stop", "ctp.admin"};
         super.senderMustBePlayer = false;
-        super.minParameters = 2;
-        super.maxParameters = 2;
-        super.usageTemplate = "/ctp stop";
+        super.minParameters = 3;
+        super.maxParameters = 3;
+        super.usageTemplate = "/ctp stop <arena>";
     }
 
     @Override
     public void perform() {
-        ctp.blockListener.endGame(true);
+    	if(!ctp.getArenaMaster().getArenas().contains(parameters.get(2))) {
+    		sendMessage(parameters.get(2) + " is not a valid arena name, please try again.");
+    		return;
+    	}
+    	
+        ctp.getArenaMaster().getArena(parameters.get(2)).endGame(true);
+        return;
     }
 }

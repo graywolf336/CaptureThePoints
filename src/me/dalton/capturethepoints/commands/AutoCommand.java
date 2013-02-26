@@ -29,17 +29,17 @@ public class AutoCommand extends CTPCommand {
     @Override
     public void perform() {
         if (sender instanceof Player) {
-            String error = ctp.checkMainArena(player, ctp.mainArena);
+            String error = ctp.checkMainArena(player, ctp.getArenaMaster().getSelectedArena());
             if (!error.isEmpty()) {
                 sendMessage(error);
                 return;
             }
         } else {
-            if (ctp.mainArena == null) {
+            if (ctp.getArenaMaster().getSelectedArena() == null) {
                 sendMessage(ChatColor.RED + "Please create an arena first");
                 return;
             }
-            if (ctp.mainArena.getLobby() == null) {
+            if (ctp.getArenaMaster().getSelectedArena().getLobby() == null) {
                 sendMessage(ChatColor.RED + "Please create arena lobby");
                 return;
             }
@@ -58,20 +58,20 @@ public class AutoCommand extends CTPCommand {
             return;
         }
 
-        if (ctp.hasSuitableArena(world.getPlayers().size())) {
-            ctp.chooseSuitableArena(world.getPlayers().size()); // Choose a suitable arena based on the number of players in the world.
+        if (ctp.getArenaMaster().hasSuitableArena(world.getPlayers().size())) {
+            //ctp.chooseSuitableArena(world.getPlayers().size()); // Choose a suitable arena based on the number of players in the world. TODO
         } else {
             sendMessage("[CTP] You do not have an arena that will accomodate "+world.getPlayers().size()+" players. Please change your min/max player settings.");
             return;
         }
         
-        if (ctp.isGameRunning()) {
-            sendMessage("[CTP] A previous Capture The Points game has been terminated.");
-            ctp.blockListener.endGame(true);
+        if (ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
+            sendMessage("A previous Capture The Points game has been terminated.");
+            ctp.getArenaMaster().getSelectedArena().endGame(true);
         }
 
         for (Player p : world.getPlayers()) {
-            ctp.moveToLobby(p);
+            ctp.moveToLobby(ctp.getArenaMaster().getSelectedArena(), p);
         }
 
         return;

@@ -46,7 +46,7 @@ public class KickCommand extends CTPCommand {
         
         if (ctp.getArenaMaster().isPlayerInAnArena(bob.getName())) {
             ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " kicked you from CTP game!");
-            ctp.leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
+            ctp.getArenaMaster().getArena(parameters.get(2)).leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
         } else {
             sendMessage(ChatColor.GOLD + parameters.get(3) + ChatColor.RED +" is not playing CTP!");
         }

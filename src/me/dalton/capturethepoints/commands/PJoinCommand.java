@@ -43,13 +43,13 @@ public class PJoinCommand extends CTPCommand {
             return;
         }
         
-        if (!ctp.blockListener.isAlreadyInGame(bob.getName())) {
+        if (!ctp.getArenaMaster().isPlayerInAnArena(bob)) {
             if (!(sender instanceof ConsoleCommandSender)) {
                 // If the command issuer is not from console
                 ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " forced you to join CTP!");
             }
             
-            ctp.moveToLobby(bob);//TODO Fix the moveToLobby!
+            ctp.moveToLobby(ctp.getArenaMaster().getArena(parameters.get(3)), bob);//TODO Fix the moveToLobby!
         } else {
             sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is already playing CTP!");
         }

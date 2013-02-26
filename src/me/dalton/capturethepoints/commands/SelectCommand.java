@@ -2,7 +2,6 @@ package me.dalton.capturethepoints.commands;
 
 import java.io.IOException;
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.beans.Arena;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,28 +27,21 @@ public class SelectCommand extends CTPCommand {
     public void perform() {
         String newarena = parameters.get(2);
         
-        if (!ctp.arena_list.contains(newarena)) {
+        if (!ctp.getArenaMaster().isArena(newarena)) {
             sendMessage(ChatColor.RED + "Could not load arena " + ChatColor.GOLD + newarena + ChatColor.RED + " because the name cannot be found. Check your config file and existing arenas.");
             return;
         }
-        
-        Arena loadArena = ctp.loadArena(newarena);
-        
-        if (loadArena == null) {
-            sendMessage(ChatColor.RED + "Could not load arena " + ChatColor.GOLD + newarena + ChatColor.RED + " because it isn't finished yet. Check your config file and existing arenas.");
-            return;            
-        }
 
-        if (ctp.mainArena != null && !ctp.mainArena.getName().isEmpty()) {
-            sendMessage(ChatColor.GREEN + "Changed selected arena from " + ctp.mainArena.getName() + " to " + newarena + " to play.");
+        if (ctp.getArenaMaster().getSelectedArena() != null && !ctp.getArenaMaster().getSelectedArena().getName().isEmpty()) {
+            sendMessage(ChatColor.GREEN + "Changed selected arena from " + ctp.getArenaMaster().getSelectedArena().getName() + " to " + newarena + " to play.");
         } else {
             sendMessage(ChatColor.GREEN + "Selected " + newarena + " for playing.");
         }
         sendMessage(ChatColor.GREEN + "If you wanted to edit this arena instead, use " +ChatColor.WHITE+ "/ctp build selectarena <arena>");
         
-        ctp.mainArena = loadArena;
+        ctp.getArenaMaster().setSelectedArena(newarena);
 
-        FileConfiguration config = ctp.load();
+        FileConfiguration config = ctp.getConfigTools().load();
         config.addDefault("Arena", newarena);
         try {
             config.options().copyDefaults(true);

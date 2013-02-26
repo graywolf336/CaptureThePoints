@@ -14,7 +14,6 @@ import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
-import me.dalton.capturethepoints.util.ConfigTools;
 import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
@@ -27,7 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class BuildCommand extends CTPCommand {
 
-    // Kj -- This could be broken down further, perhaps into a new package compeltely.
+    // Kj -- This could be broken down further, perhaps into a new package completely.
     public BuildCommand(CaptureThePoints instance) {
         super.ctp = instance;
         super.aliases.add("build");
@@ -36,7 +35,7 @@ public class BuildCommand extends CTPCommand {
         super.aliases.add("b");
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin",
-            "ctp.admin.setpoint", "ctp.admin.removepoint", "ctp.admin.create", "ctp.admin.delete", "ctp.admin.selectarena",
+            "ctp.admin.setpoint", "ctp.admin.removepoint", "ctp.admin.create", "ctp.admin.delete", "ctp.admin.editarena",
             "ctp.admin.setarena", "ctp.admin.setlobby", "ctp.admin.arenalist", "ctp.admin.pointlist", "ctp.admin.setboundary",
             "ctp.admin.maximumplayers", "ctp.admin.minimumplayers" , "ctp.admin.save", "ctp.admin.restore"};
         super.senderMustBePlayer = true;
@@ -91,14 +90,13 @@ public class BuildCommand extends CTPCommand {
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.removepoint"})) {
                     sendMessage(ChatColor.GREEN + "/ctp b removepoint <Point name> " + ChatColor.WHITE + "- removes an existing capture point");
                 }
-            } 
-            else if (pagenumber.equals("2")) {
+            } else if (pagenumber.equals("2")) {
                 sendMessage(ChatColor.RED + "CTP Build Commands: " + ChatColor.GOLD + " Page 2/3");
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.removespawn", "ctp.admin"})) {
                     sendMessage(ChatColor.GREEN + "/ctp b removespawn <Team color> " + ChatColor.WHITE + "- removes spawn point of selected color");
                 }
-                if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.selectarena"})) {
-                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b selectarena <Arena name> " + ChatColor.WHITE + "- selects arena for editing");
+                if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.editarena"})) {
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b editarena <Arena name> " + ChatColor.WHITE + "- selects arena for editing");
                 }
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setarena"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b setarena <Arena name> " + ChatColor.WHITE + "- sets main arena for playing");
@@ -117,27 +115,283 @@ public class BuildCommand extends CTPCommand {
                 }
             } else if(pagenumber.equals("3")) {
             	ctp.sendMessage(player, ChatColor.RED + "CTP Build Commands: " + ChatColor.GOLD + " Page 3/3");
-            	
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.save", "ctp.admin"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b save " + ChatColor.WHITE + "- saves selected for editing arena data to mySQL database");
                 }
-                
                 if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin.restore", "ctp.admin"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b restore " + ChatColor.WHITE + "- restores arena from mySQL database");
                 }
-                
                 ctp.sendMessage(player, ChatColor.GREEN + "/ctp b findchests <arena name>" + ChatColor.WHITE + "- shows all chests in arena");
             }
             return;
         }
-
-        // Kj -- if the arena being edited is null, make a new one to avoid NPEs.
-        if (ctp.editingArena == null) {
-            ctp.editingArena = new Arena();
+        
+        if (arg.equalsIgnoreCase("arenalist")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.arenalist"})) {
+                String arenas = "";
+                boolean firstTime = true;
+                for (Arena arena : ctp.getArenaMaster().getArenas()) {
+                    if (firstTime) {
+                        arenas = arena.getName();
+                        firstTime = false;
+                    } else {
+                        arenas = arena.getName() + ", " + arenas;
+                    }
+                }
+                
+                if(arenas.equalsIgnoreCase("")) {
+                	sendMessage("There are currently no arenas.");
+                	return;
+                }else {
+                	sendMessage("Arena list:");
+                	sendMessage("  " + arenas);
+                	return;
+                } 
+            }
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
         }
-        // Kj -- if the mainArena is null, make a new one to avoid NPEs.
-        if (ctp.mainArena == null) {
-            ctp.mainArena = new Arena();
+        
+        //sets arena for editing/creating
+        if (arg.equalsIgnoreCase("editarena")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.editarena"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build editarena <Arena name>");
+                    return;
+                }
+                
+                arg2 = arg2.toLowerCase();
+                if (ctp.getArenaMaster().getArena(arg2) == null) {
+                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
+                    return;
+                }
+                
+                ctp.getArenaMaster().setEditingArena(arg2);
+                if(!ctp.getArenaMaster().getEditingArena().getName().equalsIgnoreCase(arg2)) {
+                	sendMessage(ChatColor.RED + "We have failed you, please try setting the editing arena again.");
+                	return;
+                }
+
+                sendMessage(ChatColor.WHITE + "Arena selected for editing: " + ChatColor.GREEN + arg2);
+
+                return;
+            }
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
+        }
+        
+        if (arg.equalsIgnoreCase("setarena")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setarena"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build setarena <Arena name>");
+                    return;
+                }
+                
+                if(ctp.getArenaMaster().getArenas().size() == 0) {
+                	sendMessage(ChatColor.RED + "There are no arenas currently, please make one.");
+                	return;
+                }
+                
+                arg2 = arg2.toLowerCase();
+                if (!ctp.getArenaMaster().isArena(arg2)) {
+                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
+                    return;
+                }
+
+                Arena arena = ctp.getArenaMaster().getArena(arg2);
+                boolean canLoad = true;
+                if (arena.getCapturePoints().size() < 1) {
+                    sendMessage(ChatColor.RED + "Please add at least one capture point");
+                    canLoad = false;
+                }
+                if (arena.getTeamSpawns().size() < 2) {
+                    sendMessage(ChatColor.RED + "Please add at least two teams' spawn points");
+                    canLoad = false;
+                }
+                if (arena.getLobby() == null) {
+                    sendMessage(ChatColor.RED + "Please create an arena lobby");
+                    canLoad = false;
+                }
+                if ((arena.getX1() == 0) && (arena.getX2() == 0) && (arena.getZ1() == 0) && (arena.getZ2() == 0)) {
+                    sendMessage(ChatColor.RED + "Please set arena boundaries");
+                    canLoad = false;
+                }
+
+                String mainArenaCheckError = ctp.checkMainArena(player, arena); // Kj -- Check arena, if there is an error, an error message is returned.
+                if (!mainArenaCheckError.isEmpty() && canLoad) {
+                    sendMessage(mainArenaCheckError);
+                    return;
+                }
+
+                if (canLoad) {
+                    FileConfiguration config = ctp.getConfigTools().load();
+                    config.addDefault("Arena", arg2);
+                    try {
+                        config.options().copyDefaults(true);
+                        config.save(ctp.getGlobalConfig());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        ctp.logSevere("There was an error while saving the global config when getting the selected arena.");
+                    }
+                    
+                    ctp.getArenaMaster().setSelectedArena(arena);
+                    sendMessage(ChatColor.WHITE + "Arena selected for playing: " + ChatColor.GREEN + arg2);
+                } else {
+                    sendMessage(ChatColor.GREEN + "If you wanted to edit this arena instead, use " + ChatColor.WHITE + "/ctp b editarena " + arg2);
+                }
+
+                return;
+            }
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
+        }
+        
+        //if editing arena is null and they're not creating a new one, return with an error first.
+        if (ctp.getArenaMaster().getEditingArena() == null && (!arg.equalsIgnoreCase("create") || !arg.equalsIgnoreCase("delete"))) {
+        	sendMessage(ChatColor.RED + "Please select which arena you want to edit first or create an arena to edit first.");
+            return;
+        }
+        
+        //if selected arena is null and they're not creating a new one, return with an error first.
+        if (ctp.getArenaMaster().getSelectedArena() == null && (!arg.equalsIgnoreCase("create") || !arg.equalsIgnoreCase("delete"))) {
+        	sendMessage(ChatColor.RED + "Please select which arena you want to edit first or create an arena to edit first.");
+            return;
+        }
+        
+        if (arg.equalsIgnoreCase("create")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.create"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build create <Arena name>");
+                    return;
+                }
+                
+                arg2 = arg2.toLowerCase();
+                if (ctp.getArenaMaster().isArena(arg2)) {
+                    sendMessage(ChatColor.RED + "This arena already exists! -----> " + ChatColor.GREEN + arg2); // Kj -- typo
+                    return;
+                }
+                
+                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2)); //Create the new arena!
+                ctp.getArenaMaster().setEditingArena(arg2); //After creating, set the editing arena to the one we created
+                
+                FileConfiguration config = ctp.getConfigTools().load();
+                
+                //Loads the default configuration options on creation of it, this way the 'co' isn't null
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
+                ctp.getArenaMaster().getEditingArena().setConfigOptions(ctp.getConfigTools().getArenaConfigOptions(arenaFile));
+                
+                if(!config.contains("Arena")) {
+                	config.addDefault("Arena", ctp.getArenaMaster().getEditingArena().getName());
+                	try {
+                        config.options().copyDefaults(true);
+                        config.save(ctp.getGlobalConfig());
+                    } catch (IOException ex) {
+                    	ex.printStackTrace();
+                    	ctp.logSevere("Unable to save the main config file, see the StackTrace above for more information.");
+                    }
+                	
+                	ctp.getArenaMaster().setSelectedArena(ctp.getArenaMaster().getEditingArena());
+                }
+                
+                sendMessage("You created arena: " + ChatColor.GREEN + arg2);
+                return;
+            }
+            
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
+        }
+        
+        if (arg.equalsIgnoreCase("delete")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.delete"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build delete <Arena name>");
+                    return;
+                }
+                
+                arg2 = arg2.toLowerCase();
+                if (!ctp.getArenaMaster().isArena(arg2)) {
+                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
+                    return;
+                }
+                
+                if (ctp.getArenaMaster().getArena(arg2).isGameRunning()) {
+                    sendMessage(ChatColor.RED + "Cannot delete arena while game is running in it!");
+                    return;
+                }
+                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + arg2 + ".yml");
+
+                //Remove blocks
+                FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
+                FileConfiguration config = ctp.getConfigTools().load();
+
+                if (arenaConf.getString("Points") != null) {
+                    for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
+                        str = "Points." + str;
+                        int start_x = arenaConf.getInt(str + ".X", 0);
+                        int start_y = arenaConf.getInt(str + ".Y", 0);
+                        int start_z = arenaConf.getInt(str + ".Z", 0);
+
+                        if (arenaConf.getString(str + ".Dir") == null) {
+                            for (int x = start_x + 2; x >= start_x - 1; x--) {
+                                for (int y = start_y - 1; y <= start_y; y++) {
+                                    for (int z = start_z - 1; z <= start_z + 2; z++) {
+                                        if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.getGlobalConfigOptions().ringBlock) {
+                                            player.getWorld().getBlockAt(x, y, z).setTypeId(0);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            String direction = arenaConf.getString(str + ".Dir");
+                            ctp.getUtil().removeVertPoint(player, direction, start_x, start_y, start_z, ctp.getGlobalConfigOptions().ringBlock);
+                        }
+                    }
+                }
+
+                //Delete mysql data
+                ctp.getArenaRestore().arenaToDelete = arg2;
+                if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
+                    ctp.getServer().getScheduler().runTaskLaterAsynchronously(ctp, new Runnable() {
+                        public void run () {
+                            ctp.getMysqlConnector().connectToMySql();
+                            ctp.getArenaRestore().deleteArenaData(ctp.getArenaRestore().arenaToDelete);
+                            ctp.getArenaRestore().arenaToDelete = null;
+                        }
+                    }, 5L);
+                }
+
+                if (arg2.equals(ctp.getArenaMaster().getSelectedArena())) {
+                    ctp.getArenaMaster().getArenasBoundaries().remove(ctp.getArenaMaster().getSelectedArena().getName());
+                    ctp.getArenaMaster().setEditingArena(null);
+
+                    config.set("Arena", null);
+                    try {
+                        config.options().copyDefaults(true);
+                        config.save(ctp.getGlobalConfig());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        ctp.logSevere("Unable to save the default config while setting the default arena back to nothing.");
+                    }
+                }
+                
+                arenaFile.delete();
+                
+                //remove it and then verify it has been removed
+                ctp.getArenaMaster().removeArena(ctp.getArenaMaster().getArena(arg2));
+                if(ctp.getArenaMaster().getArena(arg2) != null) {
+                	sendMessage(ChatColor.RED + "I couldn't seem to delete the reason for some reason, sorry.");
+                	return;
+                }
+                
+                if (arg2.equals(ctp.getArenaMaster().getEditingArena().getName())) {
+                    ctp.getArenaMaster().setEditingArena(null);
+                }
+                sendMessage("You deleted arena: " + ChatColor.GREEN + arg2);
+                return;
+            }
+            
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
         }
 
         if (arg.equalsIgnoreCase("setspawn")) {
@@ -147,17 +401,12 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
                 
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                	ctp.sendMessage(player, ChatColor.RED + "No arena selected!");
-                    return;
-                }
-                
                 Location loc = player.getLocation();
 
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
-                if ((arenaConf.getString("World") != null) && (!arenaConf.getString("World").equals(player.getWorld().getName()))) {
+                if ((arenaConf.getString("World") != null) && (!arenaConf.getString("World").equals(loc.getWorld().getName()))) {
                 	ctp.sendMessage(player, ChatColor.RED + "Please build all arena team spawns in the same world ---->" + ChatColor.GREEN + arenaConf.getString("World"));
                     return;
                 }
@@ -192,19 +441,16 @@ public class BuildCommand extends CTPCommand {
                         arenaConf.save(arenaFile);
                     } catch (IOException ex) {
                     	ex.printStackTrace();
-                    	ctp.logSevere("Was unable to save the config file for the arena \"" + ctp.editingArena.getName() + "\", please see the above Stacktrace.");
+                    	ctp.logSevere("Was unable to save the config file for the arena \"" + ctp.getArenaMaster().getEditingArena().getName() + "\", please see the above Stacktrace.");
                     }
 
-                    if (ctp.mainArena.getWorld() == null) {
-                        //ctp.mainArena = new ArenaData();
-                        ctp.mainArena.setWorld(player.getWorld().getName());
-                        ctp.mainArena.setName(ctp.editingArena.getName());
-                    }
+                    if (ctp.getArenaMaster().getEditingArena().getWorld() == null)
+                    	ctp.getArenaMaster().getEditingArena().setWorld(player.getWorld().getName());
                     
                     Team team = new Team();
                     
-                    if (ctp.mainArena.getWorld().equals(player.getWorld().getName())) {
-                        ctp.mainArena.getTeamSpawns().put(arg2, spawn);
+                    if (ctp.getArenaMaster().getEditingArena().getWorld().equals(player.getWorld().getName())) {
+                    	ctp.getArenaMaster().getEditingArena().getTeamSpawns().put(arg2, spawn);
                         team.setSpawn(spawn);
                         team.setColor(arg2);
                         team.setMemberCount(0);
@@ -220,15 +466,12 @@ public class BuildCommand extends CTPCommand {
                         // Check if this spawn is already in the list
                         boolean hasTeam = false;
 
-                        for (Team aTeam : ctp.mainArena.getTeams()) {
-                            if (aTeam.getColor().equalsIgnoreCase(arg2)) {
+                        for (Team aTeam : ctp.getArenaMaster().getEditingArena().getTeams())
+                            if (aTeam.getColor().equalsIgnoreCase(arg2))
                                 hasTeam = true;
-                            }
-                        }
 
-                        if (!hasTeam) {
-                            ctp.mainArena.getTeams().add(team);
-                        }
+                        if (!hasTeam)
+                        	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
                     }
                     ctp.sendMessage(player, "You set the " + team.getChatColor() + arg2 + ChatColor.WHITE + " team spawn point.");
                     return;
@@ -249,12 +492,7 @@ public class BuildCommand extends CTPCommand {
                 }
                 arg2 = arg2.toLowerCase();
 
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                	ctp.sendMessage(player, ChatColor.RED + "No arena selected!");
-                    return;
-                }
-
-                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
                 if (arenaConf.getString("Team-Spawns." + arg2 + ".X") == null) {
@@ -266,17 +504,18 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
-                    Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                    ctp.logSevere("Error saving the config file for the arena " + ctp.getArenaMaster().getEditingArena().getName() + " while removing " + arg2 + "'s spawn point.");
                 }
 
-                if (ctp.editingArena.getName().equalsIgnoreCase(ctp.mainArena.getName())) {
-                    ctp.mainArena.getTeamSpawns().remove(arg2);
-                }
-                for (int i = 0; i < ctp.mainArena.getTeams().size(); i++) {
-                    if (!ctp.mainArena.getTeams().get(i).getColor().equals(arg2)) {
+                if (ctp.getArenaMaster().getEditingArena().getName().equalsIgnoreCase(ctp.getArenaMaster().getEditingArena().getName()))
+                	ctp.getArenaMaster().getEditingArena().getTeamSpawns().remove(arg2);
+                	
+                for (int i = 0; i < ctp.getArenaMaster().getEditingArena().getTeams().size(); i++) {
+                    if (!ctp.getArenaMaster().getEditingArena().getTeams().get(i).getColor().equals(arg2)) {
                         continue;
                     }
-                    ctp.mainArena.getTeams().remove(i);
+                    ctp.getArenaMaster().getEditingArena().getTeams().remove(i);
                     break;
                 }
 
@@ -286,7 +525,7 @@ public class BuildCommand extends CTPCommand {
             ctp.sendMessage(player, ChatColor.RED + "You do not have permission to do that.");
             return;
         }
-
+        
         if (arg.equalsIgnoreCase("setpoint")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setpoint"})) {
                 if (parameters.size() < 5) {
@@ -300,11 +539,7 @@ public class BuildCommand extends CTPCommand {
                 	ctp.sendMessage(player, ChatColor.RED + "Points can be vertical or horizontal: " + ChatColor.GREEN + "vert | hor");
                     return;
                 }
-
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                	ctp.sendMessage(player, ChatColor.RED + "No arena selected!");
-                    return;
-                }
+                
                 Points tmps = new Points();
                 tmps.setName(arg2);
                 Location loc = player.getLocation();
@@ -315,17 +550,17 @@ public class BuildCommand extends CTPCommand {
                 int start_z;
                 tmps.setZ(start_z = loc.getBlockZ());
 
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
-                if ((arenaConf.getString("World") != null) && (!arenaConf.getString("World").equals(player.getWorld().getName()))) {
+                if ((arenaConf.getString("World") != null) && (!arenaConf.getString("World").equals(loc.getWorld().getName()))) {
                     ctp.sendMessage(player, ChatColor.RED + "Please build all arena points in same world ----> " + ChatColor.GREEN + arenaConf.getString("World"));
                     return;
                 }
 
-                for (Points point : ctp.editingArena.getCapturePoints()) {
+                for (Points point : ctp.getArenaMaster().getEditingArena().getCapturePoints()) {
                     Location protectionPoint = new Location(player.getWorld(), point.getX(), point.getY(), point.getZ());
-                    double distance = player.getLocation().distance(protectionPoint);
+                    double distance = loc.distance(protectionPoint);
                     if (distance < 5.0D) {
                     	ctp.sendMessage(player, ChatColor.RED + "You are trying to build too close to another point!"); // Kj to -> too
                         return;
@@ -354,7 +589,7 @@ public class BuildCommand extends CTPCommand {
                     }
                     switch (direction) {
                         case NORTH:
-                            Util.buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
+                            ctp.getUtil().buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
@@ -363,7 +598,7 @@ public class BuildCommand extends CTPCommand {
                             tmps.setPointDirection("NORTH");
                             break;
                         case EAST:
-                            Util.buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
+                            ctp.getUtil().buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
@@ -372,7 +607,7 @@ public class BuildCommand extends CTPCommand {
                             tmps.setPointDirection("EAST");
                             break;
                         case SOUTH:
-                            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
+                            ctp.getUtil().buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
@@ -381,7 +616,7 @@ public class BuildCommand extends CTPCommand {
                             tmps.setPointDirection("SOUTH");
                             break;
                         case WEST:
-                            Util.buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
+                            ctp.getUtil().buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
                             player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
                             player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
@@ -442,34 +677,28 @@ public class BuildCommand extends CTPCommand {
                     Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                if (ctp.mainArena.getWorld() == null) {
-                    ctp.mainArena.setWorld(player.getWorld().getName());
-                    ctp.mainArena.setName(ctp.editingArena.getName());
-                }
-
-                if (ctp.mainArena.getName().equals(ctp.editingArena.getName())) {
-                    ctp.mainArena.getCapturePoints().add(tmps);
-                }
+                if (ctp.getArenaMaster().getEditingArena().getWorld() == null)
+                	ctp.getArenaMaster().getEditingArena().setWorld(player.getWorld().getName());
+                
+                ctp.getArenaMaster().getEditingArena().getCapturePoints().add(tmps);
+                
                 sendMessage(ChatColor.WHITE + "You created capture point -----> " + ChatColor.GREEN + arg2);
                 return;
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
-
+        
         if (arg.equalsIgnoreCase("removepoint")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.removepoint"})) {
                 if (parameters.size() < 4) {
                     sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build removepoint <Point name>");
                     return;
                 }
+                
                 arg2 = arg2.toLowerCase();
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                    sendMessage(ChatColor.RED + "No arena selected!");
-                    return;
-                }
 
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
                 if (arenaConf.getString("Points." + arg2 + ".X") == null) {
@@ -485,10 +714,10 @@ public class BuildCommand extends CTPCommand {
                 int start_z = arenaConf.getInt("Points." + arg2 + ".Z", 0);
 
                 // Kj -- s -> aPoint
-                if (ctp.mainArena.getName().equals(player.getWorld().getName())) {
-                    for (Points aPoint : ctp.mainArena.getCapturePoints()) {
+                if (ctp.getArenaMaster().getEditingArena().getName().equals(player.getWorld().getName())) {
+                    for (Points aPoint : ctp.getArenaMaster().getEditingArena().getCapturePoints()) {
                         if (aPoint.getName().equalsIgnoreCase(arg2)) {
-                            ctp.mainArena.getCapturePoints().remove(aPoint);
+                        	ctp.getArenaMaster().getEditingArena().getCapturePoints().remove(aPoint);
                             break;
                         }
                     }
@@ -506,7 +735,7 @@ public class BuildCommand extends CTPCommand {
                     }
                 } else {
                     String direction = arenaConf.getString("Points." + arg2 + ".Dir");
-                    Util.removeVertPoint(player, direction, start_x, start_y, start_z, ctp.getGlobalConfigOptions().ringBlock);
+                    ctp.getUtil().removeVertPoint(player, direction, start_x, start_y, start_z, ctp.getGlobalConfigOptions().ringBlock);
                 }
 
                 arenaConf.set("Points." + arg2, null);
@@ -523,230 +752,10 @@ public class BuildCommand extends CTPCommand {
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
-
-        if (arg.equalsIgnoreCase("create")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.create"})) {
-                if (parameters.size() < 4) {
-                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build create <Arena name>");
-                    return;
-                }
-                arg2 = arg2.toLowerCase();
-                if (ctp.arena_list.contains(arg2)) {
-                    sendMessage(ChatColor.RED + "This arena already exists! -----> " + ChatColor.GREEN + arg2); // Kj -- typo
-                    return;
-                }
-                
-                ctp.editingArena.setName(arg2);
-                FileConfiguration config = ctp.load();
-                //Setting main arena if this is first arena
-                
-                //Loads the default config options on creation of it, this way the 'co' isn't null
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
-                ctp.editingArena.setConfigOptions(ConfigTools.getArenaConfigOptions(arenaFile));
-                
-                if (!config.contains("Arena")) {
-                    config.addDefault("Arena", arg2);
-                    try {
-                        config.options().copyDefaults(true);
-                        config.save(ctp.getGlobalConfig());
-                    } catch (IOException ex) {
-                    	ex.printStackTrace();
-                    	ctp.logSevere("Unable to save the main config file, see the StackTrace above for more information.");
-                    }
-
-                    ctp.mainArena = new Arena();
-                    ctp.mainArena.setName(arg2);
-                    ctp.mainArena.setWorld(null);
-                    ctp.mainArena.setConfigOptions(ctp.editingArena.getConfigOptions());
-                }
-
-                ctp.arena_list.add(arg2);
-                sendMessage("You created arena: " + ChatColor.GREEN + arg2);
-
-                return;
-            }
-            
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
-            return;
-        }
-
-        if (arg.equalsIgnoreCase("delete")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.delete"})) {
-                if (parameters.size() < 4) {
-                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build delete <Arena name>");
-                    return;
-                }
-                arg2 = arg2.toLowerCase();
-                if (!ctp.arena_list.contains(arg2)) {
-                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
-                    return;
-                }
-                if ((ctp.isGameRunning()) && (ctp.mainArena.getName().equals(arg2))) {
-                    sendMessage(ChatColor.RED + "Cannot delete arena while game is running in it!");
-                    return;
-                }
-                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + arg2 + ".yml");
-
-                //Remove blocks
-                FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
-                FileConfiguration config = ctp.load();
-
-                if (arenaConf.getString("Points") != null) {
-                    for (String str : arenaConf.getConfigurationSection("Points").getKeys(false))
-                    {
-                        str = "Points." + str;
-                        int start_x = arenaConf.getInt(str + ".X", 0);
-                        int start_y = arenaConf.getInt(str + ".Y", 0);
-                        int start_z = arenaConf.getInt(str + ".Z", 0);
-
-                        if (arenaConf.getString(str + ".Dir") == null) {
-                            for (int x = start_x + 2; x >= start_x - 1; x--) {
-                                for (int y = start_y - 1; y <= start_y; y++) {
-                                    for (int z = start_z - 1; z <= start_z + 2; z++) {
-                                        if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.getGlobalConfigOptions().ringBlock) {
-                                            player.getWorld().getBlockAt(x, y, z).setTypeId(0);
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            String direction = arenaConf.getString(str + ".Dir");
-                            Util.removeVertPoint(player, direction, start_x, start_y, start_z, ctp.getGlobalConfigOptions().ringBlock);
-                        }
-                    }
-                }
-
-                //Delete mysql data
-                ctp.arenaRestore.arenaToDelete = arg2;
-                if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
-                    ctp.getServer().getScheduler().runTaskLaterAsynchronously(ctp, new Runnable() {
-                        public void run () {
-                            ctp.mysqlConnector.connectToMySql();
-                            ctp.arenaRestore.deleteArenaData(ctp.arenaRestore.arenaToDelete);
-                            ctp.arenaRestore.arenaToDelete = null;
-                        }
-                    }, 5L);
-                }
-
-                arenaFile.delete();
-                ctp.arena_list.remove(arg2);
-                if (arg2.equals(ctp.mainArena.getName())) {
-                    ctp.arenasBoundaries.remove(ctp.mainArena.getName());
-                    ctp.mainArena.getTeams().clear();
-                    ctp.mainArena = null;
-
-                    config.set("Arena", null);
-                    try {
-                        config.options().copyDefaults(true);
-                        config.save(ctp.getGlobalConfig());
-                    } catch (IOException ex) {
-                        Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                if (arg2.equals(ctp.editingArena.getName())) {
-                    ctp.editingArena = null;
-                }
-                sendMessage("You deleted arena: " + ChatColor.GREEN + arg2);
-
-                return;
-            }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
-            return;
-        }
-        //  sets arena for editing/creating
-        if (arg.equalsIgnoreCase("selectarena")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.selectarena"})) {
-                if (parameters.size() < 4) {
-                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build selectarena <Arena name>");
-                    return;
-                }
-                arg2 = arg2.toLowerCase();
-                if (!ctp.arena_list.contains(arg2)) {
-                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
-                    return;
-                }
-                ctp.editingArena = ctp.loadArena(arg2);
-                ctp.editingArena.setName(arg2);
-
-                sendMessage(ChatColor.WHITE + "Arena selected for editing: " + ChatColor.GREEN + arg2);
-
-                return;
-            }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
-            return;
-        }
-
-        if (arg.equalsIgnoreCase("setarena")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setarena"})) {
-                if (parameters.size() < 4) {
-                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build setarena <Arena name>");
-                    return;
-                }
-                arg2 = arg2.toLowerCase();
-                if (!ctp.arena_list.contains(arg2)) {
-                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
-                    return;
-                }
-
-                Arena arena = ctp.loadArena(arg2);
-                boolean canLoad = true;
-                if (arena.getCapturePoints().size() < 1) {
-                    sendMessage(ChatColor.RED + "Please add at least one capture point");
-                    canLoad = false;
-                }
-                if (arena.getTeamSpawns().size() < 2) {
-                    sendMessage(ChatColor.RED + "Please add at least two teams' spawn points");
-                    canLoad = false;
-                }
-                if (arena.getLobby() == null) {
-                    sendMessage(ChatColor.RED + "Please create arena lobby");
-                    canLoad = false;
-                }
-                if ((arena.getX1() == 0) && (arena.getX2() == 0) && (arena.getZ1() == 0) && (arena.getZ2() == 0)) {
-                    sendMessage(ChatColor.RED + "Please set arena boundaries");
-                    canLoad = false;
-                }
-
-                String mainArenaCheckError = ctp.checkMainArena(player, arena); // Kj -- Check arena, if there is an error, an error message is returned.
-                if (!mainArenaCheckError.isEmpty() && canLoad) {
-                    sendMessage(mainArenaCheckError);
-                    return;
-                }
-
-                if (canLoad) {
-                    FileConfiguration config = ctp.load();
-                    config.addDefault("Arena", arg2);
-                    try {
-                        config.options().copyDefaults(true);
-                        config.save(ctp.getGlobalConfig());
-                    } catch (IOException ex) {
-                        Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    ctp.mainArena = null;
-                    ctp.mainArena = arena;
-                    // And to be sure that everything is fine reload all config
-
-                    ctp.clearConfig();
-                    ctp.loadConfigFiles();
-
-                    sendMessage(ChatColor.WHITE + "Arena selected for playing: " + ChatColor.GREEN + arg2);
-                } else {
-                    sendMessage(ChatColor.GREEN + "If you wanted to edit this arena instead, use " +ChatColor.WHITE+ "/ctp b selectarena "+arg2);
-                }
-
-                return;
-            }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
-            return;
-        }
-
+        
         if (arg.equalsIgnoreCase("setlobby")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setlobby"})) {
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                    sendMessage(ChatColor.RED + "No arena selected!");
-                    return;
-                }
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
 
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
@@ -764,11 +773,7 @@ public class BuildCommand extends CTPCommand {
                         player.getLocation().getZ(),
                         player.getLocation().getYaw());
 
-                ctp.editingArena.setLobby(lobby);
-
-                if(ctp.editingArena.getName().equalsIgnoreCase(ctp.mainArena.getName())) {
-                    ctp.mainArena.setLobby(lobby);
-                }
+                ctp.getArenaMaster().getEditingArena().setLobby(lobby);
 
                 arenaConf.addDefault("Lobby.X", Double.valueOf(lobby.getX()));
                 arenaConf.addDefault("Lobby.Y", Double.valueOf(lobby.getY()));
@@ -783,39 +788,8 @@ public class BuildCommand extends CTPCommand {
                     ctp.logSevere("Unable to save an arena's config file, please see the StackTrace for more information.");
                 }
                 
-                sendMessage(ChatColor.GREEN + ctp.editingArena.getName() + ChatColor.WHITE + " arena lobby created");
+                sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " arena lobby created");
                 return;
-            }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
-            return;
-        }
-
-        if (arg.equalsIgnoreCase("arenalist")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.arenalist"})) {
-                // Reload arena list (maybe there is a new arena there)
-
-                File file = new File(ctp.getMainDirectory() + File.separator + "Arenas");
-                ctp.loadArenas(file);
-                
-                String arenas = "";
-                boolean firstTime = true;
-                for (String arena : ctp.arena_list) {
-                    if (firstTime) {
-                        arenas = arena;
-                        firstTime = false;
-                    } else {
-                        arenas = arena + ", " + arenas;
-                    }
-                }
-                
-                if(arenas.equalsIgnoreCase("")) {
-                	sendMessage("There are currently no arenas.");
-                	return;
-                }else {
-                	sendMessage("Arena list:");
-                	sendMessage("  " + arenas);
-                	return;
-                } 
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
@@ -823,16 +797,12 @@ public class BuildCommand extends CTPCommand {
 
         if (arg.equalsIgnoreCase("pointlist")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pointlist"})) {
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                    sendMessage(ChatColor.RED + "No arena selected!");
-                    return;
-                }
 
                 String points = "";
                 boolean firstTime = true;
 
                 //Kj -- s -> aPoint
-                for (Points aPoint : ctp.editingArena.getCapturePoints()) {
+                for (Points aPoint : ctp.getArenaMaster().getEditingArena().getCapturePoints()) {
                     if (firstTime) {
                         points = aPoint.getName();
                         firstTime = false;
@@ -845,7 +815,7 @@ public class BuildCommand extends CTPCommand {
                 	sendMessage("There are currently no points.");
                 	return;
                 }else {
-                	sendMessage(ChatColor.GREEN + ctp.editingArena.getName() + ChatColor.WHITE + " point list:");
+                	sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " point list:");
                     sendMessage(points);
                     return;
                 }
@@ -853,42 +823,32 @@ public class BuildCommand extends CTPCommand {
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
-
+        
         if (arg.equalsIgnoreCase("setboundary")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setboundary"})) {
                 if (parameters.size() < 4) {
                     ctp.sendMessage(player, ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build setboundary <1 | 2>");
                     return;
                 }
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                	ctp.sendMessage(player, ChatColor.RED + "No arena selected!");
-                    return;
-                }
 
                 Location loc = player.getLocation();
                 if (arg2.equalsIgnoreCase("1")) {
-                    if (ctp.editingArena.getName().equalsIgnoreCase(ctp.mainArena.getName())) {
-                        ctp.mainArena.setX1(loc.getBlockX());
-                        ctp.mainArena.setY1(loc.getBlockY());
-                        ctp.mainArena.setZ1(loc.getBlockZ());
-                    }
-
-                    ctp.editingArena.setX1(loc.getBlockX());
-                    ctp.editingArena.setY1(loc.getBlockY());
-                    ctp.editingArena.setZ1(loc.getBlockZ());
+                	ctp.getArenaMaster().getEditingArena().setX1(loc.getBlockX());
+                	ctp.getArenaMaster().getEditingArena().setY1(loc.getBlockY());
+                	ctp.getArenaMaster().getEditingArena().setZ1(loc.getBlockZ());
 
                     // Check arena world
-                    if(ctp.editingArena.getWorld() == null || !ctp.editingArena.getWorld().equalsIgnoreCase(loc.getWorld().getName())) {
-                        ctp.editingArena.setWorld(loc.getWorld().getName());
-                    }
+                    if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().equalsIgnoreCase(loc.getWorld().getName()))
+                    	ctp.getArenaMaster().getEditingArena().setWorld(loc.getWorld().getName());
 
-                    File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                    File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                     FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
-                    arenaConf.addDefault("World", ctp.editingArena.getWorld());
+                    arenaConf.addDefault("World", ctp.getArenaMaster().getEditingArena().getWorld());
                     arenaConf.addDefault("Boundarys.X1", Integer.valueOf(loc.getBlockX()));
                     arenaConf.addDefault("Boundarys.Y1", Integer.valueOf(loc.getBlockY()));
                     arenaConf.addDefault("Boundarys.Z1", Integer.valueOf(loc.getBlockZ()));
+                    
                     try {
                         arenaConf.options().copyDefaults(true);
                         arenaConf.save(arenaFile);
@@ -898,43 +858,35 @@ public class BuildCommand extends CTPCommand {
                     }
 
                     // To boundaries property
-                    if(ctp.arenasBoundaries.containsKey(ctp.editingArena.getName())) {
-                        ArenaBoundaries bound = ctp.arenasBoundaries.get(ctp.editingArena.getName());
-                        bound.setWorld(ctp.editingArena.getWorld());
-                        bound.setx1(ctp.editingArena.getX1());
-                        bound.sety1(ctp.editingArena.getY1());
-                        bound.setz1(ctp.editingArena.getZ1());
-                    }
-                    else {   // New arena
+                    if(ctp.getArenaMaster().getArenasBoundaries().containsKey(ctp.getArenaMaster().getEditingArena().getName())) {
+                        ArenaBoundaries bound = ctp.getArenaMaster().getArenasBoundaries().get(ctp.getArenaMaster().getEditingArena().getName());
+                        bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld());
+                        bound.setx1(ctp.getArenaMaster().getEditingArena().getX1());
+                        bound.sety1(ctp.getArenaMaster().getEditingArena().getY1());
+                        bound.setz1(ctp.getArenaMaster().getEditingArena().getZ1());
+                    } else {   // New arena
                         ArenaBoundaries bound = new  ArenaBoundaries();
                         bound.setWorld(loc.getWorld().getName());
-                        bound.setx1(ctp.editingArena.getX1());
-                        bound.sety1(ctp.editingArena.getY1());
-                        bound.setz1(ctp.editingArena.getZ1());
-                        ctp.arenasBoundaries.put(ctp.editingArena.getName(), bound);
+                        bound.setx1(ctp.getArenaMaster().getEditingArena().getX1());
+                        bound.sety1(ctp.getArenaMaster().getEditingArena().getY1());
+                        bound.setz1(ctp.getArenaMaster().getEditingArena().getZ1());
+                        ctp.getArenaMaster().getArenasBoundaries().put(ctp.getArenaMaster().getEditingArena().getName(), bound);
                     }
 
                     sendMessage("First boundary point set.");
                 } else if (arg2.equalsIgnoreCase("2")) {
-                    if (ctp.editingArena.getName().equalsIgnoreCase(ctp.mainArena.getName())) {
-                        ctp.mainArena.setX2(loc.getBlockX());
-                        ctp.mainArena.setY2(loc.getBlockY());
-                        ctp.mainArena.setZ2(loc.getBlockZ());
-                    }
-
-                    ctp.editingArena.setX2(loc.getBlockX());
-                    ctp.editingArena.setY2(loc.getBlockY());
-                    ctp.editingArena.setZ2(loc.getBlockZ());
+                	ctp.getArenaMaster().getEditingArena().setX2(loc.getBlockX());
+                	ctp.getArenaMaster().getEditingArena().setY2(loc.getBlockY());
+                	ctp.getArenaMaster().getEditingArena().setZ2(loc.getBlockZ());
 
                     // Check arena world
-                    if(ctp.editingArena.getWorld() == null || !ctp.editingArena.getWorld().equalsIgnoreCase(loc.getWorld().getName())) {
-                        ctp.editingArena.setWorld(loc.getWorld().getName());
-                    }
+                    if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().equalsIgnoreCase(loc.getWorld().getName()))
+                    	ctp.getArenaMaster().getEditingArena().setWorld(loc.getWorld().getName());
 
-                    File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                    File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                     FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
-                    arenaConf.addDefault("World", ctp.editingArena.getWorld());
+                    arenaConf.addDefault("World", ctp.getArenaMaster().getEditingArena().getWorld());
                     arenaConf.addDefault("Boundarys.X2", Integer.valueOf(loc.getBlockX()));
                     arenaConf.addDefault("Boundarys.Y2", Integer.valueOf(loc.getBlockY()));
                     arenaConf.addDefault("Boundarys.Z2", Integer.valueOf(loc.getBlockZ()));
@@ -947,19 +899,19 @@ public class BuildCommand extends CTPCommand {
                     }
 
                     // To boundaries property
-                    if(ctp.arenasBoundaries.containsKey(ctp.editingArena.getName())) {
-                        ArenaBoundaries bound = ctp.arenasBoundaries.get(ctp.editingArena.getName());
-                        bound.setWorld(ctp.editingArena.getWorld());
-                        bound.setx2(ctp.editingArena.getX2());
-                        bound.sety2(ctp.editingArena.getY2());
-                        bound.setz2(ctp.editingArena.getZ2());
+                    if(ctp.getArenaMaster().getArenasBoundaries().containsKey(ctp.getArenaMaster().getEditingArena().getName())) {
+                        ArenaBoundaries bound = ctp.getArenaMaster().getArenasBoundaries().get(ctp.getArenaMaster().getEditingArena().getName());
+                        bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld());
+                        bound.setx2(ctp.getArenaMaster().getEditingArena().getX2());
+                        bound.sety2(ctp.getArenaMaster().getEditingArena().getY2());
+                        bound.setz2(ctp.getArenaMaster().getEditingArena().getZ2());
                     } else {   // New arena
                         ArenaBoundaries bound = new  ArenaBoundaries();
                         bound.setWorld(loc.getWorld().getName());
-                        bound.setx2(ctp.editingArena.getX2());
-                        bound.sety2(ctp.editingArena.getY2());
-                        bound.setz2(ctp.editingArena.getZ2());
-                        ctp.arenasBoundaries.put(ctp.editingArena.getName(), bound);
+                        bound.setx2(ctp.getArenaMaster().getEditingArena().getX2());
+                        bound.sety2(ctp.getArenaMaster().getEditingArena().getY2());
+                        bound.setz2(ctp.getArenaMaster().getEditingArena().getZ2());
+                        ctp.getArenaMaster().getArenasBoundaries().put(ctp.getArenaMaster().getEditingArena().getName(), bound);
                     }
 
                     sendMessage("Second boundary point set.");
@@ -969,17 +921,12 @@ public class BuildCommand extends CTPCommand {
             }
         }
 
-        // Kj
         if (arg.equalsIgnoreCase("maximumplayers") || arg.equalsIgnoreCase("maxplayers") || arg.equalsIgnoreCase("max")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.maximumplayers"})) {
                 if (parameters.size() < 4) {
                     sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build maximumplayers <number>");
                     return;
                 }
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                    sendMessage(ChatColor.RED + "No arena selected!");
-                    return;
-                }
 
                 int amount = 0;
                 try {
@@ -989,33 +936,29 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
 
-                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
                 arenaConf.addDefault("MaximumPlayers", amount);
                 try {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
-                    Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                	ex.printStackTrace();
+                	ctp.logSevere("Error while attempting to save the arena " + ctp.getArenaMaster().getEditingArena().getName() + "'s config file.");
                 }
 
-                ctp.editingArena.setMaxPlayers(amount);
-                sendMessage(ChatColor.GREEN + "Set maximum players of " + ctp.editingArena.getName() + " to " + amount + ".");
+                ctp.getArenaMaster().getEditingArena().setMaxPlayers(amount);
+                sendMessage(ChatColor.GREEN + "Set maximum players of " + ctp.getArenaMaster().getEditingArena().getName() + " to " + amount + ".");
                 return;
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
         
-        // Kj
         if (arg.equalsIgnoreCase("minimumplayers") || arg.equalsIgnoreCase("minplayers") || arg.equalsIgnoreCase("min")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.minimumplayers"})) {
                 if (parameters.size() < 4) {
                     sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build minimumplayers <number>");
-                    return;
-                }
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                    sendMessage(ChatColor.RED + "No arena selected!");
                     return;
                 }
 
@@ -1027,7 +970,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
 
-                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
                 arenaConf.addDefault("MinimumPlayers", amount);
                 try {
@@ -1035,11 +978,11 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
                 	ex.printStackTrace();
-                	ctp.logSevere("Unable to save the config file for the arena: " + ctp.editingArena.getName());
+                	ctp.logSevere("Unable to save the config file for the arena: " + ctp.getArenaMaster().getEditingArena().getName());
                 }
 
-                ctp.editingArena.setMinPlayers(amount);
-                sendMessage(ChatColor.GREEN + "Set minimum players of " + ctp.editingArena.getName() + " to " + amount + ".");
+                ctp.getArenaMaster().getEditingArena().setMinPlayers(amount);
+                sendMessage(ChatColor.GREEN + "Set minimum players of " + ctp.getArenaMaster().getEditingArena().getName() + " to " + amount + ".");
                 return;
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
@@ -1052,10 +995,6 @@ public class BuildCommand extends CTPCommand {
                     sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build pointstowin <number>");
                     return;
                 }
-                if (ctp.editingArena == null || ctp.editingArena.getName().isEmpty()) {
-                    sendMessage(ChatColor.RED + "No arena selected!");
-                    return;
-                }
 
                 int amount = 0;
                 try {
@@ -1065,7 +1004,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
 
-                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.editingArena.getName() + ".yml");
+                File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
                 arenaConf.addDefault("GlobalSettings.GameMode.PointCapture.PointsToWin", amount);
                 
@@ -1074,11 +1013,11 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
                 	ex.printStackTrace();
-                    ctp.logSevere("Unable to save the config file for the arena: " + ctp.editingArena.getName());
+                    ctp.logSevere("Unable to save the config file for the arena: " + ctp.getArenaMaster().getEditingArena().getName());
                 }
 
-                ctp.editingArena.getConfigOptions().pointsToWin = amount;
-                sendMessage(ChatColor.GREEN + "Set the number of points needed to win " + ctp.editingArena.getName() + " to " + amount + ".");
+                ctp.getArenaMaster().getEditingArena().getConfigOptions().pointsToWin = amount;
+                sendMessage(ChatColor.GREEN + "Set the number of points needed to win " + ctp.getArenaMaster().getEditingArena().getName() + " to " + amount + ".");
                 return;
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
@@ -1087,33 +1026,39 @@ public class BuildCommand extends CTPCommand {
 
         if (arg.equalsIgnoreCase("save")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
-                if(ctp.getGlobalConfigOptions().enableHardArenaRestore && ctp.editingArena.getX2() != 0 && ctp.editingArena.getY2() != 0 && ctp.editingArena.getZ2() != 0 && ctp.editingArena.getX1() != 0 && ctp.editingArena.getY1() != 0 && ctp.editingArena.getZ1() != 0) {
+                if(ctp.getGlobalConfigOptions().enableHardArenaRestore
+                		&& ctp.getArenaMaster().getEditingArena().getX2() != 0
+                		&& ctp.getArenaMaster().getEditingArena().getY2() != 0
+                		&& ctp.getArenaMaster().getEditingArena().getZ2() != 0
+                		&& ctp.getArenaMaster().getEditingArena().getX1() != 0
+                		&& ctp.getArenaMaster().getEditingArena().getY1() != 0
+                		&& ctp.getArenaMaster().getEditingArena().getZ1() != 0) {
                     ctp.getServer().getScheduler().runTaskLaterAsynchronously(ctp, new Runnable() {
                         public void run () {
-                            int xlow = ctp.editingArena.getX1();
-                            int xhigh = ctp.editingArena.getX2();
-                            if (ctp.editingArena.getX2() < ctp.editingArena.getX1()) {
-                                xlow = ctp.editingArena.getX2();
-                                xhigh = ctp.editingArena.getX1();
+                            int xlow = ctp.getArenaMaster().getEditingArena().getX1();
+                            int xhigh = ctp.getArenaMaster().getEditingArena().getX2();
+                            if (ctp.getArenaMaster().getEditingArena().getX2() < ctp.getArenaMaster().getEditingArena().getX1()) {
+                                xlow = ctp.getArenaMaster().getEditingArena().getX2();
+                                xhigh = ctp.getArenaMaster().getEditingArena().getX1();
                             }
                             
-                            int ylow = ctp.editingArena.getY1();
-                            int yhigh = ctp.editingArena.getY2();
-                            if (ctp.editingArena.getY2() < ctp.editingArena.getY1()) {
-                                ylow = ctp.editingArena.getY2();
-                                yhigh = ctp.editingArena.getY1();
+                            int ylow = ctp.getArenaMaster().getEditingArena().getY1();
+                            int yhigh = ctp.getArenaMaster().getEditingArena().getY2();
+                            if (ctp.getArenaMaster().getEditingArena().getY2() < ctp.getArenaMaster().getEditingArena().getY1()) {
+                                ylow = ctp.getArenaMaster().getEditingArena().getY2();
+                                yhigh = ctp.getArenaMaster().getEditingArena().getY1();
                             }
                             
-                            int zlow = ctp.editingArena.getZ1();
-                            int zhigh = ctp.editingArena.getZ2();
-                            if (ctp.editingArena.getZ2() < ctp.editingArena.getZ1()) {
-                                zlow = ctp.editingArena.getZ2();
-                                zhigh = ctp.editingArena.getZ1();
+                            int zlow = ctp.getArenaMaster().getEditingArena().getZ1();
+                            int zhigh = ctp.getArenaMaster().getEditingArena().getZ2();
+                            if (ctp.getArenaMaster().getEditingArena().getZ2() < ctp.getArenaMaster().getEditingArena().getZ1()) {
+                                zlow = ctp.getArenaMaster().getEditingArena().getZ2();
+                                zhigh = ctp.getArenaMaster().getEditingArena().getZ1();
                             }
-                            ctp.mysqlConnector.connectToMySql();
+                            ctp.getMysqlConnector().connectToMySql();
 
-                            ctp.arenaRestore.checkForArena(ctp.editingArena.getName(), ctp.editingArena.getWorld());
-                            World world = ctp.getServer().getWorld(ctp.editingArena.getWorld());
+                            ctp.getArenaRestore().checkForArena(ctp.getArenaMaster().getEditingArena().getName(), ctp.getArenaMaster().getEditingArena().getWorld());
+                            World world = ctp.getServer().getWorld(ctp.getArenaMaster().getEditingArena().getWorld());
 
                             Spawn firstPoint = new Spawn();
                             Spawn secondPoint = new Spawn();
@@ -1127,7 +1072,7 @@ public class BuildCommand extends CTPCommand {
                                     secondPoint.setX(0); secondPoint.setY(0); secondPoint.setZ(0);
                                     
                                     for (int z = zlow; z <= zhigh; z++) {
-                                        if(ctp.arenaRestore.canStackBlocksToMySQL(world.getBlockAt(x, y, z).getTypeId(), id, first, data, world.getBlockAt(x, y, z).getData())) {
+                                        if(ctp.getArenaRestore().canStackBlocksToMySQL(world.getBlockAt(x, y, z).getTypeId(), id, first, data, world.getBlockAt(x, y, z).getData())) {
                                             if(first) { // First block in the stack
                                                 first = false;
                                                 id = world.getBlockAt(x, y, z).getTypeId();
@@ -1142,12 +1087,12 @@ public class BuildCommand extends CTPCommand {
                                                 firstPoint.setX(x); firstPoint.setY(y); firstPoint.setZ(z);
                                                 secondPoint.setX(x); secondPoint.setY(y); secondPoint.setZ(z);
                                                 
-                                                ctp.arenaRestore.storeBlock(world.getBlockAt((int)firstPoint.getX(), (int)firstPoint.getY(), (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.editingArena.getName());
+                                                ctp.getArenaRestore().storeBlock(world.getBlockAt((int)firstPoint.getX(), (int)firstPoint.getY(), (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.getArenaMaster().getEditingArena().getName());
                                                 first = true;
                                                 id = -1;
                                                 data = 0;
                                             } else { // Last block in stack
-                                                ctp.arenaRestore.storeBlock(world.getBlockAt((int)firstPoint.getX(), (int)firstPoint.getY(), (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.editingArena.getName());
+                                                ctp.getArenaRestore().storeBlock(world.getBlockAt((int)firstPoint.getX(), (int)firstPoint.getY(), (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.getArenaMaster().getEditingArena().getName());
                                                 
                                                 id = world.getBlockAt(x, y, z).getTypeId();
                                                 data = world.getBlockAt(x, y, z).getData();
@@ -1159,7 +1104,7 @@ public class BuildCommand extends CTPCommand {
                                     
                                     // Check if there is something to write to mySQL
                                     if(!first) {
-                                        ctp.arenaRestore.storeBlock(world.getBlockAt(x, y, (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.editingArena.getName());
+                                        ctp.getArenaRestore().storeBlock(world.getBlockAt(x, y, (int)firstPoint.getZ()), firstPoint, secondPoint, ctp.getArenaMaster().getEditingArena().getName());
                                     }
                                 }
                             }
@@ -1168,14 +1113,14 @@ public class BuildCommand extends CTPCommand {
                     }, 5L);
                     return;
                 } else {
-                sendMessage(ChatColor.RED + "EnableHardArenaRestore is not enabled or some arena points are not defined. Arena: " + ChatColor.GREEN + ctp.mainArena.getName());
+                sendMessage(ChatColor.RED + "EnableHardArenaRestore is not enabled or some arena points are not defined. Arena: " + ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName());
                 return;
                 }
             }
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
-
+        
         if (arg.equalsIgnoreCase("restore")) {
             if(!ctp.getGlobalConfigOptions().enableHardArenaRestore) {
                 sendMessage(ChatColor.RED + "Hard arena restore is not enabled.");
@@ -1183,14 +1128,13 @@ public class BuildCommand extends CTPCommand {
             }
             
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.restore"})) {
-                ctp.arenaRestore.restoreMySQLBlocks();
+                ctp.getArenaRestore().restoreMySQLBlocks(ctp.getArenaMaster().getEditingArena());
                 return;
             }
             
             sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
-
 
         if (arg.equalsIgnoreCase("findchests")) {
             if (!Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin"})) {
@@ -1200,12 +1144,12 @@ public class BuildCommand extends CTPCommand {
 
             String arenaName;
             if(arg2 == null || arg2 == "")
-                arenaName = ctp.mainArena.getName();
+                arenaName = ctp.getArenaMaster().getEditingArena().getName();
 
             arenaName = arg2;
-            ctp.mysqlConnector.connectToMySql();
+            ctp.getMysqlConnector().connectToMySql();
 
-            ResultSet rezult = ctp.mysqlConnector.getData("SELECT * FROM Simple_block WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + Material.CHEST.getId());
+            ResultSet rezult = ctp.getMysqlConnector().getData("SELECT * FROM Simple_block WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + Material.CHEST.getId());
             try {
                 int chestCount = 0;
                 int totalItemsCount = 0;
@@ -1217,7 +1161,7 @@ public class BuildCommand extends CTPCommand {
                     System.out.println(String.format("|             Skrynios NR.:                 %5d          |", chestCount));
                     System.out.println("|----------------------------------------------------------|");
                     System.out.println("| NR. | Daikto pav.   | Kiekis | Patvarumas | Vieta skryn. |");
-                    ResultSet rezult2 = ctp.mysqlConnector.getData("SELECT distinct `type` , `durability` , `amount` , `place_in_inv`"
+                    ResultSet rezult2 = ctp.getMysqlConnector().getData("SELECT distinct `type` , `durability` , `amount` , `place_in_inv`"
                             + "FROM Simple_block, item WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + Material.CHEST.getId() + " "
                             + "AND item.`block_ID` = " + rezult.getInt("id"));
 

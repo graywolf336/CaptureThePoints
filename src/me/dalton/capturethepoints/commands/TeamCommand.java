@@ -3,6 +3,7 @@ package me.dalton.capturethepoints.commands;
 import java.util.ArrayList;
 import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Team;
 
@@ -25,38 +26,40 @@ public class TeamCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (ctp.mainArena.getTeams().size() <= 0) {
-            sendMessage(ChatColor.RED + "There are no teams - has a game been started?");
-            return;
-        }
-        
-        if (!ctp.blockListener.isAlreadyInGame(player.getName()) || ctp.playerData.get(player.getName()) == null) {
+        if (!ctp.getArenaMaster().isPlayerInAnArena(player)) {
             sendMessage(ChatColor.RED + "You must be playing a game to get who's on your team!");
             return;
         }
         
-        if (!ctp.blockListener.isAlreadyInGame(player.getName()) || ctp.playerData.get(player.getName()).getTeam() == null) {
+        Arena arena = ctp.getArenaMaster().getArenaPlayerIsIn(player);
+        
+        if (arena.getTeams().size() <= 0) {
+            sendMessage(ChatColor.RED + "There are no teams - has a game been started?");
+            return;
+        }
+        
+        if (arena.getPlayerData(player).getTeam() == null) {
             sendMessage(ChatColor.RED + "You have not yet been assigned a team!");
             return;
         }
         
-        PlayerData data = ctp.playerData.get(player.getName());
+        PlayerData data = arena.getPlayerData(player);
         String teamcolour = data.getTeam().getColor().trim();
         
         List<String> playernames = new ArrayList<String>();
         ChatColor cc = ChatColor.GREEN;
-        for (Team aTeam : ctp.mainArena.getTeams()) {
+        for (Team aTeam : arena.getTeams()) {
             if (teamcolour.equalsIgnoreCase(aTeam.getColor())) {
                 cc = aTeam.getChatColor();
-                playernames = aTeam.getTeamPlayerNames(ctp);
+                playernames = aTeam.getTeamPlayerNames(arena);
             }
         }
         
         sendMessage(ChatColor.GREEN + String.valueOf(playernames.size()) + cc + " teammates: " + playernames);
-        if (!ctp.mainArena.getConfigOptions().useScoreGeneration) {
-            sendMessage(ChatColor.GREEN + "Your team controls " + cc + ctp.playerData.get(player.getName()).getTeam().getControlledPoints() + ChatColor.GREEN + " points!");
+        if (!arena.getConfigOptions().useScoreGeneration) {
+            sendMessage(ChatColor.GREEN + "Your team controls " + cc + data.getTeam().getControlledPoints() + ChatColor.GREEN + " points!");
         } else {
-            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + ctp.playerData.get(player.getName()).getTeam().getScore() + "!");
+            sendMessage(ChatColor.GREEN + "Your team has a score of: " + cc + data.getTeam().getScore() + "!");
         }
         return;
     }

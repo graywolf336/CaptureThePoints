@@ -9,23 +9,37 @@ import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.KillStreakMessages;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigTools {
-	private static ConfigOptions globalConfigOptions = null;
-	private static CaptureThePoints ctp;
+	private ConfigOptions globalConfigOptions = null;
+	private CaptureThePoints ctp;
 	
-	public static void setCTP(CaptureThePoints instance) {
-		ctp = instance;
+	public ConfigTools(CaptureThePoints ctp) {
+		this.ctp = ctp;
 	}
 	
+    /** Load from CaptureSettings.yml */
+    public FileConfiguration load () { //Yaml Configuration
+        return load(ctp.getGlobalConfig());
+    }
+
+    /** Load yml from specified file */
+    public FileConfiguration load (File file) {
+        try {
+            FileConfiguration PluginPropConfig = YamlConfiguration.loadConfiguration(file);
+            return PluginPropConfig;
+        } catch (Exception localException) {} return null;
+    }
+	
     /** Get the configOptions from the config file. */
-    public static ConfigOptions getConfigOptions(File arenafile) {
+    public ConfigOptions getConfigOptions(File arenafile) {
     	if(globalConfigOptions == null) {
     		globalConfigOptions = ctp.getGlobalConfigOptions();
     	}
     	
         setConfigOptions(arenafile);
-        FileConfiguration config = ctp.load(arenafile);
+        FileConfiguration config = load(arenafile);
         
         config.addDefault("Version", 2);
         ConfigOptions co = new ConfigOptions();
@@ -122,8 +136,8 @@ public class ConfigTools {
     }
     
     //Sets config options if they does not exist
-    public static void setConfigOptions (File arenafile) {
-        FileConfiguration config = ctp.load(arenafile);
+    public void setConfigOptions (File arenafile) {
+        FileConfiguration config = load(arenafile);
         
         String pointCapture = "";
         String pointCaptureWithScore = "";
@@ -234,13 +248,13 @@ public class ConfigTools {
     
     //For arena config options!
     
-    public static ConfigOptions getArenaConfigOptions (File arenafile) {
+    public ConfigOptions getArenaConfigOptions (File arenafile) {
     	if(globalConfigOptions == null) {
     		globalConfigOptions = ctp.getGlobalConfigOptions();
     	}
     	
         setArenaConfigOptions(arenafile);
-        FileConfiguration config = ctp.load(arenafile);
+        FileConfiguration config = load(arenafile);
 
         ConfigOptions co = new ConfigOptions();
 
@@ -316,8 +330,8 @@ public class ConfigTools {
         return co;
     }
 
-    public static void setArenaConfigOptions (File arenafile) {
-        FileConfiguration config = ctp.load(arenafile);
+    public void setArenaConfigOptions(File arenafile) {
+        FileConfiguration config = load(arenafile);
         
         String pointCapture = "GlobalSettings.GameMode.PointCapture.";
         String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";

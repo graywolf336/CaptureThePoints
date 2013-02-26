@@ -6,6 +6,7 @@ import java.util.List;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
+import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.events.CTPPlayerDeathEvent;
@@ -46,16 +47,22 @@ public class CaptureThePointsEntityListener  implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityExplode(EntityExplodeEvent event) {
-        if (!ctp.isGameRunning())
-            return;
-        if(ctp.getGlobalConfigOptions().enableHardArenaRestore)
-            return;
+        for(Arena a : ctp.getArenaMaster().getArenas()) {
+            if (!a.isGameRunning())
+                return;
+            
+            if(ctp.getGlobalConfigOptions().enableHardArenaRestore)
+                return;
+            
+            if (ctp.getArenaUtil().isInside(event.getLocation().getBlockX(), a.getX1(), a.getX2())
+            		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockY(), a.getY1(), a.getY2())
+            		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockZ(), a.getZ1(), a.getZ2())
+            		&& event.getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld())) {
+                List<Block> explodedBlocks = event.blockList();
 
-        if (ctp.playerListener.isInside(event.getLocation().getBlockX(), ctp.mainArena.getX1(), ctp.mainArena.getX2()) && ctp.playerListener.isInside(event.getLocation().getBlockY(), ctp.mainArena.getY1(), ctp.mainArena.getY2()) && ctp.playerListener.isInside(event.getLocation().getBlockZ(), ctp.mainArena.getZ1(), ctp.mainArena.getZ2()) && event.getLocation().getWorld().getName().equalsIgnoreCase(ctp.mainArena.getWorld())) {
-            List<Block> explodedBlocks = event.blockList();
-
-            for (Block block : explodedBlocks)
-                ctp.arenaRestore.addBlock(block, true);
+                for (Block block : explodedBlocks)
+                    ctp.getArenaRestore().addBlock(block, true);
+            }
         }
     }
 
@@ -64,10 +71,10 @@ public class CaptureThePointsEntityListener  implements Listener {
         if (!(event.getEntity() instanceof Player))
             return;
         
-        if((this.ctp.playerData.get(((Player) event.getEntity()).getName()) == null))
+        if(!ctp.getArenaMaster().isPlayerInAnArena(((Player) event.getEntity())))
             return;
         
-        if(!ctp.isGameRunning() && this.ctp.playerData.get(((Player) event.getEntity()).getName()).inLobby())  {
+        if(!ctp.getArenaMaster().getArenaPlayerIsIn((Player) event.getEntity()).isGameRunning() && ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()).inLobby())  {
             event.setDroppedExp(0);
             event.getDrops().clear();
             return;
@@ -79,86 +86,87 @@ public class CaptureThePointsEntityListener  implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void healthRegain(EntityRegainHealthEvent event) {
-    	if (!(event.getEntity() instanceof Player)) return;
-    	
-    	 if (ctp.isGameRunning()) {
-             if ((this.ctp.playerData.get(((Player) event.getEntity()).getName()) != null)) {
-            	 if(!ctp.mainArena.getConfigOptions().regainHealth) {
-	            	 if (event.getRegainReason() == RegainReason.SATIATED) {
-	             		event.setCancelled(true);
-	             		if(ctp.getGlobalConfigOptions().debugMessages)
-	                    	ctp.getLogger().info("Just cancelled a EntityRegainHealthEvent as you have it turned off during the game.");
-	             	}else return;
-            	 }else return;
-             }else return;
-    	 }else return;
+	if (!(event.getEntity() instanceof Player)) return;
+	
+	Player player = (Player) event.getEntity();
+	if(!ctp.getArenaMaster().isPlayerInAnArena(player))
+		return; //not in an arena
+	
+	if (ctp.getArenaMaster().getArenaPlayerIsIn(player).isGameRunning()) {
+		if(!ctp.getArenaMaster().getArenaPlayerIsIn(player).getConfigOptions().regainHealth) {
+			if (event.getRegainReason() == RegainReason.SATIATED) {
+				event.setCancelled(true);
+				if(ctp.getGlobalConfigOptions().debugMessages)
+					ctp.getLogger().info("Just cancelled a EntityRegainHealthEvent as you have it turned off during the game.");
+			}else return;
+		}else return;
+	}else return;
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPotionEffect(PotionSplashEvent event) {
         // lobby damage check
-
-
-        if (ctp.isGameRunning()) {
-            Player thrower = (Player) event.getEntity().getShooter();
+    	if(!(event.getEntity().getShooter() instanceof Player)) return; //the shooter is not a player, so don't handle
+    	if(!ctp.getArenaMaster().isPlayerInAnArena((Player) event.getEntity().getShooter())) return; //the shooter is not in the arena, so don't handle
+    	
+    	Player thrower = (Player) event.getEntity().getShooter();
+    	
+        if (ctp.getArenaMaster().getArenaPlayerIsIn(thrower).isGameRunning()) {
+            ThrownPotion potion = event.getEntity();
+            PotionEffect effect = null;
+            boolean harmful = false;
+            for(PotionEffect e: potion.getEffects()){
+            	effect = e;
+            }
             
-            if (ctp.playerData.get(thrower.getName()) != null) {
-                ThrownPotion potion = event.getEntity();
-                PotionEffect effect = null;
-                boolean harmful = false;
-                for(PotionEffect e: potion.getEffects()){
-                	effect = e;
-                }
-                
-                harmful = PotionManagement.isHarmful(effect);
-                for(Iterator<LivingEntity> iter = event.getAffectedEntities().iterator(); iter.hasNext();){
-                	LivingEntity hitPlayerEntity = iter.next();
-                	Player hitPlayer = (Player)hitPlayerEntity;
-                	
-                	//Is potion negative/positive
-                	if(harmful){	                   //Negative
-                		//If hit self
-                		if(thrower.equals(hitPlayer)){
-                			event.setIntensity(hitPlayerEntity, 0); 
-                		}
-                		//Is thrower on the same team as player hit
-                		if (this.ctp.playerData.get(thrower.getName()).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer.getName()).getTeam().getColor())){ // Yes
-                			event.setIntensity(hitPlayerEntity, 0); 
-                		}else{ // No
-                            if (isProtected(hitPlayer)) {
-                            	event.setIntensity(hitPlayerEntity, 0);                		                	
-                            }	
-                		}
-                        //Player has "died"
-                        if(effect.getType().equals(PotionEffectType.HARM)){
-                        	int damage = 6;
-                        	
-                        	if(effect.getAmplifier()==1){
-                        		damage = 12;
-                        	}
-                        	
-                        	double intensity = event.getIntensity(hitPlayerEntity);
-                        	
-                        	double tmpDamage = ((double)damage)*intensity;
-                        	damage = (int) tmpDamage;
-                        	
-                        	tmpDamage = tmpDamage - ((int)tmpDamage);
-                        	
-                        	if(tmpDamage >= .5){
-                        		damage++;
-                        	}
-                        	
-                            if ((this.ctp.playerData.get(hitPlayer.getName()) != null) && (hitPlayer.getHealth() - damage <= 0)) {
-                            	event.setIntensity(hitPlayerEntity, 0); 
-                                respawnPlayer(hitPlayer, thrower);
-                            }
+            harmful = PotionManagement.isHarmful(effect);
+            for(Iterator<LivingEntity> iter = event.getAffectedEntities().iterator(); iter.hasNext();){
+            	LivingEntity hitPlayerEntity = iter.next();
+            	Player hitPlayer = (Player)hitPlayerEntity;
+            	
+            	//Is potion negative/positive
+            	if(harmful){	                   //Negative
+            		//If hit self
+            		if(thrower.equals(hitPlayer)){
+            			event.setIntensity(hitPlayerEntity, 0); 
+            		}
+            		//Is thrower on the same team as player hit
+            		if (ctp.getArenaMaster().getPlayerData(thrower).getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(hitPlayer).getTeam().getColor())){ // Yes
+            			event.setIntensity(hitPlayerEntity, 0); 
+            		}else{ // No
+                        if (isProtected(ctp.getArenaMaster().getArenaPlayerIsIn(hitPlayer), hitPlayer)) {
+                        	event.setIntensity(hitPlayerEntity, 0);                		                	
+                        }	
+            		}
+                    //Player has "died"
+                    if(effect.getType().equals(PotionEffectType.HARM)){
+                    	int damage = 6;
+                    	
+                    	if(effect.getAmplifier()==1){
+                    		damage = 12;
+                    	}
+                    	
+                    	double intensity = event.getIntensity(hitPlayerEntity);
+                    	
+                    	double tmpDamage = ((double)damage)*intensity;
+                    	damage = (int) tmpDamage;
+                    	
+                    	tmpDamage = tmpDamage - ((int)tmpDamage);
+                    	
+                    	if(tmpDamage >= .5){
+                    		damage++;
+                    	}
+                    	
+                        if (ctp.getArenaMaster().getPlayerData(hitPlayer) != null && hitPlayer.getHealth() - damage <= 0) {
+                        	event.setIntensity(hitPlayerEntity, 0); 
+                            respawnPlayer(ctp.getArenaMaster().getArenaPlayerIsIn(hitPlayer), hitPlayer, thrower);
                         }
-                	}else{                            //Positive
-                		if (!this.ctp.playerData.get(thrower.getName()).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(hitPlayer.getName()).getTeam().getColor())){ 
-                			event.setIntensity(hitPlayerEntity, 0); 
-                		}
-                	}
-                }
+                    }
+            	}else{                            //Positive
+            		if (!ctp.getArenaMaster().getPlayerData(thrower).getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(hitPlayer).getTeam().getColor())){ 
+            			event.setIntensity(hitPlayerEntity, 0); 
+            		}
+            	}
             }
         }
     }
@@ -170,78 +178,76 @@ public class CaptureThePointsEntityListener  implements Listener {
             // Kj -- Didn't involve a player. So we don't care.
             return;
         }
+        
+        Player attacker = null;
+        if (ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()) != null) {
 
-        //Only check if game is running
-        if (ctp.isGameRunning()) {
-            Player attacker = null;
-            if ((this.ctp.playerData.get(((Player) event.getEntity()).getName()) != null)) {
+            // for melee
+            if (checkForPlayerEvent(event)) {
+                attacker = ((Player) ((EntityDamageByEntityEvent) event).getDamager());
+            }
 
-                // for melee
-                if (checkForPlayerEvent(event)) {
-                    attacker = ((Player) ((EntityDamageByEntityEvent) event).getDamager());
-                }
+            // for arrows
+            if ((event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) && (((Projectile) ((EntityDamageByEntityEvent) event).getDamager()).getShooter() instanceof Player)) {
+                attacker = (Player) ((Projectile) ((EntityDamageByEntityEvent) event).getDamager()).getShooter();
+            }
 
-                // for arrows
-                if ((event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) && (((Projectile) ((EntityDamageByEntityEvent) event).getDamager()).getShooter() instanceof Player)) {
-                    attacker = (Player) ((Projectile) ((EntityDamageByEntityEvent) event).getDamager()).getShooter();
-                }
+            Player playa = (Player) event.getEntity();
 
-                Player playa = (Player) event.getEntity();
+            // lobby damage check
+            if (ctp.getArenaMaster().getPlayerData(playa).inLobby() || (attacker != null && ctp.getArenaMaster().getPlayerData(attacker) != null && ctp.getArenaMaster().getPlayerData(attacker).inLobby())) {
+                event.setCancelled(true);
+                if(ctp.getGlobalConfigOptions().debugMessages)
+                	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
+                return;
+            }
 
-                // lobby damage check
-                if (this.ctp.playerData.get(playa.getName()).inLobby() || (attacker != null && this.ctp.playerData.get(attacker.getName()) != null && this.ctp.playerData.get(attacker.getName()).inLobby())) {
-                    event.setCancelled(true);
-                    if(ctp.getGlobalConfigOptions().debugMessages)
-                    	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
-                    return;
-                }
-
-                if (isProtected(playa)) {
-                    // If you damage yourself
-                    if (attacker != null) {
-                    	ctp.sendMessage(attacker, ChatColor.LIGHT_PURPLE + "You can't damage enemy in their spawn!");
-                    }
-                    
-                    event.setCancelled(true);
-                    if(ctp.getGlobalConfigOptions().debugMessages)
-                    	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in his/her spawn area.");
-                    return;
-                }
-
-                //disable pvp damage
+            if (isProtected(ctp.getArenaMaster().getArenaPlayerIsIn(playa), playa)) {
+                // If you damage yourself
                 if (attacker != null) {
-                    if ((this.ctp.playerData.get(playa.getName()) != null) && (this.ctp.playerData.get(attacker.getName()) != null)) {
-                        if (this.ctp.playerData.get(playa.getName()).getTeam().getColor().equalsIgnoreCase(this.ctp.playerData.get(attacker.getName()).getTeam().getColor())) {
-                        	ctp.sendMessage(attacker, ctp.playerData.get(playa.getName()).getTeam().getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
-                            event.setCancelled(true);
+                	ctp.sendMessage(attacker, ChatColor.LIGHT_PURPLE + "You can't damage enemy in their spawn!");
+                }
+                
+                event.setCancelled(true);
+                if(ctp.getGlobalConfigOptions().debugMessages)
+                	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in his/her spawn area.");
+                return;
+            }
+
+            //disable pvp damage
+            if (attacker != null) {
+                if ((ctp.getArenaMaster().getPlayerData(playa) != null) && (ctp.getArenaMaster().getPlayerData(attacker) != null)) {
+                    if (ctp.getArenaMaster().getPlayerData(playa).getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(attacker).getTeam().getColor())) {
+                    	ctp.sendMessage(attacker, ctp.getArenaMaster().getPlayerData(playa).getTeam().getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
+                        event.setCancelled(true);
+                        if(ctp.getGlobalConfigOptions().debugMessages)
+                        	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
+                        return;
+                    } else {
+                    	// This is if there exists something like factions group protection
+                        if (event.isCancelled()) {
+                            event.setCancelled(false);
                             if(ctp.getGlobalConfigOptions().debugMessages)
-                            	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
-                            return;
-                        } else {
-                        	// This is if there exists something like factions group protection
-                            if (event.isCancelled()) {
-                                event.setCancelled(false);
-                                if(ctp.getGlobalConfigOptions().debugMessages)
-                                	ctp.getLogger().info("Just uncancelled a EntityDamageEvent because the event was cancelled by some other plugin.");
-                            }
+                            	ctp.getLogger().info("Just uncancelled a EntityDamageEvent because the event was cancelled by some other plugin.");
                         }
                     }
                 }
+            }
 
-                //Player has "died"
-                if ((this.ctp.playerData.get(playa.getName()) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
-                    event.setCancelled(true);
-                    if(ctp.getGlobalConfigOptions().debugMessages)
-                    	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
-                    respawnPlayer(playa, attacker);
-                    
-                    //Throw a custom event for when the player dies in the arena
-                    CTPPlayerDeathEvent CTPevent = new CTPPlayerDeathEvent(playa, ctp.mainArena, ctp.playerData.get(playa.getName()));
-                    ctp.getPluginManager().callEvent(CTPevent);
-                }
+            //Player has "died"
+            if ((ctp.getArenaMaster().getPlayerData(playa) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
+                event.setCancelled(true);
+                if(ctp.getGlobalConfigOptions().debugMessages)
+                	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
+                respawnPlayer(ctp.getArenaMaster().getArenaPlayerIsIn(playa), playa, attacker);
+                
+                //Throw a custom event for when the player dies in the arena
+                CTPPlayerDeathEvent CTPevent = new CTPPlayerDeathEvent(playa, ctp.getArenaMaster().getArenaPlayerIsIn(playa), ctp.getArenaMaster().getPlayerData(playa));
+                ctp.getPluginManager().callEvent(CTPevent);
             }
         }
-        if (ctp.playerData.get(((Player) event.getEntity()).getName()) != null && ctp.playerData.get(((Player) event.getEntity()).getName()).inLobby()) {
+        
+        if (ctp.getArenaMaster().getPlayerData(((Player) event.getEntity())) != null && ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()).inLobby()) {
             event.setCancelled(true);
             if(ctp.getGlobalConfigOptions().debugMessages)
             	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
@@ -261,8 +267,8 @@ public class CaptureThePointsEntityListener  implements Listener {
     }
     
 	@SuppressWarnings("deprecation")
-	private boolean dropWool(Player player) {
-        if (!ctp.mainArena.getConfigOptions().dropWoolOnDeath) {
+	private boolean dropWool(Arena arena, Player player) {
+        if (!arena.getConfigOptions().dropWoolOnDeath) {
             return false;
         }
 
@@ -270,7 +276,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         int ownedWool = 0;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
-                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player.getName()).getTeam().getColor())) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(player.getName()).getTeam().getColor())) {
                     inv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
@@ -282,7 +288,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         inv.remove(Material.WOOL);
         
         if (ownedWool != 0) {
-            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player.getName()).getTeam().getColor().toUpperCase());
+            DyeColor color = DyeColor.valueOf(ctp.getArenaMaster().getPlayerData(player.getName()).getTeam().getColor().toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
             
@@ -293,7 +299,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     }
     
 	@SuppressWarnings("deprecation")
-	public void giveRoleItemsAfterDeath(Player player) {
+	private void giveRoleItemsAfterDeath(Player player) {
     	
         PlayerInventory inv = player.getInventory();
         
@@ -301,7 +307,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         int ownedWool = 0;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
-                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.playerData.get(player.getName()).getTeam().getColor())) {
+                if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(player.getName()).getTeam().getColor())) {
                     inv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
@@ -313,7 +319,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         
         inv.clear(); // Removes inventory
         
-        for (Items item : ctp.roles.get(ctp.playerData.get(player.getName()).getRole())) {
+        for (Items item : ctp.roles.get(ctp.getArenaMaster().getPlayerData(player.getName()).getRole())) {
             if(item.getItem().equals(Material.AIR))
                 continue;
 
@@ -411,7 +417,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         
         //Re-add Wool
         if (ownedWool != 0) {
-            DyeColor color = DyeColor.valueOf(ctp.playerData.get(player.getName()).getTeam().getColor().toUpperCase());
+            DyeColor color = DyeColor.valueOf(ctp.getArenaMaster().getPlayerData(player.getName()).getTeam().getColor().toUpperCase());
             ItemStack wool = new ItemStack(35, ownedWool, color.getData());
             player.getInventory().addItem(new ItemStack[]{wool});
         }
@@ -420,60 +426,59 @@ public class CaptureThePointsEntityListener  implements Listener {
 		player.updateInventory();
     }
     
-    public boolean isProtected(Player player) {
+	private boolean isProtected(Arena arena, Player player) {
         // Kj -- null checks
-        if (ctp.mainArena == null || player == null) {
+        if (arena == null || player == null) {
             return false;
         }
-        if (ctp.playerData.get(player.getName()) == null) {
+        if (arena.getPlayerData(player) == null)
             return false;
-        }
 
         Spawn spawn = new Spawn();
 
         try {
-            spawn = ctp.playerData.get(player.getName()).getTeam().getSpawn();
+            spawn = arena.getPlayerData(player).getTeam().getSpawn();
         } catch(Exception e) { // For debugging
             System.out.println("[ERROR][CTP] Team spawn could not be found!  Player Name: " + player.getName());
             return false;
         }
                             
-        Location protectionPoint = new Location(ctp.getServer().getWorld(ctp.mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
-        double distance = Util.getDistance(player.getLocation(), protectionPoint); // Kj -- this method is world-friendly.
+        Location protectionPoint = new Location(ctp.getServer().getWorld(arena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
+        double distance = ctp.getUtil().getDistance(player.getLocation(), protectionPoint); // Kj -- this method is world-friendly.
         
         if (distance == Double.NaN) {
             return false; // Kj -- it will return Double.NaN if cross-world or couldn't work out distance for whatever reason.
         } else {
-            return distance <= ctp.mainArena.getConfigOptions().protectionDistance;
+            return distance <= arena.getConfigOptions().protectionDistance;
         }
     }
     
-    public void respawnPlayer(Player player, Player attacker) {
+    private void respawnPlayer(Arena arena, Player player, Player attacker) {
         if (attacker != null) {
             if(!ctp.getGlobalConfigOptions().disableKillMessages) {
-                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
-                        + " was killed by " + ctp.playerData.get(attacker.getName()).getTeam().getChatColor() + attacker.getName());
+                ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                        + " was killed by " + arena.getPlayerData(player).getTeam().getChatColor() + attacker.getName());
             }
             
-            dropWool(player);
-            ctp.playerData.get(attacker.getName()).setMoney(ctp.playerData.get(attacker.getName()).getMoney() + ctp.mainArena.getConfigOptions().moneyForKill);
-            attacker.sendMessage("Money: " + ChatColor.GREEN + ctp.playerData.get(attacker.getName()).getMoney());
-            ctp.checkForKillMSG(attacker, false);
-            ctp.checkForKillMSG(player, true);
+            dropWool(arena, player);
+            arena.getPlayerData(attacker).setMoney(arena.getPlayerData(attacker).getMoney() + arena.getConfigOptions().moneyForKill);
+            attacker.sendMessage("Money: " + ChatColor.GREEN + arena.getPlayerData(attacker).getMoney());
+            ctp.checkForKillMSG(arena, attacker, false);
+            ctp.checkForKillMSG(arena, player, true);
         } else {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
-                Util.sendMessageToPlayers(ctp, ctp.playerData.get(player.getName()).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
             ctp.sendMessage(player, ChatColor.RED + "Please do not remove your Helmet.");
-            ctp.checkForKillMSG(player, true);
+            ctp.checkForKillMSG(arena, player, true);
         }
 
         PotionManagement.removeAllEffects(player);
-        setFullHealthPlayerAndCallEvent(player);
+        ctp.getArenaUtil().setFullHealthPlayerAndCallEvent(arena, player);
         player.setFoodLevel(20);
-        Spawn spawn = ctp.playerData.get(player.getName()).getTeam().getSpawn();
+        Spawn spawn = arena.getPlayerData(player).getTeam().getSpawn();
 
-        if (ctp.mainArena.getConfigOptions().giveNewRoleItemsOnRespawn) {
+        if (arena.getConfigOptions().giveNewRoleItemsOnRespawn) {
             giveRoleItemsAfterDeath(player);
         }
 
@@ -488,28 +493,13 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
 
-        Location loc = new Location(ctp.getServer().getWorld(ctp.mainArena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
+        Location loc = new Location(ctp.getServer().getWorld(arena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
         loc.setYaw((float) spawn.getDir());
-        ctp.getServer().getWorld(ctp.mainArena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
+        ctp.getServer().getWorld(arena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
         boolean teleport = player.teleport(loc);
         
         if (!teleport) {
             player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
         }
-    }
-    
-    /**
-     * Heal the player (set the health) and cause an event to happen from it, thus improving relations with other plugins.
-     * 
-     * @param player The player to heal.
-     * @param amount The amount to heal the player.
-     */
-    public void setFullHealthPlayerAndCallEvent(Player player) {
-    	int gained = ctp.mainArena.getConfigOptions().maxPlayerHealth - player.getHealth();
-    	
-    	player.setHealth(ctp.mainArena.getConfigOptions().maxPlayerHealth);
-    	
-    	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, gained, RegainReason.CUSTOM);
-    	ctp.getPluginManager().callEvent(regen);
     }
 }

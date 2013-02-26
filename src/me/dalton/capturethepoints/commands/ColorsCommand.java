@@ -57,7 +57,7 @@ public class ColorsCommand extends CTPCommand {
             for (Team aTeam : ctp.getArenaMaster().getArena(parameters.get(2)).getTeams()) {
                 cc = aTeam.getChatColor();
                 playernames += cc;
-                playernames += aTeam.getTeamPlayerNames(ctp);
+                playernames += aTeam.getTeamPlayerNames(ctp.getArenaMaster().getArena(parameters.get(2)));
                 playernames += " ";
             }
             
