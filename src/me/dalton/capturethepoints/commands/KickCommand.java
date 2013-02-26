@@ -22,18 +22,18 @@ public class KickCommand extends CTPCommand {
 
     @Override
     public void perform() {            
-        Player bob = ctp.getServer().getPlayer(parameters.get(3));
+        Player bob = ctp.getServer().getPlayer(parameters.get(2));
         
         if (bob == null) {
-            sendMessage(ChatColor.RED + "Could not find the online player " + ChatColor.GOLD + parameters.get(3) + ChatColor.RED +".");
+            sendMessage(ChatColor.RED + "Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");
             return;
         }
         
         if (ctp.getArenaMaster().isPlayerInAnArena(bob.getName())) {
             ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " kicked you from CTP game!");
-            ctp.getArenaMaster().getArena(parameters.get(2)).leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
+            ctp.getArenaMaster().getArenaPlayerIsIn(bob).leaveGame(bob, ArenaLeaveReason.PLAYER_KICK_COMMAND);
         } else {
-            sendMessage(ChatColor.GOLD + parameters.get(3) + ChatColor.RED +" is not playing CTP!");
+            sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is not playing CTP!");
         }
         return;
     }
