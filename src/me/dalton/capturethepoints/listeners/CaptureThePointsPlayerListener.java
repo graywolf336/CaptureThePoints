@@ -327,7 +327,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit (PlayerQuitEvent event) {
-        if (ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer().getName()).getPlayerData(event.getPlayer().getName()) != null)
+        if(ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer()))
         	ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer().getName()).leaveGame(event.getPlayer(), ArenaLeaveReason.PLAYER_QUIT);
     }
 
