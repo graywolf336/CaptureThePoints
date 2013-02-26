@@ -424,8 +424,9 @@ public class BuildCommand extends CTPCommand {
 
                     String aWorld = arenaConf.getString("World");
                     if (aWorld == null) {
-                        arenaConf.addDefault("World", player.getWorld().getName());
-                    } else if (!aWorld.equals(player.getWorld().getName())) {
+                        arenaConf.addDefault("World", loc.getWorld().getName());
+                        ctp.getArenaMaster().getEditingArena().setWorld(loc.getWorld().getName());
+                    } else if (!aWorld.equals(loc.getWorld().getName())) {
                     	ctp.sendMessage(player, ChatColor.RED + "Please build arena lobby in same world as its spawns and capture points!");
                         return;
                     }
@@ -442,9 +443,6 @@ public class BuildCommand extends CTPCommand {
                     	ex.printStackTrace();
                     	ctp.logSevere("Was unable to save the config file for the arena \"" + ctp.getArenaMaster().getEditingArena().getName() + "\", please see the above Stacktrace.");
                     }
-
-                    if (ctp.getArenaMaster().getEditingArena().getWorld() == null)
-                    	ctp.getArenaMaster().getEditingArena().setWorld(player.getWorld().getName());
                     
                     Team team = new Team();
                     
