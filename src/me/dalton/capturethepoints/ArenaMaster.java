@@ -247,154 +247,149 @@ public class ArenaMaster {
     /**Loads ArenaData data ready for assignment to mainArena */
     public Arena loadArena(String name) {
         Arena arena = new Arena(ctp, name);
-
-        if (getArenas().contains(name)) {
-            File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + name + ".yml");
-            FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
-            
-            String world = arenaConf.getString("World");
-            
-            // Kj -- check the world to see if it exists. 
-            try {
-            	ctp.getServer().getWorld(world);
-                arena.setWorld(world);
-            } catch (Exception ex) {
-            	ctp.getLogger().warning(name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
-                List<String> worlds = new LinkedList<String>();
-                for (World aWorld : ctp.getServer().getWorlds()) {
-                    worlds.add(aWorld.getName());
-                }
-                
-                if (worlds.size() == 1) {
-                    arena.setWorld(worlds.get(0));
-                    ctp.getLogger().info("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
-                } else {
-                	ctp.getLogger().info("This usually happens on the first load, create an arena and this message should go away.");
-                	ctp.getLogger().info("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
-                }
+        
+        File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + name + ".yml");
+        FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
+        
+        String world = arenaConf.getString("World");
+        
+        // Kj -- check the world to see if it exists. 
+        try {
+        	ctp.getServer().getWorld(world);
+            arena.setWorld(world);
+        } catch (Exception ex) {
+        	ctp.getLogger().warning(name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
+            List<String> worlds = new LinkedList<String>();
+            for (World aWorld : ctp.getServer().getWorlds()) {
+                worlds.add(aWorld.getName());
             }
             
-            if(!arenaConf.contains("MaximumPlayers"))
-                arenaConf.set("MaximumPlayers", 9999);
-            if(!arenaConf.contains("MinimumPlayers"))
-                arenaConf.set("MinimumPlayers", 4);
-
-            arena.setMaxPlayers(arenaConf.getInt("MaximumPlayers", 9999));
-            arena.setMinPlayers(arenaConf.getInt("MinimumPlayers", 4));
-            if (arenaConf.contains("Points")) {
-                for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
-                    Points tmps = new Points();
-                    tmps.setName(str);
-                    str = "Points." + str;
-                    tmps.setX(arenaConf.getInt(str + ".X", 0));
-                    tmps.setY(arenaConf.getInt(str + ".Y", 0));
-                    tmps.setZ(arenaConf.getInt(str + ".Z", 0));
-
-                    // Load teams that are not allowed to capture
-                    String teamColors = arenaConf.getString(str + ".NotAllowedToCaptureTeams");
-                    if(teamColors == null) {
-                        tmps.setNotAllowedToCaptureTeams(null);
-                    } else {
-                        // Trim commas and whitespace, and split items by commas
-                        teamColors = teamColors.toLowerCase();
-                        teamColors = teamColors.trim();
-                        teamColors = teamColors.replaceAll(" ", "");
-
-                        if (teamColors.endsWith(",")) {
-                            teamColors = teamColors.substring(0, teamColors.length() - 1);
-                        }
-                        
-                        String[] tc = teamColors.split(",");
-
-                        tmps.getNotAllowedToCaptureTeams().addAll(Arrays.asList(tc));
-                    }
-
-                    if (arenaConf.contains(str + ".Dir")) {
-                        tmps.setPointDirection(arenaConf.getString(str + ".Dir"));
-                    }
-                    arena.getCapturePoints().add(tmps);
-                }
+            if (worlds.size() == 1) {
+                arena.setWorld(worlds.get(0));
+                ctp.getLogger().info("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
+            } else {
+            	ctp.getLogger().info("This usually happens on the first load, create an arena and this message should go away.");
+            	ctp.getLogger().info("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
             }
-            
-            if (arenaConf.contains("Team-Spawns")) {
-                for (String str : arenaConf.getConfigurationSection("Team-Spawns").getKeys(false)) {
-                    Spawn spawn = new Spawn();
-                    spawn.setName(str);
-                    str = "Team-Spawns." + str;
-                    spawn.setX(arenaConf.getDouble(str + ".X", 0.0D));
-                    spawn.setY(arenaConf.getDouble(str + ".Y", 0.0D));
-                    spawn.setZ(arenaConf.getDouble(str + ".Z", 0.0D));
-                    spawn.setDir(arenaConf.getDouble(str + ".Dir", 0.0D));
-                    arena.getTeamSpawns().put(spawn.getName(), spawn);
-
-                    Team team = new Team();
-                    team.setSpawn(spawn);
-                    team.setColor(spawn.getName());
-                    team.setMemberCount(0);
-                    
-                    try {
-                        team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase()));
-                    } catch (Exception ex) {
-                        team.setChatColor(ChatColor.GREEN);
-                    }
-
-                    // Check if this spawn is already in the list
-                    boolean hasTeam = false;
-
-                    for (Team aTeam : arena.getTeams()) {
-                        if (aTeam.getColor().equalsIgnoreCase(spawn.getName())) {
-                            hasTeam = true;
-                            break;
-                        }
-                    }
-
-                    if (!hasTeam) {
-                        arena.getTeams().add(team);
-                    }
-                }
-            }
-            
-            // Arena boundaries
-            arena.setX1(arenaConf.getInt("Boundarys.X1", 0));
-            arena.setY1(arenaConf.getInt("Boundarys.Y1", 0));
-            arena.setZ1(arenaConf.getInt("Boundarys.Z1", 0));
-            arena.setX2(arenaConf.getInt("Boundarys.X2", 0));
-            arena.setY2(arenaConf.getInt("Boundarys.Y2", 0));
-            arena.setZ2(arenaConf.getInt("Boundarys.Z2", 0));
-
-
-            Lobby lobby = new Lobby(
-                    arenaConf.getDouble("Lobby.X", 0.0D),
-                    arenaConf.getDouble("Lobby.Y", 0.0D),
-                    arenaConf.getDouble("Lobby.Z", 0.0D),
-                    arenaConf.getDouble("Lobby.Dir", 0.0D));
-            arena.setLobby(lobby);
-            if ((lobby.getX() == 0.0D) && (lobby.getY() == 0.0D) && (lobby.getZ() == 0.0D) && (lobby.getDir() == 0.0D)) {
-                arena.setLobby(null);
-            }
-
-            // Kj -- Test that the spawn points are within the map boundaries
-            for (Spawn aSpawn : arena.getTeamSpawns().values()) {
-                if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-                	ctp.getLogger().warning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
-                    continue;
-                }
-            }
-
-            try {
-                arenaConf.options().copyDefaults(true);
-                arenaConf.save(arenaFile);
-            } catch (IOException ex) {
-                Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            arena.setConfigOptions(ctp.getConfigTools().getArenaConfigOptions(arenaFile));
-
-            return arena;
-        } else {
-        	ctp.getLogger().warning("Could not load arena! Check your config file and existing arenas");
-            return null;
         }
+        
+        if(!arenaConf.contains("MaximumPlayers"))
+            arenaConf.set("MaximumPlayers", 9999);
+        if(!arenaConf.contains("MinimumPlayers"))
+            arenaConf.set("MinimumPlayers", 4);
+
+        arena.setMaxPlayers(arenaConf.getInt("MaximumPlayers", 9999));
+        arena.setMinPlayers(arenaConf.getInt("MinimumPlayers", 4));
+        if (arenaConf.contains("Points")) {
+            for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
+                Points tmps = new Points();
+                tmps.setName(str);
+                str = "Points." + str;
+                tmps.setX(arenaConf.getInt(str + ".X", 0));
+                tmps.setY(arenaConf.getInt(str + ".Y", 0));
+                tmps.setZ(arenaConf.getInt(str + ".Z", 0));
+
+                // Load teams that are not allowed to capture
+                String teamColors = arenaConf.getString(str + ".NotAllowedToCaptureTeams");
+                if(teamColors == null) {
+                    tmps.setNotAllowedToCaptureTeams(null);
+                } else {
+                    // Trim commas and whitespace, and split items by commas
+                    teamColors = teamColors.toLowerCase();
+                    teamColors = teamColors.trim();
+                    teamColors = teamColors.replaceAll(" ", "");
+
+                    if (teamColors.endsWith(",")) {
+                        teamColors = teamColors.substring(0, teamColors.length() - 1);
+                    }
+                    
+                    String[] tc = teamColors.split(",");
+
+                    tmps.getNotAllowedToCaptureTeams().addAll(Arrays.asList(tc));
+                }
+
+                if (arenaConf.contains(str + ".Dir")) {
+                    tmps.setPointDirection(arenaConf.getString(str + ".Dir"));
+                }
+                arena.getCapturePoints().add(tmps);
+            }
+        }
+        
+        if (arenaConf.contains("Team-Spawns")) {
+            for (String str : arenaConf.getConfigurationSection("Team-Spawns").getKeys(false)) {
+                Spawn spawn = new Spawn();
+                spawn.setName(str);
+                str = "Team-Spawns." + str;
+                spawn.setX(arenaConf.getDouble(str + ".X", 0.0D));
+                spawn.setY(arenaConf.getDouble(str + ".Y", 0.0D));
+                spawn.setZ(arenaConf.getDouble(str + ".Z", 0.0D));
+                spawn.setDir(arenaConf.getDouble(str + ".Dir", 0.0D));
+                arena.getTeamSpawns().put(spawn.getName(), spawn);
+
+                Team team = new Team();
+                team.setSpawn(spawn);
+                team.setColor(spawn.getName());
+                team.setMemberCount(0);
+                
+                try {
+                    team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase()));
+                } catch (Exception ex) {
+                    team.setChatColor(ChatColor.GREEN);
+                }
+
+                // Check if this spawn is already in the list
+                boolean hasTeam = false;
+
+                for (Team aTeam : arena.getTeams()) {
+                    if (aTeam.getColor().equalsIgnoreCase(spawn.getName())) {
+                        hasTeam = true;
+                        break;
+                    }
+                }
+
+                if (!hasTeam) {
+                    arena.getTeams().add(team);
+                }
+            }
+        }
+        
+        // Arena boundaries
+        arena.setX1(arenaConf.getInt("Boundarys.X1", 0));
+        arena.setY1(arenaConf.getInt("Boundarys.Y1", 0));
+        arena.setZ1(arenaConf.getInt("Boundarys.Z1", 0));
+        arena.setX2(arenaConf.getInt("Boundarys.X2", 0));
+        arena.setY2(arenaConf.getInt("Boundarys.Y2", 0));
+        arena.setZ2(arenaConf.getInt("Boundarys.Z2", 0));
+
+
+        Lobby lobby = new Lobby(
+                arenaConf.getDouble("Lobby.X", 0.0D),
+                arenaConf.getDouble("Lobby.Y", 0.0D),
+                arenaConf.getDouble("Lobby.Z", 0.0D),
+                arenaConf.getDouble("Lobby.Dir", 0.0D));
+        arena.setLobby(lobby);
+        if ((lobby.getX() == 0.0D) && (lobby.getY() == 0.0D) && (lobby.getZ() == 0.0D) && (lobby.getDir() == 0.0D)) {
+            arena.setLobby(null);
+        }
+
+        // Kj -- Test that the spawn points are within the map boundaries
+        for (Spawn aSpawn : arena.getTeamSpawns().values()) {
+            if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
+            	ctp.getLogger().warning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
+                continue;
+            }
+        }
+
+        try {
+            arenaConf.options().copyDefaults(true);
+            arenaConf.save(arenaFile);
+        } catch (IOException ex) {
+            Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        arena.setConfigOptions(ctp.getConfigTools().getArenaConfigOptions(arenaFile));
+
+        return arena;
     }
 	
     /** This method finds if a suitable arena exists.
