@@ -194,7 +194,7 @@ public class CaptureThePoints extends JavaPlugin {
 
         }, 200L, 200L); // 10 sec
         
-        logInfo("Loaded " + arenaMaster.getArenas().size() + " arena" + ((arenaMaster.getArenas().size() > 1) ? "s!" : "!"));
+        logInfo("Loaded " + arenaMaster.getArenas().size() + " arena" + ((arenaMaster.getArenas().size() > 1 || arenaMaster.getArenas().size() == 0) ? "s!" : "!"));
     }
 
     @Override
