@@ -64,17 +64,17 @@ public class HelpCommand extends CTPCommand {
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.reload"})) {
                 sendMessage(ChatColor.GREEN + "/ctp reload " + ChatColor.WHITE + "- reload CTP config files");
             }
-            if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.rejoin"})) {
-                sendMessage(ChatColor.GREEN + "/ctp rejoin " + ChatColor.WHITE + "- join a game if one has started.");
-            }
+            //if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.rejoin"})) {
+            //    sendMessage(ChatColor.GREEN + "/ctp rejoin " + ChatColor.WHITE + "- join a game if one has started.");
+            //}
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setpoints"})) {
-                sendMessage(ChatColor.GREEN + "/ctp setpoints <TeamColor> <number> " + ChatColor.WHITE + "- Set the chosen team's points/score");
+                sendMessage(ChatColor.GREEN + "/ctp setpoints <arena> <TeamColor> <number> " + ChatColor.WHITE + "- Set the chosen team's points/score");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
                 sendMessage(ChatColor.GREEN + "/ctp stats " + ChatColor.WHITE + "- get your in-game stats");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.stop"})) {
-                sendMessage(ChatColor.GREEN + "/ctp stop " + ChatColor.WHITE + "- stops already running game");
+                sendMessage(ChatColor.GREEN + "/ctp stop <arena> " + ChatColor.WHITE + "- stops already running game");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
                 sendMessage(ChatColor.GREEN + "/ctp team  " + ChatColor.WHITE + "- gets the members on your team");
