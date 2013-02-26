@@ -444,34 +444,31 @@ public class BuildCommand extends CTPCommand {
                     	ctp.logSevere("Was unable to save the config file for the arena \"" + ctp.getArenaMaster().getEditingArena().getName() + "\", please see the above Stacktrace.");
                     }
                     
-                    Team team = new Team();
+                    ctp.getArenaMaster().getEditingArena().getTeamSpawns().put(arg2, spawn);
                     
-                    if (ctp.getArenaMaster().getEditingArena().getWorld().equals(player.getWorld().getName())) {
-                    	ctp.getArenaMaster().getEditingArena().getTeamSpawns().put(arg2, spawn);
-                        team.setSpawn(spawn);
-                        team.setColor(arg2);
-                        team.setMemberCount(0);
-                        try {
-                            team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase())); // Kj -- init teamchat colour
-                        } catch (Exception ex) {
-                        	if(spawn.getName().equalsIgnoreCase("teal"))
-                        		team.setChatColor(ChatColor.DARK_AQUA);
-                        	else
-                        		team.setChatColor(ChatColor.GREEN);
-                        }
-                        
-                        // Check if this spawn is already in the list
-                        boolean hasTeam = false;
-
-                        for (Team aTeam : ctp.getArenaMaster().getEditingArena().getTeams())
-                            if (aTeam.getColor().equalsIgnoreCase(arg2))
-                                hasTeam = true;
-
-                        if (!hasTeam)
-                        	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
+                    Team team = new Team();
+                    team.setSpawn(spawn);
+                    team.setColor(arg2);
+                    team.setMemberCount(0);
+                    try {
+                        team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase())); // Kj -- init teamchat colour
+                    } catch (Exception ex) {
+                    	if(spawn.getName().equalsIgnoreCase("teal"))
+                    		team.setChatColor(ChatColor.DARK_AQUA);
+                    	else
+                    		team.setChatColor(ChatColor.GREEN);
                     }
+                    
+                    // Check if this spawn is already in the list
+                    boolean hasTeam = false;
+
+                    for (Team aTeam : ctp.getArenaMaster().getEditingArena().getTeams())
+                        if (aTeam.getColor().equalsIgnoreCase(arg2))
+                            hasTeam = true;
+
+                    if (!hasTeam)
+                    	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
                     sendMessage("You set the " + team.getChatColor() + arg2 + ChatColor.WHITE + " team spawn point.");
-                    sendMessage("There are currently " + ctp.getArenaMaster().getEditingArena().getTeamSpawns().size() + " team spawns.");
                     return;
                 }
 
