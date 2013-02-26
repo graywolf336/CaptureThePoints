@@ -756,6 +756,7 @@ public class BuildCommand extends CTPCommand {
                 String aWorld = arenaConf.getString("World");
                 if (aWorld == null) {
                     arenaConf.addDefault("World", player.getWorld().getName());
+                    ctp.getArenaMaster().getEditingArena().setWorld(player.getWorld().getName());
                 } else if (!aWorld.equals(player.getWorld().getName())) {
                     sendMessage(ChatColor.RED + "Please build arena lobby in same world as its spawns and capture points!");
                     return;
