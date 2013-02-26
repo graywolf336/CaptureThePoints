@@ -750,8 +750,8 @@ public class BuildCommand extends CTPCommand {
             return;
         }
         
-        if (arg.equalsIgnoreCase("setlobby")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setlobby"})) {
+        if (arg.equalsIgnoreCase("setlobby") || arg.equalsIgnoreCase("lobby")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setlobby", "ctp.admin.lobby"})) {
                 File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
 
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
