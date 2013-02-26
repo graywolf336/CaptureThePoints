@@ -20,7 +20,7 @@ public class ReloadCommand extends CTPCommand {
     public void perform() {
         ctp.clearConfig();
         ctp.enableCTP(true);
-        sendMessage("[CTP] successfully reloaded!");
+        sendMessage("Successfully reloaded!");
         return;
     }
 }
