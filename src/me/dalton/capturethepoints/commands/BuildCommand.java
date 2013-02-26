@@ -1197,7 +1197,7 @@ public class BuildCommand extends CTPCommand {
         	
         	String error = ctp.getArenaMaster().checkArena(ctp.getArenaMaster().getEditingArena(), player);
         	if(error.isEmpty())
-        		sendMessage(ChatColor.GREEN + "The arena " + ctp.getArenaMaster().getEditingArena().getName() + " appears to be ready to play.");
+        		sendMessage(ChatColor.GREEN + "The arena " + ctp.getArenaMaster().getEditingArena().getName() + " appears to be ready to play. Don't forget to set up role signs in the lobby.");
         	else
         		sendMessage(error);
         }
