@@ -297,7 +297,8 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (!(ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer().getName()).isGameRunning())) return;
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer())) return;
+    	
         Location loc = event.getTo();
         Player p = event.getPlayer();
         Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
