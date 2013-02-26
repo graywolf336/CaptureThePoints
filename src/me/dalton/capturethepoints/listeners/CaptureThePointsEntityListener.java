@@ -57,7 +57,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             if (ctp.getArenaUtil().isInside(event.getLocation().getBlockX(), a.getX1(), a.getX2())
             		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockY(), a.getY1(), a.getY2())
             		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockZ(), a.getZ1(), a.getZ2())
-            		&& event.getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld())) {
+            		&& event.getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                 List<Block> explodedBlocks = event.blockList();
 
                 for (Block block : explodedBlocks)
@@ -443,7 +443,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             return false;
         }
                             
-        Location protectionPoint = new Location(ctp.getServer().getWorld(arena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
+        Location protectionPoint = new Location(arena.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
         double distance = ctp.getUtil().getDistance(player.getLocation(), protectionPoint); // Kj -- this method is world-friendly.
         
         if (distance == Double.NaN) {
@@ -493,9 +493,9 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
 
-        Location loc = new Location(ctp.getServer().getWorld(arena.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
+        Location loc = new Location(arena.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
         loc.setYaw((float) spawn.getDir());
-        ctp.getServer().getWorld(arena.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
+        arena.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         boolean teleport = player.teleport(loc);
         
         if (!teleport) {

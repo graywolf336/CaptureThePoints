@@ -366,7 +366,7 @@ public class CaptureThePoints extends JavaPlugin {
             player.updateInventory();
         
             // Get lobby location and move player to it.
-            Location loc = new Location(getServer().getWorld(a.getWorld()), a.getLobby().getX(), a.getLobby().getY() + 1, a.getLobby().getZ());
+            Location loc = new Location(a.getWorld(), a.getLobby().getX(), a.getLobby().getY() + 1, a.getLobby().getZ());
             loc.setYaw((float) a.getLobby().getDir());
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             player.teleport(loc); // Teleport player to lobby
@@ -415,9 +415,9 @@ public class CaptureThePoints extends JavaPlugin {
                     a.getTeamSpawns().get(newTeam.getColor()) != null ?
                     a.getTeamSpawns().get(newTeam.getColor()) :
                     newTeam.getSpawn();
-            Location loc = new Location(getServer().getWorld(a.getWorld()), spawn.getX(), spawn.getY(), spawn.getZ());
+            Location loc = new Location(a.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
             loc.setYaw((float) spawn.getDir());
-            getServer().getWorld(a.getWorld()).loadChunk(loc.getBlockX(), loc.getBlockZ());
+            a.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             boolean teleport = player.teleport(loc);
             if (!teleport) {
             	player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
@@ -499,7 +499,7 @@ public class CaptureThePoints extends JavaPlugin {
             return ChatColor.RED + "No lobby for main arena " + arena.getName() + ".";
         }
         
-        if (getServer().getWorld(arena.getWorld()) == null) {
+        if (arena.getWorld() == null) {
             if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
                 return ChatColor.RED + "The arena config is incorrect. The world \"" + arena.getWorld() + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
             } else {
@@ -573,7 +573,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Load arenas boundaries
         for(Arena a : getArenaMaster().getArenas()) {
             ArenaBoundaries tmpBound = new ArenaBoundaries();
-            tmpBound.setWorld(a.getWorld());
+            tmpBound.setWorld(a.getWorld().getName());
             tmpBound.setx1(a.getX1());
             tmpBound.setx2(a.getX2());
             tmpBound.sety1(a.getY1());
@@ -768,7 +768,7 @@ public class CaptureThePoints extends JavaPlugin {
     	pluginManager.callEvent(regen);
         
         // Get lobby location and move player to it.
-        Location loc = new Location(getServer().getWorld(arena.getWorld()), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
+        Location loc = new Location(arena.getWorld(), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
         loc.setYaw((float) arena.getLobby().getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());

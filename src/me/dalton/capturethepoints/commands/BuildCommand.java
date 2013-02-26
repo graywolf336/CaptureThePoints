@@ -832,7 +832,7 @@ public class BuildCommand extends CTPCommand {
                 	ctp.getArenaMaster().getEditingArena().setZ1(loc.getBlockZ());
 
                     // Check arena world
-                    if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().equalsIgnoreCase(loc.getWorld().getName()))
+                    if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().getName().equalsIgnoreCase(loc.getWorld().getName()))
                     	ctp.getArenaMaster().getEditingArena().setWorld(loc.getWorld().getName());
 
                     File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
@@ -854,7 +854,7 @@ public class BuildCommand extends CTPCommand {
                     // To boundaries property
                     if(ctp.getArenaMaster().getArenasBoundaries().containsKey(ctp.getArenaMaster().getEditingArena().getName())) {
                         ArenaBoundaries bound = ctp.getArenaMaster().getArenasBoundaries().get(ctp.getArenaMaster().getEditingArena().getName());
-                        bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld());
+                        bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld().getName());
                         bound.setx1(ctp.getArenaMaster().getEditingArena().getX1());
                         bound.sety1(ctp.getArenaMaster().getEditingArena().getY1());
                         bound.setz1(ctp.getArenaMaster().getEditingArena().getZ1());
@@ -874,7 +874,7 @@ public class BuildCommand extends CTPCommand {
                 	ctp.getArenaMaster().getEditingArena().setZ2(loc.getBlockZ());
 
                     // Check arena world
-                    if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().equalsIgnoreCase(loc.getWorld().getName()))
+                    if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().getName().equalsIgnoreCase(loc.getWorld().getName()))
                     	ctp.getArenaMaster().getEditingArena().setWorld(loc.getWorld().getName());
 
                     File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
@@ -895,7 +895,7 @@ public class BuildCommand extends CTPCommand {
                     // To boundaries property
                     if(ctp.getArenaMaster().getArenasBoundaries().containsKey(ctp.getArenaMaster().getEditingArena().getName())) {
                         ArenaBoundaries bound = ctp.getArenaMaster().getArenasBoundaries().get(ctp.getArenaMaster().getEditingArena().getName());
-                        bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld());
+                        bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld().getName());
                         bound.setx2(ctp.getArenaMaster().getEditingArena().getX2());
                         bound.sety2(ctp.getArenaMaster().getEditingArena().getY2());
                         bound.setz2(ctp.getArenaMaster().getEditingArena().getZ2());
@@ -1051,8 +1051,8 @@ public class BuildCommand extends CTPCommand {
                             }
                             ctp.getMysqlConnector().connectToMySql();
 
-                            ctp.getArenaRestore().checkForArena(ctp.getArenaMaster().getEditingArena().getName(), ctp.getArenaMaster().getEditingArena().getWorld());
-                            World world = ctp.getServer().getWorld(ctp.getArenaMaster().getEditingArena().getWorld());
+                            ctp.getArenaRestore().checkForArena(ctp.getArenaMaster().getEditingArena().getName(), ctp.getArenaMaster().getEditingArena().getWorld().getName());
+                            World world = ctp.getArenaMaster().getEditingArena().getWorld();
 
                             Spawn firstPoint = new Spawn();
                             Spawn secondPoint = new Spawn();

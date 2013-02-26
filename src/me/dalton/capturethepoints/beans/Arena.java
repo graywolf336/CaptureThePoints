@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import me.dalton.capturethepoints.CaptureThePoints;
@@ -92,10 +93,10 @@ public class Arena {
     public void setWorld(String world) {
     	this.world = world;
     }
-    
+
     /** Gets the name of the world this arena is in. */
-    public String getWorld() {
-    	return this.world;
+    public World getWorld() {
+    	return world.isEmpty() ? null : ctp.getServer().getWorld(this.world);
     }
     
     /** Sets the arena's config options

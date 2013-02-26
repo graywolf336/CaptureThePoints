@@ -310,11 +310,11 @@ public class CaptureThePointsPlayerListener implements Listener {
                 if (ctp.getArenaUtil().isInside(loc.getBlockY(), a.getY1(), a.getY2())
                 		&& ctp.getArenaUtil().isInside(loc.getBlockX(), a.getX1(), a.getX2())
                 		&& ctp.getArenaUtil().isInside(loc.getBlockZ(), a.getZ1(), a.getZ2())
-                		&& loc.getWorld().getName().equalsIgnoreCase(a.getWorld())) {
+                		&& loc.getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                     return;
                 } else {
                     String color = a.getPlayerData(p.getName()).getTeam().getColor();
-                    Location loc2 = new Location(ctp.getServer().getWorld(a.getWorld()), a.getTeamSpawns().get(color).getX(), a.getTeamSpawns().get(color).getY() + 1, a.getTeamSpawns().get(color).getZ());
+                    Location loc2 = new Location(a.getWorld(), a.getTeamSpawns().get(color).getX(), a.getTeamSpawns().get(color).getY() + 1, a.getTeamSpawns().get(color).getZ());
                     loc2.setYaw((float) a.getTeamSpawns().get(color).getDir());
                     loc2.getWorld().loadChunk(loc2.getBlockX(), loc2.getBlockZ());
                     p.teleport(loc2);
@@ -361,7 +361,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 if (ctp.getArenaUtil().isInside(event.getTo().getBlockX(), a.getX1(), a.getX2())
                 		&& ctp.getArenaUtil().isInside(event.getTo().getBlockY(), a.getY1(), a.getY2())
                 		&& ctp.getArenaUtil().isInside(event.getTo().getBlockZ(), a.getZ1(), a.getZ2())
-                		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld())) {
+                		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                 	a.getPlayerData(play.getName()).setJustJoined(false);
                     return;
                 } else {
@@ -400,7 +400,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             }
             if (ctp.getArenaUtil().isInside(event.getTo().getBlockX(), a.getX1(), a.getX2())
             		&& ctp.getArenaUtil().isInside(event.getTo().getBlockZ(), a.getZ1(), a.getZ2())
-            		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld())) {
+            		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                 // The player is teleporting in the arena.
                 return;
             } else {

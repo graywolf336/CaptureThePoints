@@ -413,7 +413,7 @@ public class ArenaUtils {
                 ? arena.getTeamSpawns().get(playerdata.getTeam().getColor())
                 : team.getSpawn();
 
-        Location loc = new Location(ctp.getServer().getWorld(arena.getWorld()),
+        Location loc = new Location(arena.getWorld(),
         		arena.getTeamSpawns().get(color).getX(),
         		arena.getTeamSpawns().get(color).getY() + 1D,
         		arena.getTeamSpawns().get(color).getZ()); // Kj -- Y+1
@@ -509,7 +509,7 @@ public class ArenaUtils {
                 arena.getWaitingToMove().add(p);
 
                 // Get lobby location and move player to it.
-                Location loc = new Location(ctp.getServer().getWorld(arena.getWorld()), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
+                Location loc = new Location(arena.getWorld(), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
                 loc.setYaw((float) arena.getLobby().getDir());
                 loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
                 ctp.getServer().getPlayer(p).teleport(loc); // Teleport player to lobby
