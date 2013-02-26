@@ -72,7 +72,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDropItem (PlayerDropItemEvent event) {
-    	if(ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer().getName()) != null) {
+    	if(ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName())) {
             Player player = event.getPlayer();
             Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(player.getName());
             
@@ -112,9 +112,10 @@ public class CaptureThePointsPlayerListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract (PlayerInteractEvent event){
-        if (ctp.getArenaMaster().getArenas().isEmpty()) return; //if there are no arenas, then do nothing.
-
-        if(ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName())) {
+        if (ctp.getArenaMaster().getArenas().isEmpty())
+        	return; //if there are no arenas, then do nothing.
+        
+        if(ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer())) {
             Player p = event.getPlayer();
             Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
             
@@ -297,7 +298,8 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event) {
-    	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer())) return;
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer()))
+    		return;
     	
         Location loc = event.getTo();
         Player p = event.getPlayer();
@@ -333,7 +335,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn (PlayerRespawnEvent event) {
-        if(ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer().getName()).getPlayerData(event.getPlayer().getName()) == null)
+        if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer()))
             return;
 
         Player p = event.getPlayer();
@@ -353,7 +355,9 @@ public class CaptureThePointsPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleport (PlayerTeleportEvent event) {
     	Player play = event.getPlayer();
-    	if(!ctp.getArenaMaster().isPlayerInAnArena(play.getName())) return;
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(play.getName()))
+    		return;
+    	
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(play.getName());
     	
         if (!(a.isGameRunning())) {

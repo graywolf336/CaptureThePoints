@@ -332,9 +332,6 @@ public class CaptureThePointsBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSignChange(SignChangeEvent event) {
-        if (!ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer()).isGameRunning()) {
-            return;
-        }
         if (ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer())) {
             event.getPlayer().sendMessage(ChatColor.RED + "Cannot break sign whilst playing.");
             event.setCancelled(true);
