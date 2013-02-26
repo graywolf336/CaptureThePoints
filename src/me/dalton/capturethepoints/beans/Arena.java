@@ -96,7 +96,7 @@ public class Arena {
 
     /** Gets the world object this arena is in. */
     public World getWorld() {
-    	return world.isEmpty() ? null : ctp.getServer().getWorld(this.world);
+    	return world == null ? null : ctp.getServer().getWorld(this.world);
     }
     
     /** Gets the name of the world this arena is in. */

@@ -843,7 +843,7 @@ public class BuildCommand extends CTPCommand {
                     File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                     FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
-                    arenaConf.addDefault("World", ctp.getArenaMaster().getEditingArena().getWorld());
+                    arenaConf.addDefault("World", ctp.getArenaMaster().getEditingArena().getWorld().getName());
                     arenaConf.addDefault("Boundarys.X1", Integer.valueOf(loc.getBlockX()));
                     arenaConf.addDefault("Boundarys.Y1", Integer.valueOf(loc.getBlockY()));
                     arenaConf.addDefault("Boundarys.Z1", Integer.valueOf(loc.getBlockZ()));
@@ -885,7 +885,7 @@ public class BuildCommand extends CTPCommand {
                     File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                     FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
-                    arenaConf.addDefault("World", ctp.getArenaMaster().getEditingArena().getWorld());
+                    arenaConf.addDefault("World", ctp.getArenaMaster().getEditingArena().getWorld().getName());
                     arenaConf.addDefault("Boundarys.X2", Integer.valueOf(loc.getBlockX()));
                     arenaConf.addDefault("Boundarys.Y2", Integer.valueOf(loc.getBlockY()));
                     arenaConf.addDefault("Boundarys.Z2", Integer.valueOf(loc.getBlockZ()));
