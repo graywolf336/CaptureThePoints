@@ -11,6 +11,7 @@ public class VersionCommand extends CTPCommand {
         super.aliases.add("version");
         super.aliases.add("about");
         super.aliases.add("authors");
+        super.aliases.add("ver");
         super.notOpCommand = false;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.admin.version", "ctp.admin"};
         super.senderMustBePlayer = false;
