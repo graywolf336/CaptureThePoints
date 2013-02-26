@@ -14,22 +14,24 @@ public class JoinCommand extends CTPCommand {
         super.notOpCommand = true;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.join"};
         super.senderMustBePlayer = true;
-        super.minParameters = 3;
+        super.minParameters = 2;
         super.maxParameters = 3;
         super.usageTemplate = "/ctp join <arena>";
     }
 
     @Override
     public void perform() {
-        if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
+    		if(parameters.size() == 2)
+    			ctp.moveToLobby(ctp.getArenaMaster().getSelectedArena(), player);
         	if(ctp.getArenaMaster().isArena(parameters.get(2)))
-        		ctp.moveToLobby(ctp.getArenaMaster().getSelectedArena(), player);
+        		ctp.moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
         	else
         		sendMessage(ChatColor.RED + "That arena doesn't exist, try another one.");
             return;
+        }else {
+            sendMessage(ChatColor.RED + "You are already playing game!");
+            return;
         }
-        
-        sendMessage(ChatColor.RED + "You are already playing game!");
-        return;
     }
 }
