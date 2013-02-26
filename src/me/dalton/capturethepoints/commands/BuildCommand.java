@@ -470,14 +470,15 @@ public class BuildCommand extends CTPCommand {
                         if (!hasTeam)
                         	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
                     }
-                    ctp.sendMessage(player, "You set the " + team.getChatColor() + arg2 + ChatColor.WHITE + " team spawn point.");
+                    sendMessage("You set the " + team.getChatColor() + arg2 + ChatColor.WHITE + " team spawn point.");
+                    sendMessage("There are currently " + ctp.getArenaMaster().getEditingArena().getTeamSpawns().size() + " team spawns.");
                     return;
                 }
 
-                ctp.sendMessage(player, ChatColor.RED + "There is no such color!");
+                sendMessage(ChatColor.RED + "There is no such color!");
                 return;
             }
-            ctp.sendMessage(player, ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
 

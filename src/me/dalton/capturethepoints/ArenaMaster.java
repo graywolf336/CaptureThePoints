@@ -472,16 +472,16 @@ public class ArenaMaster {
     	}
     	
     	if(arena.getLobby() == null)
-    		return ChatColor.RED + "No lobby for the arena " + arena.getName();
+    		return ChatColor.RED + "No lobby for the arena '" + arena.getName() + "'";
     	
     	if(arena.getX1() == 0 || arena.getX2() == 0 || arena.getY1() == 0 || arena.getY2() == 0 || arena.getZ1() == 0 || arena.getZ2() == 0)
-    		return ChatColor.RED + "The arena's boundaries are not properly set.";
+    		return ChatColor.RED + "The arena's boundaries are not properly set for '" + arena.getName() + "'";
     	
     	if(arena.getTeamSpawns().size() == 0)
-    		return ChatColor.RED + "There are currently no team spawns defined.";
+    		return ChatColor.RED + "There are currently no team spawns defined for '" + arena.getName() + "'";
     	
     	if(arena.getTeamSpawns().size() == 1)
-    		return ChatColor.RED + "There is only one team spawn, minimum of two are needed.";
+    		return ChatColor.RED + "There is only one team spawn, minimum of two are needed for '" + arena.getName() + "'";
     	
     	for(Spawn aSpawn : arena.getTeamSpawns().values()) {
             if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
