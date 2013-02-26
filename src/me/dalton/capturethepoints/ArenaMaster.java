@@ -441,7 +441,8 @@ public class ArenaMaster {
      * 	<li>The arena's world isn't null</li>
      * 	<li>The arena's lobby isn't null</li>
      * 	<li>The arena's boundaries are not zero</li>
-     * 	<li>There are team spawns</li>
+     * 	<li>There are not zero team spawns</li>
+     * 	<li>There is not just one team spawn</li>
      * 	<li>The team spawns are inside the boundaries of the arena</li>
      * 	<li>There are points to capture</li>
      * </ul>
@@ -478,6 +479,9 @@ public class ArenaMaster {
     	
     	if(arena.getTeamSpawns().size() == 0)
     		return ChatColor.RED + "There are currently no team spawns defined.";
+    	
+    	if(arena.getTeamSpawns().size() == 1)
+    		return ChatColor.RED + "There is only one team spawn, minimum of two are needed.";
     	
     	for(Spawn aSpawn : arena.getTeamSpawns().values()) {
             if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
