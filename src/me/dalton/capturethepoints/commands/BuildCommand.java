@@ -246,6 +246,49 @@ public class BuildCommand extends CTPCommand {
             return;
         }
         
+        if (arg.equalsIgnoreCase("create")) {
+            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.create"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build create <Arena name>");
+                    return;
+                }
+                
+                arg2 = arg2.toLowerCase();
+                if (ctp.getArenaMaster().isArena(arg2)) {
+                    sendMessage(ChatColor.RED + "This arena already exists! -----> " + ChatColor.GREEN + arg2); // Kj -- typo
+                    return;
+                }
+                
+                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2)); //Create the new arena!
+                ctp.getArenaMaster().setEditingArena(arg2); //After creating, set the editing arena to the one we created
+                
+                FileConfiguration config = ctp.getConfigTools().load();
+                
+                //Loads the default configuration options on creation of it, this way the 'co' isn't null
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
+                ctp.getArenaMaster().getEditingArena().setConfigOptions(ctp.getConfigTools().getArenaConfigOptions(arenaFile));
+                
+                if(!config.contains("Arena")) {
+                	config.addDefault("Arena", ctp.getArenaMaster().getEditingArena().getName());
+                	try {
+                        config.options().copyDefaults(true);
+                        config.save(ctp.getGlobalConfig());
+                    } catch (IOException ex) {
+                    	ex.printStackTrace();
+                    	ctp.logSevere("Unable to save the main config file, see the StackTrace above for more information.");
+                    }
+                	
+                	ctp.getArenaMaster().setSelectedArena(ctp.getArenaMaster().getEditingArena());
+                }
+                
+                sendMessage("You created arena: " + ChatColor.GREEN + arg2);
+                return;
+            }
+            
+            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            return;
+        }
+        
         if (arg.equalsIgnoreCase("delete")) {
             if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.delete"})) {
                 if (parameters.size() < 4) {
@@ -340,51 +383,8 @@ public class BuildCommand extends CTPCommand {
         }
         
         //if editing arena is null and they're not creating a new one, return with an error first.
-        if (ctp.getArenaMaster().getEditingArena() == null && (!arg.equalsIgnoreCase("create") || !arg.equalsIgnoreCase("delete"))) {
+        if (ctp.getArenaMaster().getEditingArena() == null) {
         	sendMessage(ChatColor.RED + "Please select which arena you want to edit first or create an arena to edit first.");
-            return;
-        }
-        
-        if (arg.equalsIgnoreCase("create")) {
-            if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.create"})) {
-                if (parameters.size() < 4) {
-                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build create <Arena name>");
-                    return;
-                }
-                
-                arg2 = arg2.toLowerCase();
-                if (ctp.getArenaMaster().isArena(arg2)) {
-                    sendMessage(ChatColor.RED + "This arena already exists! -----> " + ChatColor.GREEN + arg2); // Kj -- typo
-                    return;
-                }
-                
-                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2)); //Create the new arena!
-                ctp.getArenaMaster().setEditingArena(arg2); //After creating, set the editing arena to the one we created
-                
-                FileConfiguration config = ctp.getConfigTools().load();
-                
-                //Loads the default configuration options on creation of it, this way the 'co' isn't null
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
-                ctp.getArenaMaster().getEditingArena().setConfigOptions(ctp.getConfigTools().getArenaConfigOptions(arenaFile));
-                
-                if(!config.contains("Arena")) {
-                	config.addDefault("Arena", ctp.getArenaMaster().getEditingArena().getName());
-                	try {
-                        config.options().copyDefaults(true);
-                        config.save(ctp.getGlobalConfig());
-                    } catch (IOException ex) {
-                    	ex.printStackTrace();
-                    	ctp.logSevere("Unable to save the main config file, see the StackTrace above for more information.");
-                    }
-                	
-                	ctp.getArenaMaster().setSelectedArena(ctp.getArenaMaster().getEditingArena());
-                }
-                
-                sendMessage("You created arena: " + ChatColor.GREEN + arg2);
-                return;
-            }
-            
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
             return;
         }
 
