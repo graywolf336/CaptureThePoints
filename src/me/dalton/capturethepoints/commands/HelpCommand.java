@@ -35,19 +35,19 @@ public class HelpCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + "/ctp aliases " + ChatColor.WHITE + "- list of helpful command aliases");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.auto", "ctp.admin"})) {
-                sendMessage(ChatColor.GREEN + "/ctp auto <worldname>" + ChatColor.WHITE + "- start ctp with all players in a world.");
+                sendMessage(ChatColor.GREEN + "/ctp auto <worldname> " + ChatColor.WHITE + "- start ctp with all players in a world.");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp build help " + ChatColor.WHITE + "- arena editing commands list");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
-                sendMessage(ChatColor.GREEN + "/ctp colors " + ChatColor.WHITE + "- available colors and senders in-game");
+                sendMessage(ChatColor.GREEN + "/ctp colors <arena> " + ChatColor.WHITE + "- available colors and senders in-game");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.joinall"})) {
                 sendMessage(ChatColor.GREEN + "/ctp joinall " + ChatColor.WHITE + "- make all players join the game");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
-                sendMessage(ChatColor.GREEN + "/ctp join " + ChatColor.WHITE + "- join the game");
+                sendMessage(ChatColor.GREEN + "/ctp join <arena> " + ChatColor.WHITE + "- join the game");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.kick"})) {
                 sendMessage(ChatColor.GREEN + "/ctp kick <player> " + ChatColor.WHITE + "- kicks player from the game");
@@ -67,11 +67,6 @@ public class HelpCommand extends CTPCommand {
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.rejoin"})) {
                 sendMessage(ChatColor.GREEN + "/ctp rejoin " + ChatColor.WHITE + "- join a game if one has started.");
             }
-            /*
-            if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
-                sendMessage(ChatColor.GREEN + "/ctp save " + ChatColor.WHITE + "- save");
-            }
-             */
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setpoints"})) {
                 sendMessage(ChatColor.GREEN + "/ctp setpoints <TeamColor> <number> " + ChatColor.WHITE + "- Set the chosen team's points/score");
             }

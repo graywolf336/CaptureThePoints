@@ -484,26 +484,26 @@ public class CaptureThePoints extends JavaPlugin {
         if (arena == null) {
             // Arenas were loaded but a main arena wasn't selected.
             if (getArenaMaster().getArenas() == null) {
-                return "An arena hasn't been built yet.";
+                return ChatColor.RED + "An arena hasn't been built yet.";
             } else if (!getArenaMaster().getArenas().isEmpty() && getArenaMaster().getArenas().get(0) != null) {
                 String anArena = getArenaMaster().getArenas().get(0).getName();
                 arena = getArenaMaster().loadArena(anArena);
                 if (arena == null) {
-                    return "An arena hasn't been built yet.";
+                    return ChatColor.RED + "An arena hasn't been built yet.";
                 }
             }
-            return "An arena hasn't been built yet, try again later when an arena has been built.";
+            return ChatColor.RED + "An arena hasn't been built yet, try again later when an arena has been built.";
         }
         
         if (arena.getLobby() == null) {
-            return "No lobby for main arena " + arena.getName() + ".";
+            return ChatColor.RED + "No lobby for main arena " + arena.getName() + ".";
         }
         
         if (getServer().getWorld(arena.getWorld()) == null) {
             if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                return "The arena config is incorrect. The world \"" + arena.getWorld() + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
+                return ChatColor.RED + "The arena config is incorrect. The world \"" + arena.getWorld() + "\" could not be found. Hint: your first world's name is \"" + getServer().getWorlds().get(0).getName() + "\".";
             } else {
-                return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
+                return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
             }
         }
         
@@ -511,10 +511,10 @@ public class CaptureThePoints extends JavaPlugin {
         for (Spawn aSpawn : arena.getTeamSpawns().values()) {
             if (!getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
                 if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                    return "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
+                    return ChatColor.RED + "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
                             + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.getX1() + "<==>" + arena.getX2() + ", " + arena.getZ1() + "<==>" + arena.getZ2() + "].";
                 } else {
-                    return "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
+                    return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
                 }
             }
         }
