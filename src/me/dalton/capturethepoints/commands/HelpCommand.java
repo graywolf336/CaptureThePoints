@@ -59,7 +59,7 @@ public class HelpCommand extends CTPCommand {
             sendMessage(ChatColor.RED + "CTP Commands: " + ChatColor.GOLD + " Page 2/2");
             
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pjoin"})) {
-                sendMessage(ChatColor.GREEN + "/ctp pjoin <player> " + ChatColor.WHITE + "- makes this player join the game");
+                sendMessage(ChatColor.GREEN + "/ctp pjoin <player> <arena> " + ChatColor.WHITE + "- makes this player join the game");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.reload"})) {
                 sendMessage(ChatColor.GREEN + "/ctp reload " + ChatColor.WHITE + "- reload CTP config files");
@@ -77,10 +77,10 @@ public class HelpCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + "/ctp stop <arena> " + ChatColor.WHITE + "- stops already running game");
             }
             if (Permissions.canAccess(sender, true, new String[]{"ctp.*", "ctp.admin", "ctp.play"})) {
-                sendMessage(ChatColor.GREEN + "/ctp team  " + ChatColor.WHITE + "- gets the members on your team");
+                sendMessage(ChatColor.GREEN + "/ctp team " + ChatColor.WHITE + "- gets the members on your team");
             }
             if (Permissions.canAccess(sender, false, new String[]{"ctp.*", "ctp.admin"})) {
-                sendMessage(ChatColor.GREEN + "/ctp version  " + ChatColor.WHITE + "- check this plugin's version");
+                sendMessage(ChatColor.GREEN + "/ctp version " + ChatColor.WHITE + "- check this plugin's version");
             }
         }
     }
