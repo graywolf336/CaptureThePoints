@@ -17,7 +17,6 @@ import me.dalton.capturethepoints.commands.PJoinCommand;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.PotionManagement;
-import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -60,7 +59,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         
         if (arena != null && arena.getConfigOptions() != null && !arena.getConfigOptions().allowCommands) {
             String[] args = event.getMessage().split(" ");
-            if (!Permissions.canAccess(player, false, new String[] { "ctp.*", "ctp.admin" }) && arena.isGameRunning() && arena.getPlayersData().containsKey(player.getName())
+            if (!ctp.getPermissions().canAccess(player, false, new String[] { "ctp.*", "ctp.admin" }) && arena.isGameRunning() && arena.getPlayersData().containsKey(player.getName())
                     && !args[0].equalsIgnoreCase("/ctp")) {
             	ctp.sendMessage(player, ChatColor.RED + "You can't use commands while playing!");
                 event.setCancelled(true);
@@ -345,7 +344,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         	a.getPlayerData(p.getName()).setInArena(false);
         	a.getPlayerData(p.getName()).setInLobby(false);
             a.getLobby().getPlayersInLobby().remove(p.getName());
-            event.setRespawnLocation(ctp.previousLocation.get(p.getName()));
+            event.setRespawnLocation(ctp.getPrevoiusPosition().get(p.getName()));
             a.leaveGame(p, ArenaLeaveReason.PLAYER_RESPAWN);
             p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
             return;
@@ -429,7 +428,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 // Game not yet started
                 if (arena.isPreGame()) {
                     if (!lobby.hasUnreadyPeople()) {
-                        if (readypeople >= arena.getMinPlayers()) {
+                        if (readypeople >= arena.getMinPlayers()) {//We have more than the required amount of people
                             if (readypeople % arena.getTeams().size() == 0) {  // There may be more than two teams playing. 
                             	ctp.getArenaUtil().moveToSpawns(arena);
                             } else {

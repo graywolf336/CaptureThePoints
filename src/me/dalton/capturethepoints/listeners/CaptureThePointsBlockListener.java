@@ -5,7 +5,6 @@ import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Points;
-import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -42,7 +41,7 @@ public class CaptureThePointsBlockListener implements Listener {
                 		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2())
                 		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2())
                 		&& block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
-                    if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
+                    if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
 
@@ -205,7 +204,7 @@ public class CaptureThePointsBlockListener implements Listener {
                 		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2())
                 		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2())
                 		&& block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
-                    if (Permissions.canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
+                    if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
 

@@ -2,8 +2,8 @@ package me.dalton.capturethepoints.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.util.Permissions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -85,7 +85,7 @@ public abstract class CTPCommand {
         }
 
         if (requiredPermissions != null) {
-            if (requiredPermissions.length != 0 && !Permissions.canAccess(sender, notOpCommand, requiredPermissions)) {
+            if (requiredPermissions.length != 0 && !ctp.getPermissions().canAccess(sender, notOpCommand, requiredPermissions)) {
                 sendMessage(ChatColor.RED + "You need permission to use the " + ChatColor.WHITE + parameters.get(1) + ChatColor.RED + " command.");
                 return;
             }

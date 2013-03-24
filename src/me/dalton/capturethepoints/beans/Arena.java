@@ -360,6 +360,20 @@ public class Arena {
     }
     
     /**
+     * Adds a player and his/her data to the list.
+     * 
+     * @param player The player who is being added.
+     * @param playerdata The data about this player.
+     * @author graywolf336
+     * @since 1.5.0-148
+     */
+    public void addPlayerData(String player, PlayerData playerdata) {
+    	if(ctp.getGlobalConfigOptions().debugMessages)
+    		ctp.logInfo("Adding a player to the data.");
+    	this.players.put(player, playerdata);
+    }
+    
+    /**
      * Returns a Map of all the players in the arena and their corresponding data.
      * <p />
      * 
@@ -430,7 +444,7 @@ public class Arena {
         
         getLobby().getPlayersInLobby().remove(p.getName());
         InvManagement.restoreThings(p);
-        ctp.previousLocation.remove(p.getName());
+        ctp.getPrevoiusPosition().remove(p.getName());
         players.remove(p.getName());
 
         // Check for player replacement if there is someone waiting to join the game
@@ -509,7 +523,7 @@ public class Arena {
                 item.cooldowns.clear();
         
         getLobby().clearLobbyPlayerData();
-        this.ctp.previousLocation.clear();
+        ctp.getPrevoiusPosition().clear();
         getPlayersData().clear();
         getPlayerList().clear();
         

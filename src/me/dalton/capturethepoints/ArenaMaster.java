@@ -9,12 +9,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
@@ -23,7 +29,9 @@ import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
-import me.dalton.capturethepoints.util.Permissions;
+import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
+import me.dalton.capturethepoints.util.InvManagement;
+import me.dalton.capturethepoints.util.PotionManagement;
 
 public class ArenaMaster {
 	//mob arena style! thanks to mob arena for being on github! :)
@@ -459,7 +467,7 @@ public class ArenaMaster {
     		return ChatColor.RED + "Couldn't find the name of the arena, please try again.";
     	
     	if(arena.getWorld() == null) {
-    		if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
+    		if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
                 return ChatColor.RED + "The arena config is incorrect. The world \"" + arena.getWorldName() + "\" could not be found. Hint: your first world's name is \"" + ctp.getServer().getWorlds().get(0).getName() + "\".";
             } else {
                 return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
@@ -480,7 +488,7 @@ public class ArenaMaster {
     	
     	for(Spawn aSpawn : arena.getTeamSpawns().values()) {
             if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-                if (Permissions.canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
+                if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
                     return ChatColor.RED + "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
                             + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.getX1() + "<==>" + arena.getX2() + ", " + arena.getZ1() + "<==>" + arena.getZ2() + "].";
                 } else {
@@ -493,5 +501,101 @@ public class ArenaMaster {
     		return ChatColor.RED + "No points have been defined, therefore it is hard to play a game so I can't let you join.";
     	
     	return "";
+    }
+    
+    public void moveToLobby(Arena arena, Player player) {
+        String mainArenaCheckError = checkArena(arena, player); // Check arena, if there is an error, an error message is returned.
+        if (!mainArenaCheckError.isEmpty()) {
+            ctp.sendMessage(player, mainArenaCheckError);
+            return;
+        }
+
+        // Some more checks
+        if (player.isInsideVehicle()) {
+            try {
+                player.leaveVehicle();
+            } catch (Exception e) {
+                player.kickPlayer("Banned for ever... Nah, just don't join while riding something."); // May sometimes reach this if player is riding an entity other than a Minecart
+                return;
+            }
+        }
+        
+        if (player.isSleeping()) {
+            player.kickPlayer("Banned for life... Nah, just don't join from a bed ;)");
+            return;
+        }
+
+        if (arena.getPlayersData().isEmpty())
+            arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
+
+        if(ctp.getEconomyHandler() != null && arena.getConfigOptions().economyMoneyCostForJoiningArena != 0) {
+            EconomyResponse r = ctp.getEconomyHandler().bankWithdraw(player.getName(), arena.getConfigOptions().economyMoneyCostForJoiningArena);
+            if(r.transactionSuccess()) {
+                ctp.sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + arena.getName() + ChatColor.WHITE + " arena.");
+            } else {
+                ctp.sendMessage(player, "You dont have enough money to join arena!");
+                return;
+            }
+        }
+        
+        // Assign player's PlayerData
+        PlayerData data = new PlayerData();
+        data.setDeaths(0);
+        data.setDeathsInARow(0);
+        data.setKills(0);
+        data.setKillsInARow(0);
+        data.setMoney(arena.getConfigOptions().moneyAtTheLobby);
+        data.setPointsCaptured(0);
+        data.setReady(false);
+        data.setInArena(false);
+        data.setFoodLevel(player.getFoodLevel());
+        data.setHealth(player.getHealth());
+        data.setLobbyJoinTime(System.currentTimeMillis());
+        
+        // Store and remove potion effects on player
+        data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));
+        PotionManagement.removeAllEffects(player);
+
+        // Save player's previous state 
+        player.setFoodLevel(20);
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            data.inCreative(true);
+            player.setGameMode(GameMode.SURVIVAL);
+        }
+
+        arena.addPlayerData(player.getName(), data);
+        
+        arena.getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
+        arena.getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj
+
+        //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
+        player.setHealth(arena.getConfigOptions().maxPlayerHealth);
+        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, arena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
+    	ctp.getPluginManager().callEvent(regen);
+        
+        // Get lobby location and move player to it.
+        Location loc = new Location(arena.getWorld(), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
+        loc.setYaw((float) arena.getLobby().getDir());
+        if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
+        	loc.getWorld().loadChunk(loc.getChunk());
+
+        Double X = Double.valueOf(player.getLocation().getX());
+        Double y = Double.valueOf(player.getLocation().getY());
+        Double z = Double.valueOf(player.getLocation().getZ());
+
+        Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
+        ctp.getPrevoiusPosition().put(player.getName(), previous);
+
+        ctp.getUtil().sendMessageToPlayers(arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
+
+        // Get lobby location and move player to it.        
+        player.teleport(loc); // Teleport player to lobby
+        ctp.sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
+        arena.getPlayerData(player).setInLobby(true);
+        InvManagement.saveInv(player);
+        
+        //Call a custom event for when players join the arena
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, arena.getPlayerData(player));
+        ctp.getPluginManager().callEvent(event);
     }
 }

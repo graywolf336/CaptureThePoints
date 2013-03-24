@@ -7,7 +7,13 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class Permissions {
-    /**  
+	private CaptureThePoints ctp;
+	
+    public Permissions(CaptureThePoints plugin) {
+		ctp = plugin;
+	}
+
+	/**  
      * Test whether a command sender can use this CTP command.
      * 
      * @param sender The sender issuing the command
@@ -15,7 +21,7 @@ public class Permissions {
      * @param permissions The permissions to check against that are associated with the command.
      * @return True if sender has permission, else false. 
      */
-    public static boolean canAccess (CommandSender sender, boolean notOpCommand, String[] permissions) {
+    public boolean canAccess(CommandSender sender, boolean notOpCommand, String[] permissions) {
         if (sender instanceof ConsoleCommandSender) {
             return true;
         } else if (!(sender instanceof Player)) {
@@ -33,18 +39,15 @@ public class Permissions {
      * @param permissions The permissions to check against that are associated with the command.
      * @return True if player has permission, else false. 
      */
-    public static boolean canAccess (Player p, boolean notOpCommand, String[] permissions) {
-        if (permissions == null) {
+    public boolean canAccess(Player p, boolean notOpCommand, String[] permissions) {
+        if (permissions == null)
             return true;
-        }
 
-        if (CaptureThePoints.UsePermissions) {
-            for (String perm : permissions) {
-                if (CaptureThePoints.permission.has(p, perm)) {
+        if (ctp.usePermissions())
+            for (String perm : permissions)
+                if (p.hasPermission(perm))
                     return true;
-                }
-            }
-        } else {
+        else {
             if (notOpCommand)
                 return true;
             else

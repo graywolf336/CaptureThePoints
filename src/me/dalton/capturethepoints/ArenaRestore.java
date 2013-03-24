@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Spawn;
@@ -226,10 +224,8 @@ public class ArenaRestore {
         }
     }
 
-    private void storeInventory(int id, Inventory inv)
-    {
-        for(int i = 0; i < inv.getSize(); i++)
-        {
+    private void storeInventory(int id, Inventory inv) {
+        for(int i = 0; i < inv.getSize(); i++) {
             ItemStack item = inv.getItem(i);
             if(item != null && item.getTypeId() != 0)
                 ctp.getMysqlConnector().modifyData("INSERT INTO `Item` (`type`, `block_ID`, `durability`, `amount`, `place_in_inv`, `data`) VALUES ( " + item.getTypeId() + "," + id + "," +
@@ -307,7 +303,7 @@ public class ArenaRestore {
                             ResultSet rs = ctp.getMysqlConnector().getData("SELECT * FROM Item where Item.block_ID = " + id);
                             while (rs.next())
                             {
-                                ItemStack item = new ItemStack(rs.getInt("type"), rs.getInt("amount"), (short)rs.getInt("durability"), (byte)rs.getInt("data"));
+                                ItemStack item = new ItemStack(rs.getInt("type"), rs.getInt("amount"), (short)rs.getInt("durability"));
                                 inv.setItem(rs.getInt("place_in_inv"), item);
                             }
                             break;
@@ -320,9 +316,8 @@ public class ArenaRestore {
                             Inventory inv = furnace.getInventory();
 
                             ResultSet rs = ctp.getMysqlConnector().getData("SELECT * FROM Item where Item.block_ID = " + id);
-                            while (rs.next())
-                            {
-                                ItemStack item = new ItemStack(rs.getInt("type"), rs.getInt("amount"), (short)rs.getInt("durability"), (byte)rs.getInt("data"));
+                            while (rs.next()){
+                                ItemStack item = new ItemStack(rs.getInt("type"), rs.getInt("amount"), (short)rs.getInt("durability"));
                                 inv.setItem(rs.getInt("place_in_inv"), item);
                             }
                             break;
@@ -334,9 +329,8 @@ public class ArenaRestore {
                             Inventory inv = dispenser.getInventory();
 
                             ResultSet rs = ctp.getMysqlConnector().getData("SELECT * FROM Item where Item.block_ID = " + id);
-                            while (rs.next())
-                            {
-                                ItemStack item = new ItemStack(rs.getInt("type"), rs.getInt("amount"), (short)rs.getInt("durability"), (byte)rs.getInt("data"));
+                            while (rs.next()){
+                                ItemStack item = new ItemStack(rs.getInt("type"), rs.getInt("amount"), (short)rs.getInt("durability"));
                                 inv.setItem(rs.getInt("place_in_inv"), item);
                             }
                             break;
@@ -365,7 +359,7 @@ public class ArenaRestore {
                 } // End of for Z cycle
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ArenaRestore.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 

@@ -203,6 +203,9 @@ public class ArenaUtils {
         }
 
         ctp.getUtil().sendMessageToPlayers(arena, message);
+        
+        arena.setPreGame(true);
+        arena.setRunning(false);
         arena.endGame(false);
 
         return true;
@@ -227,7 +230,11 @@ public class ArenaUtils {
         balanceTeamsFromLobby(arena);
 
         ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP]" + ChatColor.WHITE + " A Capture The Points game has started!");
-        ctp.getArenaUtil().didSomeoneWin(arena);
+        
+        arena.setPreGame(false);
+        arena.setRunning(true);
+        
+        didSomeoneWin(arena);
 
         final String aName = arena.getName();
         // Play time for points only
@@ -254,7 +261,7 @@ public class ArenaUtils {
                         	ctp.getArenaMaster().getArena(aName).getPlayerData(player).setWinner(true);
                         }
                     }
-
+                    
                     ctp.getUtil().sendMessageToPlayers(ctp.getArenaMaster().getArena(aName), "Time out! " + ChatColor.GREEN + colors.values().toString().toUpperCase().replace(",", " and") + ChatColor.WHITE + " wins!");
                     ctp.getArenaMaster().getArena(aName).setPlayTimer(0);
                     ctp.getArenaMaster().getArena(aName).endGame(false);
@@ -267,11 +274,9 @@ public class ArenaUtils {
         arena.setMoneyScore(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             public void run () {
                 if (ctp.getArenaMaster().getArena(aName).isGameRunning()) {
-                    for (PlayerData data : ctp.getArenaMaster().getArena(aName).getPlayersData().values()) {
-                        if (data.inArena()) {
+                    for (PlayerData data : ctp.getArenaMaster().getArena(aName).getPlayersData().values())
+                        if (data.inArena())
                             data.setMoney(data.getMoney() + ctp.getArenaMaster().getArena(aName).getConfigOptions().moneyEvery30Sec);
-                        }
-                    }
                     
                     if (ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration) {
                         for (Team team : ctp.getArenaMaster().getArena(aName).getTeams()) {
@@ -300,9 +305,9 @@ public class ArenaUtils {
             public void run () {
                 if (ctp.getArenaMaster().getArena(aName).isGameRunning() && (ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
                     String s = "";
-                    for (Team team : ctp.getArenaMaster().getArena(aName).getTeams()) {
+                    for (Team team : ctp.getArenaMaster().getArena(aName).getTeams())
                         s = s + team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " score: " + team.getScore() + ChatColor.AQUA + " // "; // Kj -- Added teamcolour
-                    }
+                    
                     for (String player : ctp.getArenaMaster().getArena(aName).getPlayersData().keySet()) {
                     	Player p = ctp.getServer().getPlayer(player);
                     	ctp.sendMessage(p, "Max Score: " + ChatColor.GOLD + ctp.getArenaMaster().getArena(aName).getConfigOptions().scoreToWin); // Kj -- Green -> Gold

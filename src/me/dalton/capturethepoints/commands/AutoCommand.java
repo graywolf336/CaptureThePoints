@@ -70,9 +70,8 @@ public class AutoCommand extends CTPCommand {
             ctp.getArenaMaster().getSelectedArena().endGame(true);
         }
 
-        for (Player p : world.getPlayers()) {
-            ctp.moveToLobby(ctp.getArenaMaster().getSelectedArena(), p);
-        }
+        for (Player p : world.getPlayers())
+            ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getSelectedArena(), p);
 
         return;
     }

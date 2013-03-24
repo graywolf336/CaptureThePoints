@@ -6,7 +6,6 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.util.ArenaUtils;
 import me.dalton.capturethepoints.util.ConfigTools;
 import me.dalton.capturethepoints.util.MoneyUtils;
-import me.dalton.capturethepoints.util.PotionManagement;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
@@ -18,7 +17,6 @@ import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.*;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
-import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,19 +27,15 @@ import java.util.List;
 import java.io.IOException;
 
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -49,9 +43,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class CaptureThePoints extends JavaPlugin {
-	public static Permission permission = null;
-    public static Economy economyHandler = null;
-    public static boolean UsePermissions;
+	private Permission permission = null;
+    private Economy economyHandler = null;
+    private boolean UsePermissions;
 
     /** "plugins/CaptureThePoints" */
     private String mainDir;
@@ -74,6 +68,7 @@ public class CaptureThePoints extends JavaPlugin {
     private ArenaUtils aUtil = new ArenaUtils(this);
     private ConfigTools cTools = new ConfigTools(this);
     private MoneyUtils mUtil = new MoneyUtils(this);
+    private Permissions perm = new Permissions(this);
     private Util util = new Util(this);
     private ArenaRestore arenaRestore = new ArenaRestore(this);
     private MysqlConnector mysqlConnector = new MysqlConnector(this);
@@ -86,7 +81,7 @@ public class CaptureThePoints extends JavaPlugin {
     private HashMap<String, ItemStack[]> armor = new HashMap<String, ItemStack[]>();
 
     /** Player's previous Locations before they started playing CTP. */
-    public final HashMap<String, Location> previousLocation = new HashMap<String, Location>();
+    private final HashMap<String, Location> previousLocation = new HashMap<String, Location>(); //TODO move this to arena
 
     /** The global config options for CTP. */
     private ConfigOptions globalConfigOptions = new ConfigOptions();
@@ -649,103 +644,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    /** @deprecated */
-    public void moveToLobby(Arena arena, Player player) {
-        String mainArenaCheckError = getArenaMaster().checkArena(arena, player); // Check arena, if there is an error, an error message is returned.
-        if (!mainArenaCheckError.isEmpty()) {
-            sendMessage(player, mainArenaCheckError);
-            return;
-        }
-
-        // Some more checks
-        if (player.isInsideVehicle()) {
-            try {
-                player.leaveVehicle();
-            } catch (Exception e) {
-                // May sometimes reach this if player is riding an entity other than a Minecart
-            }
-        }
-        if (player.isSleeping()) {
-            player.kickPlayer("Banned for life... Nah, just don't join from a bed ;)");
-            return;
-        }
-
-        if (arena.getPlayersData().isEmpty()) {
-            arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
-        }
-
-        if(economyHandler != null && arena.getConfigOptions().economyMoneyCostForJoiningArena != 0) {
-            EconomyResponse r = economyHandler.bankWithdraw(player.getName(), arena.getConfigOptions().economyMoneyCostForJoiningArena);
-            if(r.transactionSuccess()) {
-                sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + arena.getName() + ChatColor.WHITE + " arena.");
-            } else {
-                sendMessage(player, "You dont have enough money to join arena!");
-                return;
-            }
-        }
-        
-        // Assign player's PlayerData
-        PlayerData data = new PlayerData();
-        data.setDeaths(0);
-        data.setDeathsInARow(0);
-        data.setKills(0);
-        data.setKillsInARow(0);
-        data.setMoney(arena.getConfigOptions().moneyAtTheLobby);
-        data.setPointsCaptured(0);
-        data.setReady(false);
-        data.setInArena(false);
-        data.setFoodLevel(player.getFoodLevel());
-        data.setHealth(player.getHealth());
-        data.setLobbyJoinTime(System.currentTimeMillis());
-        
-        // Store and remove potion effects on player
-        data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));
-        PotionManagement.removeAllEffects(player);
-        
-        arena.getPlayersData().put(player.getName(), data);
-
-        // Save player's previous state 
-        player.setFoodLevel(20);
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            data.inCreative(true);
-            player.setGameMode(GameMode.SURVIVAL);
-        }
-
-        arena.getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
-        arena.getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj
-
-        //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
-        player.setHealth(arena.getConfigOptions().maxPlayerHealth);
-        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, arena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
-    	pluginManager.callEvent(regen);
-        
-        // Get lobby location and move player to it.
-        Location loc = new Location(arena.getWorld(), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
-        loc.setYaw((float) arena.getLobby().getDir());
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
-        	loc.getWorld().loadChunk(loc.getChunk());
-        }
-
-        Double X = Double.valueOf(player.getLocation().getX());
-        Double y = Double.valueOf(player.getLocation().getY());
-        Double z = Double.valueOf(player.getLocation().getZ());
-
-        Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
-        previousLocation.put(player.getName(), previous);
-
-        getUtil().sendMessageToPlayers(arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
-
-        // Get lobby location and move player to it.        
-        player.teleport(loc); // Teleport player to lobby
-        sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
-        arena.getPlayerData(player).setInLobby(true);
-        InvManagement.saveInv(player);
-        
-        //Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, arena.getPlayerData(player));
-        getPluginManager().callEvent(event);
-    }
-
     /** Add the CTP commands to the master commands list */
     private void populateCommands () {
         commands.clear();
@@ -805,6 +703,14 @@ public class CaptureThePoints extends JavaPlugin {
         return economyHandler != null;
     }
     
+    public Economy getEconomyHandler() {
+    	return this.economyHandler;
+    }
+    
+    public boolean usePermissions() {
+    	return this.UsePermissions;
+    }
+    
     /** Returns the plugin manager, non statically. */
     public PluginManager getPluginManager() {
     	return this.pluginManager;
@@ -828,6 +734,11 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the MoneyUtils instance. */
     public MoneyUtils getMoneyUtil() {
     	return this.mUtil;
+    }
+    
+    /** Returns the Permissions instance. */
+    public Permissions getPermissions() {
+    	return this.perm;
     }
     
     /** Returns the Util instance. */
@@ -881,6 +792,10 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the Hashmap of the armor stored. */
     public HashMap<String, ItemStack[]> getArmor() {
     	return this.armor;
+    }
+    
+    public HashMap<String, Location> getPrevoiusPosition() {
+    	return this.previousLocation;
     }
     
     public void clearWaitingQueue() {

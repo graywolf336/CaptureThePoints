@@ -23,9 +23,9 @@ public class JoinCommand extends CTPCommand {
     public void perform() {
     	if(!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
     		if(parameters.size() == 2)
-    			ctp.moveToLobby(ctp.getArenaMaster().getSelectedArena(), player);
+    			ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getSelectedArena(), player);
     		else if(ctp.getArenaMaster().isArena(parameters.get(2)))
-        		ctp.moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
+    			ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
         	else
         		sendMessage(ChatColor.RED + "That arena doesn't exist, try another one.");
             return;

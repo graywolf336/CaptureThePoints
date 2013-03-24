@@ -232,10 +232,10 @@ public class Util {
             }
 
             DyeColor dye = (data.matches("[0-9]+"))
-                    ? DyeColor.getByData((byte) Math.abs(offset - Integer.parseInt(data)))
+            		? DyeColor.getByDyeData((byte) Math.abs(offset - Integer.parseInt(data)))
                     : DyeColor.valueOf(data.toUpperCase());
 
-            return new ItemStack(material, amount, (byte) Math.abs(offset - dye.getData()));
+            return new ItemStack(material, amount, (byte) Math.abs(offset - dye.getDyeData()));
         } catch (Exception e) {
             return null;
         }
@@ -310,18 +310,16 @@ public class Util {
             } else if (parts.length == 3 && parts[2].matches("(-)?[0-9]+")) { // For dyes
                 i.setAmount(Integer.parseInt(parts[2]));
                 i.setType(Short.parseShort(parts[1]));
-                if (isItInteger(parts[0])) {
+                if (isItInteger(parts[0]))
                     i.setItem(Material.getMaterial(Integer.parseInt(parts[0])));
-                } else {
+                else
                     i.setItem(Material.getMaterial(parts[0]));
-                }
             }
             
-            if (i.getItem() != null) {
+            if (i.getItem() != null)
                 list.add(i);
-            } else {
+            else
                 ctp.logWarning("Error while loading config file (Or Shop sign). Check: " + item);
-            }
         }
         return list;
     }
@@ -343,15 +341,13 @@ public class Util {
                         Enchantment enchantment;
                         int enchLevel = Integer.parseInt(enchParts[1]);
 
-                        if(isItInteger(enchParts[0])) {
+                        if(isItInteger(enchParts[0]))
                             enchantment = Enchantment.getById(Integer.parseInt(enchParts[0]));
-                        } else {
+                        else
                             enchantment = Enchantment.getByName(enchParts[0].toUpperCase());
-                        }
 
-                        if (enchLevel < 0 || enchLevel > enchantment.getMaxLevel()) {
+                        if (enchLevel < 0 || enchLevel > enchantment.getMaxLevel())
                             enchLevel = enchantment.getMaxLevel();
-                        }
                         
                         // Move to next enchantment
                         if(enchLevel == 0)
@@ -370,7 +366,7 @@ public class Util {
     }
 
     public void getMoney(String string, Items item) {
-        if(CaptureThePoints.economyHandler == null)
+        if(ctp.getEconomyHandler() == null)
             return;
 
         if(string.contains("$")) {
@@ -402,35 +398,31 @@ public class Util {
 
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
-                        if(CaptureThePoints.economyHandler != null) {
-                            CaptureThePoints.economyHandler.depositPlayer(player.getName(), item.getMoney());
-                        }
+                        if(ctp.getEconomyHandler() != null)
+                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
 
                         player.giveExp(item.getExpReward());
                         continue;
                     }
                     
                     int amount = item.getAmount();
-                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem()))) {
-                        for (ItemStack stack : player.getInventory().getContents()) {
-                            if (stack != null && stack.getTypeId() == item.getItem().getId()) {
+                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
+                        for (ItemStack stack : player.getInventory().getContents())
+                            if (stack != null && stack.getTypeId() == item.getItem().getId())
                                 itemCount += stack.getAmount();
-                            }
-                        }
-                    }
+
                     //player.sendMessage(player.getName() + " " + itemCount);
-                    if (itemCount > 0) {
+                    if (itemCount > 0)
                         player.getInventory().remove(item.getItem().getId());
-                    }
+                    
                     amount += itemCount;
 
                     ItemStack stack = new ItemStack(item.getItem(), amount);
                     if(item.getType() != -1)
                         stack.setDurability(item.getType());
                     // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    for(int j = 0; j < item.getEnchantments().size(); j++)
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    }
 
                     player.getInventory().addItem(stack);
                 }
@@ -441,35 +433,31 @@ public class Util {
                     Items item = ctp.getRewards().getLooserRewards().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
-                        if(CaptureThePoints.economyHandler != null) {
-                            CaptureThePoints.economyHandler.depositPlayer(player.getName(), item.getMoney());
-                        }
+                        if(ctp.getEconomyHandler() != null)
+                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
 
                         player.giveExp(item.getExpReward());
                         continue;
                     }
                     
                     int amount = item.getAmount();
-                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem()))) {
-                        for (ItemStack stack : player.getInventory().getContents()) {
-                            if (stack != null && stack.getTypeId() == item.getItem().getId()) {
+                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
+                        for (ItemStack stack : player.getInventory().getContents())
+                            if (stack != null && stack.getTypeId() == item.getItem().getId())
                                 itemCount += stack.getAmount();
-                            }
-                        }
-                    }
                     
-                    if (itemCount > 0) {
+                    if (itemCount > 0)
                         player.getInventory().remove(item.getItem().getId());
-                    }
+                    
                     amount += itemCount;
 
                     ItemStack stack = new ItemStack(item.getItem(), amount);
                     if(item.getType() != -1)
                         stack.setDurability(item.getType());
+                    
                     // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    for(int j = 0; j < item.getEnchantments().size(); j++)
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    }
                     
                     player.getInventory().addItem(stack);
                 }
@@ -482,35 +470,29 @@ public class Util {
                     Items item = ctp.getRewards().getRewardsForKill().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
-                        if(CaptureThePoints.economyHandler != null) {
-                            CaptureThePoints.economyHandler.depositPlayer(player.getName(), item.getMoney());
-                        }
+                        if(ctp.getEconomyHandler() != null)
+                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
 
                         player.giveExp(item.getExpReward());
                         continue;
                     }
                     
                     int amount = item.getAmount();
-                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem()))) {
-                        for (ItemStack stack : player.getInventory().getContents()) {
-                            if (stack != null && stack.getTypeId() == item.getItem().getId()) {
+                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
+                        for (ItemStack stack : player.getInventory().getContents())
+                            if (stack != null && stack.getTypeId() == item.getItem().getId())
                                 itemCount += stack.getAmount();
-                            }
-                        }
-                    }
                     
-                    if (itemCount > 0) {
+                    if (itemCount > 0)
                         player.getInventory().remove(item.getItem().getId());
-                    }
                     
                     amount += itemCount;
                     ItemStack stack = new ItemStack(item.getItem(), amount);
                     if(item.getType() != -1)
                         stack.setDurability(item.getType());
                     // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    for(int j = 0; j < item.getEnchantments().size(); j++)
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    }
 
                     player.getInventory().addItem(stack);
                 }
@@ -524,33 +506,29 @@ public class Util {
                     Items item = ctp.getRewards().getRewardsForCapture().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
-                        if(CaptureThePoints.economyHandler != null) {
-                            CaptureThePoints.economyHandler.depositPlayer(player.getName(), item.getMoney());
-                        }
+                        if(ctp.getEconomyHandler() != null)
+                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
 
                         player.giveExp(item.getExpReward());
                         continue;
                     }
                     
                     int amount = item.getAmount();
-                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem()))) {
-                        for (ItemStack stack : player.getInventory().getContents()) {
-                            if ((stack != null) && (stack.getTypeId() == item.getItem().getId())) {
+                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
+                        for (ItemStack stack : player.getInventory().getContents())
+                            if ((stack != null) && (stack.getTypeId() == item.getItem().getId()))
                                 itemCount += stack.getAmount();
-                            }
-                        }
-                    }
-                    if (itemCount > 0) {
+
+                    if (itemCount > 0)
                         player.getInventory().remove(item.getItem().getId());
-                    }
+
                     amount += itemCount;
                     ItemStack stack = new ItemStack(item.getItem(), amount);
                     if(item.getType() != -1)
                         stack.setDurability(item.getType());
                     // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    for(int j = 0; j < item.getEnchantments().size(); j++)
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    }
                     
                     player.getInventory().addItem(stack);
                 }
@@ -569,37 +547,32 @@ public class Util {
      * @param endV End boundary
      * @return A number generated in the boundary between startV to endV */
     public int random(int startV, int endV) { // Kj -- n must be positive checking
-        if (endV > startV) {
+        if (endV > startV)
             return new Random().nextInt(endV) + startV;
-        } else if (startV > endV) {
+        else if (startV > endV)
             return new Random().nextInt(startV) + endV;
-        } else { //(startV == endV) 
+        else //(startV == endV) 
             return startV;
-        }
     }
 
     /** Builds a vertical gate */
     public void buildVert(Player player, int start_x, int start_y, int start_z, int plusX, int plusY, int plusZ, int blockID) {
-        for (int x = start_x; x < start_x + plusX; x++) {
-            for (int y = start_y; y < start_y + plusY; y++) {
-                for (int z = start_z; z < start_z + plusZ; z++) {
+        for (int x = start_x; x < start_x + plusX; x++)
+            for (int y = start_y; y < start_y + plusY; y++)
+                for (int z = start_z; z < start_z + plusZ; z++)
                     player.getWorld().getBlockAt(x, y, z).setTypeId(blockID);
-                }
-            }
-        }
     }
 
     /** Removes a vertical point */
     public void removeVertPoint(Player player, String dir, int start_x, int start_y, int start_z, int blockID) {
-        if (dir.equals("NORTH")) {
+        if (dir.equals("NORTH"))
             buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, 0);
-        } else if (dir.equals("EAST")) {
+        else if (dir.equals("EAST"))
             buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, 0);
-        } else if (dir.equals("SOUTH")) {
+        else if (dir.equals("SOUTH"))
             buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, 0);
-        } else if (dir.equals("WEST")) {
+        else if (dir.equals("WEST"))
             buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, 0);
-        }
     }
 
     /** Get the direction of facing from a Location's yaw. */
@@ -607,18 +580,17 @@ public class Util {
         BlockFace direction;
         double yaw = loc.getYaw();
 
-        while (yaw < 0) {
+        while (yaw < 0)
             yaw += 360;
-        }
-        if ((yaw > 315) || (yaw <= 45)) {
+        
+        if ((yaw > 315) || (yaw <= 45))
             direction = BlockFace.WEST;
-        } else if ((yaw > 45) && (yaw <= 135)) {
+        else if ((yaw > 45) && (yaw <= 135))
             direction = BlockFace.NORTH;
-        } else if ((yaw > 135) && (yaw <= 225)) {
+        else if ((yaw > 135) && (yaw <= 225))
             direction = BlockFace.EAST;
-        } else {
+        else
             direction = BlockFace.SOUTH;
-        }
 
         return direction;
     }
@@ -630,18 +602,18 @@ public class Util {
      * @return Returns a double of the distance between them. Returns NaN if the Locations are not on the same World or distance is too great.
      */
      public double getDistance(Location loc1, Location loc2) { // Kjhf's
-        if (loc1 != null && loc2 != null && loc1.getWorld() == loc2.getWorld()) {
+        if (loc1 != null && loc2 != null && loc1.getWorld() == loc2.getWorld())
             return loc1.distance(loc2);
-        }
+        
         return Double.NaN;
     }
 
     // Checks if there is a team color in a list
     public boolean containsTeam(List<String> teams, String color) {
-        for(String teamColor : teams) {
+        for(String teamColor : teams)
             if(teamColor.equalsIgnoreCase(color))
                 return true;
-        }
+
         return false;
     }
 }
