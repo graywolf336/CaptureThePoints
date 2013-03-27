@@ -512,7 +512,7 @@ public class Arena {
         else
             ctp.getArenaRestore().restoreAllBlocks();
 
-        for (HealingItems item : ctp.healingItems)
+        for (HealingItems item : ctp.getHealingItems())
             if (!item.cooldowns.isEmpty())
                 item.cooldowns.clear();
         

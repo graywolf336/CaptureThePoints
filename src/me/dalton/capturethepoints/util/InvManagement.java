@@ -111,15 +111,11 @@ public class InvManagement {
      */
     public void removeCoolDowns(String player) {
         // Removing player cooldowns
-        for (HealingItems item : ctp.healingItems) {
-            if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
-                for (String playName : item.cooldowns.keySet()) {
-                    if (playName.equalsIgnoreCase(player)) {
+        for (HealingItems item : ctp.getHealingItems())
+            if (item != null && item.cooldowns != null && item.cooldowns.size() > 0)
+                for (String playName : item.cooldowns.keySet())
+                    if (playName.equalsIgnoreCase(player))
                         item.cooldowns.remove(playName);
-                    }
-                }
-            }
-        }
     }
     
     /**

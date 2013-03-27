@@ -322,7 +322,7 @@ public class ArenaUtils {
         arena.setHealingItemsCooldowns(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             public void run () {
                 if (ctp.getArenaMaster().getArena(aName).isGameRunning()) {
-                    for (HealingItems item : ctp.healingItems) {
+                    for (HealingItems item : ctp.getHealingItems()) {
                         if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
                             for (String playName : item.cooldowns.keySet()) {
                                 PlayersAndCooldowns data = item.cooldowns.get(playName);

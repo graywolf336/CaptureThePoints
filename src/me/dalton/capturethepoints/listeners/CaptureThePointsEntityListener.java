@@ -483,15 +483,11 @@ public class CaptureThePointsEntityListener  implements Listener {
         }
 
         // Reseting player cooldowns
-        for (HealingItems item : ctp.healingItems) {
-            if (item != null && item.cooldowns != null && item.cooldowns.size() > 0 && item.resetCooldownOnDeath) {
-                for (String playName : item.cooldowns.keySet()) {
-                    if (playName.equalsIgnoreCase(player.getName())) {
+        for (HealingItems item : ctp.getHealingItems())
+            if (item != null && item.cooldowns != null && item.cooldowns.size() > 0 && item.resetCooldownOnDeath)
+                for (String playName : item.cooldowns.keySet())
+                    if (playName.equalsIgnoreCase(player.getName()))
                         item.cooldowns.remove(playName);
-                    }
-                }
-            }
-        }
 
         Location loc = new Location(arena.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
         loc.setYaw((float) spawn.getDir());

@@ -624,7 +624,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             
             if(ctp.getGlobalConfigOptions().debugMessages) ctp.sendMessage(p, "The material in hand is: " + mat.toString());
             
-            for (HealingItems item : ctp.healingItems) {
+            for (HealingItems item : ctp.getHealingItems()) {
                 if (item.item.getItem() == mat) {
                     PlayersAndCooldowns cooldownData = null;
                     boolean alreadyExists = false;
