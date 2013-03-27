@@ -343,7 +343,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         	a.getPlayerData(p.getName()).setInArena(false);
         	a.getPlayerData(p.getName()).setInLobby(false);
             a.getLobby().getPlayersInLobby().remove(p.getName());
-            event.setRespawnLocation(ctp.getPrevoiusPosition().get(p.getName()));
+            event.setRespawnLocation(a.getPrevoiusPosition().get(p.getName()));
             a.leaveGame(p, ArenaLeaveReason.PLAYER_RESPAWN);
             p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
             return;

@@ -80,10 +80,7 @@ public class CaptureThePoints extends JavaPlugin {
     private final HashMap<String, ItemStack[]> Inventories = new HashMap<String, ItemStack[]>();
 
     private HashMap<String, ItemStack[]> armor = new HashMap<String, ItemStack[]>();
-
-    /** Player's previous Locations before they started playing CTP. */
-    private final HashMap<String, Location> previousLocation = new HashMap<String, Location>(); //TODO move this to arena
-
+    
     /** The global config options for CTP. */
     private ConfigOptions globalConfigOptions = new ConfigOptions();
 
@@ -809,10 +806,6 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the Hashmap of the armor stored. */
     public HashMap<String, ItemStack[]> getArmor() {
     	return this.armor;
-    }
-    
-    public HashMap<String, Location> getPrevoiusPosition() {
-    	return this.previousLocation;
     }
     
     /**

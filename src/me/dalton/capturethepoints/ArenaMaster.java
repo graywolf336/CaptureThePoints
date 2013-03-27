@@ -583,7 +583,7 @@ public class ArenaMaster {
         Double z = Double.valueOf(player.getLocation().getZ());
 
         Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
-        ctp.getPrevoiusPosition().put(player.getName(), previous);
+        arena.getPrevoiusPosition().put(player.getName(), previous);
 
         ctp.getUtil().sendMessageToPlayers(arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
 

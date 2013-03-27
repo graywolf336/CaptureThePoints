@@ -28,13 +28,13 @@ public class InvManagement {
         
         restoreInv(p);
 
-        Location loc = ctp.getPrevoiusPosition().get(p.getName());
+        Location loc = a.getPrevoiusPosition().get(p.getName());
         loc.setYaw((float) a.getLobby().getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
         	loc.getWorld().loadChunk(loc.getChunk());
         }
         
-        p.teleport(ctp.getPrevoiusPosition().get(p.getName()));
+        p.teleport(a.getPrevoiusPosition().get(p.getName()));
 
         // do not check double signal
         if (a.getPlayerData(p.getName()) == null) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -38,6 +39,7 @@ public class Arena {
     private List<Points> capturePoints;
     private List<String> waitingToMove;
     private Map<String, PlayerData> players;
+    private HashMap<String, Location> previousLocation;
     private Lobby lobby;
     
     private int x1 = 0, y1 = 0, z1 = 0, x2 = 0, y2 = 0, z2 = 0;
@@ -59,6 +61,7 @@ public class Arena {
     	this.capturePoints = new LinkedList<Points>();
     	this.waitingToMove = new LinkedList<String>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
+    	this.previousLocation = new HashMap<String, Location>();
     }
     
     /**
@@ -76,6 +79,7 @@ public class Arena {
     	this.capturePoints = new LinkedList<Points>();
     	this.waitingToMove = new LinkedList<String>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
+    	this.previousLocation = new HashMap<String, Location>();
     }
     
     /** Sets the name of this arena. */
@@ -402,6 +406,16 @@ public class Arena {
         return toReturn;
     }
     
+    /**
+     * Player's previous Locations before they started playing CTP.
+     * 
+     * @return A HashMap of the players pervious locations.
+     * @since 1.5.0-b155
+     */
+    public HashMap<String, Location> getPrevoiusPosition() {
+    	return this.previousLocation;
+    }
+    
     /** Check to see if this Arena has a lobby.
      * <p />
      * 
@@ -441,7 +455,7 @@ public class Arena {
         
         getLobby().getPlayersInLobby().remove(p.getName());
         ctp.getInvManagement().restoreThings(p);
-        ctp.getPrevoiusPosition().remove(p.getName());
+        getPrevoiusPosition().remove(p.getName());
         players.remove(p.getName());
 
         // Check for player replacement if there is someone waiting to join the game
@@ -517,7 +531,7 @@ public class Arena {
                 item.cooldowns.clear();
         
         getLobby().clearLobbyPlayerData();
-        ctp.getPrevoiusPosition().clear();
+        getPrevoiusPosition().clear();
         getPlayersData().clear();
         getPlayerList().clear();
         
