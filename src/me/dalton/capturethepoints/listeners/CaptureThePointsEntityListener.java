@@ -319,7 +319,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         
         inv.clear(); // Removes inventory
         
-        for (Items item : ctp.roles.get(ctp.getArenaMaster().getPlayerData(player.getName()).getRole())) {
+        for (Items item : ctp.getRoles().get(ctp.getArenaMaster().getPlayerData(player.getName()).getRole())) {
             if(item.getItem().equals(Material.AIR))
                 continue;
 

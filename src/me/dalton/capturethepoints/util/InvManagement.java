@@ -163,7 +163,7 @@ public class InvManagement {
 
 		a.getPlayerData(p.getName()).setRole(role);
 
-        for (Items item : ctp.roles.get(role.toLowerCase())) {
+        for (Items item : ctp.getRoles().get(role.toLowerCase())) {
             if (Util.ARMORS_TYPE.contains(item.getItem()) && (!Util.HELMETS_TYPE.contains(item.getItem()))) {
                 ItemStack i = new ItemStack(item.getItem(), 1);
                 

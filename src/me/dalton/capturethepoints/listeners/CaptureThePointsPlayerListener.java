@@ -150,7 +150,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             // Iron block
             if (event.hasBlock() && event.getClickedBlock().getTypeId() == 42) {
                 //If this role exists
-                if (ctp.roles.containsKey(a.getPlayerData(p.getName()).getRole())) {
+                if (ctp.getRoles().containsKey(a.getPlayerData(p.getName()).getRole())) {
                     if (!a.getPlayerData(p.getName()).isReady()) {
                         ctp.getUtil().sendMessageToPlayers(a, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
                     }
@@ -172,7 +172,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
                 if (role.equalsIgnoreCase("[CTP]")) {
                     shop(a, p, sign);
-                } else if (!ctp.roles.containsKey(role.toLowerCase()) && !role.equalsIgnoreCase("random")) {
+                } else if (!ctp.getRoles().containsKey(role.toLowerCase()) && !role.equalsIgnoreCase("random")) {
                     return;
                 } else {
                     /* Sign looks like:
@@ -190,11 +190,11 @@ public class CaptureThePointsPlayerListener implements Listener {
                     if (a.getLobby().getPlayersInLobby().containsKey(p.getName())) {
                         // Kj's
                         if (role.equalsIgnoreCase("random")) {
-                            int size = ctp.roles.size();
+                            int size = ctp.getRoles().size();
                             if (size > 1) { // If there is more than 1 role to choose from
                                 Random random = new Random();
                                 int nextInt = random.nextInt(size); // Generate a random number between 0 (inclusive) -> Number of roles (exclusive)
-                                List<String> roles = new LinkedList<String>(ctp.roles.keySet()); // Get a list of available roles and convert to a String List
+                                List<String> roles = new LinkedList<String>(ctp.getRoles().keySet()); // Get a list of available roles and convert to a String List
 
                                 role =
                                         roles.get(nextInt) == null
@@ -245,11 +245,11 @@ public class CaptureThePointsPlayerListener implements Listener {
 
                         // Kj's
                         if (role.equalsIgnoreCase("random")) {
-                            int size = ctp.roles.size();
+                            int size = ctp.getRoles().size();
                             if (size > 1) { // If there is more than 1 role to choose from
                                 Random random = new Random();
                                 int nextInt = random.nextInt(size); // Generate a random number between 0 (inclusive) -> Number of roles (exclusive)
-                                List<String> roles = new LinkedList<String>(ctp.roles.keySet()); // Get a list of available roles and convert to a String List
+                                List<String> roles = new LinkedList<String>(ctp.getRoles().keySet()); // Get a list of available roles and convert to a String List
                                 role =
                                         roles.get(nextInt) == null
                                         ? roles.get(0)

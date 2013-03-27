@@ -142,7 +142,7 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo("    Minimum Players for this arena: " + ctp.getArenaMaster().getSelectedArena().getMinPlayers());
         ctp.logInfo("    Maxmimum Players for this arena: " + ctp.getArenaMaster().getSelectedArena().getMaxPlayers());
         ctp.logInfo("    Players ready in the lobby: " + ctp.getArenaMaster().getSelectedArena().getLobby().countReadyPeople() + "/" + ctp.getArenaMaster().getSelectedArena().getLobby().countAllPeople());
-        ctp.logInfo(ctp.roles.size() + " Roles found: " + ctp.roles.keySet().toString());
+        ctp.logInfo(ctp.getRoles().size() + " Roles found: " + ctp.getRoles().keySet().toString());
         
         int running = 0, total = 0;
         if (ctp.getArenaMaster().getSelectedArena().getHealingItemsCooldowns() != 0) {

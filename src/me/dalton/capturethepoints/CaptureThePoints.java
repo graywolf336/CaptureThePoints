@@ -89,7 +89,7 @@ public class CaptureThePoints extends JavaPlugin {
 
     /** The roles/classes stored by CTP. (HashMap: Role's name, and the Items it contains) 
      * @see Items */
-    public HashMap<String, List<Items>> roles = new HashMap<String, List<Items>>();
+    private HashMap<String, List<Items>> roles = new HashMap<String, List<Items>>();
 
     /** The list of Healing Items stored by CTP. */
     public List<HealingItems> healingItems = new LinkedList<HealingItems>();
@@ -204,11 +204,9 @@ public class CaptureThePoints extends JavaPlugin {
     }
     
     public void clearConfig() {
-    	for(Arena a : getArenaMaster().getArenas()) {
-    		if(a.isGameRunning()) {
+    	for(Arena a : getArenaMaster().getArenas())
+    		if(a.isGameRunning())
     			a.endGame(false);//Don't give rewards, they didn't
-    		}
-    	}
         
         healingItems.clear();
         rewards = null;
@@ -784,6 +782,15 @@ public class CaptureThePoints extends JavaPlugin {
      */
     public Rewards getRewards() {
     	return this.rewards;
+    }
+    
+    /**
+     * Returns the roles defined in the config.
+     * 
+     * @return The roles
+     */
+    public HashMap<String, List<Items>> getRoles() {
+    	return this.roles;
     }
     
     /** Returns the Hashmap of the player inventories. */
