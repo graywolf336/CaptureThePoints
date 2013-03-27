@@ -94,7 +94,7 @@ public class CaptureThePoints extends JavaPlugin {
     /** The list of Healing Items stored by CTP. */
     public List<HealingItems> healingItems = new LinkedList<HealingItems>();
     
-    public List<String> waitingToMove = new LinkedList<String>();
+    //public List<String> waitingToMove = new LinkedList<String>(); //TODO move this to arena specific
 
     /** The list of Rewards stored by CTP. */
     private Rewards rewards = new Rewards();
@@ -800,12 +800,6 @@ public class CaptureThePoints extends JavaPlugin {
     
     public HashMap<String, Location> getPrevoiusPosition() {
     	return this.previousLocation;
-    }
-    
-    public void clearWaitingQueue() {
-        if (waitingToMove != null) {
-            waitingToMove.clear();
-        }
     }
     
     /**

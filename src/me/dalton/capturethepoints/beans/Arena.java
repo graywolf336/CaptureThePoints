@@ -413,16 +413,14 @@ public class Arena {
     
     public void leaveGame(Player p, ArenaLeaveReason reason) {
         //On exit we get double signal
-        if (players.get(p.getName()) == null) {
+        if (players.get(p.getName()) == null)
             return;
-        }
         
-        if (ctp.waitingToMove != null && !ctp.waitingToMove.isEmpty()) {
-            if (p.getName() == ctp.waitingToMove.get(0) && ctp.waitingToMove.size() == 1) {
-                ctp.clearWaitingQueue(); // The player who left was someone in the lobby waiting to join. We need to remove them from the queue
-            } else {
-                ctp.waitingToMove.remove(p.getName());
-            }
+        if (getWaitingToMove() != null && !getWaitingToMove().isEmpty()) {
+            if (p.getName() == getWaitingToMove().get(0) && getWaitingToMove().size() == 1)
+            	getWaitingToMove().clear(); // The player who left was someone in the lobby waiting to join. We need to remove them from the queue
+            else
+            	getWaitingToMove().remove(p.getName());
         }
         
         ctp.getInvManagement().removeCoolDowns(p.getName());
@@ -459,16 +457,13 @@ public class Arena {
         }
 
         //check for player count, only then were no replacement
-        if (!wasReplaced) {
+        if (!wasReplaced)
             ctp.checkForGameEndThenPlayerLeft(this);
-        }
             
         //If there was no replacement we should move one member to lobby
-        if (!wasReplaced && getConfigOptions().exactTeamMemberCount && isGameRunning()) {
-            if (getConfigOptions().balanceTeamsWhenPlayerLeaves > 0) {
+        if (!wasReplaced && getConfigOptions().exactTeamMemberCount && isGameRunning())
+            if (getConfigOptions().balanceTeamsWhenPlayerLeaves > 0)
                 ctp.balanceTeams(this, 0, getConfigOptions().balanceTeamsWhenPlayerLeaves); //TODO
-            }
-        }
     }
     
     /**
