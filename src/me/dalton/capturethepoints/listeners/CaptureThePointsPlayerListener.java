@@ -15,7 +15,6 @@ import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
-import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.PotionManagement;
 
 import org.bukkit.ChatColor;
@@ -212,7 +211,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                         	oldRole = a.getPlayerData(p.getName()).getRole();
                         }
                         
-                        if(!InvManagement.assignRole(a, p, role.toLowerCase()))
+                        if(!ctp.getInvManagement().assignRole(a, p, role.toLowerCase()))
                             return;
 
                         if (a.getPlayerData(p.getName()).getRole() != null && !a.getPlayerData(p.getName()).getRole().isEmpty() && !oldRole.isEmpty()) {
@@ -263,7 +262,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "Changing your role from " + ChatColor.GOLD + oldRole.substring(0, 1).toUpperCase() + oldRole.substring(1).toLowerCase()
                                     + ChatColor.LIGHT_PURPLE + " to " + ChatColor.GOLD + role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase() + ChatColor.LIGHT_PURPLE + ".");
 
-                            InvManagement.assignRole(a, p, role.toLowerCase());
+                            ctp.getInvManagement().assignRole(a, p, role.toLowerCase());
                         } else {
                             if (ctp.getMoneyUtil().canPay(p.getName(), price)) {
                             	ctp.getMoneyUtil().chargeAccount(p.getName(), price);
@@ -271,7 +270,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                 ctp.sendMessage(p, ChatColor.LIGHT_PURPLE + "Successfully bought new role for " + ChatColor.GREEN + price + ChatColor.LIGHT_PURPLE + ". "
                                         + "You changed from " + ChatColor.GOLD + oldRole.substring(0, 1).toUpperCase() + oldRole.substring(1).toLowerCase()
                                         + ChatColor.LIGHT_PURPLE + " to " + ChatColor.GOLD + role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase() + ChatColor.LIGHT_PURPLE + ".");
-                                InvManagement.assignRole(a, p, role.toLowerCase());
+                                ctp.getInvManagement().assignRole(a, p, role.toLowerCase());
                                 return;
                             } else {
                                 String message =

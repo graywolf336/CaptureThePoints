@@ -16,7 +16,6 @@ import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
-import me.dalton.capturethepoints.util.InvManagement;
 
 /** Arena Data of the saved arenas for playing CTP. */
 public class Arena {
@@ -426,7 +425,7 @@ public class Arena {
             }
         }
         
-        InvManagement.removeCoolDowns(p.getName());
+        ctp.getInvManagement().removeCoolDowns(p.getName());
         
         ctp.getUtil().sendMessageToPlayers(this, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
         
@@ -443,7 +442,7 @@ public class Arena {
         ctp.getPluginManager().callEvent(event);
         
         getLobby().getPlayersInLobby().remove(p.getName());
-        InvManagement.restoreThings(p);
+        ctp.getInvManagement().restoreThings(p);
         ctp.getPrevoiusPosition().remove(p.getName());
         players.remove(p.getName());
 
@@ -506,7 +505,7 @@ public class Arena {
 
         for (String player : getPlayersData().keySet()) {
         	Player p = ctp.getServer().getPlayer(player);
-            InvManagement.restoreThings(p);
+        	ctp.getInvManagement().restoreThings(p);
             if (!noRewards) {
                 ctp.getUtil().rewardPlayer(this, p);
             }

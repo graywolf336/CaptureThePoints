@@ -30,7 +30,6 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
-import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.PotionManagement;
 
 public class ArenaMaster {
@@ -592,7 +591,7 @@ public class ArenaMaster {
         player.teleport(loc); // Teleport player to lobby
         ctp.sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
         arena.getPlayerData(player).setInLobby(true);
-        InvManagement.saveInv(player);
+        ctp.getInvManagement().saveInv(player);
         
         //Call a custom event for when players join the arena
         CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, arena.getPlayerData(player));

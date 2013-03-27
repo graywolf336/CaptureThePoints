@@ -67,6 +67,7 @@ public class CaptureThePoints extends JavaPlugin {
     private final CaptureThePointsPlayerListener playerListener = new CaptureThePointsPlayerListener(this);
     private ArenaUtils aUtil = new ArenaUtils(this);
     private ConfigTools cTools = new ConfigTools(this);
+    private InvManagement invMan = new InvManagement(this);
     private MoneyUtils mUtil = new MoneyUtils(this);
     private Permissions perm = new Permissions(this);
     private Util util = new Util(this);
@@ -145,8 +146,6 @@ public class CaptureThePoints extends JavaPlugin {
 
             populateCommands();
         }
-        
-        InvManagement.setCTP(this);
         
         loadConfigFiles(reloading);
 
@@ -729,6 +728,11 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the ConfigTools instance. */
     public ConfigTools getConfigTools() {
     	return this.cTools;
+    }
+    
+    /** Returns the InvManagement instance. */
+    public InvManagement getInvManagement() {
+    	return this.invMan;
     }
     
     /** Returns the MoneyUtils instance. */

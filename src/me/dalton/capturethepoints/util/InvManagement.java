@@ -16,13 +16,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class InvManagement {
-	private static CaptureThePoints ctp;
+	private CaptureThePoints ctp;
 	
-	public static void setCTP(CaptureThePoints instance) {
-		ctp = instance;
+	public InvManagement(CaptureThePoints plugin) {
+		ctp = plugin;
 	}
 	
-    public static void restoreThings(Player p) {
+    public void restoreThings(Player p) {
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         a.getPlayerData(p.getName()).setJustJoined(true);
         
@@ -63,7 +63,7 @@ public class InvManagement {
 	 * @param player The player to restore to
 	 */
 	@SuppressWarnings("deprecation")
-	public static void restoreInv (Player player) {
+	public void restoreInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
 
         // Just to be sure that inventory is saved
@@ -91,7 +91,7 @@ public class InvManagement {
 	 * 
 	 * @param player The player to save for
 	 */
-    public static void saveInv (Player player) {
+    public void saveInv (Player player) {
         PlayerInventory PlayerInv = player.getInventory();
         ctp.getInventories().put(player.getName(), PlayerInv.getContents());
         PlayerInv.clear();
@@ -109,7 +109,7 @@ public class InvManagement {
      * @param player The player's name to remove.
      * @since 1.5.0-b123
      */
-    public static void removeCoolDowns(String player) {
+    public void removeCoolDowns(String player) {
         // Removing player cooldowns
         for (HealingItems item : ctp.healingItems) {
             if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
@@ -132,7 +132,7 @@ public class InvManagement {
      * @return True if we could assign a new role, false if not.
      */
 	@SuppressWarnings("deprecation")
-	public static boolean assignRole(Arena a, Player p, String role) {
+	public boolean assignRole(Arena a, Player p, String role) {
         // role changing cooldown
         if(a.getPlayerData(p.getName()).getClassChangeTime() == 0) {
         	a.getPlayerData(p.getName()).setClassChangeTime(System.currentTimeMillis());
@@ -211,7 +211,7 @@ public class InvManagement {
 	 * @param p The player to fix the helmet for.
 	 */
 	@SuppressWarnings("deprecation")
-	public static void fixHelmet(Player p) {
+	public void fixHelmet(Player p) {
         PlayerInventory inv = p.getInventory();
         ctp.sendMessage(p, ChatColor.RED + "Do not remove your helmet.");
         DyeColor color1 = DyeColor.valueOf(ctp.getArenaMaster().getArenaPlayerIsIn(p.getName()).getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
