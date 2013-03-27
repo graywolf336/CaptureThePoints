@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.dalton.capturethepoints.beans.Arena;
+import me.dalton.capturethepoints.beans.CTPBlock;
 import me.dalton.capturethepoints.beans.Spawn;
 
 import org.bukkit.Location;
@@ -62,12 +63,12 @@ public class ArenaRestore {
         if (state instanceof InventoryHolder) {
             dd = (InventoryHolder) state;
             ItemStack[] contents = dd.getInventory().getContents();
-            tmp.inv = contents;
+            tmp.setInventory(contents);
         }
 
-        tmp.data = block.getData();
-        tmp.loc = block.getLocation();
-        tmp.material = block.getTypeId();
+        tmp.setData(block.getData());
+        tmp.setLocation(block.getLocation());
+        tmp.setMaterial(block.getTypeId());
 
         destroyedBlock.add(tmp);
         blockStatus.add(isDestroyed);
@@ -75,17 +76,17 @@ public class ArenaRestore {
 
     public void restoreAllBlocks() {
         for (int i = destroyedBlock.size() - 1; i >= 0; i--) {
-            Location blockLocation = destroyedBlock.get(i).loc;
+            Location blockLocation = destroyedBlock.get(i).getLocation();
             if (blockStatus.get(i)) {
                 CTPBlock tmp = destroyedBlock.get(i);
-                blockLocation.getBlock().setTypeId(tmp.material);
-                blockLocation.getBlock().setData(tmp.data);
+                blockLocation.getBlock().setTypeId(tmp.getMaterial());
+                blockLocation.getBlock().setData(tmp.getData());
 
                 //chest
-                if (tmp.inv != null && tmp.inv.length > 0) {
+                if (tmp.getInventory() != null && tmp.getInventory().length > 0) {
                 	InventoryHolder dd = (InventoryHolder) blockLocation.getBlock().getState();
                     Inventory inv = dd.getInventory();
-                    inv.setContents(tmp.inv);
+                    inv.setContents(tmp.getInventory());
                 }
             } else {
                 blockLocation.getBlock().setTypeId(0);
@@ -459,11 +460,4 @@ public class ArenaRestore {
         return true;
     }
 
-}
-
-class CTPBlock {
-    byte data;
-    Location loc;
-    int material;
-    ItemStack[] inv;
 }
