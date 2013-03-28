@@ -524,9 +524,9 @@ public class Arena {
     }
     
     /**
+     * Ends the current game that is happening in the arena, whether to give rewards or not.
      * 
-     * @param arena
-     * @param noRewards
+     * @param noRewards True to not give rewards, false to.
      */
     public void endGame(boolean noRewards) {
         ctp.getUtil().sendMessageToPlayers(this, "A Capture The Points game has ended!");
