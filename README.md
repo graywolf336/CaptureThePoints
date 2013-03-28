@@ -1,24 +1,13 @@
 CaptureThePoints
 ==========
 
-_Status of this branch's builds: **BROKEN**_
+_Status of this branch's builds: **TESTING**_
 
 If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
 
 ### Branch: newArenas ###
 * The way we handle more than one arena will be improved
 * Joining arenas will be done with `/ctp j <arena>`
-
-#### Started but not done ####
-* PJoinCommand (gotta fix the moveToLobby)
-* Clean up the Team bean and move the utilities to it's own util class.
-
-#### Done ####
-* Add a method to get the arenas
-* Add a method to get a certain arena
-* Fix the kick command
-* Fix the start command
-* Fix the colors command
 
 ### Update: 1.5.0 ###
 * Add three custom events
@@ -27,6 +16,7 @@ If for some reason you'd like to test this out, you can download the latest buil
 * - CTPPlayerDeathEvent
 * Force clients to get the sign updates that we do when restoring an arena, thanks to Bubelbub
 * Revamped how multiple arenas are handled
+* Recoded ~40% of the plugin, should have better performance
 * Changed some commands to fix the new system
 * - `/ctp j <arena>` if no `<arena>` is given, we will send them to the default arena or the one arena (if there is only one)
 * - `/ctp kick <arena> <player`
