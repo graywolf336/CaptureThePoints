@@ -252,7 +252,10 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
     /** Attempt to balance the teams.
+     * 
+     * @param a The arena in which we're balancing the teams.
      * @param loop Times this has recursed (prevents overruns).
+     * @param balanceThreshold The config value for balance threshold.
      * @return Whether the teams are balanced.
      */
     public boolean balanceTeams(Arena a, int loop, int balanceThreshold) {
@@ -459,41 +462,6 @@ public class CaptureThePoints extends JavaPlugin {
 
         a.getPlayersData().put(player.getName(), data);
     }
-    
-    /** This method changes the mainArena to a suitable arena using the number of players you have.
-     * Note, it will not change the mainArena if useSelectedArenaOnly is set to true.
-     * @param numberofplayers The number of players that want to play.
-     * @return The name of the selected mainArena, else empty String. */
-    /*public String chooseSuitableArena(int numberofplayers) {    	TODO
-        // Is the config set to allow the random choosing of arenas?
-        if (!getArenaMaster().getSelectedArena().getConfigOptions().useSelectedArenaOnly) {
-            int size = getArenaMaster().getArenas().size();
-
-            if (size > 1) {
-                // If there is more than 1 arena to choose from
-                List<String> arenas = new ArrayList<String>();
-                for (Arena arena : getArenaMaster().getArenas()) {
-                    if (arena.getMaxPlayers() >= numberofplayers && arena.getMinPlayers() <= numberofplayers) {
-                        arenas.add(arena.getName());
-                        getArenaMaster().setSelectedArena(arena);
-                    }
-                }
-                
-                if (arenas.size() > 1) {
-                    Random random = new Random();
-                    int nextInt = random.nextInt(size); // Generate a random number between 0 (inclusive) -> Number of arenas (exclusive)
-                    getArenaMaster().setSelectedArena(loadArena(arena_list.get(nextInt)) == null
-                            ? mainArena : loadArena(arena_list.get(nextInt)); // Change the mainArena based on this. (Ternary null check)
-                }
-                getLogger().info("ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + arena_list + ", of which " + arenas.size() + " were suitable: " + arenas);
-
-                // else ctp.mainArena = ctp.mainArena;
-            }
-            getLogger().info("The selected arena, " + mainArena.getName() + ", has a minimum of " + mainArena.getMinPlayers() + ", and a maximum of " + mainArena.getMaxPlayers() + ".");
-            return mainArena.getName();
-        }
-        return mainArena.getName() == null ? "" : mainArena.getName();
-    }*/
 
     private void loadConfigFiles(boolean reloading) {
     	if(reloading) {

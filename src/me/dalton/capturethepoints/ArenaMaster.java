@@ -2,10 +2,12 @@ package me.dalton.capturethepoints;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -428,6 +430,43 @@ public class ArenaMaster {
                 return false;
             }
         }
+    }
+    
+    /** This method changes the selectedArena (main) to a suitable arena using the number of players you have.
+     * Note, it will not change the mainArena if useSelectedArenaOnly is set to true.
+     * 
+     * @param numberofplayers The number of players that want to play.
+     * @return The name of the selected mainArena, else empty String. */
+    public String chooseSuitableArena(int numberofplayers) {
+        // Is the config set to allow the random choosing of arenas?
+        if (!getSelectedArena().getConfigOptions().useSelectedArenaOnly) {
+            int size = getArenas().size();
+
+            if (size > 1) {
+                // If there is more than 1 arena to choose from
+                List<String> arenas = new ArrayList<String>();
+                for (Arena arena : getArenas()) {
+                    if (arena.getMaxPlayers() >= numberofplayers && arena.getMinPlayers() <= numberofplayers) {
+                        arenas.add(arena.getName());
+                        setSelectedArena(arena);
+                    }
+                }
+                
+                if (arenas.size() > 1) {
+                    Random random = new Random();
+                    int nextInt = random.nextInt(size); // Generate a random number between 0 (inclusive) -> Number of arenas (exclusive)
+                    setSelectedArena(arenas.get(nextInt));
+                }
+                
+                ctp.getLogger().info("ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + getArenas() + ", of which " + arenas.size() + " were suitable: " + arenas);
+            }else {
+            	ctp.getLogger().info("The selected arena, " + getSelectedArena().getName()
+            			+ ", has a minimum of " + getSelectedArena().getMinPlayers()
+            			+ ", and a maximum of " + getSelectedArena().getMaxPlayers() + ".");
+                return getSelectedArena().getName();
+            }
+        }
+        return getSelectedArena().getName() == null ? "" : getSelectedArena().getName();
     }
     
     /**
