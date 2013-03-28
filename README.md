@@ -1,9 +1,7 @@
 CaptureThePoints
 ==========
 
-_Status of this branch's builds: **TESTING**_
-
-If for some reason you'd like to test this out, you can download the latest build at: http://graywolfsolutions.com:8080/job/CaptureThePoints/
+_Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/job/CaptureThePoints/
 
 ### Branch: newArenas ###
 * The way we handle more than one arena will be improved
