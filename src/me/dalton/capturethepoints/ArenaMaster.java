@@ -447,6 +447,8 @@ public class ArenaMaster {
      * 	<li>There is not just one team spawn</li>
      * 	<li>The team spawns are inside the boundaries of the arena</li>
      * 	<li>There are points to capture</li>
+     *  <li>The arena is not in edit mode</li>
+     *  <li>The arena is enabled</li>
      * </ul>
      * 
      * @param arena The arena to check.
@@ -498,6 +500,12 @@ public class ArenaMaster {
     	
     	if(arena.getCapturePoints().size() == 0)
     		return ChatColor.RED + "No points have been defined, therefore it is hard to play a game so I can't let you join.";
+    	
+    	if(arena.isEdit())
+    		return ChatColor.RED + "Sorry, this arena is currently in edit mode.";
+    	
+    	if(!arena.isEnabled())
+    		return ChatColor.RED + "Sorry, this arena is currently disabled.";
     	
     	return "";
     }
