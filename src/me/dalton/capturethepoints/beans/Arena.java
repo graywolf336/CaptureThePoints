@@ -31,7 +31,6 @@ public class Arena {
     //SchedulerIds
     int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0;
     
-    @SuppressWarnings("unused")
 	private boolean enabled = true, pregame = true, running = false, edit = false;
     
     private HashMap<String, Spawn> teamSpawns;
@@ -272,6 +271,50 @@ public class Arena {
     /** Gets the scheduler id of the healingItemsCooldowns task for this arena. */
     public int getHealingItemsCooldowns() {
     	return this.healingItemsCooldowns;
+    }
+    
+    /**
+     * Sets if the arena is enabled or not.
+     * 
+     * @param enabled Should the arena be enabled or not.
+     * @author graywolf336
+     * @since 1.5.0-b156
+     */
+    public void setEnabled(boolean enabled) {
+    	this.enabled = enabled;
+    }
+    
+    /**
+     * Returns if the arena is enabled or not.
+     * 
+     * @return True if the arena is enabled, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b156
+     */
+    public boolean isEnabled() {
+    	return this.enabled;
+    }
+    
+    /**
+     * Sets whether the arena is being edited or not.
+     * 
+     * @param edit Setting the arena to edit mode or not.
+     * @author graywolf336
+     * @since 1.5.0-b156
+     */
+    public void setEdit(boolean edit) {
+    	this.edit = edit;
+    }
+    
+    /**
+     * Returns if the arena is in editing mode or not.
+     * 
+     * @return True if the arena is in edit mode, false if not.
+     * @author graywolf336
+     * @since 1.5.0-b156
+     */
+    public boolean isEdit() {
+    	return this.edit;
     }
     
     /**
