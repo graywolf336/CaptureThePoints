@@ -12,6 +12,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -25,6 +27,20 @@ public class InvManagement {
     public void restoreThings(Player p) {
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         a.getPlayerData(p.getName()).setJustJoined(true);
+        
+        PlayerInventory inv = p.getInventory();
+        inv.clear();
+        inv.setHelmet(null);
+        inv.setChestplate(null);
+        inv.setLeggings(null);
+        inv.setBoots(null);
+        InventoryView view = p.getOpenInventory();
+        if (view != null) {
+        	view.setCursor(null);
+        	Inventory i = view.getTopInventory();
+        	if(i != null)
+        		i.clear();
+        }
         
         restoreInv(p);
 
