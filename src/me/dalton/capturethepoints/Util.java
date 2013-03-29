@@ -248,10 +248,8 @@ public class Util {
 
     /** Returns whether String is a number. */
     public boolean isItInteger(String text) {
-        @SuppressWarnings("unused")
-		int id = 0;
         try {
-            id = Integer.parseInt(text);
+            Integer.parseInt(text);
         } catch (Exception NumberFormatException) {
             return false;
         }
@@ -260,6 +258,8 @@ public class Util {
 
     //mine
     public List<Items> getItemListFromString(String text) {
+    	if(text == null) return null;
+    	
         // Trim commas and whitespace, and split items by commas
         text = text.toUpperCase();
         text = text.trim();
@@ -462,76 +462,81 @@ public class Util {
                     player.getInventory().addItem(stack);
                 }
             }
-            //reward for kills
-            for (int i = 0; i < pd.getKills(); i++) {
-                if (ctp.getRewards().getRewardsForKill().size() > 0) {
-                    int itemCount = 0;
-                    int id = random(0, ctp.getRewards().getRewardsForKill().size()); // Kj -- Took out -1
-                    Items item = ctp.getRewards().getRewardsForKill().get(id);
-                    // EXp + money
-                    if(item.getItem().equals(Material.AIR)) {
-                        if(ctp.getEconomyHandler() != null)
-                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
-
-                        player.giveExp(item.getExpReward());
-                        continue;
-                    }
-                    
-                    int amount = item.getAmount();
-                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
-                        for (ItemStack stack : player.getInventory().getContents())
-                            if (stack != null && stack.getTypeId() == item.getItem().getId())
-                                itemCount += stack.getAmount();
-                    
-                    if (itemCount > 0)
-                        player.getInventory().remove(item.getItem().getId());
-                    
-                    amount += itemCount;
-                    ItemStack stack = new ItemStack(item.getItem(), amount);
-                    if(item.getType() != -1)
-                        stack.setDurability(item.getType());
-                    // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++)
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-
-                    player.getInventory().addItem(stack);
-                }
+            
+            if(ctp.getRewards().getRewardsForKill() != null) {//check for null before attempting first
+	            //reward for kills
+	            for (int i = 0; i < pd.getKills(); i++) {
+	                if (ctp.getRewards().getRewardsForKill().size() > 0) {
+	                    int itemCount = 0;
+	                    int id = random(0, ctp.getRewards().getRewardsForKill().size()); // Kj -- Took out -1
+	                    Items item = ctp.getRewards().getRewardsForKill().get(id);
+	                    // EXp + money
+	                    if(item.getItem().equals(Material.AIR)) {
+	                        if(ctp.getEconomyHandler() != null)
+	                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
+	
+	                        player.giveExp(item.getExpReward());
+	                        continue;
+	                    }
+	                    
+	                    int amount = item.getAmount();
+	                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
+	                        for (ItemStack stack : player.getInventory().getContents())
+	                            if (stack != null && stack.getTypeId() == item.getItem().getId())
+	                                itemCount += stack.getAmount();
+	                    
+	                    if (itemCount > 0)
+	                        player.getInventory().remove(item.getItem().getId());
+	                    
+	                    amount += itemCount;
+	                    ItemStack stack = new ItemStack(item.getItem(), amount);
+	                    if(item.getType() != -1)
+	                        stack.setDurability(item.getType());
+	                    // Add enchantments
+	                    for(int j = 0; j < item.getEnchantments().size(); j++)
+	                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+	
+	                    player.getInventory().addItem(stack);
+	                }
+	            }
             }
             
-            //reward for capture
-            for (int i = 0; i < pd.getPointsCaptured(); i++) {
-                if (ctp.getRewards().getRewardsForCapture().size() > 0) {
-                    int itemCount = 0;
-                    int id = random(0, ctp.getRewards().getRewardsForCapture().size()); // Kj -- Took out -1
-                    Items item = ctp.getRewards().getRewardsForCapture().get(id);
-                    // EXp + money
-                    if(item.getItem().equals(Material.AIR)) {
-                        if(ctp.getEconomyHandler() != null)
-                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
-
-                        player.giveExp(item.getExpReward());
-                        continue;
-                    }
-                    
-                    int amount = item.getAmount();
-                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
-                        for (ItemStack stack : player.getInventory().getContents())
-                            if ((stack != null) && (stack.getTypeId() == item.getItem().getId()))
-                                itemCount += stack.getAmount();
-
-                    if (itemCount > 0)
-                        player.getInventory().remove(item.getItem().getId());
-
-                    amount += itemCount;
-                    ItemStack stack = new ItemStack(item.getItem(), amount);
-                    if(item.getType() != -1)
-                        stack.setDurability(item.getType());
-                    // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++)
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    
-                    player.getInventory().addItem(stack);
-                }
+            if(ctp.getRewards().getRewardsForCapture() != null) {//check for null before attempting first
+	            //reward for capture
+	            for (int i = 0; i < pd.getPointsCaptured(); i++) {
+	                if (ctp.getRewards().getRewardsForCapture().size() > 0) {
+	                    int itemCount = 0;
+	                    int id = random(0, ctp.getRewards().getRewardsForCapture().size()); // Kj -- Took out -1
+	                    Items item = ctp.getRewards().getRewardsForCapture().get(id);
+	                    // EXp + money
+	                    if(item.getItem().equals(Material.AIR)) {
+	                        if(ctp.getEconomyHandler() != null)
+	                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
+	
+	                        player.giveExp(item.getExpReward());
+	                        continue;
+	                    }
+	                    
+	                    int amount = item.getAmount();
+	                    if (!(Util.ARMORS_TYPE.contains(item.getItem()) || Util.WEAPONS_TYPE.contains(item.getItem())))
+	                        for (ItemStack stack : player.getInventory().getContents())
+	                            if ((stack != null) && (stack.getTypeId() == item.getItem().getId()))
+	                                itemCount += stack.getAmount();
+	
+	                    if (itemCount > 0)
+	                        player.getInventory().remove(item.getItem().getId());
+	
+	                    amount += itemCount;
+	                    ItemStack stack = new ItemStack(item.getItem(), amount);
+	                    if(item.getType() != -1)
+	                        stack.setDurability(item.getType());
+	                    // Add enchantments
+	                    for(int j = 0; j < item.getEnchantments().size(); j++)
+	                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+	                    
+	                    player.getInventory().addItem(stack);
+	                }
+	            }
             }
             
             //It's deprecated but it's currently the only way to get the desired effect.

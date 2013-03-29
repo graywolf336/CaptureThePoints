@@ -576,14 +576,14 @@ public class CaptureThePoints extends JavaPlugin {
 
     public void loadRewards () {
         FileConfiguration config = getConfigTools().load();
-        if (!config.contains("Rewards")) {
+        if (!config.contains("Rewards.WinnerTeam.ItemCount")) {
             config.set("Rewards.WinnerTeam.ItemCount", "2");
-            config.set("Rewards.WinnerTeam.Items", "DIAMOND_LEGGINGS, DIAMOND_HELMET, DIAMOND_CHESTPLATE, DIAMOND_BOOTS, DIAMOND_AXE, DIAMOND_HOE, DIAMOND_PICKAXE, DIAMOND_SPADE, DIAMOND_SWORD");
-            config.set("Rewards.OtherTeams.ItemCount", "1");
-            config.set("Rewards.OtherTeams.Items", "CAKE, RAW_FISH:5, COAL:5, 56, GOLDEN_APPLE");
-            config.set("Rewards.ForKillingEnemy", "APPLE, BREAD, ARROW:10");
-            config.set("Rewards.ForCapturingThePoint", "CLAY_BRICK, SNOW_BALL:2, SLIME_BALL, IRON_INGOT");
-            config.set("Rewards.ExpRewardForKillingOneEnemy", "0");
+        	config.set("Rewards.WinnerTeam.Items", "DIAMOND_LEGGINGS, DIAMOND_HELMET, DIAMOND_CHESTPLATE, DIAMOND_BOOTS, DIAMOND_AXE, DIAMOND_HOE, DIAMOND_PICKAXE, DIAMOND_SPADE, DIAMOND_SWORD");
+        	config.set("Rewards.OtherTeams.ItemCount", "1");
+        	config.set("Rewards.OtherTeams.Items", "CAKE, RAW_FISH:5, COAL:5, 56, GOLDEN_APPLE");
+        	config.set("Rewards.ForKillingEnemy", "APPLE, BREAD, ARROW:10");
+        	config.set("Rewards.ForCapturingThePoint", "CLAY_BRICK, SNOW_BALL:2, SLIME_BALL, IRON_INGOT");
+        	config.set("Rewards.ExpRewardForKillingOneEnemy", "0");
         }
         
         rewards = new Rewards();
