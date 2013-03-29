@@ -127,6 +127,9 @@ public class ArenaMaster {
 	 */
 	public void resetArenas() {
 		this.arenas.clear();
+		this.arenasBoundaries.clear();
+		this.selectedArena = null;
+		this.editingArena = null;
 	}
 	
 	/** Returns the HashMap of all the arena boundaries. */
