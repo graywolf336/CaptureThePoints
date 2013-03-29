@@ -18,7 +18,9 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 
-/** Arena Data of the saved arenas for playing CTP. */
+/** Arena Data of the saved arenas for playing CTP.
+ * @author graywolf336
+ */
 public class Arena {
 	//general
 	private CaptureThePoints ctp;
@@ -277,7 +279,6 @@ public class Arena {
      * Sets if the arena is enabled or not.
      * 
      * @param enabled Should the arena be enabled or not.
-     * @author graywolf336
      * @since 1.5.0-b156
      */
     public void setEnabled(boolean enabled) {
@@ -288,7 +289,6 @@ public class Arena {
      * Returns if the arena is enabled or not.
      * 
      * @return True if the arena is enabled, false if not.
-     * @author graywolf336
      * @since 1.5.0-b156
      */
     public boolean isEnabled() {
@@ -299,7 +299,6 @@ public class Arena {
      * Sets whether the arena is being edited or not.
      * 
      * @param edit Setting the arena to edit mode or not.
-     * @author graywolf336
      * @since 1.5.0-b156
      */
     public void setEdit(boolean edit) {
@@ -310,7 +309,6 @@ public class Arena {
      * Returns if the arena is in editing mode or not.
      * 
      * @return True if the arena is in edit mode, false if not.
-     * @author graywolf336
      * @since 1.5.0-b156
      */
     public boolean isEdit() {
@@ -321,7 +319,6 @@ public class Arena {
      * Sets if the game is running or not.
      * 
      * @param running True if running, false if not.
-     * @author graywolf336
      * @since 1.5.0-b123
      */
     public void setRunning(boolean running) {
@@ -333,7 +330,6 @@ public class Arena {
      * <p />
      * 
      * @return True if the game is running, false if not.
-     * @author graywolf336
      * @since 1.5.0-b123
      */
     public boolean isGameRunning() {
@@ -344,7 +340,6 @@ public class Arena {
      * Sets if the game is in pregame or not.
      * 
      * @param pregame True if is pregame, false if not.
-     * @author graywolf336
      * @since 1.5.0-b126
      */
     public void setPreGame(boolean pregame) {
@@ -356,7 +351,6 @@ public class Arena {
      * <p />
      * 
      * @return True if the game is in the pregame, false if not.
-     * @author graywolf336
      * @since 1.5.0-b126
      */
     public boolean isPreGame() {
@@ -367,7 +361,6 @@ public class Arena {
      * <p />
      * 
      * @return The player name list
-     * @author graywolf336
      * @since 1.5.0-b123
      */
     public List<String> getPlayerList() {
@@ -385,7 +378,6 @@ public class Arena {
      * 
      * @param player The player who's data to get.
      * @return The player data, null if nothing.
-     * @author graywolf336
      * @since 1.5.0-b123
      */
     public PlayerData getPlayerData(String player) {
@@ -398,7 +390,6 @@ public class Arena {
      * 
      * @param player The player who's data to get.
      * @return The player data, null if nothing.
-     * @author graywolf336
      * @since 1.5.0-b126
      */
     public PlayerData getPlayerData(Player player) {
@@ -410,7 +401,6 @@ public class Arena {
      * 
      * @param player The player who is being added.
      * @param playerdata The data about this player.
-     * @author graywolf336
      * @since 1.5.0-148
      */
     public void addPlayerData(String player, PlayerData playerdata) {
@@ -422,7 +412,6 @@ public class Arena {
      * 
      * @param player The player who is being added.
      * @param playerdata The data about this player.
-     * @author graywolf336
      * @since 1.5.0-165
      */
     public void addPlayerData(Player player, PlayerData playerdata) {
@@ -434,7 +423,6 @@ public class Arena {
      * <p />
      * 
      * @return Every player in this arena's data.
-     * @author graywolf336
      * @since 1.5.0-b123
      */
     public Map<String, PlayerData> getPlayersData() {
@@ -445,7 +433,8 @@ public class Arena {
      * <p />
      * 
      * @param ctp CaptureThePoints instance
-     * @return The player name list */
+     * @return The player name list
+     */
     public List<String> getPlayersPlaying() {
         List<String> toReturn = new ArrayList<String>();
         
