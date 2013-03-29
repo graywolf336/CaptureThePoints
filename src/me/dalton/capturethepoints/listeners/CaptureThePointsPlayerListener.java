@@ -35,6 +35,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -432,6 +433,34 @@ public class CaptureThePointsPlayerListener implements Listener {
     		return;
     		
     }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEggThrow(PlayerEggThrowEvent event) {
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
+    		return;
+    	
+    	if(ctp.getGlobalConfigOptions().eggsAreGrenades) {
+    		event.setHatching(false);
+    		Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer());
+        	PlayerData pd = a.getPlayerData(event.getPlayer());
+        	
+        	if(pd.inLobby()) {//Player is in the lobby so don't do anything.
+        		ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are not effective in the Lobby.");
+        		return;
+        	}else {
+        		if (ctp.getArenaUtil().isInside(event.getEgg().getLocation().getBlockX(), a.getX1(), a.getX2())
+                		&& ctp.getArenaUtil().isInside(event.getEgg().getLocation().getBlockZ(), a.getZ1(), a.getZ2())
+                		&& event.getEgg().getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
+        			event.getEgg().getLocation().getWorld().createExplosion(event.getEgg().getLocation(), 2F, false);
+            		return;
+        		}else {
+        			ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are only effective in the arena, not outside it.");
+        			return;
+        		}
+        	}
+    	}else
+    		return;
+    }
 
     /** Check the lobby to see if player[s] can be transferred.  */
     private void checkLobby(Arena arena, Player p) {
@@ -714,7 +743,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
 
 	@SuppressWarnings("deprecation")
-	public void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {
+	public void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {//TODO I need to verify that if a player selects a team it is auto balanced.
         if(arena.isGameRunning() || !arena.getLobby().getPlayersInLobby().containsKey(p.getName()))
             return;
         

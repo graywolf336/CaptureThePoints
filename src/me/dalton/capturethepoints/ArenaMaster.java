@@ -179,7 +179,7 @@ public class ArenaMaster {
 	 * @author graywolf336
 	 * @since 1.5.0-b123
 	 */
-	public boolean isPlayerInAnArena(String player) {//TODO
+	public boolean isPlayerInAnArena(String player) {
 		for(Arena a : arenas) {
 			if(a.getPlayerList().contains(player))
 				return true;

@@ -43,6 +43,12 @@ public class ConfigOptions {
     
     /** Only choose the arena that an admin has picked (/ctp select) or one specified as main. /||/ Allow suitable arena pick. [Default: false] */
     public boolean useSelectedArenaOnly = false; // Kjhf
+    
+    /** If eggs thrown in the arena are used as grenades.
+     * 
+     * @since 1.5.0-b172
+     */
+    public boolean eggsAreGrenades = false;
 
     /** Auto balance teams if teams differ by this number of people. 0 disables. [Default: 2] */
     public int balanceTeamsWhenPlayerLeaves = 2;

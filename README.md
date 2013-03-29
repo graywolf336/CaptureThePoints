@@ -22,6 +22,8 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * - `/ctp colors <arena>` if no `<arena>` is given, it will list out all your arenas for you.
 * Fixed a bug that could allow for glitching out items
 * Fixed a bug that allowed users to teleport out of the lobby using ender pearls.
+* Added eggs are grenades if enabled in the config.
+* Made it so that if the config has block break off explosions don't hurt blocks.
 
 
 ### Update: 1.4.5 ###
