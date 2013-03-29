@@ -414,6 +414,24 @@ public class CaptureThePointsPlayerListener implements Listener {
             }
         }
     }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEnderPeralUsage(PlayerInteractEvent event){
+    	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
+    		return;
+    	
+    	if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+    		if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL && ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby()) {
+    			event.setCancelled(true);
+    			if(ctp.getGlobalConfigOptions().debugMessages)
+    				ctp.getLogger().info("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to throw an Ender Pearl while in the lobby.");
+    			ctp.sendMessage(event.getPlayer(), ChatColor.RED + "You're not allowed to teleport out of the lobby!");
+    		} else
+    			return;
+    	else
+    		return;
+    		
+    }
 
     /** Check the lobby to see if player[s] can be transferred.  */
     private void checkLobby(Arena arena, Player p) {
@@ -622,7 +640,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Material mat = p.getItemInHand().getType();
             
-            if(ctp.getGlobalConfigOptions().debugMessages) ctp.sendMessage(p, "The material in hand is: " + mat.toString());
+            if(ctp.getGlobalConfigOptions().debugMessages && event.getPlayer().isOp()) ctp.sendMessage(p, "The material in hand is: " + mat.toString());
             
             for (HealingItems item : ctp.getHealingItems()) {
                 if (item.item.getItem() == mat) {

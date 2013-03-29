@@ -179,7 +179,7 @@ public class ArenaMaster {
 	 * @author graywolf336
 	 * @since 1.5.0-b123
 	 */
-	public boolean isPlayerInAnArena(String player) {
+	public boolean isPlayerInAnArena(String player) {//TODO
 		for(Arena a : arenas) {
 			if(a.getPlayerList().contains(player))
 				return true;
@@ -612,7 +612,7 @@ public class ArenaMaster {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        arena.addPlayerData(player.getName(), data);
+        arena.addPlayerData(player, data);
         
         arena.getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
         arena.getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj

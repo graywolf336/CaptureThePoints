@@ -20,6 +20,8 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * - `/ctp kick <arena> <player`
 * - `/ctp start <arena>`
 * - `/ctp colors <arena>` if no `<arena>` is given, it will list out all your arenas for you.
+* Fixed a bug that could allow for glitching out items
+* Fixed a bug that allowed users to teleport out of the lobby using ender pearls.
 
 
 ### Update: 1.4.5 ###
