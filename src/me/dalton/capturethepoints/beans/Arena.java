@@ -52,7 +52,6 @@ public class Arena {
      * <p />
      * 
      * @param plugin The CTP plugin instance.
-     * @author graywolf336
      * @since 1.5.0-b126
      */
     public Arena(CaptureThePoints plugin) {
@@ -432,7 +431,6 @@ public class Arena {
     /** Get all Players that are playing in this arena as a list of playername strings
      * <p />
      * 
-     * @param ctp CaptureThePoints instance
      * @return The player name list
      */
     public List<String> getPlayersPlaying() {
