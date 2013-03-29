@@ -460,7 +460,7 @@ public class CaptureThePoints extends JavaPlugin {
             }
         }
 
-        a.getPlayersData().put(player.getName(), data);
+        a.addPlayerData(player, data);
     }
 
     private void loadConfigFiles(boolean reloading) {

@@ -414,9 +414,19 @@ public class Arena {
      * @since 1.5.0-148
      */
     public void addPlayerData(String player, PlayerData playerdata) {
-    	if(ctp.getGlobalConfigOptions().debugMessages)
-    		ctp.logInfo("Adding a player to the data.");
     	this.players.put(player, playerdata);
+    }
+    
+    /**
+     * Adds a player and his/her data to the list.
+     * 
+     * @param player The player who is being added.
+     * @param playerdata The data about this player.
+     * @author graywolf336
+     * @since 1.5.0-165
+     */
+    public void addPlayerData(Player player, PlayerData playerdata) {
+    	this.players.put(player.getName(), playerdata);
     }
     
     /**
