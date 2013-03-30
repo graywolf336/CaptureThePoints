@@ -618,6 +618,7 @@ public class CaptureThePoints extends JavaPlugin {
         commands.add(new KickCommand(this));
         commands.add(new LateJoinCommand(this));
         commands.add(new LeaveCommand(this));
+        commands.add(new ListCommand(this));
         commands.add(new PJoinCommand(this));
         commands.add(new ReloadCommand(this));
         //commands.add(new SaveCommand(this));
