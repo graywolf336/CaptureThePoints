@@ -430,7 +430,6 @@ public class ArenaUtils {
         arena.getLobby().getPlayersInLobby().remove(pl);
         playerdata.setInLobby(false);
         playerdata.setInArena(true);
-        ctp.getLogger().info("Hiya there");
     }
 	
 	@SuppressWarnings("deprecation")
@@ -477,10 +476,6 @@ public class ArenaUtils {
                 difference = difference + (optimalPlayerCountInTeam - teamPlayersCount[i]);
         }
         
-        if(ctp.getGlobalConfigOptions().debugMessages) {
-        	
-        }
-
         // If there are enough players to balance teams
         if(difference <= playersForBalance.size() && difference > 0) {
             for(int i = 0; i < arena.getTeams().size(); i++) {
