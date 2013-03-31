@@ -99,7 +99,6 @@ public class ArenaMaster {
 	 * 
 	 * @param name The name to check if it is an arena.
 	 * @return True if it is an arena, false if not.
-	 * @author graywolf336
 	 * @since 1.5.0-b126
 	 */
 	public boolean isArena(String name) {
@@ -111,7 +110,6 @@ public class ArenaMaster {
 	 * <p />
 	 * 
 	 * @return The list of the arenas loaded.
-	 * @author graywolf336
 	 * @since 1.5.0-b123
 	 */
 	public List<Arena> getArenas() {
@@ -122,7 +120,6 @@ public class ArenaMaster {
 	 * Clears out the arena list, no kicking players here.
 	 * <p />
 	 * 
-	 * @author graywolf336
 	 * @since 1.5.0-b123
 	 */
 	public void resetArenas() {
@@ -143,7 +140,6 @@ public class ArenaMaster {
 	 * 
 	 * @param player The player to check, as a string.
 	 * @return The arena if the player is in one, null if none.
-	 * @author graywolf336
 	 * @since 1.5.0-b123
 	 */
 	public Arena getArenaPlayerIsIn(String player) {
@@ -163,7 +159,6 @@ public class ArenaMaster {
 	 * 
 	 * @param player The player to check, as a string.
 	 * @return The arena if the player is in one, null if none.
-	 * @author graywolf336
 	 * @since 1.5.0-b126
 	 */
 	public Arena getArenaPlayerIsIn(Player player) {
@@ -176,7 +171,6 @@ public class ArenaMaster {
 	 * 
 	 * @param player The player to check, as a string.
 	 * @return True if the player is somewhere, false if not.
-	 * @author graywolf336
 	 * @since 1.5.0-b123
 	 */
 	public boolean isPlayerInAnArena(String player) {
@@ -196,7 +190,6 @@ public class ArenaMaster {
 	 * 
 	 * @param player The player instance to check
 	 * @return True if the player is somewhere, false if not.
-	 * @author graywolf336
 	 * @since 1.5.0-b126
 	 */
 	public boolean isPlayerInAnArena(Player player) {
@@ -209,7 +202,6 @@ public class ArenaMaster {
 	 * 
 	 * @param player The player to get the PlayerData for.
 	 * @return PlayerData of the given player, null if not playing.
-	 * @author graywolf336
 	 * @since 1.5.0-b126
 	 * @see PlayerData
 	 */
@@ -224,7 +216,6 @@ public class ArenaMaster {
 	 * 
 	 * @param player The player to get the PlayerData for.
 	 * @return PlayerData of the given player, null if not playing.
-	 * @author graywolf336
 	 * @since 1.5.0-b126
 	 * @see PlayerData
 	 */
@@ -491,12 +482,13 @@ public class ArenaMaster {
      * 	<li>There are points to capture</li>
      *  <li>The arena is not in edit mode</li>
      *  <li>The arena is enabled</li>
+     *  <li>The arena is full or not.</li>
+     *  <li>The arena is running and we don't allow joining after it is started.</li>
      * </ul>
      * 
      * @param arena The arena to check.
      * @param sender The one who sent the command.
      * @return An error message, empty if the arena is safe.
-     * @author graywolf336
      * @since 1.5.0-b138
      */
     public String checkArena(Arena arena, CommandSender sender) {
@@ -548,6 +540,12 @@ public class ArenaMaster {
     	
     	if(!arena.isEnabled())
     		return ChatColor.RED + "Sorry, this arena is currently disabled.";
+    	
+    	if(arena.getPlayersPlaying().size() == arena.getMaxPlayers())
+    		return ChatColor.RED + "Sorry, this arena is currently full of players. Try again in a little bit.";
+    	
+    	if(arena.isGameRunning() && !arena.getConfigOptions().allowLateJoin)
+    		return ChatColor.RED + "A game has already started. You may not join.";
     	
     	return "";
     }
@@ -634,6 +632,7 @@ public class ArenaMaster {
 
         Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
         arena.getPrevoiusPosition().put(player.getName(), previous);
+        ctp.getInvManagement().saveInv(player);
 
         ctp.getUtil().sendMessageToPlayers(arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
 
@@ -641,7 +640,6 @@ public class ArenaMaster {
         player.teleport(loc); // Teleport player to lobby
         ctp.sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
         arena.getPlayerData(player).setInLobby(true);
-        ctp.getInvManagement().saveInv(player);
         
         //Call a custom event for when players join the arena
         CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, arena.getPlayerData(player));

@@ -503,7 +503,7 @@ public class Arena {
         if (getConfigOptions().exactTeamMemberCount && isGameRunning()) {
             for (String playerName : players.keySet()) {
                 if (players.get(playerName).inLobby() && players.get(playerName).isReady()) {
-                    //this.playerListener.moveToSpawns(playerName);//TODO
+                    ctp.getArenaUtil().moveToSpawns(this, playerName);
                     wasReplaced = true;
                     break;
                 }
@@ -517,7 +517,7 @@ public class Arena {
         //If there was no replacement we should move one member to lobby
         if (!wasReplaced && getConfigOptions().exactTeamMemberCount && isGameRunning())
             if (getConfigOptions().balanceTeamsWhenPlayerLeaves > 0)
-                ctp.balanceTeams(this, 0, getConfigOptions().balanceTeamsWhenPlayerLeaves); //TODO
+                ctp.balanceTeams(this, 0, getConfigOptions().balanceTeamsWhenPlayerLeaves);
     }
     
     /**

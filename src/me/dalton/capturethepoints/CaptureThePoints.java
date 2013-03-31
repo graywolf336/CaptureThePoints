@@ -258,12 +258,11 @@ public class CaptureThePoints extends JavaPlugin {
      * @param balanceThreshold The config value for balance threshold.
      * @return Whether the teams are balanced.
      */
-    public boolean balanceTeams(Arena a, int loop, int balanceThreshold) {
+    public boolean balanceTeams(Arena a, int loop, int balanceThreshold) {//TODO
         if (loop > 5) {
         	getLogger().warning("balanceTeams hit over 5 recursions. Aborting.");
             return false;
         }
-        //int balancethreshold = mainArena.co.balanceTeamsWhenPlayerLeaves; // Get the balance threshold from config. We know this is over 0 already.
         
         Team lowestTeam = null; // Team with the lower number of players
         int lowestmembercount = -1;

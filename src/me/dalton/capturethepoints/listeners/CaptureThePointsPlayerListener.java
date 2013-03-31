@@ -152,15 +152,14 @@ public class CaptureThePointsPlayerListener implements Listener {
             if (event.hasBlock() && event.getClickedBlock().getTypeId() == 42) {
                 //If this role exists
                 if (ctp.getRoles().containsKey(a.getPlayerData(p.getName()).getRole())) {
-                    if (!a.getPlayerData(p.getName()).isReady()) {
+                    if (!a.getPlayerData(p.getName()).isReady())
                         ctp.getUtil().sendMessageToPlayers(a, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
-                    }
+                    
                     a.getPlayerData(p.getName()).setReady(true);
                     a.getLobby().getPlayersInLobby().put(p.getName(), true);
                     checkLobby(a, p);
-                } else {
+                } else
                 	ctp.sendMessage(p, ChatColor.RED + "Please select a role.");
-                }
                 return;
             }
 
@@ -494,10 +493,9 @@ public class CaptureThePointsPlayerListener implements Listener {
                             Arena mainArenaTmp = arena;
                             if (ctp.getArenaMaster().hasSuitableArena(readypeople)) {
                                 ctp.getUtil().sendMessageToPlayers(arena, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
-                                List<String> transport = new LinkedList<String>(lobby.getPlayersInLobby().keySet());
                                 arena.endGame(true);
-                                //ctp.chooseSuitableArena(readypeople);
-                                for (String aPlayer : transport) {
+                                ctp.getArenaMaster().chooseSuitableArena(readypeople);
+                                for (String aPlayer : lobby.getPlayersInLobby().keySet()) {
                                     PJoinCommand pj = new PJoinCommand(ctp); 
                                     pj.execute(ctp.getServer().getConsoleSender(), Arrays.asList("ctp", "pjoin", aPlayer, ctp.getArenaMaster().getSelectedArena().getName()));
                                 }
@@ -519,7 +517,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     		notReady = notReady.substring(0, notReady.length() - 2);
                     	}
                     	
-                    	ctp.sendMessage(p, ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople() + " Players Not Ready: "+notReady+"."); // Kj
+                    	ctp.sendMessage(p, ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople() + " Players Not Ready: " + notReady + "."); // Kj
                     }
                 } else { // Game already started
                     if (!arena.getConfigOptions().allowLateJoin) {

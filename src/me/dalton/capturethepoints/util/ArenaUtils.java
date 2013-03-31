@@ -222,14 +222,13 @@ public class ArenaUtils {
             team.setScore(0);
         }
         
-        if ((!arena.getConfigOptions().useScoreGeneration) && (arena.getConfigOptions().pointsToWin > arena.getCapturePoints().size())) {
+        if ((!arena.getConfigOptions().useScoreGeneration) && (arena.getConfigOptions().pointsToWin > arena.getCapturePoints().size()))
             arena.getConfigOptions().pointsToWin = arena.getCapturePoints().size();
-        }
 
         // Balance teams for already selected teams
         balanceTeamsFromLobby(arena);
 
-        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP]" + ChatColor.WHITE + " A Capture The Points game has started!");
+        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP]" + ChatColor.WHITE + " A Capture The Points game has started in the arena " + arena.getName() + "!");
         
         arena.setPreGame(false);
         arena.setRunning(true);
@@ -361,10 +360,9 @@ public class ArenaUtils {
         if(pl == null)
             return;
 
-        if (arena.getWaitingToMove() != null && !arena.getWaitingToMove().isEmpty()) {
+        if (arena.getWaitingToMove() != null && !arena.getWaitingToMove().isEmpty())
             if(arena.getWaitingToMove().contains(pl))
             	arena.getWaitingToMove().remove(pl);
-        }
 
         //Assign team
         int smallest = 99999;
@@ -426,12 +424,13 @@ public class ArenaUtils {
         loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         
         boolean teleport = p.teleport(loc);
-        if (!teleport) {
+        if (!teleport)
             p.teleport(new Location(p.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float) spawn.getDir()));
-        }
+            
         arena.getLobby().getPlayersInLobby().remove(pl);
         playerdata.setInLobby(false);
         playerdata.setInArena(true);
+        ctp.getLogger().info("Hiya there");
     }
 	
 	@SuppressWarnings("deprecation")
@@ -441,6 +440,13 @@ public class ArenaUtils {
         int[] teamPlayersCount = new int[arena.getTeams().size()];
         List<String> playersForBalance = new ArrayList<String>();
 
+        if(ctp.getGlobalConfigOptions().debugMessages) {
+        	ctp.getLogger().info("Starting the auto balacing:");
+        	ctp.getLogger().info("   Difference: " + difference);
+        	ctp.getLogger().info("   optimalPlayerCountInTeam: " + optimalPlayerCountInTeam);
+        	ctp.getLogger().info("   teamPlayersCount: " + teamPlayersCount.length);
+        }
+        
         boolean areEqual = true;
         for(int i = 0; i < arena.getTeams().size(); i++) {
             teamPlayersCount[i] = arena.getTeams().get(i).getTeamPlayers(arena).size();
@@ -449,6 +455,12 @@ public class ArenaUtils {
             }
         }
 
+        if(ctp.getGlobalConfigOptions().debugMessages) {
+        	ctp.getLogger().info("   areEqual: " + areEqual);
+        	for(int i = 0; i < teamPlayersCount.length; i++)
+        		ctp.getLogger().info("   teamPlayersCount[" + i + "]: " + teamPlayersCount[i]);
+        }
+        
         //Teams are equal, no need to balance
         if(areEqual)
             return;
@@ -457,13 +469,16 @@ public class ArenaUtils {
         for(int i = 0; i < arena.getTeams().size(); i++) {
            
             List<String> TeamPlayers = arena.getTeams().get(i).getTeamPlayers(arena);
-                // Randam ir sudedam i sarasa zaidejus, kuriu yra per daug
-                for(int j = 0; j < teamPlayersCount[i] - optimalPlayerCountInTeam; j++) {
-                    playersForBalance.add(TeamPlayers.get(j));
-                }
-            if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0) {
+            // Randam ir sudedam i sarasa zaidejus, kuriu yra per daug
+            for(int j = 0; j < teamPlayersCount[i] - optimalPlayerCountInTeam; j++)
+                playersForBalance.add(TeamPlayers.get(j));
+            
+            if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0)
                 difference = difference + (optimalPlayerCountInTeam - teamPlayersCount[i]);
-            }
+        }
+        
+        if(ctp.getGlobalConfigOptions().debugMessages) {
+        	
         }
 
         // If there are enough players to balance teams
@@ -496,10 +511,7 @@ public class ArenaUtils {
                         playersForBalance.remove(p);
                 }
             }
-        }
-
-        //If there are not enough players to balance teams
-        if(arena.getConfigOptions().exactTeamMemberCount) {
+        }else if(arena.getConfigOptions().exactTeamMemberCount) { //If there are not enough players to balance teams
             for(String p : playersForBalance) {
                 // Moving to Lobby
             	arena.getPlayerData(p).getTeam().substractOneMemeberCount();
