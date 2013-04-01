@@ -125,6 +125,10 @@ public class ConfigTools {
         }
         co.killStreakMessages = new KillStreakMessages(hm);
 
+        //double check that maxPlayerHealth isn't higher than 20
+        if(co.maxPlayerHealth > 20)
+        	co.maxPlayerHealth = 20;
+        
         try {
             config.options().copyDefaults(true);
             config.save(arenafile);
@@ -322,6 +326,10 @@ public class ConfigTools {
         }
         co.killStreakMessages = new KillStreakMessages(hm);
 
+        //double check that maxPlayerHealth isn't higher than 20
+        if(co.maxPlayerHealth > 20)
+        	co.maxPlayerHealth = 20;
+        
         try {
             config.options().copyDefaults(true);
             config.save(arenafile);
