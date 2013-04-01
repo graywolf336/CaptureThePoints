@@ -23,7 +23,7 @@ public class CTPPointCaptureEvent extends Event {
 	private Points point;
 	
 	/**
-	 * A custom event called <strong>after</strong> the player has been teleported back to where they were.
+	 * A custom event called <strong>after</strong> the player has captured a point.
 	 * 
 	 * @param arena {@link Arena}
 	 * @param player The player in which has captured the point.
