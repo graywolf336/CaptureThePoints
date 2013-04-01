@@ -551,6 +551,13 @@ public class ArenaMaster {
     }
     
     public void moveToLobby(Arena arena, Player player) {
+    	//Call a custom event for when players join the arena
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena);
+        ctp.getPluginManager().callEvent(event);
+        
+        if(event.isCancelled())
+        	return; //Some plugin cancelled the event, so don't go forward and allow the plugin to handle the message that is sent when cancelled.
+        
         String mainArenaCheckError = checkArena(arena, player); // Check arena, if there is an error, an error message is returned.
         if (!mainArenaCheckError.isEmpty()) {
             ctp.sendMessage(player, mainArenaCheckError);
@@ -640,9 +647,5 @@ public class ArenaMaster {
         player.teleport(loc); // Teleport player to lobby
         ctp.sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
         arena.getPlayerData(player).setInLobby(true);
-        
-        //Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, arena.getPlayerData(player));
-        ctp.getPluginManager().callEvent(event);
     }
 }
