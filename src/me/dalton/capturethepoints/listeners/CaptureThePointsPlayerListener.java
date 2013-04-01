@@ -94,7 +94,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
     
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void invClick(InventoryClickEvent event) {
+	public void onPlayerInventoryClick(InventoryClickEvent event) {
 		Player p = (Player) event.getWhoClicked();
 		
 		if(ctp.getArenaMaster().isPlayerInAnArena(p.getName())) {
@@ -416,7 +416,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEnderPeralUsage(PlayerInteractEvent event){
+    public void onEnderPearlUsage(PlayerInteractEvent event){
     	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
     		return;
     	
@@ -741,7 +741,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
 
 	@SuppressWarnings("deprecation")
-	public void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {//TODO I need to verify that if a player selects a team it is auto balanced.
+	public void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {
         if(arena.isGameRunning() || !arena.getLobby().getPlayersInLobby().containsKey(p.getName()))
             return;
         
