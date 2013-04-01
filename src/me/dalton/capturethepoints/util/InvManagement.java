@@ -28,20 +28,7 @@ public class InvManagement {
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         a.getPlayerData(p.getName()).setJustJoined(true);
         
-        PlayerInventory inv = p.getInventory();
-        inv.clear();
-        inv.setHelmet(null);
-        inv.setChestplate(null);
-        inv.setLeggings(null);
-        inv.setBoots(null);
-        InventoryView view = p.getOpenInventory();
-        if (view != null) {
-        	view.setCursor(null);
-        	Inventory i = view.getTopInventory();
-        	if(i != null)
-        		i.clear();
-        }
-        
+        clearInventory(p);
         restoreInv(p);
 
         Location loc = a.getPrevoiusPosition().get(p.getName());
@@ -72,7 +59,7 @@ public class InvManagement {
         }
        
     }
-	
+
 	/**
 	 * Restore the player's inventory and armor that we stored when they joined.
 	 * 
@@ -107,16 +94,11 @@ public class InvManagement {
 	 * 
 	 * @param player The player to save for
 	 */
-    public void saveInv (Player player) {
-        PlayerInventory PlayerInv = player.getInventory();
-        ctp.getInventories().put(player.getName(), PlayerInv.getContents());
-        PlayerInv.clear();
+    public void saveInv(Player player) {
+        ctp.getInventories().put(player.getName(), player.getInventory().getContents());
+        ctp.getArmor().put(player.getName(), player.getInventory().getArmorContents());
         
-        ctp.getArmor().put(player.getName(), PlayerInv.getArmorContents());
-        PlayerInv.setHelmet(null);
-        PlayerInv.setChestplate(null);
-        PlayerInv.setLeggings(null);
-        PlayerInv.setBoots(null);
+        clearInventory(player);
     }
     
     /**
@@ -156,23 +138,15 @@ public class InvManagement {
         }
 
         p.setHealth(20);
-        PlayerInventory inv = p.getInventory();
-        inv.clear();
-        inv.setHelmet(null);
+        clearInventory(p);
+        
         if(a.getPlayerData(p.getName()).getTeam() != null) {
             DyeColor color1 = DyeColor.valueOf(a.getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
 
             ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
             p.getInventory().setHelmet(helmet);
         }
-
-        inv.setChestplate(null);
-        inv.setLeggings(null);
-        inv.setBoots(null);
         
-		//It's deprecated but it's currently the only way to get the desired effect.
-		p.updateInventory();
-
 		a.getPlayerData(p.getName()).setRole(role);
 
         for (Items item : ctp.getRoles().get(role.toLowerCase())) {
@@ -180,11 +154,10 @@ public class InvManagement {
                 ItemStack i = new ItemStack(item.getItem(), 1);
                 
                 // Add enchantments
-                for(int j = 0; j < item.getEnchantments().size(); j++) {
+                for(int j = 0; j < item.getEnchantments().size(); j++)
                     i.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                }
                 
-                ctp.getUtil().equipArmorPiece(i, inv);
+                ctp.getUtil().equipArmorPiece(i, p.getInventory());
             } else {
                 ItemStack stack;
                 // If something is wrong in config file
@@ -206,7 +179,7 @@ public class InvManagement {
                     ctp.logInfo("There is error in your config file, with roles. Please check them!");
                     return false;
                 }
-                inv.addItem(stack);
+                p.getInventory().addItem(stack);
             }
         }
         
@@ -217,21 +190,27 @@ public class InvManagement {
     }
 	
 	/**
-	 * Fixes the helmet on the player, puts the correct color of wool back on.
-	 * <p />
+	 * Really clears the player's inventory of everything, fixes some dupes.
 	 * 
-	 * @param p The player to fix the helmet for.
+	 * @param player The player to clear inventory from.
+	 * @since 1.5.0-b179
 	 */
 	@SuppressWarnings("deprecation")
-	public void fixHelmet(Player p) {
-        PlayerInventory inv = p.getInventory();
-        ctp.sendMessage(p, ChatColor.RED + "Do not remove your helmet.");
-        DyeColor color1 = DyeColor.valueOf(ctp.getArenaMaster().getArenaPlayerIsIn(p.getName()).getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
-        ItemStack helmet = new ItemStack(Material.WOOL, 1, (short) color1.getData());
-
-        inv.remove(Material.WOOL);
-        p.getInventory().setHelmet(helmet);
+	public void clearInventory(Player player) {
+		PlayerInventory inv = player.getInventory();
+        inv.clear();
+        inv.setHelmet(null);
+        inv.setChestplate(null);
+        inv.setLeggings(null);
+        inv.setBoots(null);
+        InventoryView view = player.getOpenInventory();
+        if (view != null) {
+        	view.setCursor(null);
+        	Inventory i = view.getTopInventory();
+        	if(i != null)
+        		i.clear();
+        }
         
-		p.updateInventory();
-    }
+        player.updateInventory();
+	}
 }
