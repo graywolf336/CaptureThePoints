@@ -5,6 +5,7 @@ import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Points;
+import me.dalton.capturethepoints.events.CTPPointCaptureEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -283,6 +284,10 @@ public class CaptureThePointsBlockListener implements Listener {
                                 playerdata.setPointsCaptured(playerdata.getPointsCaptured() + 1);
                                 playerdata.setMoney(playerdata.getMoney() + arena.getConfigOptions().moneyForPointCapture);
                                 player.sendMessage("Money: " + ChatColor.GREEN + playerdata.getMoney());
+                                
+                                CTPPointCaptureEvent capEvent = new CTPPointCaptureEvent(arena, player, playerdata, point);
+                                ctp.getPluginManager().callEvent(capEvent);
+                                
                                 if (ctp.getArenaUtil().didSomeoneWin(arena)) {
                                     loc.getBlock().setTypeId(0);
                                 }
@@ -305,6 +310,10 @@ public class CaptureThePointsBlockListener implements Listener {
                                 playerdata.setPointsCaptured(playerdata.getPointsCaptured() + 1);
                                 playerdata.setMoney(playerdata.getMoney() + arena.getConfigOptions().moneyForPointCapture);
                                 player.sendMessage("Money: " + ChatColor.GREEN + playerdata.getMoney());
+                                
+                                CTPPointCaptureEvent capEvent = new CTPPointCaptureEvent(arena, player, playerdata, point);
+                                ctp.getPluginManager().callEvent(capEvent);
+                                
                                 if (ctp.getArenaUtil().didSomeoneWin(arena)) {
                                     loc.getBlock().setTypeId(0);
                                 }
