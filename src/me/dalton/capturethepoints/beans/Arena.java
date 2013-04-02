@@ -555,9 +555,8 @@ public class Arena {
         for (String player : getPlayersData().keySet()) {
         	Player p = ctp.getServer().getPlayer(player);
         	ctp.getInvManagement().restoreThings(p);
-            if (!noRewards) {
+            if (!noRewards)
                 ctp.getUtil().rewardPlayer(this, p);
-            }
         }
         
         //Arena restore
