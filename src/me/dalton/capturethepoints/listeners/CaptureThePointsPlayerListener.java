@@ -415,22 +415,30 @@ public class CaptureThePointsPlayerListener implements Listener {
         }
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onEnderPearlUsage(PlayerInteractEvent event){
     	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
     		return;
     	
-    	if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+    	if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
     		if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL && ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby()) {
     			event.setCancelled(true);
-    			if(ctp.getGlobalConfigOptions().debugMessages)
-    				ctp.getLogger().info("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to throw an Ender Pearl while in the lobby.");
     			ctp.sendMessage(event.getPlayer(), ChatColor.RED + "You're not allowed to teleport out of the lobby!");
+    			if(ctp.getGlobalConfigOptions().debugMessages)
+    				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to throw an Ender Pearl while in the lobby.");
+    		} else if(event.getPlayer().getItemInHand().getType() == Material.EGG && ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby()) {
+    			event.setCancelled(true);
+    			if(ctp.getGlobalConfigOptions().eggsAreGrenades)
+    				ctp.sendMessage(event.getPlayer(), "Grenades are not effective in the Lobby.");
+    			if(ctp.getGlobalConfigOptions().debugMessages)
+    				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a grenade (egg) while in the lobby.");
     		} else
     			return;
-    	else
+    	}else
     		return;
-    		
+    	
+    	event.getPlayer().updateInventory();
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
