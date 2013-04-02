@@ -2,6 +2,7 @@ package me.dalton.capturethepoints.events;
 
 import me.dalton.capturethepoints.beans.Arena;
 
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -11,7 +12,7 @@ import org.bukkit.event.HandlerList;
  * @version 1.0.0
  * @since 1.5.0-b189
  */
-public class CTPStartEvent {
+public class CTPStartEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Arena arena;
 	

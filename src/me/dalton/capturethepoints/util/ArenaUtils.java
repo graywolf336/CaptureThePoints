@@ -21,6 +21,7 @@ import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.events.CTPStartEvent;
 
 public class ArenaUtils {
 	private CaptureThePoints ctp;
@@ -212,6 +213,9 @@ public class ArenaUtils {
     }
     
     public void moveToSpawns(Arena arena) {
+    	CTPStartEvent event = new CTPStartEvent(arena);
+    	ctp.getPluginManager().callEvent(event);
+    	
         for (String player : arena.getPlayersData().keySet()) {
             moveToSpawns(arena, player);
         }
