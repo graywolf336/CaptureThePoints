@@ -14,6 +14,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * - CTPPlayerJoinEvent
 * - CTPPlayerLeaveEvent
 * - CTPPointCaptureEvent
+* - CTPShopPurchaseEvent
 * - CTPStartEvent
 * Force clients to get the sign updates that we do when restoring an arena, thanks to Bubelbub
 * Revamped how multiple arenas are handled
