@@ -436,13 +436,13 @@ public class CaptureThePointsPlayerListener implements Listener {
     				ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are not effective in the Lobby.");
     			if(ctp.getGlobalConfigOptions().debugMessages)
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a grenade (egg) while in the lobby.");
-    		}else if(event.getPlayer().getItemInHand().getType() == Material.BOW) {
+    		} else if(event.getPlayer().getItemInHand().getType() == Material.BOW) {
     			event.setCancelled(true);
     			if(ctp.getGlobalConfigOptions().debugMessages)
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a Bow while in the lobby.");
-    		}else
+    		} else
     			return;
-    	}else
+    	} else
     		return;
     	
     	event.getPlayer().updateInventory();
