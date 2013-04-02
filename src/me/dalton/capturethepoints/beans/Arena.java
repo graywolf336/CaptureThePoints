@@ -16,6 +16,7 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+import me.dalton.capturethepoints.events.CTPEndEvent;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 
 /** Arena Data of the saved arenas for playing CTP.
@@ -526,6 +527,9 @@ public class Arena {
      * @param noRewards True to not give rewards, false to.
      */
     public void endGame(boolean noRewards) {
+    	CTPEndEvent event = new CTPEndEvent(this);
+    	ctp.getPluginManager().callEvent(event);
+    	
         ctp.getUtil().sendMessageToPlayers(this, "A Capture The Points game has ended!");
 
         // Task canceling
