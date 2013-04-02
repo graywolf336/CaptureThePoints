@@ -417,23 +417,30 @@ public class CaptureThePointsPlayerListener implements Listener {
     
     @SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
-    public void onEnderPearlUsage(PlayerInteractEvent event){
+    public void onLobbyUsage(PlayerInteractEvent event){//For usage of items while in the lobby
     	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
     		return;
     	
+    	if(ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby())//not in the lobby, we don't care in this
+    		return;
+    	
     	if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-    		if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL && ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby()) {
+    		if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL) {
     			event.setCancelled(true);
     			ctp.sendMessage(event.getPlayer(), ChatColor.RED + "You're not allowed to teleport out of the lobby!");
     			if(ctp.getGlobalConfigOptions().debugMessages)
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to throw an Ender Pearl while in the lobby.");
-    		} else if(event.getPlayer().getItemInHand().getType() == Material.EGG && ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby()) {
+    		} else if(event.getPlayer().getItemInHand().getType() == Material.EGG) {
     			event.setCancelled(true);
     			if(ctp.getGlobalConfigOptions().eggsAreGrenades)
     				ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are not effective in the Lobby.");
     			if(ctp.getGlobalConfigOptions().debugMessages)
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a grenade (egg) while in the lobby.");
-    		} else
+    		}else if(event.getPlayer().getItemInHand().getType() == Material.BOW) {
+    			event.setCancelled(true);
+    			if(ctp.getGlobalConfigOptions().debugMessages)
+    				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a Bow while in the lobby.");
+    		}else
     			return;
     	}else
     		return;
