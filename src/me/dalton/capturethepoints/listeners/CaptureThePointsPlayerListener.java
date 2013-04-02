@@ -430,7 +430,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     		} else if(event.getPlayer().getItemInHand().getType() == Material.EGG && ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby()) {
     			event.setCancelled(true);
     			if(ctp.getGlobalConfigOptions().eggsAreGrenades)
-    				ctp.sendMessage(event.getPlayer(), "Grenades are not effective in the Lobby.");
+    				ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are not effective in the Lobby.");
     			if(ctp.getGlobalConfigOptions().debugMessages)
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a grenade (egg) while in the lobby.");
     		} else
