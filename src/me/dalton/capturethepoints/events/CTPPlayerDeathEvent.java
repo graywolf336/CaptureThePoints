@@ -47,7 +47,7 @@ public class CTPPlayerDeathEvent extends Event {
 		return player;
 	}
 	
-	public Arena getArenaData() {
+	public Arena getArena() {
 		return arena;
 	}
 	

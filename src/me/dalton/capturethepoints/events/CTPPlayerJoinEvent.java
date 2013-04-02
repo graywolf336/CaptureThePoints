@@ -39,7 +39,7 @@ public class CTPPlayerJoinEvent extends Event implements Cancellable {
 		return player;
 	}
 	
-	public Arena getArenaData() {
+	public Arena getArena() {
 		return arena;
 	}
 
