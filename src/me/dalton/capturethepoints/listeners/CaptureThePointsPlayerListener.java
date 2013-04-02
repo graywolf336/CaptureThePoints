@@ -682,6 +682,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 	 * Used to check if the player is trying to heal.
 	 * 
 	 * @param event The PlayerInteractEvent
+	 * @param arena {@link Arena}
 	 * @param p The Player in which is doing the action.
 	 */
     public void useHealingItem(PlayerInteractEvent event, Arena arena, Player p) {
