@@ -81,7 +81,7 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo("Running sanity checks ... ");
         
         List<String> result = new ArrayList<String>();
-        if (ctp.getArenaMaster().getSelectedArena().getPlayerList().size() != ctp.getArenaMaster().getSelectedArena().getPlayersData().size()
+        if (ctp.getArenaMaster().getSelectedArena().getPlayers().size() != ctp.getArenaMaster().getSelectedArena().getPlayersData().size()
         		|| ctp.getArenaMaster().getSelectedArena().getPlayersData().size() != (ctp.getArenaMaster().getSelectedArena().getLobby().getPlayersInLobby().size() + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size())) {
             result.add("Inconsistant number of Players: [" + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size() + " | " + ctp.getArenaMaster().getSelectedArena().getPlayersData().size() + " | " + (ctp.getArenaMaster().getSelectedArena().getLobby().countAllPeople() + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size()) + "]");
         }

@@ -144,7 +144,7 @@ public class ArenaMaster {
 	 */
 	public Arena getArenaPlayerIsIn(String player) {
 		for(Arena a : arenas) {
-			if(a.getPlayerList().contains(player))
+			if(a.getPlayers().contains(player))
 				return a;
 			else
 				continue;
@@ -175,7 +175,7 @@ public class ArenaMaster {
 	 */
 	public boolean isPlayerInAnArena(String player) {
 		for(Arena a : arenas) {
-			if(a.getPlayerList().contains(player))
+			if(a.getPlayers().contains(player))
 				return true;
 			else
 				continue;

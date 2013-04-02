@@ -363,7 +363,7 @@ public class Arena {
      * @return The player name list
      * @since 1.5.0-b123
      */
-    public List<String> getPlayerList() {
+    public List<String> getPlayers() {
         List<String> toReturn = new ArrayList<String>();
         
         for (String p : players.keySet())
@@ -576,7 +576,7 @@ public class Arena {
         getLobby().clearLobbyPlayerData();
         getPrevoiusPosition().clear();
         getPlayersData().clear();
-        getPlayerList().clear();
+        getPlayers().clear();
         
         for (Team t : getTeams()) {
             t.setMemberCount(0);
