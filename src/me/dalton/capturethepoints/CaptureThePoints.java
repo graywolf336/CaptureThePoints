@@ -193,9 +193,6 @@ public class CaptureThePoints extends JavaPlugin {
             lobbyActivity = 0;
         }
         
-    	for(Arena a : getArenaMaster().getArenas())
-    		a.endGame(false);//Don't give rewards, they didn't
-        
         arenaRestore.cancelArenaRestoreSchedules();
         clearConfig();
         pluginManager = null;
@@ -203,7 +200,10 @@ public class CaptureThePoints extends JavaPlugin {
         commands.clear();
     }
     
-    public void clearConfig() {        
+    public void clearConfig() {
+    	for(Arena a : getArenaMaster().getArenas())
+    		a.endGame(false);//Don't give rewards, they didn't
+    	
         healingItems.clear();
         rewards = null;
         roles.clear();
