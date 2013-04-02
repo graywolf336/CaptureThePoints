@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
  * Event for when a player buys something from a shop in an arena, called before we give them items.
  * 
  * @author graywolf336
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.5.0-b195
  */
 public class CTPShopPurchaseEvent extends Event implements Cancellable {
@@ -23,6 +23,7 @@ public class CTPShopPurchaseEvent extends Event implements Cancellable {
 	private Arena arena;
 	private Player player;
 	private PlayerData playerdata;
+	private int cost;
 	private Sign sign;
 	private ItemStack stack;
 	
@@ -36,10 +37,11 @@ public class CTPShopPurchaseEvent extends Event implements Cancellable {
 	 * @param stack The item which is being bought.
 	 * @since 1.5.0-b195
 	 */
-	public CTPShopPurchaseEvent(Arena arena, Player player, PlayerData playerdata, Sign sign, ItemStack stack) {
+	public CTPShopPurchaseEvent(Arena arena, Player player, PlayerData playerdata, int cost, Sign sign, ItemStack stack) {
 		this.arena = arena;
 		this.player = player;
 		this.playerdata = playerdata;
+		this.cost = cost;
 		this.sign = sign;
 		this.stack = stack;
 	}
@@ -54,6 +56,14 @@ public class CTPShopPurchaseEvent extends Event implements Cancellable {
 	
 	public PlayerData getPlayerDate() {
 		return this.playerdata;
+	}
+	
+	public int getCost() {
+		return this.cost;
+	}
+	
+	public void setCost(int cost) {
+		this.cost = cost;
 	}
 	
 	public Sign getShopSign() {

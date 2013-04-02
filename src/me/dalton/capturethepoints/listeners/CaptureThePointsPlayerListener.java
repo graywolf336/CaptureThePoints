@@ -651,13 +651,14 @@ public class CaptureThePointsPlayerListener implements Listener {
             for(int j = 0; j < list.get(0).getEnchantments().size(); j++)
                 stack.addEnchantment(list.get(0).getEnchantments().get(j), list.get(0).getEnchantmentLevels().get(j));
             
-            CTPShopPurchaseEvent event = new CTPShopPurchaseEvent(arena, p, playerdata, sign, stack);
+            CTPShopPurchaseEvent event = new CTPShopPurchaseEvent(arena, p, playerdata, price, sign, stack);
             ctp.getPluginManager().callEvent(event);
             
             if(event.isCancelled())
             	return;
             
             stack = event.getItemBought(); //Get the item from the event called, in case someone set it to something different
+            price = event.getCost(); //Get the cost from the event, in case someone set it to a different amount
             
             p.getInventory().addItem(stack);
             ctp.getMoneyUtil().chargeAccount(p.getName(), price);
