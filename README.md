@@ -8,10 +8,13 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Joining arenas will be done with `/ctp j <arena>`
 
 ### Update: 1.5.0 ###
-* Add three custom events
-* - CTPPlayerLeaveEvent
-* - CTPPlayerJoinEvent
+* Add custom events
+* - CTPEndEvent
 * - CTPPlayerDeathEvent
+* - CTPPlayerJoinEvent
+* - CTPPlayerLeaveEvent
+* - CTPPointCaptureEvent
+* - CTPStartEvent
 * Force clients to get the sign updates that we do when restoring an arena, thanks to Bubelbub
 * Revamped how multiple arenas are handled
 * Recoded ~40% of the plugin, should have better performance
@@ -21,6 +24,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * - `/ctp start <arena>`
 * - `/ctp colors <arena>` if no `<arena>` is given, it will list out all your arenas for you.
 * Fixed a bug that could allow for glitching out items
+* Fixed a bug where if you set the maxPlayerHealth to something above 20 the plugin would throw an error
 * Fixed a bug that allowed users to teleport out of the lobby using ender pearls.
 * Added eggs are grenades if enabled in the config.
 * Made it so that if the config has block break off explosions don't hurt blocks.
