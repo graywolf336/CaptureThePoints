@@ -27,10 +27,12 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Fixed a bug that could allow for glitching out items
 * Fixed a bug where if you set the maxPlayerHealth to something above 20 the plugin would throw an error
 * Fixed a bug that allowed users to teleport out of the lobby using ender pearls.
+* Fixed the default allowBlockBreak being set to true, now is false.
+* Fixed the default allowBlockPlace being set to true, now is false.
+* Added a config option to allow explosions breaking blocks, defaults to false
 * Added eggs are grenades if enabled in the config.
 * - Configurable per arena
 * - Power is configurable per arena
-* Made it so that if the config has block break off explosions don't hurt blocks.
 
 
 ### Update: 1.4.5 ###
