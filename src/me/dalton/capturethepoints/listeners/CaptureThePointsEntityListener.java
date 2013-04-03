@@ -484,7 +484,6 @@ public class CaptureThePointsEntityListener  implements Listener {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
                 ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
-            ctp.sendMessage(player, ChatColor.RED + "Please do not remove your Helmet.");
             ctp.checkForKillMSG(arena, player, true);
         }
 
