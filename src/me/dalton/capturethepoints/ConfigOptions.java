@@ -44,16 +44,16 @@ public class ConfigOptions {
     /** Only choose the arena that an admin has picked (/ctp select) or one specified as main. /||/ Allow suitable arena pick. [Default: false] */
     public boolean useSelectedArenaOnly = false; // Kjhf
     
-    /** If eggs thrown in the arena are used as grenades.
-     * 
-     * @since 1.5.0-b172
-     */
+    /** If eggs thrown in the arena are used as grenades. [Default: false] @since 1.5.0-b172 */
     public boolean eggsAreGrenades = false;
+    
+    /** Sets the power of the grenades, TNT is 4.0 so compare to that. [Default: 2.0] */
     public double grenadePower = 2.0;
 
     /** Auto balance teams if teams differ by this number of people. 0 disables. [Default: 2] */
     public int balanceTeamsWhenPlayerLeaves = 2;
-
+    
+    /** The amount of money it costs for joining the arena. [Default: 0] */
     public int economyMoneyCostForJoiningArena = 0;
     
     /** The starting wool players are given. [Default: 64] */
@@ -65,7 +65,7 @@ public class ConfigOptions {
     /** The maximum player health in game. [Default: 20] */
     public int maxPlayerHealth = 20;
     
-    /** An option to allow automatic health regain from their food/hunger being satisfied. */
+    /** An option to allow automatic health regain from their food/hunger being satisfied. [Default: false] */
     public boolean regainHealth = false;
     
     /** The starting money players are given. [Default: 0] */
@@ -101,7 +101,7 @@ public class ConfigOptions {
     /** The score a team much reach to win [Default: 15] */
     public int scoreToWin = 15;
 
-    /** Multiples gained score after all posible points are captured by that team **/
+    /** Multiples gained score after all possible points are captured by that team [Default: 2] **/
     public int scoreMyltiplier = 2;
     
     /** The KillStreak messages generated, starting from 2 kills in a row. <br>
@@ -109,13 +109,24 @@ public class ConfigOptions {
      * @see KillStreakMessages */
     public KillStreakMessages killStreakMessages = new KillStreakMessages();
     
-    /** If the plugin should display all the debug messages. */
+    /** If the plugin should display all the debug messages. [Default: false] */
     public boolean debugMessages = false;
     
+    /** Should we write to MySQL? [Default: false] */
     public boolean enableHardArenaRestore = false; // Write to MYSQL
+    
+    /** The port we should use when connecting to the database server. [Default: 3306] */
     public int mysqlPort = 3306;
+    
+    /** The host we should connect to for the database server. [Default: localhost] */
     public String mysqlAddress = "localhost";
+    
+    /** The database that we should use. [Default: ""] */
     public String mysqlDatabase = "";
-    public String mysqlPass = "";
+    
+    /** The username that we should use when connecting to the database. [Default: root] */
     public String mysqlUser = "root";
+    
+    /** The password that we should use when connecting to the database. [Default: ""] */
+    public String mysqlPass = "";
 }
