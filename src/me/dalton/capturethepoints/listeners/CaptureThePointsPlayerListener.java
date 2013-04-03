@@ -422,7 +422,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
     		return;
     	
-    	if(ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby())//not in the lobby, we don't care in this
+    	if(!ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby())//not in the lobby, we don't care in this
     		return;
     	
     	if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
