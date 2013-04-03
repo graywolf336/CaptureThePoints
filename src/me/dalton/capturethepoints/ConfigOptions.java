@@ -2,11 +2,11 @@ package me.dalton.capturethepoints;
 
 /** Class for the config options ctp accepts. */
 public class ConfigOptions {
-    /** Allow breaking of blocks during a ctp game /||/ Disallow breaking of blocks during a ctp game (except for capturing points) [Default: true] */
-    public boolean allowBlockBreak = true; // Kjhf
+    /** Allow breaking of blocks during a ctp game /||/ Disallow breaking of blocks during a ctp game (except for capturing points) [Default: false] */
+    public boolean allowBlockBreak = false; // Kjhf
     
-    /** Allow placement of blocks during a ctp game /||/ Disallow placement of blocks during a ctp game (except for capturing points) [Default: true] */
-    public boolean allowBlockPlacement = true; // Kjhf
+    /** Allow placement of blocks during a ctp game /||/ Disallow placement of blocks during a ctp game (except for capturing points) [Default: false] */
+    public boolean allowBlockPlacement = false; // Kjhf
     
     /** Allow the breaking of their own team mate's wool in a point they have captured /||/ Disallow breaking their own captured point wool. [Default: false] */
     public boolean allowBreakingOwnCapturedPointWool = false;
