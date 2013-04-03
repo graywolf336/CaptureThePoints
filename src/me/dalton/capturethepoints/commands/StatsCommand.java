@@ -31,7 +31,7 @@ public class StatsCommand extends CTPCommand {
         
         Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(player.getName());
         PlayerData pdata = a.getPlayerData(player.getName());
-        ChatColor cc = pdata.getTeam().getChatColor(), white = ChatColor.WHITE, green = ChatColor.GREEN;
+        ChatColor cc = pdata.getTeam().getChatColor() == null ? ChatColor.WHITE : pdata.getTeam().getChatColor(), white = ChatColor.WHITE, green = ChatColor.GREEN;
         
         sendMessage(cc + "Your Stats: ");
         sendMessage(cc + "  Kills: " + white + pdata.getKills() + " (Streak: " + pdata.getKillsInARow() + ")");
