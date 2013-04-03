@@ -83,6 +83,7 @@ public class ConfigTools {
         // Global configuration
         // Kj -- documentation for the different options, including their default values, can be found under the ConfigOptions class.
         co.allowBlockBreak = config.getBoolean(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
+        co.allowExplosionBlockBreak = config.getBoolean(global + "AllowExplosionBlockBreak", globalConfigOptions.allowExplosionBlockBreak);
         co.allowBlockPlacement = config.getBoolean(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
         co.allowBreakingOwnCapturedPointWool = config.getBoolean(global + "AllowBreakingOwnCapturedPointWool", globalConfigOptions.allowBreakingOwnCapturedPointWool);
         co.allowCommands = config.getBoolean(global + "AllowCommands", globalConfigOptions.allowCommands);
@@ -195,6 +196,8 @@ public class ConfigTools {
         // Global configuration
         if(!config.contains(global + "AllowBlockBreak"))
             config.set(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
+        if(!config.contains(global + "AllowExplosionBlockBreak"))
+        	config.set(global + "AllowExplosionBlockBreak", globalConfigOptions.allowExplosionBlockBreak);
         if(!config.contains(global + "AllowBlockPlacement"))
             config.set(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
         if(!config.contains(global + "AllowBreakingOwnCapturedPointWool"))
@@ -293,6 +296,7 @@ public class ConfigTools {
         // Global configuration
         // Kj -- documentation for the different options, including their default values, can be found under the ConfigOptions class.
         co.allowBlockBreak = config.getBoolean(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
+        co.allowExplosionBlockBreak = config.getBoolean(global + "AllowExplosionBlockBreak", globalConfigOptions.allowExplosionBlockBreak);
         co.allowBlockPlacement = config.getBoolean(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
         co.allowBreakingOwnCapturedPointWool = config.getBoolean(global + "AllowBreakingOwnCapturedPointWool", globalConfigOptions.allowBreakingOwnCapturedPointWool);
         co.allowCommands = globalConfigOptions.allowCommands;
@@ -381,6 +385,8 @@ public class ConfigTools {
         // Global configuration
         if(!config.contains(global + "AllowBlockBreak"))
             config.set(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);
+        if(!config.contains(global + "AllowExplosionBlockBreak"))
+            config.set(global + "AllowExplosionBlockBreak", globalConfigOptions.allowExplosionBlockBreak);
         if(!config.contains(global + "AllowBlockPlacement"))
             config.set(global + "AllowBlockPlacement", globalConfigOptions.allowBlockPlacement);
         if(!config.contains(global + "AllowBreakingOwnCapturedPointWool"))

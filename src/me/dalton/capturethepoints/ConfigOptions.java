@@ -5,6 +5,9 @@ public class ConfigOptions {
     /** Allow breaking of blocks during a ctp game /||/ Disallow breaking of blocks during a ctp game (except for capturing points) [Default: false] */
     public boolean allowBlockBreak = false; // Kjhf
     
+    /** Allows explosions to break blocks during the game /||/ Disallows explosions from breaking blocks during the game. [Default: false] */
+    public boolean allowExplosionBlockBreak = false;
+    
     /** Allow placement of blocks during a ctp game /||/ Disallow placement of blocks during a ctp game (except for capturing points) [Default: false] */
     public boolean allowBlockPlacement = false; // Kjhf
     

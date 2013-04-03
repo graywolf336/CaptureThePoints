@@ -54,9 +54,9 @@ public class CaptureThePointsEntityListener  implements Listener {
             if(ctp.getGlobalConfigOptions().enableHardArenaRestore)
                 return;
             
-            if(!ctp.getGlobalConfigOptions().allowBlockBreak) {
+            if(!a.getConfigOptions().allowExplosionBlockBreak) {
             	if(ctp.getGlobalConfigOptions().debugMessages)
-            		ctp.getLogger().info("Cleared an explosion's block list because allowBlockBreak is set to false.");
+            		ctp.getLogger().info("Cleared an explosion's block list because allowExplosionBlockBreak is set to false in the arena.");
             	event.blockList().clear();
             	return;
             }
@@ -65,9 +65,9 @@ public class CaptureThePointsEntityListener  implements Listener {
             		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockY(), a.getY1(), a.getY2())
             		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockZ(), a.getZ1(), a.getZ2())
             		&& event.getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
-            	if(!ctp.getGlobalConfigOptions().allowBlockBreak) {
+            	if(!a.getConfigOptions().allowExplosionBlockBreak) {
                 	if(ctp.getGlobalConfigOptions().debugMessages)
-                		ctp.getLogger().info("Cleared an explosion's block list because allowBlockBreak is set to false.");
+                		ctp.getLogger().info("Cleared an explosion's block list because allowExplosionBlockBreak is set to false in the arena.");
                 	event.blockList().clear();
                 	return;
                 }else {
