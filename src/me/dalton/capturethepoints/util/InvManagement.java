@@ -24,40 +24,50 @@ public class InvManagement {
 		ctp = plugin;
 	}
 	
+	/**
+	 * Restores the player's inventory and location before they joined the game.
+	 * <p />
+	 * 
+	 * This is what happens:
+	 * <ol>
+	 * 	<li>Clear the inventory for the current world</li>
+	 * 	<li>Load the chunk where they was</li>
+	 * 	<li>Teleport back to their previous location</li>
+	 * 	<li>Restore the inventory when they are back at the location they started from.</li>
+	 * </ol>
+	 * 
+	 * @param p The player to restore.
+	 */
     public void restoreThings(Player p) {
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         a.getPlayerData(p.getName()).setJustJoined(true);
         
-        clearInventory(p);
-        restoreInv(p);
-
+        clearInventory(p); //clear the inventory for the current world
+        
         Location loc = a.getPrevoiusPosition().get(p.getName());
         loc.setYaw((float) a.getLobby().getDir());
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk())) {
+        if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
         	loc.getWorld().loadChunk(loc.getChunk());
-        }
         
-        p.teleport(a.getPrevoiusPosition().get(p.getName()));
+        p.teleport(a.getPrevoiusPosition().get(p.getName())); //teleport back to where they was
+        
+        restoreInv(p); //then restore the items they had. this makes it compatiable with multiverse and storing different inventories per world.
 
         // do not check double signal
-        if (a.getPlayerData(p.getName()) == null) {
+        if (a.getPlayerData(p.getName()) == null)
             return;
-        }
         
         PotionManagement.removeAllEffects(p);
         PotionManagement.restorePotionEffects(p, a.getPlayerData(p.getName()).getPotionEffects());
 
         p.setFoodLevel(a.getPlayerData(p.getName()).getFoodLevel());
-        if (a.getPlayerData(p.getName()).wasInCreative()) {
+        if (a.getPlayerData(p.getName()).wasInCreative())
             p.setGameMode(GameMode.CREATIVE);
-        }
 
-        if (a.getPlayerData(p.getName()).getHealth() > 200 || a.getPlayerData(p.getName()).getHealth() < 0) {
+        if (a.getPlayerData(p.getName()).getHealth() > 200 || a.getPlayerData(p.getName()).getHealth() < 0)
             p.setHealth(20);
-        } else {
+        else
             p.setHealth(a.getPlayerData(p.getName()).getHealth());
-        }
-       
     }
 
 	/**
