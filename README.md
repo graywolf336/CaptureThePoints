@@ -28,6 +28,8 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Fixed a bug where if you set the maxPlayerHealth to something above 20 the plugin would throw an error
 * Fixed a bug that allowed users to teleport out of the lobby using ender pearls.
 * Added eggs are grenades if enabled in the config.
+* - Configurable per arena
+* - Power is configurable per arena
 * Made it so that if the config has block break off explosions don't hurt blocks.
 
 
