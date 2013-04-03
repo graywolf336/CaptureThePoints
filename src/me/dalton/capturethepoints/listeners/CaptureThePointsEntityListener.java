@@ -472,7 +472,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         if (attacker != null) {
             if(!ctp.getGlobalConfigOptions().disableKillMessages) {
                 ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
-                        + " was killed by " + arena.getPlayerData(player).getTeam().getChatColor() + attacker.getName());
+                        + " was killed by " + arena.getPlayerData(attacker).getTeam().getChatColor() + attacker.getName());
             }
             
             dropWool(arena, player);
