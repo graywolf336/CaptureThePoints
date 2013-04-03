@@ -62,8 +62,8 @@ public class ArenaUtils {
     /**
      * Heal the player (set the health) and cause an event to happen from it, thus improving relations with other plugins.
      * 
+     * @param arena The arena which this has happened.
      * @param player The player to heal.
-     * @param amount The amount to heal the player.
      */
     public void setFullHealthPlayerAndCallEvent(Arena arena, Player player) {
     	int gained = arena.getConfigOptions().maxPlayerHealth - player.getHealth();
