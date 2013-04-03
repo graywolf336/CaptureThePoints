@@ -424,6 +424,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     	
     	if(!ctp.getArenaMaster().getPlayerData(event.getPlayer()).inLobby())//not in the lobby, we don't care in this
     		return;
+    	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer());
     	
     	if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
     		if(event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL) {
@@ -433,7 +434,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to throw an Ender Pearl while in the lobby.");
     		} else if(event.getPlayer().getItemInHand().getType() == Material.EGG) {
     			event.setCancelled(true);
-    			if(ctp.getGlobalConfigOptions().eggsAreGrenades)
+    			if(a.getConfigOptions().eggsAreGrenades)
     				ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are not effective in the Lobby.");
     			if(ctp.getGlobalConfigOptions().debugMessages)
     				ctp.logInfo("Just cancelled an InteractEvent when " + event.getPlayer().getName() + " tried to use a grenade (egg) while in the lobby.");
@@ -454,9 +455,10 @@ public class CaptureThePointsPlayerListener implements Listener {
     	if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer().getName()))
     		return;
     	
-    	if(ctp.getGlobalConfigOptions().eggsAreGrenades) {
+    	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer());
+    	
+    	if(a.getConfigOptions().eggsAreGrenades) {
     		event.setHatching(false);
-    		Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(event.getPlayer());
         	PlayerData pd = a.getPlayerData(event.getPlayer());
         	
         	if(pd.inLobby()) {//Player is in the lobby so don't do anything.
