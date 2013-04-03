@@ -550,14 +550,7 @@ public class ArenaMaster {
     	return "";
     }
     
-    public void moveToLobby(Arena arena, Player player) {
-    	//Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena);
-        ctp.getPluginManager().callEvent(event);
-        
-        if(event.isCancelled())
-        	return; //Some plugin cancelled the event, so don't go forward and allow the plugin to handle the message that is sent when cancelled.
-        
+    public void moveToLobby(Arena arena, Player player) {        
         String mainArenaCheckError = checkArena(arena, player); // Check arena, if there is an error, an error message is returned.
         if (!mainArenaCheckError.isEmpty()) {
             ctp.sendMessage(player, mainArenaCheckError);
@@ -582,6 +575,13 @@ public class ArenaMaster {
         if (arena.getPlayersData().isEmpty())
             arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
 
+    	//Call a custom event for when players join the arena
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena);
+        ctp.getPluginManager().callEvent(event);
+        
+        if(event.isCancelled())
+        	return; //Some plugin cancelled the event, so don't go forward and allow the plugin to handle the message that is sent when cancelled.
+        
         if(ctp.getEconomyHandler() != null && arena.getConfigOptions().economyMoneyCostForJoiningArena != 0) {
             EconomyResponse r = ctp.getEconomyHandler().bankWithdraw(player.getName(), arena.getConfigOptions().economyMoneyCostForJoiningArena);
             if(r.transactionSuccess()) {
