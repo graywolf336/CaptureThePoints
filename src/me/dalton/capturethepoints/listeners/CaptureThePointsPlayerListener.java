@@ -466,7 +466,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         		if (ctp.getArenaUtil().isInside(event.getEgg().getLocation().getBlockX(), a.getX1(), a.getX2())
                 		&& ctp.getArenaUtil().isInside(event.getEgg().getLocation().getBlockZ(), a.getZ1(), a.getZ2())
                 		&& event.getEgg().getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
-        			event.getEgg().getLocation().getWorld().createExplosion(event.getEgg().getLocation(), 2F, false);
+        			event.getEgg().getLocation().getWorld().createExplosion(event.getEgg().getLocation(), (float)a.getConfigOptions().grenadePower, false);
             		return;
         		}else {
         			ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are only effective in the arena, not outside it.");

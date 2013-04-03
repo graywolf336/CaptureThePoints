@@ -49,6 +49,7 @@ public class ConfigOptions {
      * @since 1.5.0-b172
      */
     public boolean eggsAreGrenades = false;
+    public double grenadePower = 2.0;
 
     /** Auto balance teams if teams differ by this number of people. 0 disables. [Default: 2] */
     public int balanceTeamsWhenPlayerLeaves = 2;

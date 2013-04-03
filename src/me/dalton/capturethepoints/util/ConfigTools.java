@@ -110,7 +110,8 @@ public class ConfigTools {
         co.moneyForPointCapture = config.getInt(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
         co.ringBlock = config.getInt(global + "RingBlock", globalConfigOptions.ringBlock);
         co.useSelectedArenaOnly = config.getBoolean(global + "UseSelectedArenaOnly", globalConfigOptions.useSelectedArenaOnly);
-        co.eggsAreGrenades = config.getBoolean(global + "EggsAreGrenades", globalConfigOptions.eggsAreGrenades);
+        co.eggsAreGrenades = config.getBoolean(global + "EggsGrenades.enabled", globalConfigOptions.eggsAreGrenades);
+        co.grenadePower = config.getDouble(global + "EggsGrenades.power", globalConfigOptions.grenadePower);
 
         KillStreakMessages ksm = new KillStreakMessages();
 
@@ -244,9 +245,11 @@ public class ConfigTools {
             config.set(global + "RingBlock", globalConfigOptions.ringBlock);
         if(!config.contains(global + "UseSelectedArenaOnly"))
             config.set(global + "UseSelectedArenaOnly", globalConfigOptions.useSelectedArenaOnly);
-        if(!config.contains(global + "EggsAreGrenades"))
-        	config.set(global + "EggsAreGrenades", globalConfigOptions.eggsAreGrenades);        		
-
+        if(!config.contains(global + "EggsGrenades.enabled"))
+        	config.set(global + "EggsGrenades.enabled", globalConfigOptions.eggsAreGrenades);
+        if(!config.contains(global + "EggsGrenades.power"))
+        	config.set(global + "EggsGrenades.power", globalConfigOptions.grenadePower);
+        
         try {
             config.options().copyDefaults(true);
             config.save(arenafile);
@@ -315,7 +318,9 @@ public class ConfigTools {
         co.moneyForPointCapture = config.getInt(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
         co.ringBlock = globalConfigOptions.ringBlock;
         co.useSelectedArenaOnly = globalConfigOptions.useSelectedArenaOnly;
-        co.eggsAreGrenades = globalConfigOptions.eggsAreGrenades;
+        co.eggsAreGrenades = config.getBoolean(global + "EggsGrenades.enabled", globalConfigOptions.eggsAreGrenades);
+        co.grenadePower = config.getDouble(global + "EggsGrenades.power", globalConfigOptions.grenadePower);
+        
         KillStreakMessages ksm = new KillStreakMessages();
 
         HashMap<Integer, String> hm = new HashMap<Integer, String>();
@@ -410,9 +415,11 @@ public class ConfigTools {
             config.set(global + "MoneyForKill", globalConfigOptions.moneyForKill);
         if(!config.contains(global + "MoneyForPointCapture"))
             config.set(global + "MoneyForPointCapture", globalConfigOptions.moneyForPointCapture);
-        if(!config.contains(global + "EggsAreGrenades"))
-        	config.set(global + "EggsAreGrenades", globalConfigOptions.eggsAreGrenades);   
-
+        if(!config.contains(global + "EggsGrenades.enabled"))
+        	config.set(global + "EggsGrenades.enabled", globalConfigOptions.eggsAreGrenades);
+        if(!config.contains(global + "EggsGrenades.power"))
+        	config.set(global + "EggsGrenades.power", globalConfigOptions.grenadePower);
+        
         try {
             config.options().copyDefaults(true);
             config.save(arenafile);
