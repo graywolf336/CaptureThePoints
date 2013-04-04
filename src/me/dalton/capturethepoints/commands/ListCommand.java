@@ -31,6 +31,8 @@ public class ListCommand extends CTPCommand {
 					msg += a.getName();
 				else
 					msg += ", " + a.getName();
+				
+				num++;
 			}
 			
 			sendMessage(msg);
