@@ -23,17 +23,12 @@ public class ListCommand extends CTPCommand {
 	@Override
 	protected void perform() {
 		if(!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
-			
-			int num = 0;
 			String msg = "The current arenas are: ";
-			for(Arena a : ctp.getArenaMaster().getArenas()) {
-				if(num == 0)
-					msg += a.getName();
-				else
-					msg += ", " + a.getName();
-				
-				num++;
-			}
+    		for(Arena a : ctp.getArenaMaster().getArenas())
+    			if(ctp.getArenaMaster().getSelectedArena().getName().equalsIgnoreCase(a.getName()))
+    				sendMessage("  -" + ChatColor.ITALIC + a.getName());
+    			else
+    				sendMessage("  -" + a.getName());
 			
 			sendMessage(msg);
 			return;
