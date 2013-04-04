@@ -316,14 +316,14 @@ public class CaptureThePointsEntityListener  implements Listener {
 	@SuppressWarnings("deprecation")
 	private void giveRoleItemsAfterDeath(Player player) {
     	
-        PlayerInventory inv = player.getInventory();
+        PlayerInventory preInv = player.getInventory();
         
         //Get wool for return
         int ownedWool = 0;
-        for (ItemStack item : inv.getContents()) {
+        for (ItemStack item : preInv.getContents()) {
             if (item != null && item.getTypeId() == 35) {
                 if (!((Wool) item.getData()).getColor().toString().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(player.getName()).getTeam().getColor())) {
-                    inv.remove(35);
+                	preInv.remove(35);
                     ItemStack tmp = new ItemStack(item.getType(), item.getAmount(), (short) ((Wool) item.getData()).getColor().getData());
                     player.getWorld().dropItem(player.getLocation(), tmp);
                 } else {
@@ -332,8 +332,9 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
         
-        inv.clear(); // Removes inventory
-        
+        ctp.getInvManagement().clearInventory(player); //Clear the inventory completely
+        PlayerInventory inv = player.getInventory(); //Get the inventory again after we have cleared it.
+
         for (Items item : ctp.getRoles().get(ctp.getArenaMaster().getPlayerData(player.getName()).getRole())) {
             if(item.getItem().equals(Material.AIR))
                 continue;
@@ -360,8 +361,7 @@ public class CaptureThePointsEntityListener  implements Listener {
 
                         inv.addItem(stack);
                     }
-                }
-                else if (!Util.ARMORS_TYPE.contains(item.getItem())/* && (!Util.WEAPONS_TYPE.contains(item.getType()))*/) {
+                } else if (!Util.ARMORS_TYPE.contains(item.getItem())/* && (!Util.WEAPONS_TYPE.contains(item.getType()))*/) {
                     HashMap<Integer, ? extends ItemStack> slots = inv.all(item.getItem());
                     int amount = 0;
                     for (int slotNum : slots.keySet()) {
@@ -492,9 +492,8 @@ public class CaptureThePointsEntityListener  implements Listener {
         player.setFoodLevel(20);
         Spawn spawn = arena.getPlayerData(player).getTeam().getSpawn();
 
-        if (arena.getConfigOptions().giveNewRoleItemsOnRespawn) {
+        if (arena.getConfigOptions().giveNewRoleItemsOnRespawn)
             giveRoleItemsAfterDeath(player);
-        }
 
         // Reseting player cooldowns
         for (HealingItems item : ctp.getHealingItems())
