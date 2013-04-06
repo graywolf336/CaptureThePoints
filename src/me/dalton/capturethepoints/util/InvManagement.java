@@ -42,7 +42,7 @@ public class InvManagement {
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         a.getPlayerData(p.getName()).setJustJoined(true);
         
-        clearInventory(p); //clear the inventory for the current world
+        clearInventory(p, true); //clear the inventory for the current world
         
         Location loc = a.getPrevoiusPosition().get(p.getName());
         loc.setYaw((float) a.getLobby().getDir());
@@ -108,7 +108,7 @@ public class InvManagement {
         ctp.getInventories().put(player.getName(), player.getInventory().getContents());
         ctp.getArmor().put(player.getName(), player.getInventory().getArmorContents());
         
-        clearInventory(player);
+        clearInventory(player, true);
     }
     
     /**
@@ -148,7 +148,7 @@ public class InvManagement {
         }
 
         p.setHealth(20);
-        clearInventory(p);
+        clearInventory(p, true);
         
         if(a.getPlayerData(p.getName()).getTeam() != null) {
             DyeColor color1 = DyeColor.valueOf(a.getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
@@ -203,13 +203,15 @@ public class InvManagement {
 	 * Really clears the player's inventory of everything, fixes some dupes.
 	 * 
 	 * @param player The player to clear inventory from.
+	 * @param clearHelmet Should we clear their inventory or not
 	 * @since 1.5.0-b179
 	 */
 	@SuppressWarnings("deprecation")
-	public void clearInventory(Player player) {
+	public void clearInventory(Player player, boolean clearHelmet) {
 		PlayerInventory inv = player.getInventory();
         inv.clear();
-        inv.setHelmet(null);
+        if(clearHelmet)
+        	inv.setHelmet(null);
         inv.setChestplate(null);
         inv.setLeggings(null);
         inv.setBoots(null);

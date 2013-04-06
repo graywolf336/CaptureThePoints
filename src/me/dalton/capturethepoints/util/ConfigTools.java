@@ -14,6 +14,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class ConfigTools {
 	private ConfigOptions globalConfigOptions = null;
 	private CaptureThePoints ctp;
+	private String pointCapture = "GlobalSettings.GameMode.PointCapture.";
+	private String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
+	private String countDown = "GlobalSettings.CountDowns.";
+	private String global = "GlobalSettings.";
+	private String mySql = "GlobalSettings.MySql.";
 	
 	public ConfigTools(CaptureThePoints ctp) {
 		this.ctp = ctp;
@@ -43,16 +48,6 @@ public class ConfigTools {
         
         config.addDefault("Version", 2);
         ConfigOptions co = new ConfigOptions();
-        String pointCapture = "";
-        String pointCaptureWithScore = "";
-        String global = "";
-        String mySql = "";
-        
-        //version 2
-        pointCapture = "GlobalSettings.GameMode.PointCapture.";
-        pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
-        global = "GlobalSettings.";
-        mySql = "GlobalSettings.MySql.";
 
         //Game mode configuration
         co.pointsToWin = config.getInt(pointCapture + "PointsToWin", globalConfigOptions.pointsToWin);
@@ -70,6 +65,12 @@ public class ConfigTools {
         co.onePointGeneratedScoreEvery30sec = config.getInt(pointCaptureWithScore + "OnePointGeneratedScoreEvery30sec", globalConfigOptions.onePointGeneratedScoreEvery30sec);
         co.scoreAnnounceTime = config.getInt(pointCaptureWithScore + "ScoreAnnounceTime", globalConfigOptions.scoreAnnounceTime);
 
+        //Count down options
+        co.useStartCountDown = config.getBoolean(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
+        co.startCountDownTime = config.getInt(countDown + "StartCountDownTime", globalConfigOptions.startCountDownTime);
+        co.useEndCountDown = config.getBoolean(countDown + "UseEndCountDown", globalConfigOptions.useEndCountDown);
+        co.endCountDownTime = config.getInt(countDown + "EndCountDownTime", globalConfigOptions.endCountDownTime);
+        
         // My sql
         co.mysqlAddress = config.getString(mySql + "Address", globalConfigOptions.mysqlAddress);
         co.mysqlDatabase = config.getString(mySql + "Database", globalConfigOptions.mysqlDatabase);
@@ -146,18 +147,8 @@ public class ConfigTools {
     }
     
     //Sets config options if they does not exist
-    public void setConfigOptions (File arenafile) {
+    public void setConfigOptions(File arenafile) {
         FileConfiguration config = load(arenafile);
-        
-        String pointCapture = "";
-        String pointCaptureWithScore = "";
-        String global = "";
-        String mySql = "";
-
-        pointCapture = "GlobalSettings.GameMode.PointCapture.";
-        pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
-        global = "GlobalSettings.";
-        mySql = "GlobalSettings.MySql.";
 
         //Game mode configuration
         if(!config.contains(pointCapture + "PointsToWin"))
@@ -177,6 +168,16 @@ public class ConfigTools {
         if(!config.contains(pointCaptureWithScore + "ScoreAnnounceTime"))
             config.set(pointCaptureWithScore + "ScoreAnnounceTime", globalConfigOptions.scoreAnnounceTime);
 
+        // Count down configuration
+        if(!config.contains(countDown + "UseStartCountDown"))
+        	config.set(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
+        if(!config.contains(countDown + "StartCountDownTime"))
+        	config.set(countDown + "StartCountDownTime", globalConfigOptions.startCountDownTime);
+        if(!config.contains(countDown + "UseEndCountDown"))
+        	config.set(countDown + "UseEndCountDown", globalConfigOptions.useEndCountDown);
+        if(!config.contains(countDown + "StartEndDownTime"))
+        	config.set(countDown + "EndCountDownTime", globalConfigOptions.endCountDownTime);
+        
         // My sql
         if(!config.contains(mySql + "Address"))
             config.set(mySql + "Address", globalConfigOptions.mysqlAddress);
@@ -264,18 +265,13 @@ public class ConfigTools {
     
     //For arena config options!
     public ConfigOptions getArenaConfigOptions (File arenafile) {
-    	if(globalConfigOptions == null) {
+    	if(globalConfigOptions == null)
     		globalConfigOptions = ctp.getGlobalConfigOptions();
-    	}
     	
         setArenaConfigOptions(arenafile);
         FileConfiguration config = load(arenafile);
 
         ConfigOptions co = new ConfigOptions();
-
-        String pointCapture = "GlobalSettings.GameMode.PointCapture.";
-        String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
-        String global = "GlobalSettings.";
 
         //Game mode configuration
         co.pointsToWin = config.getInt(pointCapture + "PointsToWin", globalConfigOptions.pointsToWin);
@@ -292,6 +288,11 @@ public class ConfigTools {
         co.onePointGeneratedScoreEvery30sec = config.getInt(pointCaptureWithScore + "OnePointGeneratedScoreEvery30sec", globalConfigOptions.onePointGeneratedScoreEvery30sec);
         co.scoreAnnounceTime = config.getInt(pointCaptureWithScore + "ScoreAnnounceTime", globalConfigOptions.scoreAnnounceTime);
 
+        //Count down options
+        co.useStartCountDown = config.getBoolean(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
+        co.startCountDownTime = config.getInt(countDown + "StartCountDownTime", globalConfigOptions.startCountDownTime);
+        co.useEndCountDown = config.getBoolean(countDown + "UseEndCountDown", globalConfigOptions.useEndCountDown);
+        co.endCountDownTime = config.getInt(countDown + "EndCountDownTime", globalConfigOptions.endCountDownTime);
 
         // Global configuration
         // Kj -- documentation for the different options, including their default values, can be found under the ConfigOptions class.
@@ -358,10 +359,6 @@ public class ConfigTools {
 
     public void setArenaConfigOptions(File arenafile) {
         FileConfiguration config = load(arenafile);
-        
-        String pointCapture = "GlobalSettings.GameMode.PointCapture.";
-        String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
-        String global = "GlobalSettings.";
 
         //Game mode configuration
         if(!config.contains(pointCapture + "PointsToWin"))
@@ -381,7 +378,16 @@ public class ConfigTools {
         if(!config.contains(pointCaptureWithScore + "ScoreAnnounceTime"))
             config.set(pointCaptureWithScore + "ScoreAnnounceTime", globalConfigOptions.scoreAnnounceTime);
 
-
+        // Count down configuration
+        if(!config.contains(countDown + "UseStartCountDown"))
+        	config.set(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
+        if(!config.contains(countDown + "StartCountDownTime"))
+        	config.set(countDown + "StartCountDownTime", globalConfigOptions.startCountDownTime);
+        if(!config.contains(countDown + "UseEndCountDown"))
+        	config.set(countDown + "UseEndCountDown", globalConfigOptions.useEndCountDown);
+        if(!config.contains(countDown + "StartEndDownTime"))
+        	config.set(countDown + "EndCountDownTime", globalConfigOptions.endCountDownTime);
+        
         // Global configuration
         if(!config.contains(global + "AllowBlockBreak"))
             config.set(global + "AllowBlockBreak", globalConfigOptions.allowBlockBreak);

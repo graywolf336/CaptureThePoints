@@ -61,13 +61,13 @@ public class AutoCommand extends CTPCommand {
         if (ctp.getArenaMaster().hasSuitableArena(world.getPlayers().size())) {
             ctp.getArenaMaster().chooseSuitableArena(world.getPlayers().size()); // Choose a suitable arena based on the number of players in the world.
         } else {
-            sendMessage("[CTP] You do not have an arena that will accomodate "+world.getPlayers().size()+" players. Please change your min/max player settings.");
+            sendMessage("You do not have an arena that will accomodate " + world.getPlayers().size() + " players. Please change your min/max player settings.");
             return;
         }
         
         if (ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
             sendMessage("A previous Capture The Points game has been terminated.");
-            ctp.getArenaMaster().getSelectedArena().endGame(true);
+            ctp.getArenaMaster().getSelectedArena().endGame(false, false);//Don't give rewards as we have ended the game prematurely.
         }
 
         for (Player p : world.getPlayers())

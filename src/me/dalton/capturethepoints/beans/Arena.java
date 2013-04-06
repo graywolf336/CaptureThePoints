@@ -32,7 +32,7 @@ public class Arena {
     private ConfigOptions co;
     
     //SchedulerIds
-    int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0;
+    private int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0, startCounterID = 0, startCount = 5, endCounterID = 0, endCount = 5;
     
 	private boolean enabled = true, pregame = true, running = false, edit = false;
     
@@ -263,6 +263,46 @@ public class Arena {
     /** Gets the scheduler id of the pointMessenger task for this arena. */
     public int getPointMessenger() {
     	return this.pointMessenger;
+    }
+    
+    /** Sets the scheduler id of the startCounter task for this arena. */
+    public void setStartCounterID(int startCounterID) {
+    	this.startCounterID = startCounterID;
+    }
+    
+    /** Gets the scheduler id of the startCounter task for this arena. */
+    public int getStartCounterID() {
+    	return this.startCounterID;
+    }
+    
+    /** Sets the number in which to start the counter off for counting down to start a game. */
+    public void setStartCount(int count) {
+    	this.startCount = count;
+    }
+    
+    /** Gets the number in which to start the counter off at when starting the game. */
+    public int getStartCount() {
+    	return this.startCount;
+    }
+    
+    /** Sets the scheduler id of the endCounter task for this arena. */
+    public void setEndCounterID(int endCounterID) {
+    	this.endCounterID = endCounterID;
+    }
+    
+    /** Gets the scheduler id of the endCounter task for this arena. */
+    public int getEndCounterID() {
+    	return this.endCounterID;
+    }
+    
+    /** Sets the number in which to start the counter off for counting down to the teleporting at the end of a game. */
+    public void setEndCount(int count) {
+    	this.endCount = count;
+    }
+    
+    /** Gets the number in which to start the counter off at when ending the game and teleporting out. */
+    public int getEndCount() {
+    	return this.endCount;
     }
     
     /** Sets the scheduler id of the healingItemsCooldowns task for this arena. */
@@ -524,9 +564,37 @@ public class Arena {
     /**
      * Ends the current game that is happening in the arena, whether to give rewards or not.
      * 
-     * @param noRewards True to not give rewards, false to.
+     * @param rewards True to give rewards, false to not give rewards.
+     * @param countdown True to countdown to the end, false to just straight up end it.
      */
-    public void endGame(boolean noRewards) {
+    public void endGame(final boolean rewards, boolean countdown) {
+    	final String aName = getName();
+        
+    	if(countdown)
+	    	setEndCounterID(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
+	    		public void run() {
+	    			Arena temp = ctp.getArenaMaster().getArena(aName);
+	    			if(temp.getEndCount() == 0) {
+	    				ctp.getUtil().sendMessageToPlayers(temp, "...good bye!");
+	    				ctp.getServer().getScheduler().cancelTask(temp.getEndCounterID());
+	    				ctp.getArenaMaster().getArena(aName).setEndCounterID(0);
+	    				endGameNoCountDown(rewards);
+	    				return;
+	    			}
+	    			
+	    			if(temp.getConfigOptions().endCountDownTime == temp.getEndCount())
+	    				ctp.getUtil().sendMessageToPlayers(temp, "The game has ended! Returning you to where you was in " + temp.getEndCount() + " seconds..");
+	    			else
+	    				ctp.getUtil().sendMessageToPlayers(temp, temp.getEndCount() + "..");
+	    			
+	    			ctp.getArenaMaster().getArena(aName).setEndCount(temp.getEndCount() - 1);//Set the counter to one minus what it current this.
+	    		}
+	    	}, 0L, 20L));
+    	else
+    		endGameNoCountDown(rewards);
+    }
+    
+    private void endGameNoCountDown(boolean rewards) {
     	CTPEndEvent event = new CTPEndEvent(this);
     	ctp.getPluginManager().callEvent(event);
     	
@@ -549,17 +617,27 @@ public class Arena {
             ctp.getServer().getScheduler().cancelTask(healingItemsCooldowns);
             healingItemsCooldowns = 0;
         }
+        
+        if(startCounterID != 0) {
+        	ctp.getServer().getScheduler().cancelTask(startCounterID);
+        	startCounterID = 0;
+        }
+        
+        if(endCounterID != 0) {//TODO: Implement this
+        	ctp.getServer().getScheduler().cancelTask(endCounterID);
+        	startCounterID = 0;
+        }
 
         for (Points s : getCapturePoints())
             s.setControlledByTeam(null);
-
+        
         setPreGame(true);
         setRunning(false);
 
         for (String player : getPlayersData().keySet()) {
         	Player p = ctp.getServer().getPlayer(player);
         	ctp.getInvManagement().restoreThings(p);
-            if (!noRewards)
+            if (rewards)
                 ctp.getUtil().rewardPlayer(this, p);
         }
         
@@ -577,6 +655,10 @@ public class Arena {
         getPrevoiusPosition().clear();
         getPlayersData().clear();
         getPlayers().clear();
+        
+        //Reset the count downs
+        startCount = getConfigOptions().startCountDownTime;
+        endCount = getConfigOptions().endCountDownTime;
         
         for (Team t : getTeams()) {
             t.setMemberCount(0);

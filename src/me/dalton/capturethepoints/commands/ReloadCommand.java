@@ -18,7 +18,7 @@ public class ReloadCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        ctp.clearConfig();
+        ctp.clearConfig();//TODO: Remove this and call it in the enableCTP when we are reloading
         ctp.enableCTP(true);
         sendMessage("Successfully reloaded!");
         return;

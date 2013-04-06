@@ -18,12 +18,12 @@ public class StopCommand extends CTPCommand {
 
     @Override
     public void perform() {
-    	if(!ctp.getArenaMaster().getArenas().contains(parameters.get(2))) {
+    	if(!ctp.getArenaMaster().isArena(parameters.get(2))) {
     		sendMessage(parameters.get(2) + " is not a valid arena name, please try again.");
     		return;
     	}
     	
-        ctp.getArenaMaster().getArena(parameters.get(2)).endGame(true);
+        ctp.getArenaMaster().getArena(parameters.get(2)).endGame(false, true);//Don't give rewards as we have stopped the game.
         return;
     }
 }

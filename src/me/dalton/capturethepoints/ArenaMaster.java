@@ -646,7 +646,7 @@ public class ArenaMaster {
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
         
-        ctp.getInvManagement().clearInventory(player); //clear the inventory again in case some other plugin restored some inventory to them after we teleported them (Multiverse inventories)
+        ctp.getInvManagement().clearInventory(player, true); //clear the inventory again in case some other plugin restored some inventory to them after we teleported them (Multiverse inventories)
         
         ctp.sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
         arena.getPlayerData(player).setInLobby(true);

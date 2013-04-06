@@ -332,7 +332,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
         
-        ctp.getInvManagement().clearInventory(player); //Clear the inventory completely
+        ctp.getInvManagement().clearInventory(player, false); //Clear the inventory completely
         PlayerInventory inv = player.getInventory(); //Get the inventory again after we have cleared it.
 
         for (Items item : ctp.getRoles().get(ctp.getArenaMaster().getPlayerData(player.getName()).getRole())) {

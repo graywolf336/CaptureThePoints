@@ -304,8 +304,22 @@ public class CaptureThePointsPlayerListener implements Listener {
         Player p = event.getPlayer();
         Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         
-        // Find if player is in arena
-        if (a.getPlayerData(p.getName()) != null && !a.getPlayerData(p.getName()).inLobby()) {
+        //Find out if the start counter is active, if so cancel them moving.
+        if(a.getStartCounterID() != 0) {//counter id is not 0
+        	if(a.getStartCounterID() != -1) {//counter id is not -1 (failed)
+        		if (a.getPlayerData(p.getName()).getMoveChecker() >= 5) {
+        			a.getPlayerData(p.getName()).setMoveChecker(0);
+                	event.setCancelled(true);
+                	if(ctp.getGlobalConfigOptions().debugMessages)
+                		ctp.logInfo("Cancelled a player move event because the start down counter is happening.");
+                	return;
+        		}else {
+        			a.getPlayerData(p.getName()).addOneMoveChecker();
+        		}
+        	}
+        }
+        
+        if(!a.getPlayerData(p).inLobby()) {
             if (a.getPlayerData(p.getName()).getMoveChecker() >= 10) {
             	a.getPlayerData(p.getName()).setMoveChecker(0);
                 if (ctp.getArenaUtil().isInside(loc.getBlockY(), a.getY1(), a.getY2())
@@ -511,7 +525,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             Arena mainArenaTmp = arena;
                             if (ctp.getArenaMaster().hasSuitableArena(readypeople)) {
                                 ctp.getUtil().sendMessageToPlayers(arena, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
-                                arena.endGame(true);
+                                arena.endGame(false, false);//Don't give rewards.
                                 ctp.getArenaMaster().chooseSuitableArena(readypeople);
                                 for (String aPlayer : lobby.getPlayersInLobby().keySet()) {
                                     PJoinCommand pj = new PJoinCommand(ctp); 

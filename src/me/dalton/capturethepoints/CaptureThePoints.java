@@ -62,7 +62,7 @@ public class CaptureThePoints extends JavaPlugin {
     /** List of commands accepted by CTP */
     private List<CTPCommand> commands = new ArrayList<CTPCommand>(); // Kj
 
-    private final CaptureThePointsBlockListener blockListener = new CaptureThePointsBlockListener(this);
+    private final CaptureThePointsBlockListener blockListener = new CaptureThePointsBlockListener(this);//TODO: Make these all start off null and then onEnable set them.
     private final CaptureThePointsEntityListener entityListener = new CaptureThePointsEntityListener(this);
     private final CaptureThePointsPlayerListener playerListener = new CaptureThePointsPlayerListener(this);
     private ArenaUtils aUtil = new ArenaUtils(this);
@@ -202,7 +202,7 @@ public class CaptureThePoints extends JavaPlugin {
     
     public void clearConfig() {
     	for(Arena a : getArenaMaster().getArenas())
-    		a.endGame(false);//Don't give rewards, they didn't
+    		a.endGame(false, false);//Don't give rewards, the game ended prematurely
     	
         healingItems.clear();
         rewards = null;
@@ -419,7 +419,7 @@ public class CaptureThePoints extends JavaPlugin {
 
     public void checkForGameEndThenPlayerLeft(Arena a) {
         if (a.getPlayersData().size() < 2 && !a.isPreGame()) {
-            //maybe dc or something. it should be moved to cheking to see players who left the game
+            //maybe dc or something. it should be moved to checking to see players who left the game
             boolean zeroPlayers = true;
             for (int i = 0; i < a.getTeams().size(); i++) {
                 if (a.getTeams().get(i).getMemberCount() == 1) {
@@ -427,13 +427,13 @@ public class CaptureThePoints extends JavaPlugin {
                     getUtil().sendMessageToPlayers(a, "The game has stopped because there are too few players. "
                             + a.getTeams().get(i).getChatColor() + a.getTeams().get(i).getColor().toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
                             + a.getTeams().get(i).getScore() + ")");
-                    a.endGame(true);
+                    a.endGame(false, true);//Game ended prematurely, don't give rewards but do countdown.
                     break;
                 }
             }
             if (zeroPlayers == true) {
             	getUtil().sendMessageToPlayers(a, "No players left. Resetting game.");
-                a.endGame(true);
+                a.endGame(false, false);//Game ended prematurely, don't give rewards.
             }
         }
     }
@@ -464,7 +464,7 @@ public class CaptureThePoints extends JavaPlugin {
     private void loadConfigFiles(boolean reloading) {
     	if(reloading) {
     		for(Arena a : arenaMaster.getArenas())
-    			a.endGame(false);
+    			a.endGame(false, false);//Don't give rewards as the game ended prematurely.
     		arenaMaster.resetArenas();
     	}
     	

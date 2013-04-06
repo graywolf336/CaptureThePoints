@@ -207,7 +207,7 @@ public class ArenaUtils {
         
         arena.setPreGame(true);
         arena.setRunning(false);
-        arena.endGame(false);
+        arena.endGame(true, true);//End the game and give the rewards.
 
         return true;
     }
@@ -240,6 +240,26 @@ public class ArenaUtils {
         didSomeoneWin(arena);
 
         final String aName = arena.getName();
+        
+    	arena.setStartCounterID(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
+    		public void run() {
+    			Arena temp = ctp.getArenaMaster().getArena(aName);
+    			if(ctp.getArenaMaster().getArena(aName).getStartCount() == 0) {
+    				ctp.getUtil().sendMessageToPlayers(temp, "...Go!");
+    				ctp.getServer().getScheduler().cancelTask(temp.getStartCounterID());
+    				ctp.getArenaMaster().getArena(aName).setStartCounterID(0);
+    				return;
+    			}
+    			
+    			if(temp.getConfigOptions().startCountDownTime == temp.getStartCount())
+    				ctp.getUtil().sendMessageToPlayers(temp, "Game starting in " + temp.getStartCount() + " seconds..");
+    			else
+    				ctp.getUtil().sendMessageToPlayers(temp, temp.getStartCount() + "..");
+    			
+    			ctp.getArenaMaster().getArena(aName).setStartCount(temp.getStartCount() - 1);//Set the counter to one minus what it current this.
+    		}
+    	}, 0L, 20L));
+    	
         // Play time for points only
         arena.setPlayTimer(ctp.getServer().getScheduler().scheduleSyncDelayedTask(ctp, new Runnable() {
             public void run () {
@@ -267,7 +287,7 @@ public class ArenaUtils {
                     
                     ctp.getUtil().sendMessageToPlayers(ctp.getArenaMaster().getArena(aName), "Time out! " + ChatColor.GREEN + colors.values().toString().toUpperCase().replace(",", " and") + ChatColor.WHITE + " wins!");
                     ctp.getArenaMaster().getArena(aName).setPlayTimer(0);
-                    ctp.getArenaMaster().getArena(aName).endGame(false);
+                    ctp.getArenaMaster().getArena(aName).endGame(true, true);//The game ended so give rewards
                 }
             }
 

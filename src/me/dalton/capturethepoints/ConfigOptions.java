@@ -107,6 +107,18 @@ public class ConfigOptions {
     /** Multiples gained score after all possible points are captured by that team [Default: 2] **/
     public int scoreMyltiplier = 2;
     
+    /** Should we count down on game start or not. [Default: false] */
+    public boolean useStartCountDown = false;
+    
+    /** The amount of time in seconds we should count down for the start counter. [Default: 5] */
+    public int startCountDownTime = 5;
+    
+    /** Should we count down on game end or not. [Default: false] */
+    public boolean useEndCountDown = false;
+    
+    /** The amount of time in seconds we should count down for the end counter. [Default: 5] */
+    public int endCountDownTime = 5;
+    
     /** The KillStreak messages generated, starting from 2 kills in a row. <br>
      * [Default: "%player strikes again!", "%player is on a killing spree!", "%player is on a rampage!", "%player is unstoppable!", "%player is GOD-LIKE!"] 
      * @see KillStreakMessages */
