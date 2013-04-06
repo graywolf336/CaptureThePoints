@@ -623,7 +623,7 @@ public class Arena {
         	startCounterID = 0;
         }
         
-        if(endCounterID != 0) {//TODO: Implement this
+        if(endCounterID != 0) {
         	ctp.getServer().getScheduler().cancelTask(endCounterID);
         	startCounterID = 0;
         }
