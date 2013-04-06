@@ -32,6 +32,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Fixed the conflicting nature of Multiverse Inventories, we clear their inventory before we teleport and after.
 * Added a config option to allow explosions breaking blocks, defaults to false
 * Added eggs are grenades if enabled in the config.
+* Added count downs to starting and stopping
 * - Configurable per arena
 * - Power is configurable per arena
 
