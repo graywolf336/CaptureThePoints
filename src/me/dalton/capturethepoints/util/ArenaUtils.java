@@ -39,8 +39,8 @@ public class ArenaUtils {
      * @return The Team from the color given.
      * @since 1.5.0-b122
      */
-    public Team getTeamFromColor(CaptureThePoints ctp, String arena, String color) {
-    	for (Team t : ctp.getArenaMaster().getArena(arena).getTeams())
+    public Team getTeamFromColor(Arena arena, String color) {
+    	for (Team t : arena.getTeams())
     		if(t.getColor().equalsIgnoreCase(color))
     			return t;
     	
@@ -116,7 +116,7 @@ public class ArenaUtils {
                     if (team.getControlledPoints() < 0) {
                         team.setControlledPoints(0);
                     }
-                    return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " lost " + ChatColor.GOLD + lostpoint + ".";
+                    return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().LOST + " " + ChatColor.GOLD + lostpoint + ".";
                 }
             }
             return null;
@@ -175,11 +175,10 @@ public class ArenaUtils {
         if (winningteams.isEmpty()) {
             return false;
         } else if (winningteams.size() > 1) {
-            if (arena.getConfigOptions().useScoreGeneration) {
-                WinMessage = "It's a tie! " + winningteams.size() + " teams have passed " + arena.getConfigOptions().pointsToWin + " points!";
-            } else {
-                WinMessage = "It's a tie! " + winningteams.size() + " teams have a score of " + arena.getConfigOptions().scoreToWin + "!";
-            }
+            if (arena.getConfigOptions().useScoreGeneration)
+            	WinMessage = ctp.getLanguage().TIE_POINTS.replaceAll("%WT", winningteams.size() + "").replaceAll("%WP", arena.getConfigOptions().pointsToWin + "");
+            else
+            	WinMessage = ctp.getLanguage().TIE_SCORE.replaceAll("%WT", winningteams.size() + "").replaceAll("%WS", arena.getConfigOptions().scoreToWin + "");
         }
 
         for (Team team : winningteams) {
@@ -192,15 +191,12 @@ public class ArenaUtils {
 
         ctp.getUtil().sendMessageToPlayers(arena, WinMessage);
         String message = "";
-        if (arena.getConfigOptions().useScoreGeneration) {
-            for (Team aTeam : arena.getTeams()) {
-                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " final score: " + aTeam.getScore() + ChatColor.AQUA + " // ";
-            }
-        } else {
-            for (Team aTeam : arena.getTeams()) {
-                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " final points: " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
-            }
-        }
+        if (arena.getConfigOptions().useScoreGeneration)
+            for (Team aTeam : arena.getTeams())
+                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_SCORE + ": " + aTeam.getScore() + ChatColor.AQUA + " // ";
+        else
+            for (Team aTeam : arena.getTeams())
+                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_POINTS + ": " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
 
         ctp.getUtil().sendMessageToPlayers(arena, message);
         

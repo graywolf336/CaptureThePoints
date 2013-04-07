@@ -19,7 +19,12 @@ public class LangTools {
 		lo.GAME_ENDED = lang.getString("GAME_ENDED", lo.GAME_ENDED);
 		lo.WINS = lang.getString("WINS", lo.WINS);
 		lo.CAPTURED = lang.getString("CAPTURED", lo.CAPTURED);
+		lo.LOST = lang.getString("LOST", lo.LOST);
 		lo.POINTS = lang.getString("POINTS", lo.POINTS);
+		lo.FINAL_SCORE = lang.getString("FINAL_SCORE", lo.FINAL_SCORE);
+		lo.FINAL_POINTS = lang.getString("FINAL_POINTS", lo.FINAL_POINTS);
+		lo.TIE_POINTS = lang.getString("TIE_POINTS", lo.TIE_POINTS);
+		lo.TIE_SCORE = lang.getString("TIE_SCORE", lo.TIE_SCORE);
 		
 		return lo;
 	}
@@ -36,8 +41,18 @@ public class LangTools {
 			lang.set("WINS", lo.WINS);
 		if(!lang.contains("CAPTURED"))
 			lang.set("CAPTURED", lo.CAPTURED);
+		if(!lang.contains("LOST"))
+			lang.set("LOST", lo.LOST);
 		if(!lang.contains("POINTS"))
 			lang.set("POINTS", lo.POINTS);
+		if(!lang.contains("FINAL_SCORE"))
+			lang.set("FINAL_SCORE", lo.FINAL_SCORE);
+		if(!lang.contains("FINAL_POINTS"))
+			lang.set("FINAL_POINTS", lo.FINAL_POINTS);
+		if(!lang.contains("TIE_POINTS"))
+			lang.set("TIE_POINTS", lo.TIE_POINTS);
+		if(!lang.contains("TIE_SCORE"))
+			lang.set("TIE_SCORE", lo.TIE_SCORE);
 		
 		try {
             lang.options().copyDefaults(true);
