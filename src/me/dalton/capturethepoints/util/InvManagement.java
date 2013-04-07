@@ -203,7 +203,7 @@ public class InvManagement {
 	 * Really clears the player's inventory of everything, fixes some dupes.
 	 * 
 	 * @param player The player to clear inventory from.
-	 * @param clearHelmet Should we clear their inventory or not
+	 * @param clearHelmet Should we clear their helmet or not
 	 * @since 1.5.0-b179
 	 */
 	@SuppressWarnings("deprecation")
