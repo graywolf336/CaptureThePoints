@@ -15,19 +15,30 @@ import org.bukkit.event.HandlerList;
 public class CTPEndEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Arena arena;
+	private String endMessage;
 	
 	/**
 	 * A custom event called when a game ends in an arena.
 	 * 
 	 * @param arena {@link Arena}
+	 * @param endMessage The message sent to the players about the game ending.
 	 * @since 1.5.0-b189
 	 */
-	public CTPEndEvent(Arena arena) {
+	public CTPEndEvent(Arena arena, String endMessage) {
 		this.arena = arena;
+		this.endMessage = endMessage;
 	}
 	
 	public Arena getArena() {
 		return this.arena;
+	}
+	
+	public void setEndMessage(String message) {
+		this.endMessage = message;
+	}
+	
+	public String getEndMessage() {
+		return this.endMessage;
 	}
 	
 	public HandlerList getHandlers() {

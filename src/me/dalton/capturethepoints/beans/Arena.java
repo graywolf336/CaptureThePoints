@@ -595,10 +595,10 @@ public class Arena {
     }
     
     private void endGameNoCountDown(boolean rewards) {
-    	CTPEndEvent event = new CTPEndEvent(this);
+    	CTPEndEvent event = new CTPEndEvent(this, ctp.getLanguage().GAME_ENDED);
     	ctp.getPluginManager().callEvent(event);
     	
-        ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().GAME_ENDED);
+        ctp.getUtil().sendMessageToPlayers(this, event.getEndMessage());
 
         // Task canceling
         if (playTimer != 0) {
