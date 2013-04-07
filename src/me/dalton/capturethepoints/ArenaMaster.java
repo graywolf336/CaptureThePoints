@@ -452,9 +452,11 @@ public class ArenaMaster {
                     setSelectedArena(arenas.get(nextInt));
                 }
                 
-                ctp.getLogger().info("ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + getArenas() + ", of which " + arenas.size() + " were suitable: " + arenas);
+                if(ctp.getGlobalConfigOptions().debugMessages)
+                	ctp.getLogger().info("ChooseSuitableArena: Players found: " + numberofplayers + ", total arenas found: " + size + " " + getArenas() + ", of which " + arenas.size() + " were suitable: " + arenas);
             }else {
-            	ctp.getLogger().info("The selected arena, " + getSelectedArena().getName()
+            	if(ctp.getGlobalConfigOptions().debugMessages)
+            		ctp.getLogger().info("The selected arena, " + getSelectedArena().getName()
             			+ ", has a minimum of " + getSelectedArena().getMinPlayers()
             			+ ", and a maximum of " + getSelectedArena().getMaxPlayers() + ".");
                 return getSelectedArena().getName();
