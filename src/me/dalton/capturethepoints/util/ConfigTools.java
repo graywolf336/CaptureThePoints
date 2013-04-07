@@ -30,7 +30,7 @@ public class ConfigTools {
     }
 
     /** Load yml from specified file */
-    public FileConfiguration load (File file) {
+    public FileConfiguration load(File file) {
         try {
             FileConfiguration PluginPropConfig = YamlConfiguration.loadConfiguration(file);
             return PluginPropConfig;
@@ -49,6 +49,8 @@ public class ConfigTools {
         config.addDefault("Version", 2);
         ConfigOptions co = new ConfigOptions();
 
+        co.language = config.getString("Language", globalConfigOptions.language);
+        
         //Game mode configuration
         co.pointsToWin = config.getInt(pointCapture + "PointsToWin", globalConfigOptions.pointsToWin);
         co.playTime = config.getInt(pointCapture + "PlayTime", globalConfigOptions.playTime);
@@ -143,6 +145,10 @@ public class ConfigTools {
     public void setConfigOptions(File arenafile) {
         FileConfiguration config = load(arenafile);
 
+        //Language
+        if(!config.contains("Language"))
+        	config.set("Language", "en");
+        
         //Game mode configuration
         if(!config.contains(pointCapture + "PointsToWin"))
             config.set(pointCapture + "PointsToWin", globalConfigOptions.pointsToWin);

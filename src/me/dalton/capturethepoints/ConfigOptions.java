@@ -144,4 +144,7 @@ public class ConfigOptions {
     
     /** The password that we should use when connecting to the database. [Default: ""] */
     public String mysqlPass = "";
+    
+    /** The language files to use, language_%s. [Default: en] */
+    public String language = "en";
 }

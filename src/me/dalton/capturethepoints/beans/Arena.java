@@ -598,7 +598,7 @@ public class Arena {
     	CTPEndEvent event = new CTPEndEvent(this);
     	ctp.getPluginManager().callEvent(event);
     	
-        ctp.getUtil().sendMessageToPlayers(this, "A Capture The Points game has ended!");
+        ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().GAME_ENDED);
 
         // Task canceling
         if (playTimer != 0) {

@@ -5,6 +5,7 @@ import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
 import me.dalton.capturethepoints.util.ArenaUtils;
 import me.dalton.capturethepoints.util.ConfigTools;
+import me.dalton.capturethepoints.util.LangTools;
 import me.dalton.capturethepoints.util.MoneyUtils;
 import me.dalton.capturethepoints.util.InvManagement;
 import me.dalton.capturethepoints.util.Permissions;
@@ -73,6 +74,8 @@ public class CaptureThePoints extends JavaPlugin {
     private Util util = new Util(this);
     private ArenaRestore arenaRestore = new ArenaRestore(this);
     private MysqlConnector mysqlConnector = new MysqlConnector(this);
+    
+    private LanguageOptions lo = null;
     
     //General scheduler ids
     private int lobbyActivity = 0;
@@ -499,6 +502,8 @@ public class CaptureThePoints extends JavaPlugin {
         	getArenaMaster().clearSelectedArena();
         else
         	getArenaMaster().setSelectedArena(arenaName);
+        
+        lo = LangTools.getLanguageOptions(this);
     }
 
     public void loadHealingItems() {
@@ -738,6 +743,10 @@ public class CaptureThePoints extends JavaPlugin {
     
     public ConfigOptions getGlobalConfigOptions() {
     	return this.globalConfigOptions;
+    }
+    
+    public LanguageOptions getLanguage() {
+    	return this.lo;
     }
     
     /**
