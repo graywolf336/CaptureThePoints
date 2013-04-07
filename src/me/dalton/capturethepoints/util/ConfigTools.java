@@ -127,13 +127,6 @@ public class ConfigTools {
             }
         }
         co.killStreakMessages = new KillStreakMessages(hm);
-
-        //double check that maxPlayerHealth isn't higher than 20
-        if(co.maxPlayerHealth > 20) {
-        	co.maxPlayerHealth = 20;
-        	config.set(global + "MaxPlayerHealth", 20);
-        	ctp.logWarning("Please note that MaxPlayerHealth can NOT be above 20.");
-        }
         
         try {
             config.options().copyDefaults(true);
@@ -338,13 +331,6 @@ public class ConfigTools {
             }
         }
         co.killStreakMessages = new KillStreakMessages(hm);
-
-        //double check that maxPlayerHealth isn't higher than 20
-        if(co.maxPlayerHealth > 20) {
-        	co.maxPlayerHealth = 20;
-        	config.set(global + "MaxPlayerHealth", 20);
-        	ctp.logWarning("Please note that MaxPlayerHealth can NOT be above 20.");
-        }
         
         try {
             config.options().copyDefaults(true);

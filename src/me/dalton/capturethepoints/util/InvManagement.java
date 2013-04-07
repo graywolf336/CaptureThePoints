@@ -64,10 +64,9 @@ public class InvManagement {
         if (a.getPlayerData(p.getName()).wasInCreative())
             p.setGameMode(GameMode.CREATIVE);
 
-        if (a.getPlayerData(p.getName()).getHealth() > 200 || a.getPlayerData(p.getName()).getHealth() < 0)
-            p.setHealth(20);
-        else
-            p.setHealth(a.getPlayerData(p.getName()).getHealth());
+        //As bukkit supports setting their max health higher than 20, we should get what it was and restore that.
+        p.setMaxHealth(a.getPlayerData(p.getName()).getOldMaxHealth());
+        p.setHealth(a.getPlayerData(p.getName()).getOldHealth());
     }
 
 	/**

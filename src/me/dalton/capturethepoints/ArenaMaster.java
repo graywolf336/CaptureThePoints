@@ -603,15 +603,20 @@ public class ArenaMaster {
         data.setReady(false);
         data.setInArena(false);
         data.setFoodLevel(player.getFoodLevel());
-        data.setHealth(player.getHealth());
+        data.setOldMaxHealth(player.getMaxHealth());
+        data.setOldHealth(player.getHealth());
         data.setLobbyJoinTime(System.currentTimeMillis());
         
         // Store and remove potion effects on player
         data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));
         PotionManagement.removeAllEffects(player);
 
-        // Save player's previous state 
+        
         player.setFoodLevel(20);
+        player.setMaxHealth(arena.getConfigOptions().maxPlayerHealth);//Sets their health to the custom maximum.
+        player.setHealth(player.getMaxHealth());
+        
+        // Save player's previous state 
         if (player.getGameMode() == GameMode.CREATIVE) {
             data.inCreative(true);
             player.setGameMode(GameMode.SURVIVAL);
