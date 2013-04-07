@@ -15,6 +15,7 @@ public class LangTools {
 		FileConfiguration lang = ctp.getConfigTools().load(new File(ctp.getMainDirectory() + File.separator + "language_" + ctp.getGlobalConfigOptions().language + ".yml"));
 		LanguageOptions lo = new LanguageOptions();
 		
+		lo.GAME_STARTED = lang.getString("GAME_STARTED", lo.GAME_STARTED);
 		lo.GAME_ENDED = lang.getString("GAME_ENDED", lo.GAME_ENDED);
 		
 		return lo;
@@ -24,6 +25,8 @@ public class LangTools {
 		FileConfiguration lang = ctp.getConfigTools().load(langFile);
 		LanguageOptions lo = new LanguageOptions();
 		
+		if(!lang.contains("GAME_STARTED"))
+			lang.set("GAME_STARTED", lo.GAME_STARTED);
 		if(!lang.contains("GAME_ENDED"))
 			lang.set("GAME_ENDED", lo.GAME_ENDED);
 		

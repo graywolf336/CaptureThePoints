@@ -232,7 +232,7 @@ public class ArenaUtils {
         // Balance teams for already selected teams
         balanceTeamsFromLobby(arena);
 
-        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP]" + ChatColor.WHITE + " A Capture The Points game has started in the arena " + arena.getName() + "!");
+        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + ctp.getLanguage().GAME_STARTED + " " + arena.getName() + "!");
         
         arena.setPreGame(false);
         arena.setRunning(true);
