@@ -88,11 +88,10 @@ public class ArenaUtils {
             for (Team team : arena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(aTeam)) {
                     team.addOneControlledPoints();
-                    if (!arena.getConfigOptions().useScoreGeneration) {
-                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getConfigOptions().pointsToWin + " points).";
-                    } else {
-                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " captured " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getCapturePoints().size() + " points).";
-                    }
+                    if (!arena.getConfigOptions().useScoreGeneration)
+                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getConfigOptions().pointsToWin + " " + ctp.getLanguage().POINTS + ").";
+                    else
+                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getCapturePoints().size() + " " + ctp.getLanguage().POINTS + ").";
                 }
             }
             return null;

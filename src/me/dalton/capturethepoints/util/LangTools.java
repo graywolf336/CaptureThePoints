@@ -18,6 +18,8 @@ public class LangTools {
 		lo.GAME_STARTED = lang.getString("GAME_STARTED", lo.GAME_STARTED);
 		lo.GAME_ENDED = lang.getString("GAME_ENDED", lo.GAME_ENDED);
 		lo.WINS = lang.getString("WINS", lo.WINS);
+		lo.CAPTURED = lang.getString("CAPTURED", lo.CAPTURED);
+		lo.POINTS = lang.getString("POINTS", lo.POINTS);
 		
 		return lo;
 	}
@@ -32,6 +34,10 @@ public class LangTools {
 			lang.set("GAME_ENDED", lo.GAME_ENDED);
 		if(!lang.contains("WINS"))
 			lang.set("WINS", lo.WINS);
+		if(!lang.contains("CAPTURED"))
+			lang.set("CAPTURED", lo.CAPTURED);
+		if(!lang.contains("POINTS"))
+			lang.set("POINTS", lo.POINTS);
 		
 		try {
             lang.options().copyDefaults(true);
