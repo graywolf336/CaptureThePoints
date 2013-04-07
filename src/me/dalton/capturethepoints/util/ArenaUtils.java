@@ -213,7 +213,7 @@ public class ArenaUtils {
     }
     
     public void moveToSpawns(Arena arena) {
-    	CTPStartEvent event = new CTPStartEvent(arena);
+    	CTPStartEvent event = new CTPStartEvent(arena, ctp.getLanguage().GAME_STARTED);
     	ctp.getPluginManager().callEvent(event);
     	
         for (String player : arena.getPlayersData().keySet()) {
@@ -232,7 +232,7 @@ public class ArenaUtils {
         // Balance teams for already selected teams
         balanceTeamsFromLobby(arena);
 
-        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + ctp.getLanguage().GAME_STARTED + " " + arena.getName() + "!");
+        ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + event.getStartMessage() + " " + arena.getName() + "!");
         
         arena.setPreGame(false);
         arena.setRunning(true);

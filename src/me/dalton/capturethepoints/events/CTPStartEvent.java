@@ -15,6 +15,7 @@ import org.bukkit.event.HandlerList;
 public class CTPStartEvent extends Event {
 	private HandlerList handlers = new HandlerList();
 	private Arena arena;
+	private String startMessage;
 	
 	/**
 	 * A custom event called when a game starts in an arena.
@@ -22,12 +23,21 @@ public class CTPStartEvent extends Event {
 	 * @param arena {@link Arena}
 	 * @since 1.5.0-b189
 	 */
-	public CTPStartEvent(Arena arena) {
+	public CTPStartEvent(Arena arena, String startMessage) {
 		this.arena = arena;
+		this.startMessage = startMessage;
 	}
 	
 	public Arena getArena() {
 		return this.arena;
+	}
+	
+	public void setStartMessage(String message) {
+		this.startMessage = message;
+	}
+	
+	public String getStartMessage() {
+		return this.startMessage;
 	}
 	
 	public HandlerList getHandlers() {
