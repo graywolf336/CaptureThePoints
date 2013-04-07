@@ -66,9 +66,9 @@ public class ArenaUtils {
      * @param player The player to heal.
      */
     public void setFullHealthPlayerAndCallEvent(Arena arena, Player player) {
-    	int gained = arena.getConfigOptions().maxPlayerHealth - player.getHealth();
+    	int gained = player.getMaxHealth() - player.getHealth();
     	
-    	player.setHealth(arena.getConfigOptions().maxPlayerHealth);
+    	player.setHealth(player.getMaxHealth());
     	
     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, gained, RegainReason.CUSTOM);
     	ctp.getPluginManager().callEvent(regen);
@@ -161,14 +161,14 @@ public class ArenaUtils {
             for (Team team : arena.getTeams()) {
                 if (team.getScore() >= arena.getConfigOptions().scoreToWin) {
                     winningteams.add(team);
-                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " wins!";
+                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().WINS;
                 }
             }
         } else {
             for (Team team : arena.getTeams()) {
                 if (team.getControlledPoints() >= arena.getConfigOptions().pointsToWin) {
                     winningteams.add(team);
-                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " wins!";
+                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().WINS;
                 }
             }
         }

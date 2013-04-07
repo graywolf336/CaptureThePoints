@@ -17,6 +17,7 @@ public class LangTools {
 		
 		lo.GAME_STARTED = lang.getString("GAME_STARTED", lo.GAME_STARTED);
 		lo.GAME_ENDED = lang.getString("GAME_ENDED", lo.GAME_ENDED);
+		lo.WINS = lang.getString("WINS", lo.WINS);
 		
 		return lo;
 	}
@@ -29,6 +30,8 @@ public class LangTools {
 			lang.set("GAME_STARTED", lo.GAME_STARTED);
 		if(!lang.contains("GAME_ENDED"))
 			lang.set("GAME_ENDED", lo.GAME_ENDED);
+		if(!lang.contains("WINS"))
+			lang.set("WINS", lo.WINS);
 		
 		try {
             lang.options().copyDefaults(true);
