@@ -575,7 +575,6 @@ public class Arena {
 	    		public void run() {
 	    			Arena temp = ctp.getArenaMaster().getArena(aName);
 	    			if(temp.getEndCount() == 0) {
-	    				ctp.getUtil().sendMessageToPlayers(temp, "...good bye!");
 	    				ctp.getServer().getScheduler().cancelTask(temp.getEndCounterID());
 	    				ctp.getArenaMaster().getArena(aName).setEndCounterID(0);
 	    				endGameNoCountDown(rewards);
