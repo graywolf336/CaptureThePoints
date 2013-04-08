@@ -18,7 +18,7 @@ import org.bukkit.event.HandlerList;
  *
  */
 public class CTPPlayerLeaveEvent extends Event {
-	private HandlerList handlers = new HandlerList();
+	private static HandlerList handlers = new HandlerList();
 	private Player player;
 	private Arena arena;
 	private PlayerData playerdata;
@@ -56,6 +56,10 @@ public class CTPPlayerLeaveEvent extends Event {
 		return reason;
 	}
 	
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public HandlerList getHandlers() {
 		return handlers;
 	}

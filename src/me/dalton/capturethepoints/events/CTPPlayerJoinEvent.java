@@ -17,7 +17,7 @@ import org.bukkit.event.HandlerList;
  *
  */
 public class CTPPlayerJoinEvent extends Event implements Cancellable {
-	private HandlerList handlers = new HandlerList();
+	private static HandlerList handlers = new HandlerList();
 	private boolean cancelled;
 	private Player player;
 	private Arena arena;
@@ -51,6 +51,10 @@ public class CTPPlayerJoinEvent extends Event implements Cancellable {
 		this.cancelled = cancel;
 	}
 	
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public HandlerList getHandlers() {
 		return handlers;
 	}

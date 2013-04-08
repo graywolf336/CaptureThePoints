@@ -13,7 +13,7 @@ import org.bukkit.event.HandlerList;
  * @since 1.5.0-b189
  */
 public class CTPStartEvent extends Event {
-	private HandlerList handlers = new HandlerList();
+	private static HandlerList handlers = new HandlerList();
 	private Arena arena;
 	private String startMessage;
 	
@@ -40,7 +40,11 @@ public class CTPStartEvent extends Event {
 		return this.startMessage;
 	}
 	
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public HandlerList getHandlers() {
-		return this.handlers;
+		return handlers;
 	}
 }

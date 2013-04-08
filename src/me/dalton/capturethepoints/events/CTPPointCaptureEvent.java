@@ -16,7 +16,7 @@ import org.bukkit.event.HandlerList;
  * @since 1.5.0-b181
  */
 public class CTPPointCaptureEvent extends Event {
-	private HandlerList handlers = new HandlerList();
+	private static HandlerList handlers = new HandlerList();
 	private Arena arena;
 	private Player player;
 	private PlayerData playerdata;
@@ -54,8 +54,11 @@ public class CTPPointCaptureEvent extends Event {
 		return this.point;
 	}
 	
-	public HandlerList getHandlers() {
-		return this.handlers;
+	public static HandlerList getHandlerList() {
+		return handlers;
 	}
 
+	public HandlerList getHandlers() {
+		return handlers;
+	}
 }
