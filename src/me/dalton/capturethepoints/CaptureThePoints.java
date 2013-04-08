@@ -44,6 +44,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class CaptureThePoints extends JavaPlugin {
+	//message.replaceAll("(?i)&([0-9abcdefklmnor])", "\u00A7$1"); - For replacing color codes.
 	private Permission permission = null;
     private Economy economyHandler = null;
     private boolean UsePermissions;
