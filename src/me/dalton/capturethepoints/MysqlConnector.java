@@ -31,6 +31,8 @@ public class MysqlConnector {
         } catch (Exception e) {
             e.printStackTrace();
             ctp.logSevere("Couldn't find the mySQL Driver! Please check your CraftBukkit version to see if it isn't corrupt.");
+            ctp.getGlobalConfigOptions().enableHardArenaRestore = false; //Temporarily set this to false so we don't do anything later.
+            return false;
         }
         
         try {
@@ -67,23 +69,29 @@ public class MysqlConnector {
         return true;
     }
 
-    public void connectToMySql() {
+    public boolean connectToMySql() {
         if(ctp.getGlobalConfigOptions().enableHardArenaRestore) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");  //try to register the mysql jdbc driver
             } catch (Exception e) {
                e.printStackTrace();
                ctp.logSevere("Couldn't find the mySQL Driver! Please check your CraftBukkit version to see if it isn't corrupt.");
+               ctp.getGlobalConfigOptions().enableHardArenaRestore = false; //Temporarily set this to false so we don't do anything later.
+               return false;
             }
             
             try {
                 con = DriverManager.getConnection("jdbc:mysql://" + ctp.getGlobalConfigOptions().mysqlAddress + ":" + ctp.getGlobalConfigOptions().mysqlPort + "/"
                         + ctp.getGlobalConfigOptions().mysqlDatabase + "?user=" + ctp.getGlobalConfigOptions().mysqlUser + "&password=" + ctp.getGlobalConfigOptions().mysqlPass);
+                return true;
             } catch (Exception e) {
             	e.printStackTrace();
             	ctp.logSevere("Error connecting to the database, pleaes check your creditals.");
+            	ctp.getGlobalConfigOptions().enableHardArenaRestore = false; //Temporarily set this to false so we don't do anything later.
+                return false;
             }
         }
+        return false;
     }
 
     public void modifyData(String statement) {
