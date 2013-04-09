@@ -503,11 +503,11 @@ public class ArenaMaster {
     	if(arena.getName().isEmpty())
     		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENA_NAME;
     	
-    	if(arena.getWorld() == null)
-    		if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
-    			return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_ADMIN.replaceAll("%AW", arena.getWorldName()).replaceAll("%SWF", ctp.getServer().getWorlds().get(0).getName());
-            else
-                return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_USER;
+		if(arena.getWorld() == null)
+			if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
+				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_ADMIN.replaceAll("%AW", arena.getWorldName()).replaceAll("%SWF", ctp.getServer().getWorlds().get(0).getName());
+			else
+				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_USER;
     	
     	if(arena.getLobby() == null)
     		return ChatColor.RED + ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", arena.getName());
