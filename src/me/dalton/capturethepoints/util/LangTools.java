@@ -9,6 +9,8 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.LanguageOptions;
 
 public class LangTools {
+	private static String ch = "checks.";
+	
 	public static LanguageOptions getLanguageOptions(CaptureThePoints ctp) {
 		setLanguageOptions(ctp, new File(ctp.getMainDirectory() + File.separator + "language_" + ctp.getGlobalConfigOptions().language + ".yml"));
 		
@@ -25,6 +27,16 @@ public class LangTools {
 		lo.FINAL_POINTS = lang.getString("FINAL_POINTS", lo.FINAL_POINTS);
 		lo.TIE_POINTS = lang.getString("TIE_POINTS", lo.TIE_POINTS);
 		lo.TIE_SCORE = lang.getString("TIE_SCORE", lo.TIE_SCORE);
+		
+		//Messages for checking the arenas.
+		lo.checks_NO_ARENA_BY_NAME = lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME);
+		lo.checks_NO_ARENAS = lang.getString(ch + "NO_ARENAS", lo.checks_NO_ARENAS);
+		lo.checks_NO_ARENA_NAME = lang.getString(ch + "NO_ARENA_NAME", lo.checks_NO_ARENA_NAME);
+		lo.checks_INCORRECT_WORLD_SETUP_ADMIN = lang.getString(ch + "INCORRECT_WORLD_SETUP_ADMIN", lo.checks_INCORRECT_WORLD_SETUP_ADMIN);
+		lo.checks_INCORRECT_WORLD_SETUP_USER = lang.getString(ch + "INCORRECT_WORLD_SETUP_USER", lo.checks_INCORRECT_WORLD_SETUP_USER);
+		lo.checks_NO_LOBBY = lang.getString(ch + "NO_LOBBY", lo.checks_NO_LOBBY);
+		lo.checks_NO_BOUNDARIES = lang.getString(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES);
+		lo.checks_NO_TEAM_SPAWNS = lang.getString(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS);
 		
 		return lo;
 	}
@@ -53,6 +65,24 @@ public class LangTools {
 			lang.set("TIE_POINTS", lo.TIE_POINTS);
 		if(!lang.contains("TIE_SCORE"))
 			lang.set("TIE_SCORE", lo.TIE_SCORE);
+		
+		//Messages for checking the arenas.
+		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))
+			lang.set(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME);
+		if(!lang.contains(ch + "NO_ARENAS"))
+			lang.set(ch + "NO_ARENAS", lo.checks_NO_ARENAS);
+		if(!lang.contains(ch + "NO_ARENA_NAME"))
+			lang.set(ch + "NO_ARENA_NAME", lo.checks_NO_ARENA_NAME);
+		if(!lang.contains(ch + "INCORRECT_WORLD_SETUP_ADMIN"))
+			lang.set(ch + "INCORRECT_WORLD_SETUP_ADMIN", lo.checks_INCORRECT_WORLD_SETUP_ADMIN);
+		if(!lang.contains(ch + "INCORRECT_WORLD_SETUP_USER"))
+			lang.set(ch + "INCORRECT_WORLD_SETUP_USER", lo.checks_INCORRECT_WORLD_SETUP_USER);
+		if(!lang.contains(ch + "NO_LOBBY"))
+			lang.set(ch + "NO_LOBBY", lo.checks_NO_LOBBY);
+		if(!lang.contains(ch + "NO_BOUNDARIES"))
+			lang.set(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES);
+		if(!lang.contains(ch + "NO_TEAM_SPAWNS"))
+			lang.set(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS);
 		
 		try {
             lang.options().copyDefaults(true);

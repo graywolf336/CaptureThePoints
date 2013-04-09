@@ -495,30 +495,28 @@ public class ArenaMaster {
      */
     public String checkArena(Arena arena, CommandSender sender) {
     	if(arena == null)
-    		return ChatColor.RED + "Couldn't find an arena by that name."; 
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENA_BY_NAME; 
     	
     	if(getArenas().size() == 0)
-    		return ChatColor.RED + "There are currently no arenas made.";
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENAS;
     	
     	if(arena.getName().isEmpty())
-    		return ChatColor.RED + "Couldn't find the name of the arena, please try again.";
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENA_NAME;
     	
-    	if(arena.getWorld() == null) {
-    		if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                return ChatColor.RED + "The arena config is incorrect. The world \"" + arena.getWorldName() + "\" could not be found. Hint: your first world's name is \"" + ctp.getServer().getWorlds().get(0).getName() + "\".";
-            } else {
-                return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect World]";
-            }
-    	}
+    	if(arena.getWorld() == null)
+    		if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
+    			return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_ADMIN.replaceAll("%AW", arena.getWorldName()).replaceAll("%SWF", ctp.getServer().getWorlds().get(0).getName());
+            else
+                return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_USER;
     	
     	if(arena.getLobby() == null)
-    		return ChatColor.RED + "No lobby for the arena '" + arena.getName() + "'";
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", arena.getName());
     	
     	if(arena.getX1() == 0 || arena.getX2() == 0 || arena.getY1() == 0 || arena.getY2() == 0 || arena.getZ1() == 0 || arena.getZ2() == 0)
-    		return ChatColor.RED + "The arena's boundaries are not properly set for '" + arena.getName() + "'";
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_BOUNDARIES.replaceAll("%AN", arena.getName());
     	
     	if(arena.getTeamSpawns().size() == 0)
-    		return ChatColor.RED + "There are currently no team spawns defined for '" + arena.getName() + "'";
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
     	
     	if(arena.getTeamSpawns().size() == 1)
     		return ChatColor.RED + "There is only one team spawn, minimum of two are needed for '" + arena.getName() + "'";
