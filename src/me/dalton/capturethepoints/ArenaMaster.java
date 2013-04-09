@@ -507,7 +507,7 @@ public class ArenaMaster {
 			if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
 				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_ADMIN.replaceAll("%AW", arena.getWorldName()).replaceAll("%SWF", ctp.getServer().getWorlds().get(0).getName());
 			else
-				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_USER;
+				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", "[Incorrect World]");
     	
     	if(arena.getLobby() == null)
     		return ChatColor.RED + ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", arena.getName());
@@ -519,33 +519,37 @@ public class ArenaMaster {
     		return ChatColor.RED + ctp.getLanguage().checks_NO_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
     	
     	if(arena.getTeamSpawns().size() == 1)
-    		return ChatColor.RED + "There is only one team spawn, minimum of two are needed for '" + arena.getName() + "'";
+    		return ChatColor.RED + ctp.getLanguage().checks_NOT_ENOUGH_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
     	
-    	for(Spawn aSpawn : arena.getTeamSpawns().values()) {
-            if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-                if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" })) {
-                    return ChatColor.RED + "The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. "
-                            + "[Spawn is " + (int) aSpawn.getX() + ", " + (int) aSpawn.getZ() + ". Boundaries are " + arena.getX1() + "<==>" + arena.getX2() + ", " + arena.getZ1() + "<==>" + arena.getZ2() + "].";
-                } else {
-                    return ChatColor.RED + "Sorry, this arena has not been set up properly. Please tell an admin. [Incorrect Boundaries]";
-                }
-            }
-        }
+		for(Spawn aSpawn : arena.getTeamSpawns().values())
+			if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2()))
+				if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
+					return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_SPAWN_LOCATION
+							.replaceAll("%SPN", aSpawn.getName())
+							.replaceAll("%AN", arena.getName())
+							.replaceAll("%SPX", String.valueOf((int)aSpawn.getX()))
+							.replaceAll("%SPZ", String.valueOf((int)aSpawn.getZ()))
+							.replaceAll("%AX1", String.valueOf((int)arena.getX1()))
+							.replaceAll("%AX2", String.valueOf((int)arena.getX2()))
+							.replaceAll("%AZ1", String.valueOf((int)arena.getZ1()))
+							.replaceAll("%AZ2", String.valueOf((int)arena.getZ2()));
+				else
+					return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", " [Incorrect Boundaries]");
     	
     	if(arena.getCapturePoints().size() == 0)
-    		return ChatColor.RED + "No points have been defined, therefore it is hard to play a game so I can't let you join.";
+    		return ChatColor.RED + ctp.getLanguage().checks_NO_POINTS;
     	
     	if(arena.isEdit())
-    		return ChatColor.RED + "Sorry, this arena is currently in edit mode.";
+    		return ChatColor.RED + ctp.getLanguage().checks_EDIT_MODE;
     	
     	if(!arena.isEnabled())
-    		return ChatColor.RED + "Sorry, this arena is currently disabled.";
+    		return ChatColor.RED + ctp.getLanguage().checks_DISABLED;
     	
     	if(arena.getPlayersPlaying().size() == arena.getMaxPlayers())
-    		return ChatColor.RED + "Sorry, this arena is currently full of players. Try again in a little bit.";
+    		return ChatColor.RED + ctp.getLanguage().checks_FULL_ARENA;
     	
     	if(arena.isGameRunning() && !arena.getConfigOptions().allowLateJoin)
-    		return ChatColor.RED + "A game has already started. You may not join.";
+    		return ChatColor.RED + ctp.getLanguage().checks_GAME_ALREADY_STARTED;
     	
     	return "";
     }

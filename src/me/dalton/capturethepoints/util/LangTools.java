@@ -33,10 +33,17 @@ public class LangTools {
 		lo.checks_NO_ARENAS = lang.getString(ch + "NO_ARENAS", lo.checks_NO_ARENAS);
 		lo.checks_NO_ARENA_NAME = lang.getString(ch + "NO_ARENA_NAME", lo.checks_NO_ARENA_NAME);
 		lo.checks_INCORRECT_WORLD_SETUP_ADMIN = lang.getString(ch + "INCORRECT_WORLD_SETUP_ADMIN", lo.checks_INCORRECT_WORLD_SETUP_ADMIN);
-		lo.checks_INCORRECT_WORLD_SETUP_USER = lang.getString(ch + "INCORRECT_WORLD_SETUP_USER", lo.checks_INCORRECT_WORLD_SETUP_USER);
+		lo.checks_INCORRECT_SETUP_USER = lang.getString(ch + "INCORRECT_SETUP_USER", lo.checks_INCORRECT_SETUP_USER);
 		lo.checks_NO_LOBBY = lang.getString(ch + "NO_LOBBY", lo.checks_NO_LOBBY);
 		lo.checks_NO_BOUNDARIES = lang.getString(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES);
 		lo.checks_NO_TEAM_SPAWNS = lang.getString(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS);
+		lo.checks_NOT_ENOUGH_TEAM_SPAWNS = lang.getString(ch + "NOT_ENOUGH_TEAM_SPAWNS", lo.checks_NOT_ENOUGH_TEAM_SPAWNS);
+		lo.checks_INCORRECT_SPAWN_LOCATION = lang.getString(ch + "INCORRECT_SPAWN_LOCATION", lo.checks_INCORRECT_SPAWN_LOCATION);
+		lo.checks_NO_POINTS = lang.getString(ch + "NO_POINTS", lo.checks_NO_POINTS);
+		lo.checks_EDIT_MODE = lang.getString(ch + "EDIT_MODE", lo.checks_EDIT_MODE);
+		lo.checks_DISABLED = lang.getString(ch + "DISABLED", lo.checks_DISABLED);
+		lo.checks_FULL_ARENA = lang.getString(ch + "FULL_ARENA", lo.checks_FULL_ARENA);
+		lo.checks_GAME_ALREADY_STARTED = lang.getString(ch + "GAME_ALREADY_STARTED", lo.checks_GAME_ALREADY_STARTED);
 		
 		return lo;
 	}
@@ -75,14 +82,28 @@ public class LangTools {
 			lang.set(ch + "NO_ARENA_NAME", lo.checks_NO_ARENA_NAME);
 		if(!lang.contains(ch + "INCORRECT_WORLD_SETUP_ADMIN"))
 			lang.set(ch + "INCORRECT_WORLD_SETUP_ADMIN", lo.checks_INCORRECT_WORLD_SETUP_ADMIN);
-		if(!lang.contains(ch + "INCORRECT_WORLD_SETUP_USER"))
-			lang.set(ch + "INCORRECT_WORLD_SETUP_USER", lo.checks_INCORRECT_WORLD_SETUP_USER);
+		if(!lang.contains(ch + "INCORRECT_SETUP_USER"))
+			lang.set(ch + "INCORRECT_SETUP_USER", lo.checks_INCORRECT_SETUP_USER);
 		if(!lang.contains(ch + "NO_LOBBY"))
 			lang.set(ch + "NO_LOBBY", lo.checks_NO_LOBBY);
 		if(!lang.contains(ch + "NO_BOUNDARIES"))
 			lang.set(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES);
 		if(!lang.contains(ch + "NO_TEAM_SPAWNS"))
 			lang.set(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS);
+		if(!lang.contains(ch + "NOT_ENOUGH_TEAM_SPAWNS"))
+			lang.set(ch + "NOT_ENOUGH_TEAM_SPAWNS", lo.checks_NOT_ENOUGH_TEAM_SPAWNS);
+		if(!lang.contains(ch + "INCORRECT_SPAWN_LOCATION"))
+			lang.set(ch + "INCORRECT_SPAWN_LOCATION", lo.checks_INCORRECT_SPAWN_LOCATION);
+		if(!lang.contains(ch + "NO_POINTS"))
+			lang.set(ch + "NO_POINTS", lo.checks_NO_POINTS);
+		if(!lang.contains(ch + "EDIT_MODE"))
+			lang.set(ch + "EDIT_MODE", lo.checks_EDIT_MODE);
+		if(!lang.contains(ch + "DISABLED"))
+			lang.set(ch + "DISABLED", lo.checks_DISABLED);
+		if(!lang.contains(ch + "FULL_ARENA"))
+			lang.set(ch + "FULL_ARENA", lo.checks_FULL_ARENA);
+		if(!lang.contains(ch + "GAME_ALREADY_STARTED"))
+			lang.set(ch + "GAME_ALREADY_STARTED", lo.checks_GAME_ALREADY_STARTED);
 		
 		try {
             lang.options().copyDefaults(true);
