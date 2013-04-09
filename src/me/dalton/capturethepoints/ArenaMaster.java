@@ -495,36 +495,36 @@ public class ArenaMaster {
      */
     public String checkArena(Arena arena, CommandSender sender) {
     	if(arena == null)
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENA_BY_NAME; 
+    		return ctp.getLanguage().checks_NO_ARENA_BY_NAME; 
     	
     	if(getArenas().size() == 0)
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENAS;
+    		return ctp.getLanguage().checks_NO_ARENAS;
     	
     	if(arena.getName().isEmpty())
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_ARENA_NAME;
+    		return ctp.getLanguage().checks_NO_ARENA_NAME;
     	
 		if(arena.getWorld() == null)
 			if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
-				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_ADMIN.replaceAll("%AW", arena.getWorldName()).replaceAll("%SWF", ctp.getServer().getWorlds().get(0).getName());
+				return ctp.getLanguage().checks_INCORRECT_WORLD_SETUP_ADMIN.replaceAll("%AW", arena.getWorldName()).replaceAll("%SWF", ctp.getServer().getWorlds().get(0).getName());
 			else
-				return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", "[Incorrect World]");
+				return ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", "[Incorrect World]");
     	
     	if(arena.getLobby() == null)
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", arena.getName());
+    		return ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", arena.getName());
     	
     	if(arena.getX1() == 0 || arena.getX2() == 0 || arena.getY1() == 0 || arena.getY2() == 0 || arena.getZ1() == 0 || arena.getZ2() == 0)
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_BOUNDARIES.replaceAll("%AN", arena.getName());
+    		return ctp.getLanguage().checks_NO_BOUNDARIES.replaceAll("%AN", arena.getName());
     	
     	if(arena.getTeamSpawns().size() == 0)
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
+    		return ctp.getLanguage().checks_NO_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
     	
     	if(arena.getTeamSpawns().size() == 1)
-    		return ChatColor.RED + ctp.getLanguage().checks_NOT_ENOUGH_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
+    		return ctp.getLanguage().checks_NOT_ENOUGH_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
     	
 		for(Spawn aSpawn : arena.getTeamSpawns().values())
 			if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2()))
 				if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
-					return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_SPAWN_LOCATION
+					return ctp.getLanguage().checks_INCORRECT_SPAWN_LOCATION
 							.replaceAll("%SPN", aSpawn.getName())
 							.replaceAll("%AN", arena.getName())
 							.replaceAll("%SPX", String.valueOf((int)aSpawn.getX()))
@@ -534,22 +534,22 @@ public class ArenaMaster {
 							.replaceAll("%AZ1", String.valueOf((int)arena.getZ1()))
 							.replaceAll("%AZ2", String.valueOf((int)arena.getZ2()));
 				else
-					return ChatColor.RED + ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", " [Incorrect Boundaries]");
+					return ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", " [Incorrect Boundaries]");
     	
     	if(arena.getCapturePoints().size() == 0)
-    		return ChatColor.RED + ctp.getLanguage().checks_NO_POINTS;
+    		return ctp.getLanguage().checks_NO_POINTS;
     	
     	if(arena.isEdit())
-    		return ChatColor.RED + ctp.getLanguage().checks_EDIT_MODE;
+    		return ctp.getLanguage().checks_EDIT_MODE;
     	
     	if(!arena.isEnabled())
-    		return ChatColor.RED + ctp.getLanguage().checks_DISABLED;
+    		return ctp.getLanguage().checks_DISABLED;
     	
     	if(arena.getPlayersPlaying().size() == arena.getMaxPlayers())
-    		return ChatColor.RED + ctp.getLanguage().checks_FULL_ARENA;
+    		return ctp.getLanguage().checks_FULL_ARENA;
     	
     	if(arena.isGameRunning() && !arena.getConfigOptions().allowLateJoin)
-    		return ChatColor.RED + ctp.getLanguage().checks_GAME_ALREADY_STARTED;
+    		return ctp.getLanguage().checks_GAME_ALREADY_STARTED;
     	
     	return "";
     }
@@ -566,13 +566,13 @@ public class ArenaMaster {
             try {
                 player.leaveVehicle();
             } catch (Exception e) {
-                player.kickPlayer("Banned for ever... Nah, just don't join while riding something."); // May sometimes reach this if player is riding an entity other than a Minecart
+                player.kickPlayer(ctp.getLanguage().checks_PLAYER_IN_VEHICLE); // May sometimes reach this if player is riding an entity other than a Minecart
                 return;
             }
         }
         
         if (player.isSleeping()) {
-            player.kickPlayer("Banned for life... Nah, just don't join from a bed ;)");
+            player.kickPlayer(ctp.getLanguage().checks_PLAYER_SLEEPING);
             return;
         }
 
@@ -589,9 +589,13 @@ public class ArenaMaster {
         if(ctp.getEconomyHandler() != null && arena.getConfigOptions().economyMoneyCostForJoiningArena != 0) {
             EconomyResponse r = ctp.getEconomyHandler().bankWithdraw(player.getName(), arena.getConfigOptions().economyMoneyCostForJoiningArena);
             if(r.transactionSuccess()) {
-                ctp.sendMessage(player, "You were charged " + ChatColor.GREEN + r.amount + ChatColor.WHITE + " for entering " + ChatColor.GREEN + arena.getName() + ChatColor.WHITE + " arena.");
+                ctp.sendMessage(player,
+                		ctp.getLanguage().SUCCESSFUL_PAYING_FOR_JOINING
+                			.replaceAll("%EA", String.valueOf(r.amount))
+                			.replaceAll("%AN", arena.getName()));
             } else {
-                ctp.sendMessage(player, "You dont have enough money to join arena!");
+                ctp.sendMessage(player, ctp.getLanguage().NOT_ENOUGH_MONEY_FOR_JOINING);
+                event.setCancelled(true);
                 return;
             }
         }

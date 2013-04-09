@@ -2,6 +2,7 @@ package me.dalton.capturethepoints;
 
 public class LanguageOptions {
 	/*
+	 * %EA = Economy amount
 	 * %AW = arena world name
 	 * %AN = arena name
 	 * %AX1 = arena x1
@@ -27,21 +28,25 @@ public class LanguageOptions {
 	public String FINAL_POINTS = "final points";
 	public String TIE_POINTS = "It's a tie! %WT teams have passed %WP points!";
 	public String TIE_SCORE = "It's a tie! %WT teams have a score of %WS!";
+	public String SUCCESSFUL_PAYING_FOR_JOINING = "You were charged &a%EA&f for entering &a%AN&f arena.";
+	public String NOT_ENOUGH_MONEY_FOR_JOINING = "&cYou dont have enough money to join arena!";
 	
-	public String checks_NO_ARENA_BY_NAME = "Couldn't find an arena by that name.";
-	public String checks_NO_ARENAS = "There are currently no arenas.";
-	public String checks_NO_ARENA_NAME = "Couldn't find the name of the arena, please try again.";
-	public String checks_INCORRECT_WORLD_SETUP_ADMIN = "The arena config is incorrect. The world \"%AW\" could not be found. Hint: your first world's name is \"%SFW\".";
-	public String checks_INCORRECT_SETUP_USER = "Sorry, this arena has not been set up properly. Please tell an admin. %WII";
-	public String checks_NO_LOBBY = "No lobby for the arena \"%AN\"";
-	public String checks_NO_BOUNDARIES = "The arena's boundaries are not properly set for \"%AN\"";
-	public String checks_NO_TEAM_SPAWNS = "There are currently no team spawns defined for \"%AN\"";
-	public String checks_NOT_ENOUGH_TEAM_SPAWNS = "There is only one team spawn, minimum of two are needed for \"%AN\"";
-	public String checks_INCORRECT_SPAWN_LOCATION = "The spawn point \"%SPN\" in the arena \"%AN\" is out of the arena boundaries. "
+	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
+	public String checks_NO_ARENAS = "&cThere are currently no arenas.";
+	public String checks_NO_ARENA_NAME = "&cCouldn't find the name of the arena, please try again.";
+	public String checks_INCORRECT_WORLD_SETUP_ADMIN = "&cThe arena config is incorrect. The world \"%AW\" could not be found. Hint: your first world's name is \"%SFW\".";
+	public String checks_INCORRECT_SETUP_USER = "&cSorry, this arena has not been set up properly. Please tell an admin. %WII";
+	public String checks_NO_LOBBY = "&cNo lobby for the arena \"%AN\"";
+	public String checks_NO_BOUNDARIES = "&cThe arena's boundaries are not properly set for \"%AN\"";
+	public String checks_NO_TEAM_SPAWNS = "&cThere are currently no team spawns defined for \"%AN\"";
+	public String checks_NOT_ENOUGH_TEAM_SPAWNS = "&cThere is only one team spawn, minimum of two are needed for \"%AN\"";
+	public String checks_INCORRECT_SPAWN_LOCATION = "&cThe spawn point \"%SPN\" in the arena \"%AN\" is out of the arena boundaries. "
 			+ "[Spawn is %SPX, %SPZ. Boundaries are %AX1<==>%AX2, %AZ1<==>%AZ2].";
-	public String checks_NO_POINTS = "No points have been defined, therefore it is hard to play a game so I can't let you join.";
-	public String checks_EDIT_MODE = "Sorry, this arena is currently in edit mode.";
-	public String checks_DISABLED = "Sorry, this arena is currently disabled.";
-	public String checks_FULL_ARENA = "Sorry, this arena is currently full of players. Try again in a little bit.";
-	public String checks_GAME_ALREADY_STARTED = "A game has already started. You may not join.";
+	public String checks_NO_POINTS = "&cNo points have been defined, therefore it is hard to play a game so I can't let you join.";
+	public String checks_EDIT_MODE = "&cSorry, this arena is currently in edit mode.";
+	public String checks_DISABLED = "&cSorry, this arena is currently disabled.";
+	public String checks_FULL_ARENA = "&cSorry, this arena is currently full of players. Try again in a little bit.";
+	public String checks_GAME_ALREADY_STARTED = "&cA game has already started. You may not join.";
+	public String checks_PLAYER_IN_VEHICLE = "&cBanned for ever... Nah, just don't join while riding something.";
+	public String checks_PLAYER_SLEEPING = "&cBanned for life... Nah, just don't join from a bed ;)";
 }
