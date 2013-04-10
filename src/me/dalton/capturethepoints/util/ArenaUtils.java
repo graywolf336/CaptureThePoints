@@ -247,7 +247,7 @@ public class ArenaUtils {
     			}
     			
     			if(temp.getConfigOptions().startCountDownTime == temp.getStartCount())
-    				ctp.getUtil().sendMessageToPlayers(temp, "Game starting in " + temp.getStartCount() + " seconds..");
+    				ctp.getUtil().sendMessageToPlayers(temp, ctp.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(temp.getStartCount())));
     			else
     				ctp.getUtil().sendMessageToPlayers(temp, temp.getStartCount() + "..");
     			

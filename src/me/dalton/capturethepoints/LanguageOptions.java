@@ -21,6 +21,7 @@ public class LanguageOptions {
 	 * %PT = Player team
 	 * %WN = world name
 	 * %WPS = world player size
+	 * %CS = countdown seconds
 	 * 
 	 * //Colors
 	 *  - &0 = black
@@ -37,6 +38,7 @@ public class LanguageOptions {
 	public String GAME_STARTED = "A Capture The Points game has started in the arena";
 	public String GAME_ENDED = "A Capture The Points game has ended!";
 	public String PLAYER_JOIN = "&a%PN&f joined a CTP game.";
+	public String PLAYER_LEFT = "&a%PN&f left the CTP game!";
 	public String LOBBY_JOIN = "&aJoined CTP lobby &6%AN&a.";
 	public String WINS = "wins!";
 	public String CAPTURED = "captured";
@@ -54,6 +56,8 @@ public class LanguageOptions {
 	public String ARENA_NAME_LIST = "&bThe current arenas are:";
 	public String ALREADY_PLAYING = "&cYou are already playing game!";
 	public String NOT_PLAYING = "&cYou are not in the game!";
+	public String START_COUNTDOWN = "Game starting in %CS seconds..";
+	public String END_COUNTDOWN = "The game has ended! Returning you to where you was in %CS seconds..";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";

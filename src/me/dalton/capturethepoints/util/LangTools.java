@@ -24,6 +24,7 @@ public class LangTools {
 		lo.GAME_STARTED = getColorfulMessage(lang.getString("GAME_STARTED", lo.GAME_STARTED));
 		lo.GAME_ENDED = getColorfulMessage(lang.getString("GAME_ENDED", lo.GAME_ENDED));
 		lo.PLAYER_JOIN = getColorfulMessage(lang.getString("PLAYER_JOIN", lo.PLAYER_JOIN));
+		lo.PLAYER_LEFT = getColorfulMessage(lang.getString("PLAYER_LEFT", lo.PLAYER_LEFT));
 		lo.LOBBY_JOIN = getColorfulMessage(lang.getString("LOBBY_JOIN", lo.PLAYER_JOIN));
 		lo.WINS = getColorfulMessage(lang.getString("WINS", lo.WINS));
 		lo.CAPTURED = getColorfulMessage(lang.getString("CAPTURED", lo.CAPTURED));
@@ -38,6 +39,8 @@ public class LangTools {
 		lo.ARENA_NAME_LIST = getColorfulMessage(lang.getString("ARENA_NAME_LIST", lo.ARENA_NAME_LIST));
 		lo.ALREADY_PLAYING = getColorfulMessage(lang.getString("ALREADY_PLAYING", lo.ALREADY_PLAYING));
 		lo.NOT_PLAYING = getColorfulMessage(lang.getString("NOT_PLAYING", lo.NOT_PLAYING));
+		lo.START_COUNTDOWN = getColorfulMessage(lang.getString("START_COUNTDOWN", lo.START_COUNTDOWN));
+		lo.END_COUNTDOWN = getColorfulMessage(lang.getString("END_COUNTDOWN", lo.END_COUNTDOWN));
 		
 		//Messages for checking the arenas.
 		lo.checks_NO_ARENA_BY_NAME = getColorfulMessage(lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME));
@@ -80,6 +83,8 @@ public class LangTools {
 			lang.set("GAME_ENDED", lo.GAME_ENDED);
 		if(!lang.contains("PLAYER_JOIN"))
 			lang.set("PLAYER_JOIN", lo.PLAYER_JOIN);
+		if(!lang.contains("PLAYER_LEFT"))
+			lang.set("PLAYER_LEFT", lo.PLAYER_LEFT);
 		if(!lang.contains("LOBBY_JOIN"))
 			lang.set("LOBBY_JOIN", lo.LOBBY_JOIN);
 		if(!lang.contains("WINS"))
@@ -108,6 +113,10 @@ public class LangTools {
 			lang.set("ALREADY_PLAYING", lo.ALREADY_PLAYING);
 		if(!lang.contains("NOT_PLAYING"))
 			lang.set("NOT_PLAYING", lo.NOT_PLAYING);
+		if(!lang.contains("START_COUNTDOWN"))
+			lang.set("START_COUNTDOWN", lo.START_COUNTDOWN);
+		if(!lang.contains("END_COUNTDOWN"))
+			lang.set("END_COUNTDOWN", lo.END_COUNTDOWN);
 		
 		//Messages for checking the arenas.
 		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))

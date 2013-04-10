@@ -8,6 +8,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Joining arenas will be done with `/ctp j <arena>`
 
 ### Language Files Done ###
+* Arena.java
 * ArenaMaster.java
 * InvManagement.java
 * AutoCommand.java

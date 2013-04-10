@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -520,7 +519,7 @@ public class Arena {
         
         ctp.getInvManagement().removeCoolDowns(p.getName());
         
-        ctp.getUtil().sendMessageToPlayers(this, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " left the CTP game!"); // Won't send to "player".
+        ctp.getUtil().sendMessageToPlayers(this, p, ctp.getLanguage().PLAYER_LEFT.replaceAll("%PN", p.getName())); // Won't send to "player".
         
         //Remove the number count from the teamdata
         if (players.get(p.getName()).getTeam() != null) {
@@ -582,7 +581,7 @@ public class Arena {
 	    			}
 	    			
 	    			if(temp.getConfigOptions().endCountDownTime == temp.getEndCount())
-	    				ctp.getUtil().sendMessageToPlayers(temp, "The game has ended! Returning you to where you was in " + temp.getEndCount() + " seconds..");
+	    				ctp.getUtil().sendMessageToPlayers(temp, ctp.getLanguage().END_COUNTDOWN.replaceAll("%CS", String.valueOf(temp.getEndCount())));
 	    			else
 	    				ctp.getUtil().sendMessageToPlayers(temp, temp.getEndCount() + "..");
 	    			
