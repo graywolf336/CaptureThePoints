@@ -3,8 +3,6 @@ package me.dalton.capturethepoints.commands;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.beans.Arena;
 
-import org.bukkit.ChatColor;
-
 public class JoinCommand extends CTPCommand {
    
     /** Allows player to join ctp game. Starts a new one if one isn't running already. */
@@ -29,16 +27,16 @@ public class JoinCommand extends CTPCommand {
     		else if(ctp.getArenaMaster().isArena(parameters.get(2)))
     			ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
         	else {
-        		sendMessage(ChatColor.RED + "That arena doesn't exist, try one of these:");
+        		sendMessage(ctp.getLanguage().ARENA_NAME_LIST);
         		for(Arena a : ctp.getArenaMaster().getArenas())
         			if(ctp.getArenaMaster().getSelectedArena().getName().equalsIgnoreCase(a.getName()))
-        				sendMessage("  -" + ChatColor.ITALIC + a.getName());
+        				sendMessage("  -" + a.getName());
         			else
         				sendMessage("  -" + a.getName());
         	}
             return;
         }else {
-            sendMessage(ChatColor.RED + "You are already playing game!");
+            sendMessage(ctp.getLanguage().ALREADY_PLAYING);
             return;
         }
     }

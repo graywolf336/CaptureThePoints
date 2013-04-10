@@ -27,7 +27,7 @@ public class TeamCommand extends CTPCommand {
     @Override
     public void perform() {
         if (!ctp.getArenaMaster().isPlayerInAnArena(player)) {
-            sendMessage(ChatColor.RED + "You must be playing a game to get who's on your team!");
+            sendMessage(ctp.getLanguage().NOT_PLAYING);
             return;
         }
         

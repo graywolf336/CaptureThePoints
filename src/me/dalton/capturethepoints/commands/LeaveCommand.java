@@ -3,8 +3,6 @@ package me.dalton.capturethepoints.commands;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 
-import org.bukkit.ChatColor;
-
 public class LeaveCommand extends CTPCommand {
    
     /** Allows player to leave ctp game. */
@@ -26,7 +24,7 @@ public class LeaveCommand extends CTPCommand {
     @Override
     public void perform() {
         if (!ctp.getArenaMaster().isPlayerInAnArena(player)) {
-            sendMessage(ChatColor.RED + "You are not in the game!");
+            sendMessage(ctp.getLanguage().NOT_PLAYING);
             return;
         }
         

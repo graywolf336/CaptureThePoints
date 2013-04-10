@@ -22,7 +22,7 @@ public class VersionCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        sendMessage("Catpure the Points " + ChatColor.GREEN + ctp.getDescription().getVersion());
-        sendMessage("By " + ChatColor.GREEN + ctp.getDescription().getAuthors());
+        sendMessage("Capture the Points " + ChatColor.GREEN + ctp.getDescription().getVersion());
+        sendMessage("By " + ChatColor.GREEN + ctp.getDescription().getAuthors().toString());
     }
 }

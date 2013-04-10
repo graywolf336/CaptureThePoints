@@ -31,7 +31,7 @@ public class ColorsCommand extends CTPCommand {
         }
         
         if(ctp.getArenaMaster().getArenas().isEmpty()) {
-        	sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
+        	sendMessage(ctp.getLanguage().checks_NO_ARENAS);
         	return;
         }
         

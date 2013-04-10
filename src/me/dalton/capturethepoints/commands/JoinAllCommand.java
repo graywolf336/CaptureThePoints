@@ -1,7 +1,7 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import org.bukkit.ChatColor;
+
 import org.bukkit.entity.Player;
 
 public class JoinAllCommand extends CTPCommand {
@@ -29,11 +29,11 @@ public class JoinAllCommand extends CTPCommand {
             }
         } else {
             if (ctp.getArenaMaster().getSelectedArena() == null) {
-                sendMessage(ChatColor.RED + "Please create an arena first");
+                sendMessage(ctp.getLanguage().checks_NO_ARENAS);
                 return;
             }
             if (ctp.getArenaMaster().getSelectedArena().getLobby() == null) {
-                sendMessage(ChatColor.RED + "Please create arena lobby");
+                sendMessage(ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", ctp.getArenaMaster().getSelectedArena().getName()));
                 return;
             }
         }

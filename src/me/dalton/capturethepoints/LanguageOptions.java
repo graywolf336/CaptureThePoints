@@ -51,6 +51,9 @@ public class LanguageOptions {
 	public String CHANGING_ROLES_TOO_FAST = "&cYou can only change roles every 1 second!";
 	public String FIRST_WORLD = "&cHint: The first world's name is \"%SFW\".";
 	public String PREVIOUS_GAME_TERMINATED = "&fA previous Capture The Points game has been terminated.";
+	public String ARENA_NAME_LIST = "&bThe current arenas are:";
+	public String ALREADY_PLAYING = "&cYou are already playing game!";
+	public String NOT_PLAYING = "&cYou are not in the game!";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";

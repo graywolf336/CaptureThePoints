@@ -25,7 +25,7 @@ public class StatsCommand extends CTPCommand {
     @Override
     public void perform() {
         if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
-            sendMessage(ChatColor.RED + "You are not in a CTP game!");
+            sendMessage(ctp.getLanguage().NOT_PLAYING);
             return;
         }
         

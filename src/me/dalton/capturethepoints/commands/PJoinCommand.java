@@ -22,21 +22,8 @@ public class PJoinCommand extends CTPCommand {
 
     @Override
     public void perform() {
-        if (ctp.getArenaMaster().getArenas().isEmpty()) {
-            sendMessage(ChatColor.RED + "Please create an arena first");
-            return;
-        }
-        
-        if(ctp.getArenaMaster().getArena(parameters.get(3)) == null) {
-        	sendMessage(ChatColor.RED + "Please enter a valid arena to force this player to join.");
-        	return;
-        }
-        
-        if (ctp.getArenaMaster().getArena(parameters.get(3)).getLobby() == null) {
-            sendMessage(ChatColor.RED + "Please create the lobby for the arena " + parameters.get(3));
-            return;
-        }
-            
+    	//no need to double check, we already check those on the movetolobby
+    	
         Player bob = ctp.getServer().getPlayer(parameters.get(2));
         if (bob == null) {
             sendMessage(ChatColor.RED + "Could not find the online player " + ChatColor.GOLD + parameters.get(2) + ChatColor.RED +".");

@@ -29,7 +29,7 @@ public class LateJoinCommand extends CTPCommand {
             return;
         }
         
-        sendMessage(ChatColor.RED + "You are already playing game!");
+        sendMessage(ctp.getLanguage().ALREADY_PLAYING);
         return;
     }
 }

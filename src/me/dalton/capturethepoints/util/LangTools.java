@@ -35,6 +35,9 @@ public class LangTools {
 		lo.TIE_SCORE = getColorfulMessage(lang.getString("TIE_SCORE", lo.TIE_SCORE));
 		lo.FIRST_WORLD = getColorfulMessage(lang.getString("FIRST_WORLD", lo.FIRST_WORLD));
 		lo.PREVIOUS_GAME_TERMINATED = getColorfulMessage(lang.getString("PREVIOUS_GAME_TERMINATED", lo.PREVIOUS_GAME_TERMINATED));
+		lo.ARENA_NAME_LIST = getColorfulMessage(lang.getString("ARENA_NAME_LIST", lo.ARENA_NAME_LIST));
+		lo.ALREADY_PLAYING = getColorfulMessage(lang.getString("ALREADY_PLAYING", lo.ALREADY_PLAYING));
+		lo.NOT_PLAYING = getColorfulMessage(lang.getString("NOT_PLAYING", lo.NOT_PLAYING));
 		
 		//Messages for checking the arenas.
 		lo.checks_NO_ARENA_BY_NAME = getColorfulMessage(lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME));
@@ -99,6 +102,12 @@ public class LangTools {
 			lang.set("FIRST_WORLD", lo.FIRST_WORLD);
 		if(!lang.contains("PREVIOUS_GAME_TERMINATED"))
 			lang.set("PREVIOUS_GAME_TERMINATED", lo.PREVIOUS_GAME_TERMINATED);
+		if(!lang.contains("ARENA_NAME_LIST"))
+			lang.set("ARENA_NAME_LIST", lo.ARENA_NAME_LIST);
+		if(!lang.contains("ALREADY_PLAYING"))
+			lang.set("ALREADY_PLAYING", lo.ALREADY_PLAYING);
+		if(!lang.contains("NOT_PLAYING"))
+			lang.set("NOT_PLAYING", lo.NOT_PLAYING);
 		
 		//Messages for checking the arenas.
 		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))
