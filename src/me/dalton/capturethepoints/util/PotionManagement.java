@@ -15,9 +15,8 @@ public class PotionManagement {
      * @param player The player in which to remove potion effects from.
      */
     public static void removeAllEffects(Player player) {
-         for (PotionEffect pef : player.getActivePotionEffects()) {
+         for (PotionEffect pef : player.getActivePotionEffects())
          	player.removePotionEffect(pef.getType());
-         }
     }
     
     /**
@@ -31,9 +30,8 @@ public class PotionManagement {
         
         Collection<PotionEffect> potions = player.getActivePotionEffects();
         
-        for (PotionEffect potion : potions) {
+        for (PotionEffect potion : potions)
         	effects.add(potion);
-        }
         
         return effects;
     }
@@ -45,9 +43,8 @@ public class PotionManagement {
 	 * @param effects A List<CTPPotionEffect> of the potions that need to be restored.
 	 */
 	public static void restorePotionEffects(Player player, List<PotionEffect> effects) {
-		for(PotionEffect effect : effects) {
+		for(PotionEffect effect : effects)
 			player.addPotionEffect(effect);
-		}
 	}
 	
 	/**
@@ -57,33 +54,24 @@ public class PotionManagement {
 	 * @return True if it harms the player, false if not.
 	 */
     public static boolean isHarmful(PotionEffect effect) {
-		
     	PotionEffectType type = effect.getType();
 
-    	if (type.equals(PotionEffectType.HARM)){
+    	if (type.equals(PotionEffectType.HARM))
     		return true;
-    	}
-    	if (type.equals(PotionEffectType.HEAL)){
+    	if (type.equals(PotionEffectType.HEAL))
     		return false;
-    	}
-    	if (type.equals(PotionEffectType.WEAKNESS)){
+    	if (type.equals(PotionEffectType.WEAKNESS))
     		return true;
-    	}
-    	if (type.equals(PotionEffectType.REGENERATION)){
+    	if (type.equals(PotionEffectType.REGENERATION))
     		return false;
-    	}
-    	if (type.equals(PotionEffectType.INCREASE_DAMAGE)){
+    	if (type.equals(PotionEffectType.INCREASE_DAMAGE))
     		return false;
-    	}
-    	if (type.equals(PotionEffectType.SPEED)){
+    	if (type.equals(PotionEffectType.SPEED))
     		return false;
-    	}
-    	if (type.equals(PotionEffectType.SLOW)){
+    	if (type.equals(PotionEffectType.SLOW))
     		return true;
-    	}
-    	if (type.equals(PotionEffectType.POISON)){
+    	if (type.equals(PotionEffectType.POISON))
     		return true;
-    	}
     	
 		return false;
 	}

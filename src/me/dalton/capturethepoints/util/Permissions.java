@@ -22,13 +22,12 @@ public class Permissions {
      * @return True if sender has permission, else false. 
      */
     public boolean canAccess(CommandSender sender, boolean notOpCommand, String[] permissions) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (sender instanceof ConsoleCommandSender)
             return true;
-        } else if (!(sender instanceof Player)) {
+        else if (!(sender instanceof Player))
             return false;
-        } else {
+        else
             return canAccess((Player) sender, notOpCommand, permissions);
-        }
     }
 
     /**  
@@ -47,12 +46,11 @@ public class Permissions {
             for (String perm : permissions)
                 if (p.hasPermission(perm))
                     return true;
-        else {
+        else
             if (notOpCommand)
                 return true;
             else
             	return p.isOp();
-        }
         
         return false; //fail safe
     }
