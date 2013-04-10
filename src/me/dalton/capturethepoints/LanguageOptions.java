@@ -17,6 +17,8 @@ public class LanguageOptions {
 	 * %SPX = spawn point X (number)
 	 * %SPZ = spawn point Z (number)
 	 * %WII = what is incorrect
+	 * %PN = Player name
+	 * %PT = Player team
 	 */
 	public String GAME_STARTED = "A Capture The Points game has started in the arena";
 	public String GAME_ENDED = "A Capture The Points game has ended!";

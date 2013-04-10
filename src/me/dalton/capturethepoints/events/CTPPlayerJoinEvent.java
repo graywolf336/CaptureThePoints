@@ -21,18 +21,21 @@ public class CTPPlayerJoinEvent extends Event implements Cancellable {
 	private boolean cancelled;
 	private Player player;
 	private Arena arena;
+	private String message;
 	
 	/**
 	 * A custom event called <strong>before</strong> the player has been teleported to the arena's lobby.
 	 * 
 	 * @param player	The player in which has joined a game of CTP.
 	 * @param arena {@link Arena}
+	 * @param joinMessage The join message to send to everyone.
 	 * @since 1.5.0-b104
 	 */
-	public CTPPlayerJoinEvent(Player player, Arena arena) {
+	public CTPPlayerJoinEvent(Player player, Arena arena, String joinMessage) {
 		this.cancelled = false;
 		this.arena = arena;
 		this.player = player;
+		this.message = joinMessage;
 	}
 	
 	public Player getPlayer() {
@@ -49,6 +52,14 @@ public class CTPPlayerJoinEvent extends Event implements Cancellable {
 
 	public void setCancelled(boolean cancel) {
 		this.cancelled = cancel;
+	}
+	
+	public String getJoinMessage() {
+		return this.message;
+	}
+	
+	public void setJoinMessage(String joinMessage) {
+		this.message = joinMessage;
 	}
 	
 	public static HandlerList getHandlerList() {

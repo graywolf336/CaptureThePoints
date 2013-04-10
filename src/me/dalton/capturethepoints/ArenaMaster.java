@@ -580,7 +580,7 @@ public class ArenaMaster {
             arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
 
     	//Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena);
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
         ctp.getPluginManager().callEvent(event);
         
         if(event.isCancelled())
@@ -654,7 +654,7 @@ public class ArenaMaster {
         arena.getPrevoiusPosition().put(player.getName(), previous);
         ctp.getInvManagement().saveInv(player);
 
-        ctp.getUtil().sendMessageToPlayers(arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
+        ctp.getUtil().sendMessageToPlayers(arena, event.getJoinMessage());
 
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
