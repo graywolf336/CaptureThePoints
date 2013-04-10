@@ -19,9 +19,21 @@ public class LanguageOptions {
 	 * %WII = what is incorrect
 	 * %PN = Player name
 	 * %PT = Player team
+	 * 
+	 * //Colors
+	 *  - &0 = black
+	 *  - &1 = dark blue
+	 *  - &2 = dark green
+	 *  - &3 = dark auqa
+	 *  - &4 = dark red
+	 *  - &a = green
+	 *  - &b = aqua
+	 *  - &c = light red
+	 *  - &f = white
 	 */
 	public String GAME_STARTED = "A Capture The Points game has started in the arena";
 	public String GAME_ENDED = "A Capture The Points game has ended!";
+	public String PLAYER_JOIN = "&a%PN&f joined a CTP game.";
 	public String WINS = "wins!";
 	public String CAPTURED = "captured";
 	public String LOST = "lost";

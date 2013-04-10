@@ -23,6 +23,7 @@ public class LangTools {
 		
 		lo.GAME_STARTED = getColorfulMessage(lang.getString("GAME_STARTED", lo.GAME_STARTED));
 		lo.GAME_ENDED = getColorfulMessage(lang.getString("GAME_ENDED", lo.GAME_ENDED));
+		lo.PLAYER_JOIN = getColorfulMessage(lang.getString("PLAYER_JOIN", lo.PLAYER_JOIN));
 		lo.WINS = getColorfulMessage(lang.getString("WINS", lo.WINS));
 		lo.CAPTURED = getColorfulMessage(lang.getString("CAPTURED", lo.CAPTURED));
 		lo.LOST = getColorfulMessage(lang.getString("LOST", lo.LOST));
@@ -66,6 +67,8 @@ public class LangTools {
 			lang.set("GAME_STARTED", lo.GAME_STARTED);
 		if(!lang.contains("GAME_ENDED"))
 			lang.set("GAME_ENDED", lo.GAME_ENDED);
+		if(!lang.contains("PLAYER_JOIN"))
+			lang.set("PLAYER_JOIN", lo.PLAYER_JOIN);
 		if(!lang.contains("WINS"))
 			lang.set("WINS", lo.WINS);
 		if(!lang.contains("CAPTURED"))

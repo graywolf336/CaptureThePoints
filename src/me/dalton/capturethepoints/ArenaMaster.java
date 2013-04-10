@@ -580,7 +580,7 @@ public class ArenaMaster {
             arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
 
     	//Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, ChatColor.GREEN + player.getName() + ChatColor.WHITE + " joined a CTP game.");
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, ctp.getLanguage().PLAYER_JOIN);
         ctp.getPluginManager().callEvent(event);
         
         if(event.isCancelled())
