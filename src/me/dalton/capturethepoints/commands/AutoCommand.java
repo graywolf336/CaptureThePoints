@@ -1,7 +1,7 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import org.bukkit.ChatColor;
+
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -36,37 +36,37 @@ public class AutoCommand extends CTPCommand {
             }
         } else {
             if (ctp.getArenaMaster().getSelectedArena() == null) {
-                sendMessage(ChatColor.RED + "Please create an arena first");
+                sendMessage(ctp.getLanguage().checks_NO_ARENAS);
                 return;
             }
             if (ctp.getArenaMaster().getSelectedArena().getLobby() == null) {
-                sendMessage(ChatColor.RED + "Please create arena lobby");
+                sendMessage(ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", ctp.getArenaMaster().getSelectedArena().getName()));
                 return;
             }
         }
-        if (this.worldname.isEmpty()) {
+        
+        if (this.worldname.isEmpty())
             this.worldname = parameters.get(2);
-        }
-        if (this.worldname.equalsIgnoreCase("this") && player != null) {
+
+        if (this.worldname.equalsIgnoreCase("this") && player != null)
             this.worldname = player.getWorld().getName();
-        }
 
         World world = ctp.getServer().getWorld(worldname);
         if (world == null) {
-            sendMessage(ChatColor.RED + worldname + " is not a recognised world.");
-            sendMessage(ChatColor.RED + "Hint: your first world's name is \"" + ctp.getServer().getWorlds().get(0).getName() + "\".");
+            sendMessage(ctp.getLanguage().checks_NO_WORLD_FOUND.replaceAll("%WN", worldname));
+            sendMessage(ctp.getLanguage().FIRST_WORLD.replaceAll("%SFW", ctp.getServer().getWorlds().get(0).getName()));
             return;
         }
 
         if (ctp.getArenaMaster().hasSuitableArena(world.getPlayers().size())) {
             ctp.getArenaMaster().chooseSuitableArena(world.getPlayers().size()); // Choose a suitable arena based on the number of players in the world.
         } else {
-            sendMessage("You do not have an arena that will accomodate " + world.getPlayers().size() + " players. Please change your min/max player settings.");
+            sendMessage(ctp.getLanguage().checks_NO_SUITABLE_WORLD.replaceAll("%WPS", String.valueOf(world.getPlayers().size())));
             return;
         }
         
         if (ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
-            sendMessage("A previous Capture The Points game has been terminated.");
+            sendMessage(ctp.getLanguage().PREVIOUS_GAME_TERMINATED);
             ctp.getArenaMaster().getSelectedArena().endGame(false, false);//Don't give rewards as we have ended the game prematurely.
         }
 

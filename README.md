@@ -10,6 +10,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 ### Language Files Done ###
 * ArenaMaster.java
 * InvManagement.java
+* AutoCommand
 
 ### Update: 1.5.0 ###
 * Add custom events

@@ -19,6 +19,8 @@ public class LanguageOptions {
 	 * %WII = what is incorrect
 	 * %PN = Player name
 	 * %PT = Player team
+	 * %WN = world name
+	 * %WPS = world player size
 	 * 
 	 * //Colors
 	 *  - &0 = black
@@ -47,6 +49,8 @@ public class LanguageOptions {
 	public String SUCCESSFUL_PAYING_FOR_JOINING = "You were charged &a%EA&f for entering &a%AN&f arena.";
 	public String NOT_ENOUGH_MONEY_FOR_JOINING = "&cYou dont have enough money to join arena!";
 	public String CHANGING_ROLES_TOO_FAST = "&cYou can only change roles every 1 second!";
+	public String FIRST_WORLD = "&cHint: The first world's name is \"%SFW\".";
+	public String PREVIOUS_GAME_TERMINATED = "&fA previous Capture The Points game has been terminated.";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";
@@ -55,7 +59,9 @@ public class LanguageOptions {
 	public String checks_INCORRECT_SETUP_USER = "&cSorry, this arena has not been set up properly. Please tell an admin. %WII";
 	public String checks_NO_LOBBY = "&cNo lobby for the arena \"%AN\"";
 	public String checks_NO_BOUNDARIES = "&cThe arena's boundaries are not properly set for \"%AN\"";
+	public String checks_NO_SUITABLE_WORLD = "&cYou do not have an arena that will accomodate %WPS players. Please change your min/max player settings.";
 	public String checks_NO_TEAM_SPAWNS = "&cThere are currently no team spawns defined for \"%AN\"";
+	public String checks_NO_WORLD_FOUND = "&c%WN is not a recognised world.";
 	public String checks_NOT_ENOUGH_TEAM_SPAWNS = "&cThere is only one team spawn, minimum of two are needed for \"%AN\"";
 	public String checks_INCORRECT_SPAWN_LOCATION = "&cThe spawn point \"%SPN\" in the arena \"%AN\" is out of the arena boundaries. "
 			+ "[Spawn is %SPX, %SPZ. Boundaries are %AX1<==>%AX2, %AZ1<==>%AZ2].";

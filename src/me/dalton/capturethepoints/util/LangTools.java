@@ -33,6 +33,8 @@ public class LangTools {
 		lo.FINAL_POINTS = getColorfulMessage(lang.getString("FINAL_POINTS", lo.FINAL_POINTS));
 		lo.TIE_POINTS = getColorfulMessage(lang.getString("TIE_POINTS", lo.TIE_POINTS));
 		lo.TIE_SCORE = getColorfulMessage(lang.getString("TIE_SCORE", lo.TIE_SCORE));
+		lo.FIRST_WORLD = getColorfulMessage(lang.getString("FIRST_WORLD", lo.FIRST_WORLD));
+		lo.PREVIOUS_GAME_TERMINATED = getColorfulMessage(lang.getString("PREVIOUS_GAME_TERMINATED", lo.PREVIOUS_GAME_TERMINATED));
 		
 		//Messages for checking the arenas.
 		lo.checks_NO_ARENA_BY_NAME = getColorfulMessage(lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME));
@@ -42,7 +44,9 @@ public class LangTools {
 		lo.checks_INCORRECT_SETUP_USER = getColorfulMessage(lang.getString(ch + "INCORRECT_SETUP_USER", lo.checks_INCORRECT_SETUP_USER));
 		lo.checks_NO_LOBBY = getColorfulMessage(lang.getString(ch + "NO_LOBBY", lo.checks_NO_LOBBY));
 		lo.checks_NO_BOUNDARIES = getColorfulMessage(lang.getString(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES));
+		lo.checks_NO_SUITABLE_WORLD = getColorfulMessage(lang.getString(ch + "NO_SUITABLE_WORLD", lo.checks_NO_SUITABLE_WORLD));
 		lo.checks_NO_TEAM_SPAWNS = getColorfulMessage(lang.getString(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS));
+		lo.checks_NO_WORLD_FOUND = getColorfulMessage(lang.getString(ch + "NO_WORLD_FOUND", lo.checks_NO_WORLD_FOUND));
 		lo.checks_NOT_ENOUGH_TEAM_SPAWNS = getColorfulMessage(lang.getString(ch + "NOT_ENOUGH_TEAM_SPAWNS", lo.checks_NOT_ENOUGH_TEAM_SPAWNS));
 		lo.checks_INCORRECT_SPAWN_LOCATION = getColorfulMessage(lang.getString(ch + "INCORRECT_SPAWN_LOCATION", lo.checks_INCORRECT_SPAWN_LOCATION));
 		lo.checks_NO_POINTS = getColorfulMessage(lang.getString(ch + "NO_POINTS", lo.checks_NO_POINTS));
@@ -91,6 +95,10 @@ public class LangTools {
 			lang.set("TIE_POINTS", lo.TIE_POINTS);
 		if(!lang.contains("TIE_SCORE"))
 			lang.set("TIE_SCORE", lo.TIE_SCORE);
+		if(!lang.contains("FIRST_WORLD"))
+			lang.set("FIRST_WORLD", lo.FIRST_WORLD);
+		if(!lang.contains("PREVIOUS_GAME_TERMINATED"))
+			lang.set("PREVIOUS_GAME_TERMINATED", lo.PREVIOUS_GAME_TERMINATED);
 		
 		//Messages for checking the arenas.
 		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))
@@ -107,8 +115,12 @@ public class LangTools {
 			lang.set(ch + "NO_LOBBY", lo.checks_NO_LOBBY);
 		if(!lang.contains(ch + "NO_BOUNDARIES"))
 			lang.set(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES);
+		if(!lang.contains(ch + "NO_SUITABLE_WORLD"))
+			lang.set(ch + "NO_SUITABLE_WORLD", lo.checks_NO_SUITABLE_WORLD);
 		if(!lang.contains(ch + "NO_TEAM_SPAWNS"))
 			lang.set(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS);
+		if(!lang.contains(ch + "NO_WORLD_FOUND"))
+			lang.set(ch + "NO_WORLD_FOUND", lo.checks_NO_WORLD_FOUND);
 		if(!lang.contains(ch + "NOT_ENOUGH_TEAM_SPAWNS"))
 			lang.set(ch + "NOT_ENOUGH_TEAM_SPAWNS", lo.checks_NOT_ENOUGH_TEAM_SPAWNS);
 		if(!lang.contains(ch + "INCORRECT_SPAWN_LOCATION"))
