@@ -6,7 +6,6 @@ import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -140,7 +139,7 @@ public class InvManagement {
         if(a.getPlayerData(p.getName()).getClassChangeTime() == 0) {
         	a.getPlayerData(p.getName()).setClassChangeTime(System.currentTimeMillis());
         } else if((System.currentTimeMillis() - a.getPlayerData(p.getName()).getClassChangeTime() <= 1000)) { // 1 sec 
-            ctp.sendMessage(p, ChatColor.RED + "You can change roles only every 1 sec!");
+            ctp.sendMessage(p, ctp.getLanguage().CHANGING_ROLES_TOO_FAST);
             return false;
         } else {
         	a.getPlayerData(p.getName()).setClassChangeTime(System.currentTimeMillis());
@@ -185,7 +184,7 @@ public class InvManagement {
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     }
                 } catch(Exception e) {
-                    ctp.logInfo("There is error in your config file, with roles. Please check them!");
+                    ctp.logSevere("There is error in your config file, with roles. Please check them!");
                     return false;
                 }
                 p.getInventory().addItem(stack);

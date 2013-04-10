@@ -24,6 +24,7 @@ public class LangTools {
 		lo.GAME_STARTED = getColorfulMessage(lang.getString("GAME_STARTED", lo.GAME_STARTED));
 		lo.GAME_ENDED = getColorfulMessage(lang.getString("GAME_ENDED", lo.GAME_ENDED));
 		lo.PLAYER_JOIN = getColorfulMessage(lang.getString("PLAYER_JOIN", lo.PLAYER_JOIN));
+		lo.LOBBY_JOIN = getColorfulMessage(lang.getString("LOBBY_JOIN", lo.PLAYER_JOIN));
 		lo.WINS = getColorfulMessage(lang.getString("WINS", lo.WINS));
 		lo.CAPTURED = getColorfulMessage(lang.getString("CAPTURED", lo.CAPTURED));
 		lo.LOST = getColorfulMessage(lang.getString("LOST", lo.LOST));
@@ -53,8 +54,11 @@ public class LangTools {
 		lo.checks_PLAYER_SLEEPING = getColorfulMessage(lang.getString(ch + "PLAYER_SLEEPING", lo.checks_PLAYER_SLEEPING));
 		
 		//Joining messages
-		lo.SUCCESSFUL_PAYING_FOR_JOINING = getColorfulMessage(lang.getString(ch + "SUCCESSFUL_PAYING_FOR_JOINING", lo.SUCCESSFUL_PAYING_FOR_JOINING));
-		lo.NOT_ENOUGH_MONEY_FOR_JOINING = getColorfulMessage(lang.getString(ch + "NOT_ENOUGH_MONEY_FOR_JOINING", lo.NOT_ENOUGH_MONEY_FOR_JOINING));
+		lo.SUCCESSFUL_PAYING_FOR_JOINING = getColorfulMessage(lang.getString("SUCCESSFUL_PAYING_FOR_JOINING", lo.SUCCESSFUL_PAYING_FOR_JOINING));
+		lo.NOT_ENOUGH_MONEY_FOR_JOINING = getColorfulMessage(lang.getString("NOT_ENOUGH_MONEY_FOR_JOINING", lo.NOT_ENOUGH_MONEY_FOR_JOINING));
+		
+		//Etc messages
+		lo.CHANGING_ROLES_TOO_FAST = getColorfulMessage(lang.getString("CHANGING_ROLES_TOO_FAST", lo.CHANGING_ROLES_TOO_FAST));
 		
 		return lo;
 	}
@@ -69,6 +73,8 @@ public class LangTools {
 			lang.set("GAME_ENDED", lo.GAME_ENDED);
 		if(!lang.contains("PLAYER_JOIN"))
 			lang.set("PLAYER_JOIN", lo.PLAYER_JOIN);
+		if(!lang.contains("LOBBY_JOIN"))
+			lang.set("LOBBY_JOIN", lo.LOBBY_JOIN);
 		if(!lang.contains("WINS"))
 			lang.set("WINS", lo.WINS);
 		if(!lang.contains("CAPTURED"))
@@ -124,9 +130,13 @@ public class LangTools {
 		
 		//Joining messages
 		if(!lang.contains(ch + "SUCCESSFUL_PAYING_FOR_JOINING"))
-			lang.set(ch + "SUCCESSFUL_PAYING_FOR_JOINING", lo.SUCCESSFUL_PAYING_FOR_JOINING);
+			lang.set("SUCCESSFUL_PAYING_FOR_JOINING", lo.SUCCESSFUL_PAYING_FOR_JOINING);
 		if(!lang.contains(ch + "NOT_ENOUGH_MONEY_FOR_JOINING"))
-			lang.set(ch + "NOT_ENOUGH_MONEY_FOR_JOINING", lo.NOT_ENOUGH_MONEY_FOR_JOINING);
+			lang.set("NOT_ENOUGH_MONEY_FOR_JOINING", lo.NOT_ENOUGH_MONEY_FOR_JOINING);
+		
+		//Etc messages
+		if(!lang.contains("CHANGING_ROLES_TOO_FAST"))
+			lang.set("CHANGING_ROLES_TOO_FAST", lo.CHANGING_ROLES_TOO_FAST);
 		
 		try {
             lang.options().copyDefaults(true);

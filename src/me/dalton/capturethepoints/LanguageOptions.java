@@ -26,6 +26,7 @@ public class LanguageOptions {
 	 *  - &2 = dark green
 	 *  - &3 = dark auqa
 	 *  - &4 = dark red
+	 *  - &6 = gold
 	 *  - &a = green
 	 *  - &b = aqua
 	 *  - &c = light red
@@ -34,6 +35,7 @@ public class LanguageOptions {
 	public String GAME_STARTED = "A Capture The Points game has started in the arena";
 	public String GAME_ENDED = "A Capture The Points game has ended!";
 	public String PLAYER_JOIN = "&a%PN&f joined a CTP game.";
+	public String LOBBY_JOIN = "&aJoined CTP lobby &6%AN&a.";
 	public String WINS = "wins!";
 	public String CAPTURED = "captured";
 	public String LOST = "lost";
@@ -44,6 +46,7 @@ public class LanguageOptions {
 	public String TIE_SCORE = "It's a tie! %WT teams have a score of %WS!";
 	public String SUCCESSFUL_PAYING_FOR_JOINING = "You were charged &a%EA&f for entering &a%AN&f arena.";
 	public String NOT_ENOUGH_MONEY_FOR_JOINING = "&cYou dont have enough money to join arena!";
+	public String CHANGING_ROLES_TOO_FAST = "&cYou can only change roles every 1 second!";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";

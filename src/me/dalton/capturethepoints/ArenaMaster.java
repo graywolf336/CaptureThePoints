@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -261,7 +259,7 @@ public class ArenaMaster {
         	ctp.getServer().getWorld(world);
             arena.setWorld(world);
         } catch (Exception ex) {
-        	ctp.getLogger().warning(name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
+        	ctp.logWarning(name + " has an incorrect World. The World in the config, \"" + world + "\", could not be found. ###");
             List<String> worlds = new LinkedList<String>();
             for (World aWorld : ctp.getServer().getWorlds()) {
                 worlds.add(aWorld.getName());
@@ -269,10 +267,10 @@ public class ArenaMaster {
             
             if (worlds.size() == 1) {
                 arena.setWorld(worlds.get(0));
-                ctp.getLogger().info("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
+                ctp.logInfo("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
             } else {
-            	ctp.getLogger().info("This usually happens on the first load, create an arena and this message should go away.");
-            	ctp.getLogger().info("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
+            	ctp.logInfo("This usually happens on the first load, create an arena and this message should go away.");
+            	ctp.logInfo("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
             }
         }
         
@@ -378,7 +376,7 @@ public class ArenaMaster {
         // Kj -- Test that the spawn points are within the map boundaries
         for (Spawn aSpawn : arena.getTeamSpawns().values()) {
             if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-            	ctp.getLogger().warning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
+            	ctp.logWarning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
                 continue;
             }
         }
@@ -387,7 +385,7 @@ public class ArenaMaster {
             arenaConf.options().copyDefaults(true);
             arenaConf.save(arenaFile);
         } catch (IOException ex) {
-            Logger.getLogger(CaptureThePoints.class.getName()).log(Level.SEVERE, null, ex);
+            ctp.logSevere("Unable to save the arena \"" + arena.getName() + "\" config file.");
         }
         
         arena.setConfigOptions(ctp.getConfigTools().getArenaConfigOptions(arenaFile));
@@ -580,7 +578,7 @@ public class ArenaMaster {
             arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
 
     	//Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, ctp.getLanguage().PLAYER_JOIN);
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, ctp.getLanguage().PLAYER_JOIN.replaceAll("%PN", player.getName()));
         ctp.getPluginManager().callEvent(event);
         
         if(event.isCancelled())
@@ -658,10 +656,11 @@ public class ArenaMaster {
 
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
+
+        //clear the inventory again in case some other plugin restored some inventory to them after we teleported them (Multiverse inventories)
+        ctp.getInvManagement().clearInventory(player, true);
         
-        ctp.getInvManagement().clearInventory(player, true); //clear the inventory again in case some other plugin restored some inventory to them after we teleported them (Multiverse inventories)
-        
-        ctp.sendMessage(player, ChatColor.GREEN + "Joined CTP lobby " + ChatColor.GOLD + arena.getName() + ChatColor.GREEN + ".");
+        ctp.sendMessage(player, ctp.getLanguage().LOBBY_JOIN.replaceAll("%AN", arena.getName()));
         arena.getPlayerData(player).setInLobby(true);
     }
 }

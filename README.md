@@ -7,6 +7,9 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * The way we handle more than one arena will be improved
 * Joining arenas will be done with `/ctp j <arena>`
 
+### Language Files Done ###
+* ArenaMaster.java
+
 ### Update: 1.5.0 ###
 * Add custom events
 * - CTPEndEvent
