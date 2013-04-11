@@ -46,7 +46,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         return; // Player can edit arena
                     }
 
-                    player.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                    ctp.sendMessage(player, ctp.getLanguage().NO_PERMISSION);
                     event.setCancelled(true);
                     if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a BlockBreakEvent because the player tried to break a block that was the arena but the player wasn't playing.");
@@ -209,7 +209,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         return; // Player can edit arena
                     }
 
-                    player.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                    ctp.sendMessage(player, ctp.getLanguage().NO_PERMISSION);
                     event.setCancelled(true);
                     if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block that was inside arena but the player wasn't playing.");

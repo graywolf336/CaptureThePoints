@@ -58,6 +58,7 @@ public class LanguageOptions {
 	public String NOT_PLAYING = "&cYou are not in the game!";
 	public String START_COUNTDOWN = "Game starting in %CS seconds..";
 	public String END_COUNTDOWN = "The game has ended! Returning you to where you was in %CS seconds..";
+	public String NO_PERMISSION = "&cYou do not have permission to do that.";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";

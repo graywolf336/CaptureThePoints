@@ -360,7 +360,6 @@ public class CaptureThePointsPlayerListener implements Listener {
             a.getLobby().getPlayersInLobby().remove(p.getName());
             event.setRespawnLocation(a.getPrevoiusPosition().get(p.getName()));
             a.leaveGame(p, ArenaLeaveReason.PLAYER_RESPAWN);
-            p.sendMessage(ChatColor.LIGHT_PURPLE + "[CTP] You left the CTP game.");
             return;
         }
     }
@@ -391,7 +390,6 @@ public class CaptureThePointsPlayerListener implements Listener {
                         a.getPlayerData(play.getName()).setInLobby(false);
                         a.getLobby().getPlayersInLobby().remove(play.getName());
                         a.leaveGame(play, ArenaLeaveReason.PLAYER_TELEPORT);
-                        ctp.sendMessage(play, ChatColor.LIGHT_PURPLE + "You left the CTP game.");
                     }
                 }
             }
@@ -801,7 +799,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             }
             
             if(hasThatTeam == -1) {
-            	ctp.sendMessage(p, ChatColor.RED + "[CTP] This arena does not contain this color -> " + ChatColor.GREEN + color.toUpperCase());
+            	ctp.sendMessage(p, ChatColor.RED + "This arena does not contain this color -> " + ChatColor.GREEN + color.toUpperCase());
                 return;
             }
             

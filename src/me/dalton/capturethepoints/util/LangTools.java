@@ -41,6 +41,7 @@ public class LangTools {
 		lo.NOT_PLAYING = getColorfulMessage(lang.getString("NOT_PLAYING", lo.NOT_PLAYING));
 		lo.START_COUNTDOWN = getColorfulMessage(lang.getString("START_COUNTDOWN", lo.START_COUNTDOWN));
 		lo.END_COUNTDOWN = getColorfulMessage(lang.getString("END_COUNTDOWN", lo.END_COUNTDOWN));
+		lo.NO_PERMISSION = getColorfulMessage(lang.getString("NO_PERMISSION", lo.NO_PERMISSION));
 		
 		//Messages for checking the arenas.
 		lo.checks_NO_ARENA_BY_NAME = getColorfulMessage(lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME));
@@ -117,6 +118,8 @@ public class LangTools {
 			lang.set("START_COUNTDOWN", lo.START_COUNTDOWN);
 		if(!lang.contains("END_COUNTDOWN"))
 			lang.set("END_COUNTDOWN", lo.END_COUNTDOWN);
+		if(!lang.contains("NO_PERMISSION"))
+			lang.set("NO_PERMISSION", lo.NO_PERMISSION);
 		
 		//Messages for checking the arenas.
 		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))
