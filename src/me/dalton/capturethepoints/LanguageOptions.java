@@ -59,6 +59,9 @@ public class LanguageOptions {
 	public String START_COUNTDOWN = "Game starting in %CS seconds..";
 	public String END_COUNTDOWN = "The game has ended! Returning you to where you was in %CS seconds..";
 	public String NO_PERMISSION = "&cYou do not have permission to do that.";
+	public String PLAYERS = "players";
+	public String TEAMS = "Teams";
+	public String TRY = "&bTry";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";
@@ -80,4 +83,5 @@ public class LanguageOptions {
 	public String checks_GAME_ALREADY_STARTED = "&cA game has already started. You may not join.";
 	public String checks_PLAYER_IN_VEHICLE = "&cBanned for ever... Nah, just don't join while riding something.";
 	public String checks_PLAYER_SLEEPING = "&cBanned for life... Nah, just don't join from a bed ;)";
+	public String checks_NO_EXISTING_TEAMS = "&cThere are no existing teams to join.";
 }

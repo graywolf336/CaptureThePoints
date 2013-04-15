@@ -28,7 +28,7 @@ public class SelectCommand extends CTPCommand {
         String newarena = parameters.get(2);
         
         if (!ctp.getArenaMaster().isArena(newarena)) {
-            sendMessage(ChatColor.RED + "Could not load arena " + ChatColor.GOLD + newarena + ChatColor.RED + " because the name cannot be found. Check your config file and existing arenas.");
+            sendMessage(ctp.getLanguage().checks_NO_ARENA_BY_NAME);
             return;
         }
 

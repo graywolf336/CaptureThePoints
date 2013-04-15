@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import me.dalton.capturethepoints.ArenaRestore;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Arena;
@@ -154,7 +151,7 @@ public class BuildCommand extends CTPCommand {
                 	return;
                 } 
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -182,7 +179,7 @@ public class BuildCommand extends CTPCommand {
 
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -248,7 +245,7 @@ public class BuildCommand extends CTPCommand {
 
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -291,7 +288,7 @@ public class BuildCommand extends CTPCommand {
                 return;
             }
             
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -384,7 +381,7 @@ public class BuildCommand extends CTPCommand {
                 return;
             }
             
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -476,7 +473,7 @@ public class BuildCommand extends CTPCommand {
                 sendMessage(ChatColor.RED + "There is no such color!");
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
 
@@ -518,7 +515,7 @@ public class BuildCommand extends CTPCommand {
                 ctp.sendMessage(player, ChatColor.GREEN + arg2 + " " + ChatColor.WHITE + "spawn was removed.");
                 return;
             }
-            ctp.sendMessage(player, ChatColor.RED + "You do not have permission to do that.");
+            ctp.sendMessage(player, ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -670,7 +667,8 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
-                    Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                    ctp.logSevere("Unable to save the arena's config file while adding a new point named " + arg2);
                 }
 
                 if (ctp.getArenaMaster().getEditingArena().getWorld() == null)
@@ -681,7 +679,7 @@ public class BuildCommand extends CTPCommand {
                 sendMessage(ChatColor.WHITE + "You created capture point -----> " + ChatColor.GREEN + arg2);
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -739,13 +737,14 @@ public class BuildCommand extends CTPCommand {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);
                 } catch (IOException ex) {
-                    Logger.getLogger(BuildCommand.class.getName()).log(Level.SEVERE, null, ex);
+                	ex.printStackTrace();
+                	ctp.logSevere("Unable to save the config while removing the point " + arg2);
                 }
                 sendMessage(ChatColor.WHITE + "You removed capture point -----> " + ChatColor.GREEN + arg2);
 
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -788,7 +787,7 @@ public class BuildCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " arena lobby created");
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
 
@@ -817,7 +816,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -948,7 +947,7 @@ public class BuildCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + "Set maximum players of " + ctp.getArenaMaster().getEditingArena().getName() + " to " + amount + ".");
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -982,7 +981,7 @@ public class BuildCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + "Set minimum players of " + ctp.getArenaMaster().getEditingArena().getName() + " to " + amount + ".");
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
@@ -1017,7 +1016,7 @@ public class BuildCommand extends CTPCommand {
                 sendMessage(ChatColor.GREEN + "Set the number of points needed to win " + ctp.getArenaMaster().getEditingArena().getName() + " to " + amount + ".");
                 return;
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
 
@@ -1114,28 +1113,28 @@ public class BuildCommand extends CTPCommand {
                 return;
                 }
             }
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
         }
         
         if (arg.equalsIgnoreCase("restore")) {
+        	if (!ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.restore"})) {
+        		sendMessage(ctp.getLanguage().NO_PERMISSION);
+        		return;
+        	}
+        	
             if(!ctp.getGlobalConfigOptions().enableHardArenaRestore) {
                 sendMessage(ChatColor.RED + "Hard arena restore is not enabled.");
                 return;
             }
             
-            if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.restore"})) {
-                ctp.getArenaRestore().restoreMySQLBlocks(ctp.getArenaMaster().getEditingArena());
-                return;
-            }
-            
-            sendMessage(ChatColor.RED + "You do not have permission to do that.");
+            ctp.getArenaRestore().restoreMySQLBlocks(ctp.getArenaMaster().getEditingArena());
             return;
         }
 
         if (arg.equalsIgnoreCase("findchests")) {
             if (!ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.findchests"})) {
-                sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                sendMessage(ctp.getLanguage().NO_PERMISSION);
                 return;
             }
 
@@ -1150,14 +1149,14 @@ public class BuildCommand extends CTPCommand {
             try {
                 int chestCount = 0;
                 int totalItemsCount = 0;
-                System.out.println("------------------------------------------------------------");//60
-                System.out.println(String.format("|             Arena name:           %15s        |", arenaName));
+                ctp.logInfo("------------------------------------------------------------");//60
+                ctp.logInfo(String.format("|             Arena name:           %15s        |", arenaName));
                 while (rezult.next()) {
                     chestCount++;
-                    System.out.println("------------------------------------------------------------");
-                    System.out.println(String.format("|             Skrynios NR.:                 %5d          |", chestCount));
-                    System.out.println("|----------------------------------------------------------|");
-                    System.out.println("| NR. | Daikto pav.   | Kiekis | Patvarumas | Vieta skryn. |");
+                    ctp.logInfo("------------------------------------------------------------");
+                    ctp.logInfo(String.format("|             Skrynios NR.:                 %5d          |", chestCount));
+                    ctp.logInfo("|----------------------------------------------------------|");
+                    ctp.logInfo("| NR. | Daikto pav.   | Kiekis | Patvarumas | Vieta skryn. |");
                     ResultSet rezult2 = ctp.getMysqlConnector().getData("SELECT distinct `type` , `durability` , `amount` , `place_in_inv`"
                             + "FROM Simple_block, item WHERE Simple_block.arena_name = '" + arenaName + "' AND Simple_block.`block_type` = " + Material.CHEST.getId() + " "
                             + "AND item.`block_ID` = " + rezult.getInt("id"));
@@ -1170,29 +1169,30 @@ public class BuildCommand extends CTPCommand {
 
                         itemCount++;
                         itemCountInChest = itemCountInChest + rezult2.getInt("amount");
-                        System.out.println("|-----+---------------+--------+------------+--------------|");
-                        System.out.println(String.format("|%4d |%-15s| %6d | %10d | %12d |", itemCount, Material.getMaterial(rezult2.getInt("type")).name(),
+                        ctp.logInfo("|-----+---------------+--------+------------+--------------|");
+                        ctp.logInfo(String.format("|%4d |%-15s| %6d | %10d | %12d |", itemCount, Material.getMaterial(rezult2.getInt("type")).name(),
                                 rezult2.getInt("amount"), rezult2.getInt("durability"), rezult2.getInt("place_in_inv")));
                     }
                     
                     totalItemsCount = totalItemsCount + itemCountInChest;
-                    System.out.println("|-----+----------------------------------------------------|");
-                    System.out.println(String.format("|     | Total in chests:         %10d          |", itemCountInChest));
-                    System.out.println("------+-----------------------------------------------------\n\n");
+                    ctp.logInfo("|-----+----------------------------------------------------|");
+                    ctp.logInfo(String.format("|     | Total in chests:         %10d          |", itemCountInChest));
+                    ctp.logInfo("------+-----------------------------------------------------\n\n");
                 }
 
-                System.out.println("Total chests: " + chestCount);
-                System.out.println("Total in chests: " + totalItemsCount);
+                ctp.logInfo("Total chests: " + chestCount);
+                ctp.logInfo("Total in chests: " + totalItemsCount);
 
-                sendMessage(ChatColor.GREEN + "Report is ready, please check server consol!");
+                sendMessage(ChatColor.GREEN + "Report is ready, please check server console!");
             } catch (SQLException ex) {
-                Logger.getLogger(ArenaRestore.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
+                ctp.logSevere("An error occured while trying to get a list of all the chests.");
             }
         }
         
         if (arg.equalsIgnoreCase("check")) {
         	if (!ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.check"})) {
-        		sendMessage(ChatColor.RED + "You do not have permission to do that.");
+        		sendMessage(ctp.getLanguage().NO_PERMISSION);
                 return;
             }
         	

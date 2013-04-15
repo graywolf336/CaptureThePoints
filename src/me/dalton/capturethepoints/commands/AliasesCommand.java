@@ -22,14 +22,13 @@ public class AliasesCommand extends CTPCommand {
     public void perform() {
         sendMessage(ChatColor.RED + "Aliases for some commands:");
             sendMessage(ChatColor.GREEN + "alias: " + ChatColor.WHITE + "aliases");
+            sendMessage(ChatColor.GREEN + "help: " + ChatColor.WHITE + "?");
         if (ctp.getPermissions().canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin"})) {
             sendMessage(ChatColor.GREEN + "build: " + ChatColor.WHITE + "b, create, make");
         }
         if (ctp.getPermissions().canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.colors"})) {
             sendMessage(ChatColor.GREEN + "colors: " + ChatColor.WHITE + "colours, teams, players");
-        } 
-        
-        sendMessage(ChatColor.GREEN + "help: " + ChatColor.WHITE + "?");
+        }
         if (ctp.getPermissions().canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.joinall"})) {
             sendMessage(ChatColor.GREEN + "joinall: " + ChatColor.WHITE + "jall");
         }

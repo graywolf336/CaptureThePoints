@@ -36,8 +36,8 @@ public class ColorsCommand extends CTPCommand {
         }
         
         if(ctp.getArenaMaster().getArena(parameters.get(2)) == null) {
-        	 sendMessage(ChatColor.RED + "Please enter a valid arena name to start.");
-        	 sendMessage(ChatColor.RED + "Try one of these arenas: ");
+        	 sendMessage(ctp.getLanguage().checks_NO_ARENA_NAME);
+        	 sendMessage(ctp.getLanguage().ARENA_NAME_LIST);
         	 for(Arena a : ctp.getArenaMaster().getArenas())
         		 sendMessage(ChatColor.GOLD + "  - " + a.getName());
         	 return;
@@ -45,11 +45,10 @@ public class ColorsCommand extends CTPCommand {
         
         if (ctp.getArenaMaster().getArena(parameters.get(2)).getTeams().size() > 0) {
             String theteams = "";
-            for (int i = 0; i < ctp.getArenaMaster().getArena(parameters.get(2)).getTeams().size(); i++) {
+            for (int i = 0; i < ctp.getArenaMaster().getArena(parameters.get(2)).getTeams().size(); i++)
                 theteams = theteams + ctp.getArenaMaster().getArena(parameters.get(2)).getTeams().get(i).getChatColor() + ctp.getArenaMaster().getArena(parameters.get(2)).getTeams().get(i).getColor() + ChatColor.WHITE + ", "; // Kj -- added colour, changed team to team color (its name)
-            }
             
-            sendMessage("Teams: " + ChatColor.GREEN + theteams.toLowerCase().substring(0, theteams.length() - 2)); // minus ", " from end
+            sendMessage(ctp.getLanguage().TEAMS + ": " + ChatColor.GREEN + theteams.toLowerCase().substring(0, theteams.length() - 2)); // minus ", " from end
 
             String playernames = "";
             ChatColor cc = ChatColor.GREEN;
@@ -60,11 +59,13 @@ public class ColorsCommand extends CTPCommand {
                 playernames += " ";
             }
             
-            sendMessage(ChatColor.GREEN + String.valueOf(ctp.getArenaMaster().getArena(parameters.get(2)).getPlayersData().size()) + " players: " + playernames);
+            sendMessage(ChatColor.GREEN
+            		+ "" + ctp.getArenaMaster().getArena(parameters.get(2)).getPlayersData().size()
+            		+ ctp.getLanguage().PLAYERS + ": " + playernames);
             return;
         }
 
-        sendMessage(ChatColor.BLUE + "There are no existing teams to join.");
+        sendMessage(ctp.getLanguage().checks_NO_EXISTING_TEAMS);
         return;
     }
 }

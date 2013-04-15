@@ -63,6 +63,7 @@ public class LangTools {
 		lo.checks_GAME_ALREADY_STARTED = getColorfulMessage(lang.getString(ch + "GAME_ALREADY_STARTED", lo.checks_GAME_ALREADY_STARTED));
 		lo.checks_PLAYER_IN_VEHICLE = getColorfulMessage(lang.getString(ch + "PLAYER_IN_VEHICLE", lo.checks_PLAYER_IN_VEHICLE));
 		lo.checks_PLAYER_SLEEPING = getColorfulMessage(lang.getString(ch + "PLAYER_SLEEPING", lo.checks_PLAYER_SLEEPING));
+		lo.checks_NO_EXISTING_TEAMS = getColorfulMessage(lang.getString(ch + "NO_EXISTING_TEAMS", lo.checks_NO_EXISTING_TEAMS));
 		
 		//Joining messages
 		lo.SUCCESSFUL_PAYING_FOR_JOINING = getColorfulMessage(lang.getString("SUCCESSFUL_PAYING_FOR_JOINING", lo.SUCCESSFUL_PAYING_FOR_JOINING));
@@ -70,6 +71,9 @@ public class LangTools {
 		
 		//Etc messages
 		lo.CHANGING_ROLES_TOO_FAST = getColorfulMessage(lang.getString("CHANGING_ROLES_TOO_FAST", lo.CHANGING_ROLES_TOO_FAST));
+		lo.PLAYERS = getColorfulMessage(lang.getString("PLAYERS", lo.PLAYERS));
+		lo.TEAMS = getColorfulMessage(lang.getString("TEAMS", lo.TEAMS));
+		lo.TRY = getColorfulMessage(lang.getString("TRY", lo.TRY));
 		
 		return lo;
 	}
@@ -160,16 +164,24 @@ public class LangTools {
 			lang.set(ch + "PLAYER_IN_VEHICLE", lo.checks_PLAYER_IN_VEHICLE);
 		if(!lang.contains(ch + "PLAYER_SLEEPING"))
 			lang.set(ch + "PLAYER_SLEEPING", lo.checks_PLAYER_SLEEPING);
+		if(!lang.contains(ch + "NO_EXISTING_TEAMS"))
+			lang.set(ch + "NO_EXISTING_TEAMS", lo.checks_NO_EXISTING_TEAMS);
 		
 		//Joining messages
-		if(!lang.contains(ch + "SUCCESSFUL_PAYING_FOR_JOINING"))
+		if(!lang.contains("SUCCESSFUL_PAYING_FOR_JOINING"))
 			lang.set("SUCCESSFUL_PAYING_FOR_JOINING", lo.SUCCESSFUL_PAYING_FOR_JOINING);
-		if(!lang.contains(ch + "NOT_ENOUGH_MONEY_FOR_JOINING"))
+		if(!lang.contains("NOT_ENOUGH_MONEY_FOR_JOINING"))
 			lang.set("NOT_ENOUGH_MONEY_FOR_JOINING", lo.NOT_ENOUGH_MONEY_FOR_JOINING);
 		
 		//Etc messages
 		if(!lang.contains("CHANGING_ROLES_TOO_FAST"))
 			lang.set("CHANGING_ROLES_TOO_FAST", lo.CHANGING_ROLES_TOO_FAST);
+		if(!lang.contains("PLAYERS"))
+			lang.set("PLAYERS", lo.PLAYERS);
+		if(!lang.contains("TEAMS"))
+			lang.set("TEAMS", lo.TEAMS);
+		if(!lang.contains("TRY"))
+			lang.set("TRY", lo.TRY);
 		
 		try {
             lang.options().copyDefaults(true);

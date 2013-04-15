@@ -22,8 +22,8 @@ public class SetpointsCommand extends CTPCommand {
 
     @Override
     public void perform() {
-    	if(!ctp.getArenaMaster().getArenas().contains(parameters.get(2))) {
-    		sendMessage(parameters.get(2) + " is not a valid arena name, please try again.");
+    	if(!ctp.getArenaMaster().isArena(parameters.get(2))) {
+    		sendMessage(ctp.getLanguage().checks_NO_ARENA_BY_NAME);
     		return;
     	}
     	

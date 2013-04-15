@@ -63,9 +63,6 @@ public class HelpCommand extends CTPCommand {
             if (ctp.getPermissions().canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.reload"})) {
                 sendMessage(ChatColor.GREEN + "/ctp reload " + ChatColor.WHITE + "- reload CTP config files");
             }
-            //if (ctp.getPermissions().canAccess(sender, true, new String[]{"ctp.*", "ctp.play", "ctp.admin", "ctp.rejoin"})) {
-            //    sendMessage(ChatColor.GREEN + "/ctp rejoin " + ChatColor.WHITE + "- join a game if one has started.");
-            //}
             if (ctp.getPermissions().canAccess(sender, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setpoints"})) {
                 sendMessage(ChatColor.GREEN + "/ctp setpoints <arena> <TeamColor> <number> " + ChatColor.WHITE + "- Set the chosen team's points/score");
             }

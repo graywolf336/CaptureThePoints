@@ -7,16 +7,71 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * The way we handle more than one arena will be improved
 * Joining arenas will be done with `/ctp j <arena>`
 
-### Language Files Done ###
+### Language Files ###
+#### Done ####
 * Arena.java
 * ArenaMaster.java
 * InvManagement.java
 * AutoCommand.java
+* BuildCommand.java (most of these messages aren't done, so I won't be converting all of them until later releases)
+* ColorsCommand.java
+* CTPCommand.java
 * JoinAllCommand.java
 * JoinCommand.java
 * LeaveCommand.java
 * ListCommand.java
 * StopCommand.java
+#### Needed ####
+* CaptureThePoints
+* HelpCommand
+* KickCommand
+* LateJoinCommand
+* PJoinCommand
+* SelectCommand
+* SetpointsCommand.java
+* StartCommand
+* StatsCommand
+* TeamCommand
+#### Not Needed ####
+* ArenaRestore
+* ConfigOptions
+* HealingItems
+* KillStreakMessages
+* MultiInvInventory
+* MultiInvItem
+* MysqlConnector
+* PlayerInvData
+* Util
+* ArenaBoundaries
+* CTPBlock
+* Items
+* Lobby
+* PlayerData
+* PlayersAndCooldowns
+* Points
+* Rewards
+* SchedulerIds
+* Spawn
+* Team
+* AliasesCommand.java
+* DebugCommand.java (only admins have this, will not do until maybe later)
+* LeaveCommand.java
+* ReloadCommand.java
+* SaveCommand.java
+* SetpointCommand.java
+* VersionCommand
+* ArenaLeaveReason.java
+* CTPEndEvent.java
+* CTPPlayerDeathEvent.java
+* CTPPlayerJoinEvent.java
+* CTPPlayerLeaveEvent.java
+* CTPPointCaptureEvent.java
+* CTPShopPurchaseEvent.java
+* CTPStartEvent.java
+* ConfigTools.java
+* MoneyUtils.java
+* Permissions.java
+* PotionManagement.java
 
 ### Update: 1.5.0 ###
 * Add custom events

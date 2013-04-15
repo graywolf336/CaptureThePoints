@@ -86,7 +86,7 @@ public abstract class CTPCommand {
 
         if (requiredPermissions != null) {
             if (requiredPermissions.length != 0 && !ctp.getPermissions().canAccess(sender, notOpCommand, requiredPermissions)) {
-                sendMessage(ChatColor.RED + "You need permission to use the " + ChatColor.WHITE + parameters.get(1) + ChatColor.RED + " command.");
+                sendMessage(ctp.getLanguage().NO_PERMISSION);
                 return;
             }
         }
@@ -104,6 +104,6 @@ public abstract class CTPCommand {
 
     /** Send a message to the command sender saying they've got the parameters wrong, and give them a reminder of how the command should be written. */
     protected final void usageError() {
-        sendMessage(ChatColor.AQUA + "Try: " + ChatColor.RED + usageTemplate);
+        sendMessage(ctp.getLanguage().TRY + ": " + ChatColor.RED + usageTemplate);
     }
 }
