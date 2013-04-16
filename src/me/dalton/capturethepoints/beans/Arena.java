@@ -17,6 +17,7 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.events.CTPEndEvent;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
+import me.dalton.capturethepoints.listeners.TagAPIListener;
 
 /** Arena Data of the saved arenas for playing CTP.
  * @author graywolf336
@@ -637,6 +638,8 @@ public class Arena {
         	ctp.getInvManagement().restoreThings(p);
             if (rewards)
                 ctp.getUtil().rewardPlayer(this, p);
+            if(ctp.useTag())//if we're using tag, refresh it on ending
+            	TagAPIListener.refreshTag(p);
         }
         
         //Arena restore

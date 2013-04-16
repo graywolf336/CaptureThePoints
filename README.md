@@ -100,6 +100,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Added a config option to allow explosions breaking blocks, defaults to false
 * Added support for Bukkit's player max health option, now it can be higher than 20.
 * Added support for adding colors in the kill streak messages.
+* Added support for TagAPI, player's name tags will relate to their team color
 * Added eggs are grenades if enabled in the config.
 * Added count downs to starting and stopping
 * - Configurable per arena

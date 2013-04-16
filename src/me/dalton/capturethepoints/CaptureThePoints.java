@@ -3,6 +3,7 @@ package me.dalton.capturethepoints;
 import me.dalton.capturethepoints.listeners.CaptureThePointsPlayerListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsBlockListener;
 import me.dalton.capturethepoints.listeners.CaptureThePointsEntityListener;
+import me.dalton.capturethepoints.listeners.TagAPIListener;
 import me.dalton.capturethepoints.util.ArenaUtils;
 import me.dalton.capturethepoints.util.ConfigTools;
 import me.dalton.capturethepoints.util.LangTools;
@@ -47,6 +48,7 @@ public class CaptureThePoints extends JavaPlugin {
 	private Permission permission = null;
     private Economy economyHandler = null;
     private boolean UsePermissions;
+    private boolean useTag = false;
 
     /** "plugins/CaptureThePoints" */
     private String mainDir;
@@ -136,6 +138,9 @@ public class CaptureThePoints extends JavaPlugin {
         if (!reloading) {
             setupPermissions();
             setupEconomy();
+            useTag = setupTag();
+            if(useTag)
+            	logInfo("TagAPI hooked! Player's names will correlate to their team color.");
 
             // REGISTER EVENTS-----------------------------------------------------------------------------------
             pluginManager.registerEvents(blockListener, this);
@@ -673,12 +678,24 @@ public class CaptureThePoints extends JavaPlugin {
         return economyHandler != null;
     }
     
+    private boolean setupTag() {
+    	if(getPluginManager().getPlugin("TagAPI") == null)
+    		return false;
+    	
+    	getPluginManager().registerEvents(new TagAPIListener(this), this);
+    	return true;
+    }
+    
     public Economy getEconomyHandler() {
     	return this.economyHandler;
     }
     
     public boolean usePermissions() {
     	return this.UsePermissions;
+    }
+    
+    public boolean useTag() {
+    	return this.useTag;
     }
     
     /** Returns the plugin manager, non statically. */
