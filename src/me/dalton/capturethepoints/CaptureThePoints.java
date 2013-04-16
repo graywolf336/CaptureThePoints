@@ -112,8 +112,8 @@ public class CaptureThePoints extends JavaPlugin {
     public void onEnable () {
     	pluginManager = getServer().getPluginManager();
     	if(!pluginManager.isPluginEnabled("Vault")) {
-    		getLogger().severe("Vault is required in order to use this plugin.");
-    		getLogger().severe("dev.bukkit.org/server-mods/vault/");
+    		logSevere("Vault is required in order to use this plugin.");
+    		logSevere("dev.bukkit.org/server-mods/vault/");
 			pluginManager.disablePlugin(this);
 			return;
 		}
@@ -167,7 +167,7 @@ public class CaptureThePoints extends JavaPlugin {
 	                    if (data.inLobby() && !data.isReady()) {
 	                        // Kj -- Time inactivity warning.
 	                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
-	                            sendMessage(p, ChatColor.LIGHT_PURPLE + "Please choose your class and ready up, else you will be kicked from the lobby!");
+	                            sendMessage(p, getLanguage().READY_UP_REMINDER);
 	                            data.isWarned(true);
 	                        }
 	
@@ -176,8 +176,8 @@ public class CaptureThePoints extends JavaPlugin {
 	                            data.setInLobby(false);
 	                            data.setInArena(false);
 	                            data.isWarned(false);
-	                            a.leaveGame(p, ArenaLeaveReason.SERVER_STOP);
-	                            sendMessage(p, ChatColor.LIGHT_PURPLE + "You have been kicked from the lobby for not being ready on time.");
+	                            a.leaveGame(p, ArenaLeaveReason.PLAYER_NOT_READY);
+	                            sendMessage(p, getLanguage().NOT_READY_KICK);
 	                        }
 	                    }
 	                }
@@ -214,13 +214,11 @@ public class CaptureThePoints extends JavaPlugin {
 
     @Override
     public boolean onCommand (CommandSender sender, Command command, String label, String[] args) {
-        if (!command.getName().equalsIgnoreCase("ctp")) {
+        if (!command.getName().equalsIgnoreCase("ctp"))
             return true;
-        }
 
-        if (commands == null || commands.isEmpty()) { // Really weird bug that rarely occurs. Could call it a sanity check.
+        if (commands == null || commands.isEmpty()) // Really weird bug that rarely occurs. Could call it a sanity check.
             populateCommands();
-        }
 
         List<String> parameters = new ArrayList<String>();
         parameters.add(command.getName());
@@ -242,7 +240,7 @@ public class CaptureThePoints extends JavaPlugin {
         
         // Comand not found
 
-        getLogger().info(sender.getName() + " issued an unknown CTP command. It has " + parameters.size() + " Parameters: " + parameters + ". Displaying help to them.");
+        logInfo(sender.getName() + " issued an unknown CTP command. It has " + parameters.size() + " Parameters: " + parameters + ". Displaying help to them.");
         sendHelp(sender);
         return true;
     }
@@ -262,7 +260,7 @@ public class CaptureThePoints extends JavaPlugin {
      */
     public boolean balanceTeams(Arena a, int loop, int balanceThreshold) {//TODO
         if (loop > 5) {
-        	getLogger().warning("balanceTeams hit over 5 recursions. Aborting.");
+        	logWarning("balanceTeams hit over 5 recursions. Aborting.");
             return false;
         }
         
@@ -361,7 +359,7 @@ public class CaptureThePoints extends JavaPlugin {
             loc.setYaw((float) a.getLobby().getDir());
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             player.teleport(loc); // Teleport player to lobby
-            getUtil().sendMessageToPlayers(a, ChatColor.GREEN + p + ChatColor.WHITE + " was moved to lobby! [Team-balancing]");
+            getUtil().sendMessageToPlayers(a, getLanguage().TEAM_BALANCE_MOVE_TO_LOBBY.replaceAll("%PN", p));
             
         } else {
             // Moving to other Team
@@ -410,12 +408,16 @@ public class CaptureThePoints extends JavaPlugin {
             loc.setYaw((float) spawn.getDir());
             a.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             boolean teleport = player.teleport(loc);
-            if (!teleport) {
+            if (!teleport)
             	player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
-            }
-            getUtil().sendMessageToPlayers(a, 
-                    newTeam.getChatColor() + player.getName() + ChatColor.WHITE + " changed teams from " 
-                    + oldcc + oldteam + ChatColor.WHITE + " to "+ newTeam.getChatColor() + newTeam.getColor() + ChatColor.WHITE + "! [Team-balancing]");
+            
+            getUtil().sendMessageToPlayers(a, getLanguage().TEAM_BALANCE_CHANGE_TEAMS
+            		.replaceAll("%PN", player.getName())
+            		.replaceAll("%OC", oldcc + "")
+            		.replaceAll("%OT", oldteam)
+            		.replaceAll("%NC", newTeam.getChatColor() + "")
+            		.replaceAll("%NT", newTeam.getColor()));
+            
             newTeam.addOneMemeberCount();
         }
     }
@@ -427,16 +429,20 @@ public class CaptureThePoints extends JavaPlugin {
             for (int i = 0; i < a.getTeams().size(); i++) {
                 if (a.getTeams().get(i).getMemberCount() == 1) {
                     zeroPlayers = false;
-                    getUtil().sendMessageToPlayers(a, "The game has stopped because there are too few players. "
-                            + a.getTeams().get(i).getChatColor() + a.getTeams().get(i).getColor().toUpperCase() + ChatColor.WHITE + " wins! (With a final score of "
-                            + a.getTeams().get(i).getScore() + ")");
+                    
+                    getUtil().sendMessageToPlayers(a, getLanguage().GAME_ENDED_TOO_FEW_PLAYERS
+                    		.replaceAll("%TC", a.getTeams().get(i).getChatColor() + "")
+                    		.replaceAll("%TN", a.getTeams().get(i).getColor().toUpperCase())
+                    		.replaceAll("%WS", a.getTeams().get(i).getScore() + ""));
+                    
                     a.endGame(false, true);//Game ended prematurely, don't give rewards but do countdown.
                     break;
                 }
             }
-            if (zeroPlayers == true) {
-            	getUtil().sendMessageToPlayers(a, "No players left. Resetting game.");
-                a.endGame(false, false);//Game ended prematurely, don't give rewards.
+            
+            if (zeroPlayers) {
+            	getUtil().sendMessageToPlayers(a, getLanguage().NO_PLAYERS_LEFT);
+                a.endGame(false, false);//Game ended prematurely, don't give rewards to ghost players we may have.
             }
         }
     }
@@ -456,9 +462,10 @@ public class CaptureThePoints extends JavaPlugin {
             data.setDeathsInARow(0);
             String message = a.getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
 
-            if (!message.isEmpty()) {
-            	getUtil().sendMessageToPlayers(a, message.replace("%player", a.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE));
-            }
+            if (!message.isEmpty())
+            	getUtil().sendMessageToPlayers(a,
+            			LangTools.getColorfulMessage(message.replace("%player",
+            					a.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE)));
         }
 
         a.addPlayerData(player, data);
@@ -539,7 +546,7 @@ public class CaptureThePoints extends JavaPlugin {
                 hItem.cooldown = config.getInt("HealingItems." + str + ".Cooldown", 0);
                 hItem.resetCooldownOnDeath = config.getBoolean("HealingItems." + str + ".ResetCooldownOnDeath", true);
             } catch (Exception e) {
-            	getLogger().warning("Error while loading Healing items! " + itemNR + " item!");
+            	logWarning("Error while loading Healing items! " + itemNR + " item!");
             }
 
             healingItems.add(hItem);
@@ -640,10 +647,10 @@ public class CaptureThePoints extends JavaPlugin {
     	
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
-            getLogger().info("Vault plugin found, permission support enabled.");
+            logInfo("Vault plugin found, permission support enabled.");
             UsePermissions = true;
         }else {
-        	getLogger().info("Permission system not detected, defaulting to OP");
+        	logInfo("Permission system not detected, defaulting to OP");
             UsePermissions = false;
         }
         
@@ -652,17 +659,16 @@ public class CaptureThePoints extends JavaPlugin {
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
-        	getLogger().info("Vault plugin not detected, disabling economy support.");
+        	logInfo("Vault plugin not detected, disabling economy support.");
             return false;
         }
 
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
+        if (economyProvider != null) 
             economyHandler = economyProvider.getProvider();
-        }
 
         if(economyHandler != null)
-        	getLogger().info("Vault plugin found, economy support enabled.");
+        	logInfo("Vault plugin found, economy support enabled.");
 
         return economyHandler != null;
     }

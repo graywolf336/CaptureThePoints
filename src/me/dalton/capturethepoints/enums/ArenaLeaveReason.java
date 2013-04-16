@@ -5,7 +5,7 @@ package me.dalton.capturethepoints.enums;
  * 
  * @author graywolf336
  * @since 1.5.0-b104
- * @version 1.0.0
+ * @version 1.1.0
  *
  */
 public enum ArenaLeaveReason {
@@ -17,6 +17,10 @@ public enum ArenaLeaveReason {
 	 * Player get's kicked from the server.
 	 */
 	PLAYER_KICK,
+	/**
+	 * Player is not ready in the lobby in time.
+	 */
+	PLAYER_NOT_READY,
 	/**
 	 * Player typed the command <em>/ctp leave</em> command.
 	 */

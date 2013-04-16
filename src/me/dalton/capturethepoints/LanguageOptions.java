@@ -22,6 +22,10 @@ public class LanguageOptions {
 	 * %WN = world name
 	 * %WPS = world player size
 	 * %CS = countdown seconds
+	 * %OC = old color
+	 * %OT = old team
+	 * %NC = new color
+	 * %NT = new team
 	 * 
 	 * //Colors
 	 *  - &0 = black
@@ -29,17 +33,23 @@ public class LanguageOptions {
 	 *  - &2 = dark green
 	 *  - &3 = dark auqa
 	 *  - &4 = dark red
+	 *  - &5 = purple
 	 *  - &6 = gold
 	 *  - &a = green
 	 *  - &b = aqua
 	 *  - &c = light red
+	 *  - &d = light purple
+	 *  - &e = yellow
 	 *  - &f = white
 	 */
+	public String GAME_NOT_STARTED = "&cGame not started yet. Try just doing &b/ctp join <arena>";
 	public String GAME_STARTED = "A Capture The Points game has started in the arena";
 	public String GAME_ENDED = "A Capture The Points game has ended!";
 	public String PLAYER_JOIN = "&a%PN&f joined a CTP game.";
 	public String PLAYER_LEFT = "&a%PN&f left the CTP game!";
 	public String LOBBY_JOIN = "&aJoined CTP lobby &6%AN&a.";
+	public String READY_UP_REMINDER = "&dPlease choose your class and ready up, else you will be kicked from the lobby!";
+	public String NOT_READY_KICK = "&dYou have been kicked from the lobby for not being ready on time.";
 	public String WINS = "wins!";
 	public String CAPTURED = "captured";
 	public String LOST = "lost";
@@ -62,6 +72,10 @@ public class LanguageOptions {
 	public String PLAYERS = "players";
 	public String TEAMS = "Teams";
 	public String TRY = "&bTry";
+	public String TEAM_BALANCE_MOVE_TO_LOBBY = "&a%PN&f was moved to the lobby! [Team balancing]";
+	public String TEAM_BALANCE_CHANGE_TEAMS = "%PN&f changed teams from %OC%OT&f to %NC%NT&f! [Team balancing]";
+	public String GAME_ENDED_TOO_FEW_PLAYERS = "The game has stopped because there are too few players. %TC%TN&f wins with a final score of %WS!";
+	public String NO_PLAYERS_LEFT = "No players left, resetting the game.";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";

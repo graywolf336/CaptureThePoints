@@ -22,23 +22,14 @@ public class StartCommand extends CTPCommand {
     }
 
     @Override
-    public void perform() {
-        if (ctp.getArenaMaster().getArenas().isEmpty()) {
-            sendMessage(ChatColor.RED + "There are currently no arenas, please create one first.");
-            return;
-        }
-        
-        if(ctp.getArenaMaster().getArena(parameters.get(2)) == null) {
-        	sendMessage(ChatColor.RED + "Please enter a valid arena name to start.");
+    public void perform() {        
+        Arena arena = ctp.getArenaMaster().getArena(parameters.get(2));
+        String checks = ctp.getArenaMaster().checkArena(arena, sender);
+        if(!checks.isEmpty()) {
+        	sendMessage(checks);
         	return;
         }
         
-        if (ctp.getArenaMaster().getArena(parameters.get(2)).getLobby() == null) {
-            sendMessage(ChatColor.RED + "Please create arena lobby");
-            return;
-        }
-        
-        Arena arena = ctp.getArenaMaster().getArena(parameters.get(2));
         Lobby lobby = ctp.getArenaMaster().getArena(parameters.get(2)).getLobby();
         int readypeople = lobby.countReadyPeople();
             

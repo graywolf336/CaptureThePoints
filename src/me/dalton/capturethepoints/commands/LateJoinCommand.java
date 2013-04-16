@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.commands;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import org.bukkit.ChatColor;
 
 public class LateJoinCommand extends CTPCommand {
    
@@ -21,11 +20,10 @@ public class LateJoinCommand extends CTPCommand {
     @Override
     public void perform() {
         if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
-            if (ctp.getArenaMaster().getArena(parameters.get(2)).isGameRunning()) {
+            if (ctp.getArenaMaster().getArena(parameters.get(2)).isGameRunning())
             	ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
-            } else {
-                sendMessage(ChatColor.RED + "Game not started yet. Try just doing " + ChatColor.AQUA + "/ctp join <arena>");
-            }
+            else
+                sendMessage(ctp.getLanguage().GAME_NOT_STARTED);
             return;
         }
         

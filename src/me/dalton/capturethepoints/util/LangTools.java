@@ -21,11 +21,14 @@ public class LangTools {
 		FileConfiguration lang = ctp.getConfigTools().load(new File(ctp.getMainDirectory() + File.separator + "language_" + ctp.getGlobalConfigOptions().language + ".yml"));
 		LanguageOptions lo = new LanguageOptions();
 		
+		lo.GAME_NOT_STARTED = getColorfulMessage(lang.getString("GAME_NOT_STARTED", lo.GAME_NOT_STARTED));
 		lo.GAME_STARTED = getColorfulMessage(lang.getString("GAME_STARTED", lo.GAME_STARTED));
 		lo.GAME_ENDED = getColorfulMessage(lang.getString("GAME_ENDED", lo.GAME_ENDED));
 		lo.PLAYER_JOIN = getColorfulMessage(lang.getString("PLAYER_JOIN", lo.PLAYER_JOIN));
 		lo.PLAYER_LEFT = getColorfulMessage(lang.getString("PLAYER_LEFT", lo.PLAYER_LEFT));
-		lo.LOBBY_JOIN = getColorfulMessage(lang.getString("LOBBY_JOIN", lo.PLAYER_JOIN));
+		lo.LOBBY_JOIN = getColorfulMessage(lang.getString("LOBBY_JOIN", lo.LOBBY_JOIN));
+		lo.READY_UP_REMINDER = getColorfulMessage(lang.getString("READY_UP_REMINDER", lo.READY_UP_REMINDER));
+		lo.NOT_READY_KICK = getColorfulMessage(lang.getString("NOT_READY_KICK", lo.NOT_READY_KICK));
 		lo.WINS = getColorfulMessage(lang.getString("WINS", lo.WINS));
 		lo.CAPTURED = getColorfulMessage(lang.getString("CAPTURED", lo.CAPTURED));
 		lo.LOST = getColorfulMessage(lang.getString("LOST", lo.LOST));
@@ -42,6 +45,10 @@ public class LangTools {
 		lo.START_COUNTDOWN = getColorfulMessage(lang.getString("START_COUNTDOWN", lo.START_COUNTDOWN));
 		lo.END_COUNTDOWN = getColorfulMessage(lang.getString("END_COUNTDOWN", lo.END_COUNTDOWN));
 		lo.NO_PERMISSION = getColorfulMessage(lang.getString("NO_PERMISSION", lo.NO_PERMISSION));
+		lo.TEAM_BALANCE_MOVE_TO_LOBBY = getColorfulMessage(lang.getString("TEAM_BALANCE_MOVE_TO_LOBBY", lo.TEAM_BALANCE_MOVE_TO_LOBBY));
+		lo.TEAM_BALANCE_CHANGE_TEAMS = getColorfulMessage(lang.getString("TEAM_BALANCE_CHANGE_TEAMS", lo.TEAM_BALANCE_CHANGE_TEAMS));
+		lo.GAME_ENDED_TOO_FEW_PLAYERS = getColorfulMessage(lang.getString("GAME_ENDED_TOO_FEW_PLAYERS", lo.GAME_ENDED_TOO_FEW_PLAYERS));
+		lo.NO_PLAYERS_LEFT = getColorfulMessage(lang.getString("NO_PLAYERS_LEFT", lo.NO_PLAYERS_LEFT));
 		
 		//Messages for checking the arenas.
 		lo.checks_NO_ARENA_BY_NAME = getColorfulMessage(lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME));
@@ -82,6 +89,8 @@ public class LangTools {
 		FileConfiguration lang = ctp.getConfigTools().load(langFile);
 		LanguageOptions lo = new LanguageOptions();
 		
+		if(!lang.contains("GAME_NOT_STARTED"))
+			lang.set("GAME_NOT_STARTED", lo.GAME_NOT_STARTED);
 		if(!lang.contains("GAME_STARTED"))
 			lang.set("GAME_STARTED", lo.GAME_STARTED);
 		if(!lang.contains("GAME_ENDED"))
@@ -92,6 +101,10 @@ public class LangTools {
 			lang.set("PLAYER_LEFT", lo.PLAYER_LEFT);
 		if(!lang.contains("LOBBY_JOIN"))
 			lang.set("LOBBY_JOIN", lo.LOBBY_JOIN);
+		if(!lang.contains("READY_UP_REMINDER"))
+			lang.set("READY_UP_REMINDER", lo.READY_UP_REMINDER);
+		if(!lang.contains("NOT_READY_KICK"))
+			lang.set("NOT_READY_KICK", lo.NOT_READY_KICK);
 		if(!lang.contains("WINS"))
 			lang.set("WINS", lo.WINS);
 		if(!lang.contains("CAPTURED"))
@@ -124,6 +137,14 @@ public class LangTools {
 			lang.set("END_COUNTDOWN", lo.END_COUNTDOWN);
 		if(!lang.contains("NO_PERMISSION"))
 			lang.set("NO_PERMISSION", lo.NO_PERMISSION);
+		if(!lang.contains("TEAM_BALANCE_MOVE_TO_LOBBY"))
+			lang.set("TEAM_BALANCE_MOVE_TO_LOBBY", lo.TEAM_BALANCE_MOVE_TO_LOBBY);
+		if(!lang.contains("TEAM_BALANCE_CHANGE_TEAMS"))
+			lang.set("TEAM_BALANCE_CHANGE_TEAMS", lo.TEAM_BALANCE_CHANGE_TEAMS);
+		if(!lang.contains("GAME_ENDED_TOO_FEW_PLAYERS"))
+			lang.set("GAME_ENDED_TOO_FEW_PLAYERS", lo.GAME_ENDED_TOO_FEW_PLAYERS);
+		if(!lang.contains("NO_PLAYERS_LEFT"))
+			lang.set("NO_PLAYERS_LEFT", lo.NO_PLAYERS_LEFT);
 		
 		//Messages for checking the arenas.
 		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))

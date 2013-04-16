@@ -9,8 +9,9 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 
 ### Language Files ###
 #### Done ####
-* Arena.java
 * ArenaMaster.java
+* CaptureThePoints
+* Arena.java
 * InvManagement.java
 * AutoCommand.java
 * BuildCommand.java (most of these messages aren't done, so I won't be converting all of them until later releases)
@@ -18,20 +19,16 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * CTPCommand.java
 * JoinAllCommand.java
 * JoinCommand.java
+* LateJoinCommand
 * LeaveCommand.java
 * ListCommand.java
 * StopCommand.java
+
 #### Needed ####
-* CaptureThePoints
 * HelpCommand
-* KickCommand
-* LateJoinCommand
-* PJoinCommand
-* SelectCommand
-* SetpointsCommand.java
-* StartCommand
 * StatsCommand
 * TeamCommand
+
 #### Not Needed ####
 * ArenaRestore
 * ConfigOptions
@@ -55,10 +52,15 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Team
 * AliasesCommand.java
 * DebugCommand.java (only admins have this, will not do until maybe later)
+* KickCommand (admin command, won't do)
 * LeaveCommand.java
+* PJoinCommand (admin command, won't do)
 * ReloadCommand.java
 * SaveCommand.java
+* SelectCommand (admin command, won't do)
 * SetpointCommand.java
+* SetpointsCommand.java (admin command, won't do)
+* StartCommand (admin command, won't do)
 * VersionCommand
 * ArenaLeaveReason.java
 * CTPEndEvent.java
@@ -97,6 +99,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Fixed the conflicting nature of Multiverse Inventories, we clear their inventory before we teleport and after.
 * Added a config option to allow explosions breaking blocks, defaults to false
 * Added support for Bukkit's player max health option, now it can be higher than 20.
+* Added support for adding colors in the kill streak messages.
 * Added eggs are grenades if enabled in the config.
 * Added count downs to starting and stopping
 * - Configurable per arena
