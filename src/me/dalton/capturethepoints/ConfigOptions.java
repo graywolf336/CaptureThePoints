@@ -41,6 +41,9 @@ public class ConfigOptions {
     /** Replenish items on respawn /||/ Limited ammo and durability! [Default: true] */
     public boolean giveNewRoleItemsOnRespawn = true;
     
+    /** Does a player keep their items bought during the game after they die and respawn? [Defaults: false]**/
+    public boolean keepBoughtItemsOnRespawn = false;
+    
     /** Use scoring system /||/ Use points system [Default: false] */
     public boolean useScoreGeneration = false;
     

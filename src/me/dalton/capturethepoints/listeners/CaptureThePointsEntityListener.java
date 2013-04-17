@@ -314,7 +314,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     }
     
 	@SuppressWarnings("deprecation")
-	private void giveRoleItemsAfterDeath(Player player) {
+	private void giveRoleItemsAfterDeath(Player player, boolean keepItems) {
     	
         PlayerInventory preInv = player.getInventory();
         
@@ -332,7 +332,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
         }
         
-        ctp.getInvManagement().clearInventory(player, false); //Clear the inventory completely
+        if(!keepItems) ctp.getInvManagement().clearInventory(player, false); //Clear the inventory completely if we don't keep the items
         PlayerInventory inv = player.getInventory(); //Get the inventory again after we have cleared it.
 
         for (Items item : ctp.getRoles().get(ctp.getArenaMaster().getPlayerData(player.getName()).getRole())) {
@@ -347,26 +347,23 @@ public class CaptureThePointsEntityListener  implements Listener {
 
                     HashMap<Integer, ? extends ItemStack> slots = inv.all(item.getItem());
                     int amount = 0;
-                    for (int slotNum : slots.keySet()) {
+                    for (int slotNum : slots.keySet())
                         if(slots.get(slotNum).getDurability() == item.getType())
                             amount += slots.get(slotNum).getAmount();
-                    }
 
                     if (amount < item.getAmount()) {
                         //Removing old potions
-                        for (int slotNum : slots.keySet()) {
+                        for (int slotNum : slots.keySet())
                             if(slots.get(slotNum).getDurability() == item.getType())
                                 inv.setItem(slotNum, null);
-                        }
 
                         inv.addItem(stack);
                     }
-                } else if (!Util.ARMORS_TYPE.contains(item.getItem())/* && (!Util.WEAPONS_TYPE.contains(item.getType()))*/) {
+                } else if (!Util.ARMORS_TYPE.contains(item.getItem())) {
                     HashMap<Integer, ? extends ItemStack> slots = inv.all(item.getItem());
                     int amount = 0;
-                    for (int slotNum : slots.keySet()) {
+                    for (int slotNum : slots.keySet())
                         amount += slots.get(slotNum).getAmount();
-                    }
                     
                     if (amount < item.getAmount()) {
                         inv.remove(item.getItem());
@@ -375,10 +372,10 @@ public class CaptureThePointsEntityListener  implements Listener {
                         stack.setAmount(item.getAmount());
                         if(item.getType() != -1)
                             stack.setDurability(item.getType());
+                        
                         // Add enchantments
-                        for(int j = 0; j < item.getEnchantments().size(); j++) {
+                        for(int j = 0; j < item.getEnchantments().size(); j++)
                             stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                        }
                         
                         inv.addItem(stack);
                     }
@@ -389,10 +386,10 @@ public class CaptureThePointsEntityListener  implements Listener {
                     stack.setAmount(item.getAmount());
                     if(item.getType() != -1)
                         stack.setDurability(item.getType());
+                    
                     // Add enchantments
-                    for(int j = 0; j < item.getEnchantments().size(); j++) {
+                    for(int j = 0; j < item.getEnchantments().size(); j++)
                         stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
-                    }
                     
                     inv.addItem(stack);
                 } else {// find if there is something equipped
@@ -454,7 +451,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         try {
             spawn = arena.getPlayerData(player).getTeam().getSpawn();
         } catch(Exception e) { // For debugging
-            System.out.println("[ERROR][CTP] Team spawn could not be found!  Player Name: " + player.getName());
+            ctp.logSevere("Team spawn could not be found!  Player Name: " + player.getName());
             return false;
         }
                             
@@ -470,10 +467,9 @@ public class CaptureThePointsEntityListener  implements Listener {
     
     private void respawnPlayer(Arena arena, Player player, Player attacker) {
         if (attacker != null) {
-            if(!ctp.getGlobalConfigOptions().disableKillMessages) {
+            if(!ctp.getGlobalConfigOptions().disableKillMessages)
                 ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + arena.getPlayerData(attacker).getTeam().getChatColor() + attacker.getName());
-            }
             
             dropWool(arena, player);
             arena.getPlayerData(attacker).setMoney(arena.getPlayerData(attacker).getMoney() + arena.getConfigOptions().moneyForKill);
@@ -493,7 +489,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         Spawn spawn = arena.getPlayerData(player).getTeam().getSpawn();
 
         if (arena.getConfigOptions().giveNewRoleItemsOnRespawn)
-            giveRoleItemsAfterDeath(player);
+            giveRoleItemsAfterDeath(player, arena.getConfigOptions().keepBoughtItemsOnRespawn);
 
         // Reseting player cooldowns
         for (HealingItems item : ctp.getHealingItems())
@@ -507,8 +503,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         arena.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         boolean teleport = player.teleport(loc);
         
-        if (!teleport) {
+        if (!teleport)
             player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
-        }
     }
 }

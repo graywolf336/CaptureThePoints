@@ -28,6 +28,9 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * HelpCommand
 * StatsCommand
 * TeamCommand
+* BlockListener
+* EntityListener
+* PlayerListener
 
 #### Not Needed ####
 * ArenaRestore
@@ -101,6 +104,7 @@ _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/
 * Added support for Bukkit's player max health option, now it can be higher than 20.
 * Added support for adding colors in the kill streak messages.
 * Added support for TagAPI, player's name tags will relate to their team color
+* Added config option to keep the inventory on respawning, including bought items
 * Added eggs are grenades if enabled in the config.
 * Added count downs to starting and stopping
 * - Configurable per arena

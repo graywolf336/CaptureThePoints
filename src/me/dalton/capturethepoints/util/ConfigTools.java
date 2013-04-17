@@ -310,6 +310,7 @@ public class ConfigTools {
         co.economyMoneyCostForJoiningArena = config.getInt(global + "EconomyMoneyCostForJoiningArena", globalConfigOptions.economyMoneyCostForJoiningArena);
         co.balanceTeamsWhenPlayerLeaves = config.getInt(global + "BalanceTeamsWhenPlayerLeaves", globalConfigOptions.balanceTeamsWhenPlayerLeaves);
         co.giveNewRoleItemsOnRespawn = config.getBoolean(global + "GiveNewRoleItemsOnRespawn", globalConfigOptions.giveNewRoleItemsOnRespawn);
+        co.keepBoughtItemsOnRespawn = config.getBoolean(global + "KeepBoughtItemsOnRespawn", globalConfigOptions.keepBoughtItemsOnRespawn);
         co.givenWoolNumber = config.getInt(global + "GivenWoolNumber", 64) <= 0
                 ? -1
                 : config.getInt(global + "GivenWoolNumber", globalConfigOptions.givenWoolNumber);
@@ -405,6 +406,8 @@ public class ConfigTools {
             config.set(global + "BalanceTeamsWhenPlayerLeaves", globalConfigOptions.balanceTeamsWhenPlayerLeaves);
         if(!config.contains(global + "GiveNewRoleItemsOnRespawn"))
             config.set(global + "GiveNewRoleItemsOnRespawn", globalConfigOptions.giveNewRoleItemsOnRespawn);
+        if(!config.contains(global + "KeepBoughtItemsOnRespawn"))
+        	config.set(global + "KeepBoughtItemsOnRespawn", globalConfigOptions.keepBoughtItemsOnRespawn);
         if(!config.contains(global + "GivenWoolNumber"))
             config.set(global + "GivenWoolNumber", globalConfigOptions.givenWoolNumber);
         if(!config.contains(global + "MaxPlayerHealth"))
