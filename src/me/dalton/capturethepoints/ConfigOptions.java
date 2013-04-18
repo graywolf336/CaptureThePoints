@@ -110,6 +110,12 @@ public class ConfigOptions {
     /** Multiples gained score after all possible points are captured by that team [Default: 2] **/
     public int scoreMyltiplier = 2;
     
+    /** Should we use the players have limited lives or not. [Default: false] **/
+    public boolean usePlayerLives = false;
+    
+    /** How many lives should a player have when using the system. [Default: 5] */
+    public int playerLives = 5;
+    
     /** Should we count down on game start or not. [Default: false] */
     public boolean useStartCountDown = false;
     

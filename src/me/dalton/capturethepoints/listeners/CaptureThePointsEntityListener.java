@@ -483,6 +483,11 @@ public class CaptureThePointsEntityListener  implements Listener {
             ctp.checkForKillMSG(arena, player, true);
         }
 
+        if(arena.getConfigOptions().usePlayerLives) {
+        	arena.getPlayerData(player).subtractALife();
+        	ctp.sendMessage(player, "Lives remaining: " + arena.getPlayerData(player).getPlayerLives());
+        }
+        
         PotionManagement.removeAllEffects(player);
         ctp.getArenaUtil().setFullHealthPlayerAndCallEvent(arena, player);
         player.setFoodLevel(20);

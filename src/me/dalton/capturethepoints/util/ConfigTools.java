@@ -16,6 +16,7 @@ public class ConfigTools {
 	private CaptureThePoints ctp;
 	private String pointCapture = "GlobalSettings.GameMode.PointCapture.";
 	private String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
+	private String playerLives = "GlobalSettings.GameMode.PlayerLives";
 	private String countDown = "GlobalSettings.CountDowns.";
 	private String global = "GlobalSettings.";
 	private String mySql = "GlobalSettings.MySql.";
@@ -287,6 +288,10 @@ public class ConfigTools {
         co.onePointGeneratedScoreEvery30sec = config.getInt(pointCaptureWithScore + "OnePointGeneratedScoreEvery30sec", globalConfigOptions.onePointGeneratedScoreEvery30sec);
         co.scoreAnnounceTime = config.getInt(pointCaptureWithScore + "ScoreAnnounceTime", globalConfigOptions.scoreAnnounceTime);
 
+        //Player lives
+        co.usePlayerLives = config.getBoolean(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
+        co.playerLives = config.getInt(playerLives + "Lives", globalConfigOptions.playerLives);
+        
         //Count down options
         co.useStartCountDown = config.getBoolean(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
         co.startCountDownTime = config.getInt(countDown + "StartCountDownTime", globalConfigOptions.startCountDownTime);

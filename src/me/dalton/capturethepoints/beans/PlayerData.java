@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffect;
 public class PlayerData {
     private Team team;
     private String role;
-    private int money, oldHealth, oldMaxHealth, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel;
+    private int money, oldHealth, oldMaxHealth, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel, playerLives;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
     private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
@@ -122,6 +122,21 @@ public class PlayerData {
     /** Adds one death to the number of deaths in a row this player has. */
     public void addOneDeathInARow() {
     	this.deathsInARow++;
+    }
+    
+    /** Sets the number of player lives this player has. */
+    public void setPlayerLives(int amount) {
+    	this.playerLives = amount;
+    }
+    
+    /** Gets the number of player lives this player has. */
+    public int getPlayerLives() {
+    	return this.playerLives;
+    }
+    
+    /** Subtracts one player life from the total, can go negative and zero. */
+    public void subtractALife() {
+    	this.playerLives--;
     }
     
     public void setMoveChecker(int amount) {
