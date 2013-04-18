@@ -28,6 +28,7 @@ import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Stands;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
 import me.dalton.capturethepoints.util.PotionManagement;
@@ -372,6 +373,16 @@ public class ArenaMaster {
         if ((lobby.getX() == 0.0D) && (lobby.getY() == 0.0D) && (lobby.getZ() == 0.0D) && (lobby.getDir() == 0.0D)) {
             arena.setLobby(null);
         }
+        
+        Stands stands = new Stands(
+                arenaConf.getDouble("Stands.X", 0.0D),
+                arenaConf.getDouble("Stands.Y", 0.0D),
+                arenaConf.getDouble("Stands.Z", 0.0D),
+                arenaConf.getDouble("Stands.Dir", 0.0D));
+        arena.setStands(stands);
+        if ((stands.getX() == 0.0D) && (stands.getY() == 0.0D) && (stands.getZ() == 0.0D) && (stands.getDir() == 0.0D)) {
+            arena.setStands(null);
+        }
 
         // Kj -- Test that the spawn points are within the map boundaries
         for (Spawn aSpawn : arena.getTeamSpawns().values()) {
@@ -475,6 +486,7 @@ public class ArenaMaster {
      * 	<li>The arena's name isn't null</li>
      * 	<li>The arena's world isn't null</li>
      * 	<li>The arena's lobby isn't null</li>
+     * 	<li>The arena's stands isn't null if they are using player lives</li>
      * 	<li>The arena's boundaries are not zero</li>
      * 	<li>There are not zero team spawns</li>
      * 	<li>There is not just one team spawn</li>
@@ -509,6 +521,10 @@ public class ArenaMaster {
     	
     	if(arena.getLobby() == null)
     		return ctp.getLanguage().checks_NO_LOBBY.replaceAll("%AN", arena.getName());
+    	
+    	if(arena.getConfigOptions().usePlayerLives)
+    		if(arena.getStands() == null)
+    			return ctp.getLanguage().checks_NO_STANDS.replaceAll("%AN", arena.getName());
     	
     	if(arena.getX1() == 0 || arena.getX2() == 0 || arena.getY1() == 0 || arena.getY2() == 0 || arena.getZ1() == 0 || arena.getZ2() == 0)
     		return ctp.getLanguage().checks_NO_BOUNDARIES.replaceAll("%AN", arena.getName());

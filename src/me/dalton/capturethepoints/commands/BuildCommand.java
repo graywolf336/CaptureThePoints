@@ -12,6 +12,7 @@ import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Stands;
 import me.dalton.capturethepoints.beans.Team;
 
 import org.bukkit.ChatColor;
@@ -124,6 +125,9 @@ public class BuildCommand extends CTPCommand {
                 }
                 if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin.check", "ctp.admin"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b check" + ChatColor.WHITE + "- checks the status of the editing arena");
+                }
+                if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setstands", "ctp.admin.stands"})) {
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b setstands " + ChatColor.WHITE + "- sets arena stands");
                 }
             }
             return;
@@ -785,6 +789,50 @@ public class BuildCommand extends CTPCommand {
                 }
                 
                 sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " arena lobby created");
+                return;
+            }
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
+            return;
+        }
+        
+        if (arg.equalsIgnoreCase("setstands") || arg.equalsIgnoreCase("stands")) {
+            if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setstands", "ctp.admin.stands"})) {
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
+
+                FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
+
+                String aWorld = arenaConf.getString("World");
+                if (aWorld == null) {
+                    arenaConf.addDefault("World", player.getWorld().getName());
+                    ctp.getArenaMaster().getEditingArena().setWorld(player.getWorld().getName());
+                } else if (!aWorld.equals(player.getWorld().getName())) {
+                    sendMessage(ChatColor.RED + "Please build arena stands in same world as its spawns, lobby, and capture points!");
+                    return;
+                }
+                
+                // Kj -- changed from CTPoints
+                Stands stands = new Stands(
+                        player.getLocation().getX(),
+                        player.getLocation().getY(),
+                        player.getLocation().getZ(),
+                        player.getLocation().getYaw());
+
+                ctp.getArenaMaster().getEditingArena().setStands(stands);
+
+                arenaConf.addDefault("Lobby.X", Double.valueOf(stands.getX()));
+                arenaConf.addDefault("Lobby.Y", Double.valueOf(stands.getY()));
+                arenaConf.addDefault("Lobby.Z", Double.valueOf(stands.getZ()));
+                arenaConf.addDefault("Lobby.Dir", Double.valueOf(stands.getDir()));
+                
+                try {
+                    arenaConf.options().copyDefaults(true);
+                    arenaConf.save(arenaFile);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    ctp.logSevere("Unable to save an arena's config file while creating a stands.");
+                }
+                
+                sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " arena stands created");
                 return;
             }
             sendMessage(ctp.getLanguage().NO_PERMISSION);

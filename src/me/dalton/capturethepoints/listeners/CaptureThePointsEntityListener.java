@@ -485,7 +485,7 @@ public class CaptureThePointsEntityListener  implements Listener {
 
         if(arena.getConfigOptions().usePlayerLives) {
         	arena.getPlayerData(player).subtractALife();
-        	ctp.sendMessage(player, "Lives remaining: " + arena.getPlayerData(player).getPlayerLives());
+        	ctp.sendMessage(player, ctp.getLanguage().REMAINING_LIVES + " " + arena.getPlayerData(player).getPlayerLives());
         }
         
         PotionManagement.removeAllEffects(player);
@@ -503,6 +503,13 @@ public class CaptureThePointsEntityListener  implements Listener {
                     if (playName.equalsIgnoreCase(player.getName()))
                         item.cooldowns.remove(playName);
 
+        if(arena.getConfigOptions().usePlayerLives && arena.getPlayerData(player).getPlayerLives() == 0) {
+        	ctp.sendMessage(player, ctp.getLanguage().NO_MORE_LIVES);
+        	ctp.getArenaUtil().moveToStands(arena, player);
+        	ctp.getUtil().sendMessageToPlayers(arena, player, ctp.getLanguage().PLAYER_LOST_LAST_LIFE.replaceAll("%PN", player.getName()));
+        	return;
+        }
+        
         Location loc = new Location(arena.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
         loc.setYaw((float) spawn.getDir());
         arena.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());

@@ -10,6 +10,7 @@ import me.dalton.capturethepoints.LanguageOptions;
 
 public class LangTools {
 	private static String ch = "checks.";
+	private static String pl = "playerLives.";
 	
 	public static String getColorfulMessage(String message) {
 		return  message.replaceAll("(?i)&([0-9abcdefklmnor])", "\u00A7$1");
@@ -49,6 +50,7 @@ public class LangTools {
 		lo.TEAM_BALANCE_CHANGE_TEAMS = getColorfulMessage(lang.getString("TEAM_BALANCE_CHANGE_TEAMS", lo.TEAM_BALANCE_CHANGE_TEAMS));
 		lo.GAME_ENDED_TOO_FEW_PLAYERS = getColorfulMessage(lang.getString("GAME_ENDED_TOO_FEW_PLAYERS", lo.GAME_ENDED_TOO_FEW_PLAYERS));
 		lo.NO_PLAYERS_LEFT = getColorfulMessage(lang.getString("NO_PLAYERS_LEFT", lo.NO_PLAYERS_LEFT));
+		lo.STANDS_MESSAGE = getColorfulMessage(lang.getString("STANDS_MESSAGE", lo.STANDS_MESSAGE));
 		
 		//Messages for checking the arenas.
 		lo.checks_NO_ARENA_BY_NAME = getColorfulMessage(lang.getString(ch + "NO_ARENA_BY_NAME", lo.checks_NO_ARENA_BY_NAME));
@@ -57,6 +59,7 @@ public class LangTools {
 		lo.checks_INCORRECT_WORLD_SETUP_ADMIN = getColorfulMessage(lang.getString(ch + "INCORRECT_WORLD_SETUP_ADMIN", lo.checks_INCORRECT_WORLD_SETUP_ADMIN));
 		lo.checks_INCORRECT_SETUP_USER = getColorfulMessage(lang.getString(ch + "INCORRECT_SETUP_USER", lo.checks_INCORRECT_SETUP_USER));
 		lo.checks_NO_LOBBY = getColorfulMessage(lang.getString(ch + "NO_LOBBY", lo.checks_NO_LOBBY));
+		lo.checks_NO_STANDS = getColorfulMessage(lang.getString(ch + "NO_STANDS", lo.checks_NO_STANDS));
 		lo.checks_NO_BOUNDARIES = getColorfulMessage(lang.getString(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES));
 		lo.checks_NO_SUITABLE_WORLD = getColorfulMessage(lang.getString(ch + "NO_SUITABLE_WORLD", lo.checks_NO_SUITABLE_WORLD));
 		lo.checks_NO_TEAM_SPAWNS = getColorfulMessage(lang.getString(ch + "NO_TEAM_SPAWNS", lo.checks_NO_TEAM_SPAWNS));
@@ -81,6 +84,11 @@ public class LangTools {
 		lo.PLAYERS = getColorfulMessage(lang.getString("PLAYERS", lo.PLAYERS));
 		lo.TEAMS = getColorfulMessage(lang.getString("TEAMS", lo.TEAMS));
 		lo.TRY = getColorfulMessage(lang.getString("TRY", lo.TRY));
+		
+		//Lives messages
+		lo.NO_MORE_LIVES = getColorfulMessage(lang.getString(pl + "NO_MORE_LIVES", lo.NO_MORE_LIVES));
+		lo.REMAINING_LIVES = getColorfulMessage(lang.getString(pl + "REMAINING_LIVES", lo.REMAINING_LIVES));
+		lo.PLAYER_LOST_LAST_LIFE = getColorfulMessage(lang.getString(pl + "PLAYER_LOST_LAST_LIFE", lo.PLAYER_LOST_LAST_LIFE));
 		
 		return lo;
 	}
@@ -145,6 +153,8 @@ public class LangTools {
 			lang.set("GAME_ENDED_TOO_FEW_PLAYERS", lo.GAME_ENDED_TOO_FEW_PLAYERS);
 		if(!lang.contains("NO_PLAYERS_LEFT"))
 			lang.set("NO_PLAYERS_LEFT", lo.NO_PLAYERS_LEFT);
+		if(!lang.contains("STANDS_MESSAGE"))
+			lang.set("STANDS_MESSAGE", lo.STANDS_MESSAGE);
 		
 		//Messages for checking the arenas.
 		if(!lang.contains(ch + "NO_ARENA_BY_NAME"))
@@ -159,6 +169,8 @@ public class LangTools {
 			lang.set(ch + "INCORRECT_SETUP_USER", lo.checks_INCORRECT_SETUP_USER);
 		if(!lang.contains(ch + "NO_LOBBY"))
 			lang.set(ch + "NO_LOBBY", lo.checks_NO_LOBBY);
+		if(!lang.contains(ch + "NO_STANDS"))
+			lang.set(ch + "NO_STANDS", lo.checks_NO_STANDS);
 		if(!lang.contains(ch + "NO_BOUNDARIES"))
 			lang.set(ch + "NO_BOUNDARIES", lo.checks_NO_BOUNDARIES);
 		if(!lang.contains(ch + "NO_SUITABLE_WORLD"))
@@ -203,6 +215,14 @@ public class LangTools {
 			lang.set("TEAMS", lo.TEAMS);
 		if(!lang.contains("TRY"))
 			lang.set("TRY", lo.TRY);
+		
+		//PlayerLives messages
+		if(!lang.contains(pl + "NO_MORE_LIVES"))
+			lang.set(pl + "NO_MORE_LIVES", lo.NO_MORE_LIVES);
+		if(!lang.contains(pl + "REMAINING_LIVES"))
+			lang.set(pl + "REMAINING_LIVES", lo.REMAINING_LIVES);
+		if(!lang.contains(pl + "PLAYER_LOST_LAST_LIFE"))
+			lang.set(pl + "PLAYER_LOST_LAST_LIFE", lo.PLAYER_LOST_LAST_LIFE);
 		
 		try {
             lang.options().copyDefaults(true);

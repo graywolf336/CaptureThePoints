@@ -76,6 +76,10 @@ public class LanguageOptions {
 	public String TEAM_BALANCE_CHANGE_TEAMS = "%PN&f changed teams from %OC%OT&f to %NC%NT&f! [Team balancing]";
 	public String GAME_ENDED_TOO_FEW_PLAYERS = "The game has stopped because there are too few players. %TC%TN&f wins with a final score of %WS!";
 	public String NO_PLAYERS_LEFT = "No players left, resetting the game.";
+	public String STANDS_MESSAGE = "Welcome to the stands! Enjoy the game.";
+	public String NO_MORE_LIVES = "You lost your last life, you have died!";
+	public String REMAINING_LIVES = "Lives remaining:";
+	public String PLAYER_LOST_LAST_LIFE = "%PN lost their last life and was moved to the stands!";
 	
 	public String checks_NO_ARENA_BY_NAME = "&cCouldn't find an arena by that name.";
 	public String checks_NO_ARENAS = "&cThere are currently no arenas.";
@@ -83,6 +87,7 @@ public class LanguageOptions {
 	public String checks_INCORRECT_WORLD_SETUP_ADMIN = "&cThe arena config is incorrect. The world \"%AW\" could not be found. Hint: your first world's name is \"%SFW\".";
 	public String checks_INCORRECT_SETUP_USER = "&cSorry, this arena has not been set up properly. Please tell an admin. %WII";
 	public String checks_NO_LOBBY = "&cNo lobby for the arena \"%AN\"";
+	public String checks_NO_STANDS = "&cNo stand defined for the arena \"%AN\"";
 	public String checks_NO_BOUNDARIES = "&cThe arena's boundaries are not properly set for \"%AN\"";
 	public String checks_NO_SUITABLE_WORLD = "&cYou do not have an arena that will accomodate %WPS players. Please change your min/max player settings.";
 	public String checks_NO_TEAM_SPAWNS = "&cThere are currently no team spawns defined for \"%AN\"";

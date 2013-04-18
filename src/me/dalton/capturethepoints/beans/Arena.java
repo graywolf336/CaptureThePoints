@@ -43,6 +43,7 @@ public class Arena {
     private Map<String, PlayerData> players;
     private HashMap<String, Location> previousLocation;
     private Lobby lobby;
+    private Stands stands;
     
     private int x1 = 0, y1 = 0, z1 = 0, x2 = 0, y2 = 0, z2 = 0;
     private int minimumPlayers = 2;
@@ -148,6 +149,23 @@ public class Arena {
      * @see Lobby */
     public Lobby getLobby() {
     	return this.lobby;
+    }
+    
+    /** Sets the arena's stands.
+     * 
+     * @param stands The stands instance.
+     * @see Stands
+     */
+    public void setStands(Stands stands) {
+    	this.stands = stands;
+    }
+    
+    /** Gets the arena's stands.
+     * @return The stands teleport location for this arena.
+     * @see Stands
+     */
+    public Stands getStands() {
+    	return this.stands;
     }
     
     /** Sets the first X coordinate representing the boundary of this arena. */
@@ -653,6 +671,7 @@ public class Arena {
                 item.cooldowns.clear();
         
         getLobby().clearLobbyPlayerData();
+        getStands().clearStandsPlayers();
         getPrevoiusPosition().clear();
         getPlayersData().clear();
         getPlayers().clear();

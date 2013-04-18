@@ -11,7 +11,7 @@ public class PlayerData {
     private String role;
     private int money, oldHealth, oldMaxHealth, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel, playerLives;
     private long lobbyJoinTime, classChangeTime = 0;
-    private boolean ready = false, winner = false, inLobby = false, inArena = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
+    private boolean ready = false, winner = false, inLobby = false, inArena = false, inStands = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
     private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
     /** Sets the team this player is on. */
@@ -234,6 +234,16 @@ public class PlayerData {
     /** Gets if this player is in the arena. */
     public boolean inArena() {
     	return this.inArena;
+    }
+    
+    /** Sets if this player is in the stands. */
+    public void setInStands(boolean instands) {
+    	this.inStands = instands;
+    }
+    
+    /** Gets if this player is in the stands or not. */
+    public boolean inStands() {
+    	return this.inStands;
     }
     
     /** Sets if this player has just joined the lobby. */

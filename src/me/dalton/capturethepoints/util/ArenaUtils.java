@@ -468,9 +468,8 @@ public class ArenaUtils {
         boolean areEqual = true;
         for(int i = 0; i < arena.getTeams().size(); i++) {
             teamPlayersCount[i] = arena.getTeams().get(i).getTeamPlayers(arena).size();
-            if(optimalPlayerCountInTeam != teamPlayersCount[i]) {
+            if(optimalPlayerCountInTeam != teamPlayersCount[i])
                 areEqual = false;
-            }
         }
 
         if(ctp.getGlobalConfigOptions().debugMessages) {
@@ -549,4 +548,30 @@ public class ArenaUtils {
             }
         }
     }
+	
+	/** Moves the player into the stands and */
+	public void moveToStands(Arena arena, Player player) {
+		if(arena.getStands() == null)
+			return;
+		
+		PlayerData pd = arena.getPlayerData(player);
+		
+		if(pd.inArena())
+			arena.getPlayerData(player).setInArena(false);
+		if(pd.inLobby())
+			arena.getPlayerData(player).setInLobby(false);
+		if(pd.inStands())
+			return;
+		
+		ctp.getInvManagement().clearInventory(player, true); //clear the inventory, thus they have no items
+		
+		Location loc = new Location(arena.getWorld(), arena.getStands().getX(), arena.getStands().getY(), arena.getStands().getZ());
+		loc.setYaw((float) arena.getStands().getDir());
+		loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
+		player.teleport(loc);
+		
+		arena.getStands().getPlayersInTheStands().add(player.getName());
+		
+		ctp.sendMessage(player, ctp.getLanguage().STANDS_MESSAGE);
+	}
 }
