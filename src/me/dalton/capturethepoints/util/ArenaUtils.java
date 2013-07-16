@@ -53,7 +53,7 @@ public class ArenaUtils {
      * @param player The player to heal.
      * @param amount The amount to heal the player.
      */
-    public void healPlayerAndCallEvent(Player player, int amount) {
+    public void healPlayerAndCallEvent(Player player, double amount) {
     	player.setHealth(amount);
     	EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, amount, RegainReason.CUSTOM);
     	ctp.getPluginManager().callEvent(regen);
@@ -66,7 +66,7 @@ public class ArenaUtils {
      * @param player The player to heal.
      */
     public void setFullHealthPlayerAndCallEvent(Arena arena, Player player) {
-    	int gained = player.getMaxHealth() - player.getHealth();
+    	double gained = player.getMaxHealth() - player.getHealth();
     	
     	player.setHealth(player.getMaxHealth());
     	

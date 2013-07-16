@@ -9,7 +9,8 @@ import org.bukkit.potion.PotionEffect;
 public class PlayerData {
     private Team team;
     private String role;
-    private int money, oldHealth, oldMaxHealth, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel, playerLives;
+    private int money, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel, playerLives;
+    private double oldHealth, oldMaxHealth;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, inStands = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
     private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
@@ -45,22 +46,22 @@ public class PlayerData {
     }
     
     /** Sets the player's old max health, for supporting other plugins. */
-    public void setOldMaxHealth(int max) {
+    public void setOldMaxHealth(double max) {
     	this.oldMaxHealth = max;
     }
     
     /** Gets the player's old max health, for supporting other plugins. */
-    public int getOldMaxHealth() {
+    public double getOldMaxHealth() {
     	return this.oldMaxHealth;
     }
     
     /** Sets the player's old health. */
-    public void setOldHealth(int health) {
-    	this.oldHealth = health;
+    public void setOldHealth(double d) {
+    	this.oldHealth = d;
     }
     
     /** Gets the player's old health before they joined the arena. */
-    public int getOldHealth() {
+    public double getOldHealth() {
     	return this.oldHealth;
     }
     

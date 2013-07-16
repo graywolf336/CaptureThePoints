@@ -651,7 +651,7 @@ public class ArenaMaster {
 
         //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
         player.setHealth(arena.getConfigOptions().maxPlayerHealth);
-        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, arena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
+        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, (double)arena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
     	ctp.getPluginManager().callEvent(regen);
         
         // Get lobby location and move player to it.
