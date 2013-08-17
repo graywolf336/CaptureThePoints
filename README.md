@@ -2,6 +2,7 @@ CaptureThePoints
 ==========
 
 _Status of this branch's builds: **TESTING**_ http://graywolfsolutions.com:8080/job/CaptureThePoints/
+_Build numbers got reset_
 
 ### Branch: newArenas ###
 * The way we handle more than one arena will be improved
