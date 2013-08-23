@@ -129,6 +129,9 @@ public class BuildCommand extends CTPCommand {
                 if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setstands", "ctp.admin.stands"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b setstands " + ChatColor.WHITE + "- sets arena stands");
                 }
+                if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.enable"})) {
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp build enable <Arena name> <true/false>" + ChatColor.WHITE + "- sets arena stands");
+                }
             }
             return;
         }
@@ -179,9 +182,41 @@ public class BuildCommand extends CTPCommand {
                 	return;
                 }
 
+                ctp.getArenaMaster().getEditingArena().setEdit(true);
                 sendMessage(ChatColor.WHITE + "Arena selected for editing: " + ChatColor.GREEN + arg2);
 
                 return;
+            }
+            sendMessage(ctp.getLanguage().NO_PERMISSION);
+            return;
+        }
+        
+        //enables/disables the arena
+        if (arg.equalsIgnoreCase("enable")) {
+            if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.editarena"})) {
+                if (parameters.size() < 4) {
+                    sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build enable <Arena name> <true/false>");
+                    return;
+                }
+                
+                arg2 = arg2.toLowerCase();
+                if (ctp.getArenaMaster().getArena(arg2) == null) {
+                    sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
+                    return;
+                }
+                
+                if(arg3.equalsIgnoreCase("true")) {
+                	ctp.getArenaMaster().getArena(arg2).setEnabled(true);
+                	sendMessage(ChatColor.WHITE + "You have enabled the arena called " + arg2 + ".");
+                	return;
+                }else if(arg3.equalsIgnoreCase("false")) {
+                	ctp.getArenaMaster().getArena(arg2).setEnabled(false);
+                	sendMessage(ChatColor.WHITE + "You have disabled the arena called " + arg2 + ".");
+                	return;
+                }else {
+                	sendMessage(ChatColor.RED + "Please state enable/disable.");
+                	return;
+                }
             }
             sendMessage(ctp.getLanguage().NO_PERMISSION);
             return;
