@@ -17,7 +17,7 @@ import org.bukkit.event.HandlerList;
  *
  */
 public class CTPPlayerJoinEvent extends Event implements Cancellable {
-	private static HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled;
 	private Player player;
 	private Arena arena;

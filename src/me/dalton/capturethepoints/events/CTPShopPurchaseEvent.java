@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
  * @since 1.5.0-b195
  */
 public class CTPShopPurchaseEvent extends Event implements Cancellable {
-	private static HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private boolean cancel;
 	private Arena arena;
 	private Player player;
