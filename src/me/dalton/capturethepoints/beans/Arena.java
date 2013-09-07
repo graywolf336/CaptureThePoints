@@ -671,7 +671,7 @@ public class Arena {
                 item.cooldowns.clear();
         
         getLobby().clearLobbyPlayerData();
-        getStands().clearStandsPlayers();
+        if(getStands() != null) getStands().clearStandsPlayers();
         getPrevoiusPosition().clear();
         getPlayersData().clear();
         getPlayers().clear();
