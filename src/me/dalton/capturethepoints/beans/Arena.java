@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
@@ -44,8 +45,8 @@ public class Arena {
     private HashMap<String, Location> previousLocation;
     private Lobby lobby;
     private Stands stands;
+    private Vector corner1, corner2;
     
-    private int x1 = 0, y1 = 0, z1 = 0, x2 = 0, y2 = 0, z2 = 0;
     private int minimumPlayers = 2;
     private int maximumPlayers = 9999;
     
@@ -168,64 +169,28 @@ public class Arena {
     	return this.stands;
     }
     
-    /** Sets the first X coordinate representing the boundary of this arena. */
-    public void setX1(int x1) {
-    	this.x1 = x1;
+    /** Sets the first corner to the given block coords. */
+    public void setFirstCorner(int x, int y, int z) {
+    	if(x == 0 && y == 0 && z == 0) return;
+    	
+    	this.corner1 = new Vector(x, y, z);
     }
     
-    /** Gets the first X coordinate representing the boundary of this arena. */
-    public int getX1() {
-    	return this.x1;
+    /** Returns the first corner of this arena in {@link Vector} form. */
+    public Vector getFirstCorner() {
+    	return this.corner1;
     }
     
-    /** Sets the first Y coordinate representing the boundary of this arena. */
-    public void setY1(int y1) {
-    	this.y1 = y1;
+    /** Sets the second corner to the given block coords. */
+    public void setSecondCorner(int x, int y, int z) {
+    	if(x == 0 && y == 0 && z == 0) return;
+    	
+    	this.corner2 = new Vector(x, y, z);
     }
     
-    /** Gets the first Y coordinate representing the boundary of this arena. */
-    public int getY1() {
-    	return this.y1;
-    }
-    
-    /** Sets the first Z coordinate representing the boundary of this arena. */
-    public void setZ1(int z1) {
-    	this.z1 = z1;
-    }
-    
-    /** Gets the first Z coordinate representing the boundary of this arena. */
-    public int getZ1() {
-    	return this.z1;
-    }
-    
-    /** Sets the second X coordinate representing the boundary of this arena. */
-    public void setX2(int x2) {
-    	this.x2 = x2;
-    }
-    
-    /** Gets the second X coordinate representing the boundary of this arena. */
-    public int getX2() {
-    	return this.x2;
-    }
-    
-    /** Sets the second Y coordinate representing the boundary of this arena. */
-    public void setY2(int y2) {
-    	this.y2 = y2;
-    }
-    
-    /** Gets the second Y coordinate representing the boundary of this arena. */
-    public int getY2() {
-    	return this.y2;
-    }
-    
-    /** Sets the second Z coordinate representing the boundary of this arena. */
-    public void setZ2(int z2) {
-    	this.z2 = z2;
-    }
-    
-    /** Gets the second Z coordinate representing the boundary of this arena. */
-    public int getZ2() {
-    	return this.z2;
+    /** Returns the second corner of this arena in {@link Vector} form. */
+    public Vector getSecondCorner() {
+    	return this.corner2;
     }
     
     /** Sets the minimum number of players this arena can take. [Default: 2] */

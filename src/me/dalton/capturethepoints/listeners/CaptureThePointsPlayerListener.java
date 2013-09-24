@@ -322,9 +322,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         if(!a.getPlayerData(p).inLobby()) {
             if (a.getPlayerData(p.getName()).getMoveChecker() >= 10) {
             	a.getPlayerData(p.getName()).setMoveChecker(0);
-                if (ctp.getArenaUtil().isInside(loc.getBlockY(), a.getY1(), a.getY2())
-                		&& ctp.getArenaUtil().isInside(loc.getBlockX(), a.getX1(), a.getX2())
-                		&& ctp.getArenaUtil().isInside(loc.getBlockZ(), a.getZ1(), a.getZ2())
+                if (ctp.getArenaUtil().isInsideAB(loc.toVector(), a.getFirstCorner(), a.getSecondCorner())
                 		&& loc.getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                     return;
                 } else {
@@ -374,9 +372,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     	
         if (!(a.isGameRunning())) {
             if (a.getPlayerData(play.getName()) != null && a.getPlayerData(play.getName()).inLobby()) {
-                if (ctp.getArenaUtil().isInside(event.getTo().getBlockX(), a.getX1(), a.getX2())
-                		&& ctp.getArenaUtil().isInside(event.getTo().getBlockY(), a.getY1(), a.getY2())
-                		&& ctp.getArenaUtil().isInside(event.getTo().getBlockZ(), a.getZ1(), a.getZ2())
+                if (ctp.getArenaUtil().isInsideAB(event.getTo().toVector(), a.getFirstCorner(), a.getSecondCorner())
                 		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                 	a.getPlayerData(play.getName()).setJustJoined(false);
                     return;
@@ -413,8 +409,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 // The player is going to their spawn.
                 return;
             }
-            if (ctp.getArenaUtil().isInside(event.getTo().getBlockX(), a.getX1(), a.getX2())
-            		&& ctp.getArenaUtil().isInside(event.getTo().getBlockZ(), a.getZ1(), a.getZ2())
+            if (ctp.getArenaUtil().isInsideAB(event.getTo().toVector(), a.getFirstCorner(), a.getSecondCorner())
             		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                 // The player is teleporting in the arena.
                 return;
@@ -477,8 +472,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         		ctp.sendMessage(event.getPlayer(), ChatColor.RED + "Grenades are not effective in the Lobby.");
         		return;
         	}else {
-        		if (ctp.getArenaUtil().isInside(event.getEgg().getLocation().getBlockX(), a.getX1(), a.getX2())
-                		&& ctp.getArenaUtil().isInside(event.getEgg().getLocation().getBlockZ(), a.getZ1(), a.getZ2())
+        		if (ctp.getArenaUtil().isInsideAB(event.getEgg().getLocation().toVector(), a.getFirstCorner(), a.getSecondCorner())
                 		&& event.getEgg().getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
         			event.getEgg().getLocation().getWorld().createExplosion(event.getEgg().getLocation(), (float)a.getConfigOptions().grenadePower, false);
             		return;

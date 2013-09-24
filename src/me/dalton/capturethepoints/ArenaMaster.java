@@ -21,6 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.util.Vector;
 
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
@@ -356,12 +357,8 @@ public class ArenaMaster {
         }
         
         // Arena boundaries
-        arena.setX1(arenaConf.getInt("Boundarys.X1", 0));
-        arena.setY1(arenaConf.getInt("Boundarys.Y1", 0));
-        arena.setZ1(arenaConf.getInt("Boundarys.Z1", 0));
-        arena.setX2(arenaConf.getInt("Boundarys.X2", 0));
-        arena.setY2(arenaConf.getInt("Boundarys.Y2", 0));
-        arena.setZ2(arenaConf.getInt("Boundarys.Z2", 0));
+        arena.setFirstCorner(arenaConf.getInt("Boundarys.X1", 0), arenaConf.getInt("Boundarys.Y1", 0), arenaConf.getInt("Boundarys.Z1", 0));
+        arena.setSecondCorner(arenaConf.getInt("Boundarys.X2", 0), arenaConf.getInt("Boundarys.Y2", 0), arenaConf.getInt("Boundarys.Z2", 0));
 
 
         Lobby lobby = new Lobby(
@@ -386,10 +383,10 @@ public class ArenaMaster {
 
         // Kj -- Test that the spawn points are within the map boundaries
         for (Spawn aSpawn : arena.getTeamSpawns().values()) {
-            if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2())) {
-            	ctp.logWarning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
+        	if(!ctp.getArenaUtil().isInsideAB(new Vector((int) aSpawn.getX(), (int) aSpawn.getY(), (int) aSpawn.getZ()), arena.getFirstCorner(), arena.getSecondCorner())) {
+        		ctp.logWarning("The spawn point \"" + aSpawn.getName() + "\" in the arena \"" + arena.getName() + "\" is out of the arena boundaries. ###");
                 continue;
-            }
+        	}
         }
 
         try {
@@ -526,7 +523,7 @@ public class ArenaMaster {
     		if(arena.getStands() == null)
     			return ctp.getLanguage().checks_NO_STANDS.replaceAll("%AN", arena.getName());
     	
-    	if(arena.getX1() == 0 || arena.getX2() == 0 || arena.getY1() == 0 || arena.getY2() == 0 || arena.getZ1() == 0 || arena.getZ2() == 0)
+    	if(arena.getFirstCorner() == null || arena.getSecondCorner() == null)
     		return ctp.getLanguage().checks_NO_BOUNDARIES.replaceAll("%AN", arena.getName());
     	
     	if(arena.getTeamSpawns().size() == 0)
@@ -536,17 +533,17 @@ public class ArenaMaster {
     		return ctp.getLanguage().checks_NOT_ENOUGH_TEAM_SPAWNS.replaceAll("%AN", arena.getName());
     	
 		for(Spawn aSpawn : arena.getTeamSpawns().values())
-			if (!ctp.getArenaUtil().isInside((int) aSpawn.getX(), arena.getX1(), arena.getX2()) || !ctp.getArenaUtil().isInside((int) aSpawn.getZ(), arena.getZ1(), arena.getZ2()))
+			if (!ctp.getArenaUtil().isInsideAB(new Vector((int) aSpawn.getX(), (int) aSpawn.getY(), (int) aSpawn.getZ()), arena.getFirstCorner(), arena.getSecondCorner()))
 				if (ctp.getPermissions().canAccess(sender, true, new String[] { "ctp.*", "ctp.admin" }))
 					return ctp.getLanguage().checks_INCORRECT_SPAWN_LOCATION
 							.replaceAll("%SPN", aSpawn.getName())
 							.replaceAll("%AN", arena.getName())
 							.replaceAll("%SPX", String.valueOf((int)aSpawn.getX()))
 							.replaceAll("%SPZ", String.valueOf((int)aSpawn.getZ()))
-							.replaceAll("%AX1", String.valueOf((int)arena.getX1()))
-							.replaceAll("%AX2", String.valueOf((int)arena.getX2()))
-							.replaceAll("%AZ1", String.valueOf((int)arena.getZ1()))
-							.replaceAll("%AZ2", String.valueOf((int)arena.getZ2()));
+							.replaceAll("%AX1", String.valueOf(arena.getFirstCorner().getBlockX()))
+							.replaceAll("%AX2", String.valueOf(arena.getSecondCorner().getBlockX()))
+							.replaceAll("%AZ1", String.valueOf(arena.getFirstCorner().getBlockZ()))
+							.replaceAll("%AZ2", String.valueOf(arena.getSecondCorner().getBlockZ()));
 				else
 					return ctp.getLanguage().checks_INCORRECT_SETUP_USER.replaceAll("%WII", " [Incorrect Boundaries]");
     	

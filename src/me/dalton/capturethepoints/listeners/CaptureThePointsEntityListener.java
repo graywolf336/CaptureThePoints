@@ -61,9 +61,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             	return;
             }
             
-            if (ctp.getArenaUtil().isInside(event.getLocation().getBlockX(), a.getX1(), a.getX2())
-            		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockY(), a.getY1(), a.getY2())
-            		&& ctp.getArenaUtil().isInside(event.getLocation().getBlockZ(), a.getZ1(), a.getZ2())
+            if (ctp.getArenaUtil().isInsideAB(event.getLocation().toVector(), a.getFirstCorner(), a.getSecondCorner())
             		&& event.getLocation().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
             	if(!a.getConfigOptions().allowExplosionBlockBreak) {
                 	if(ctp.getGlobalConfigOptions().debugMessages)

@@ -38,10 +38,8 @@ public class CaptureThePointsBlockListener implements Listener {
         
         if (!ctp.getArenaMaster().isPlayerInAnArena(player)) { // If tries to break arena blocks out of game
             for(ArenaBoundaries bound : ctp.getArenaMaster().getArenasBoundaries().values()){
-                if (ctp.getArenaUtil().isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2())
-                		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2())
-                		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2())
-                		&& block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
+            	if(ctp.getArenaUtil().isInsideAB(block.getLocation().toVector(), bound.getFirstCorner(), bound.getSecondCorner())
+                		&& block.getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
                     if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
@@ -201,10 +199,8 @@ public class CaptureThePointsBlockListener implements Listener {
 
         if (!ctp.getArenaMaster().isPlayerInAnArena(player)) {// If tries to place blocks in arena out of game
             for(ArenaBoundaries bound : ctp.getArenaMaster().getArenasBoundaries().values()) {
-                if (ctp.getArenaUtil().isInside(block.getLocation().getBlockX(), bound.getx1(), bound.getx2())
-                		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockY(), bound.gety1(), bound.gety2())
-                		&& ctp.getArenaUtil().isInside(block.getLocation().getBlockZ(), bound.getz1(), bound.getz2())
-                		&& block.getLocation().getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
+                if (ctp.getArenaUtil().isInsideAB(block.getLocation().toVector(), bound.getFirstCorner(), bound.getSecondCorner())
+                		&& block.getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
                     if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
                         return; // Player can edit arena
                     }
@@ -289,7 +285,7 @@ public class CaptureThePointsBlockListener implements Listener {
                                 ctp.getPluginManager().callEvent(capEvent);
                                 
                                 if (ctp.getArenaUtil().didSomeoneWin(arena)) {
-                                    loc.getBlock().setTypeId(0);
+                                    loc.getBlock().setType(Material.AIR);
                                 }
                                 break;
                             }
@@ -315,7 +311,7 @@ public class CaptureThePointsBlockListener implements Listener {
                                 ctp.getPluginManager().callEvent(capEvent);
                                 
                                 if (ctp.getArenaUtil().didSomeoneWin(arena)) {
-                                    loc.getBlock().setTypeId(0);
+                                	loc.getBlock().setType(Material.AIR);
                                 }
                                 break;
                             }

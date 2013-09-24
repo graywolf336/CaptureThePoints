@@ -494,12 +494,8 @@ public class CaptureThePoints extends JavaPlugin {
         for(Arena a : getArenaMaster().getArenas()) {
             ArenaBoundaries tmpBound = new ArenaBoundaries();
             tmpBound.setWorld(a.getWorld().getName());
-            tmpBound.setx1(a.getX1());
-            tmpBound.setx2(a.getX2());
-            tmpBound.sety1(a.getY1());
-            tmpBound.sety2(a.getY2());
-            tmpBound.setz1(a.getZ1());
-            tmpBound.setz2(a.getZ2());
+            tmpBound.setFirstVector(a.getFirstCorner());
+            tmpBound.setSecondVector(a.getSecondCorner());
 
             getArenaMaster().getArenasBoundaries().put(a.getName(), tmpBound);
         }

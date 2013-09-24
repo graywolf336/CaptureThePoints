@@ -254,7 +254,7 @@ public class BuildCommand extends CTPCommand {
                     sendMessage(ChatColor.RED + "Please create an arena lobby");
                     canLoad = false;
                 }
-                if ((arena.getX1() == 0) && (arena.getX2() == 0) && (arena.getZ1() == 0) && (arena.getZ2() == 0)) {
+                if (arena.getFirstCorner() == null || arena.getSecondCorner() == null) {
                     sendMessage(ChatColor.RED + "Please set arena boundaries");
                     canLoad = false;
                 }
@@ -366,7 +366,7 @@ public class BuildCommand extends CTPCommand {
                                 for (int y = start_y - 1; y <= start_y; y++) {
                                     for (int z = start_z - 1; z <= start_z + 2; z++) {
                                         if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.getGlobalConfigOptions().ringBlock) {
-                                            player.getWorld().getBlockAt(x, y, z).setTypeId(0);
+                                            player.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                                         }
                                     }
                                 }
@@ -622,37 +622,37 @@ public class BuildCommand extends CTPCommand {
                     switch (direction) {
                         case NORTH:
                             ctp.getUtil().buildVert(player, start_x, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
-                            player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z + 1).setTypeId(0);
+                            player.getWorld().getBlockAt(start_x, start_y, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z + 1).setType(Material.AIR);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "NORTH");
                             tmps.setPointDirection("NORTH");
                             break;
                         case EAST:
                             ctp.getUtil().buildVert(player, start_x - 1, start_y - 1, start_z, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
-                            player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setTypeId(0);
+                            player.getWorld().getBlockAt(start_x, start_y, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setType(Material.AIR);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "EAST");
                             tmps.setPointDirection("EAST");
                             break;
                         case SOUTH:
                             ctp.getUtil().buildVert(player, start_x - 1, start_y - 1, start_z - 1, 2, 4, 4, ctp.getGlobalConfigOptions().ringBlock);
-                            player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z + 1).setTypeId(0);
+                            player.getWorld().getBlockAt(start_x, start_y, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z + 1).setType(Material.AIR);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "SOUTH");
                             tmps.setPointDirection("SOUTH");
                             break;
                         case WEST:
                             ctp.getUtil().buildVert(player, start_x - 1, start_y - 1, start_z - 1, 4, 4, 2, ctp.getGlobalConfigOptions().ringBlock);
-                            player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
-                            player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setTypeId(0);
+                            player.getWorld().getBlockAt(start_x, start_y, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x, start_y + 1, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setType(Material.AIR);
+                            player.getWorld().getBlockAt(start_x + 1, start_y + 1, start_z).setType(Material.AIR);
                             arenaConf.addDefault("Points." + arg2 + ".Dir", "WEST");
                             tmps.setPointDirection("WEST");
                             break;
@@ -670,10 +670,10 @@ public class BuildCommand extends CTPCommand {
                         }
                     }
 
-                    player.getWorld().getBlockAt(start_x, start_y, start_z).setTypeId(0);
-                    player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setTypeId(0);
-                    player.getWorld().getBlockAt(start_x + 1, start_y, start_z + 1).setTypeId(0);
-                    player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setTypeId(0);
+                    player.getWorld().getBlockAt(start_x, start_y, start_z).setType(Material.AIR);
+                    player.getWorld().getBlockAt(start_x + 1, start_y, start_z).setType(Material.AIR);
+                    player.getWorld().getBlockAt(start_x + 1, start_y, start_z + 1).setType(Material.AIR);
+                    player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setType(Material.AIR);
                 }
 
                 String aWorld = arenaConf.getString("World");
@@ -761,7 +761,7 @@ public class BuildCommand extends CTPCommand {
                         for (int y = start_y - 1; y <= start_y; y++) {
                             for (int z = start_z - 1; z <= start_z + 2; z++) {
                                 if (player.getWorld().getBlockAt(x, y, z).getTypeId() == ctp.getGlobalConfigOptions().ringBlock) {
-                                    player.getWorld().getBlockAt(x, y, z).setTypeId(0);
+                                    player.getWorld().getBlockAt(x, y, z).setType(Material.AIR);
                                 }
                             }
                         }
@@ -912,9 +912,7 @@ public class BuildCommand extends CTPCommand {
 
                 Location loc = player.getLocation();
                 if (arg2.equalsIgnoreCase("1")) {
-                	ctp.getArenaMaster().getEditingArena().setX1(loc.getBlockX());
-                	ctp.getArenaMaster().getEditingArena().setY1(loc.getBlockY());
-                	ctp.getArenaMaster().getEditingArena().setZ1(loc.getBlockZ());
+                	ctp.getArenaMaster().getEditingArena().setFirstCorner(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
                     // Check arena world
                     if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().getName().equalsIgnoreCase(loc.getWorld().getName()))
@@ -940,23 +938,17 @@ public class BuildCommand extends CTPCommand {
                     if(ctp.getArenaMaster().getArenasBoundaries().containsKey(ctp.getArenaMaster().getEditingArena().getName())) {
                         ArenaBoundaries bound = ctp.getArenaMaster().getArenasBoundaries().get(ctp.getArenaMaster().getEditingArena().getName());
                         bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld().getName());
-                        bound.setx1(ctp.getArenaMaster().getEditingArena().getX1());
-                        bound.sety1(ctp.getArenaMaster().getEditingArena().getY1());
-                        bound.setz1(ctp.getArenaMaster().getEditingArena().getZ1());
+                        bound.setFirstVector(ctp.getArenaMaster().getEditingArena().getFirstCorner());
                     } else {   // New arena
                         ArenaBoundaries bound = new  ArenaBoundaries();
                         bound.setWorld(loc.getWorld().getName());
-                        bound.setx1(ctp.getArenaMaster().getEditingArena().getX1());
-                        bound.sety1(ctp.getArenaMaster().getEditingArena().getY1());
-                        bound.setz1(ctp.getArenaMaster().getEditingArena().getZ1());
+                        bound.setFirstVector(ctp.getArenaMaster().getEditingArena().getFirstCorner());
                         ctp.getArenaMaster().getArenasBoundaries().put(ctp.getArenaMaster().getEditingArena().getName(), bound);
                     }
 
                     sendMessage("First boundary point set.");
                 } else if (arg2.equalsIgnoreCase("2")) {
-                	ctp.getArenaMaster().getEditingArena().setX2(loc.getBlockX());
-                	ctp.getArenaMaster().getEditingArena().setY2(loc.getBlockY());
-                	ctp.getArenaMaster().getEditingArena().setZ2(loc.getBlockZ());
+                	ctp.getArenaMaster().getEditingArena().setSecondCorner(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
                     // Check arena world
                     if(ctp.getArenaMaster().getEditingArena().getWorld() == null || !ctp.getArenaMaster().getEditingArena().getWorld().getName().equalsIgnoreCase(loc.getWorld().getName()))
@@ -981,15 +973,11 @@ public class BuildCommand extends CTPCommand {
                     if(ctp.getArenaMaster().getArenasBoundaries().containsKey(ctp.getArenaMaster().getEditingArena().getName())) {
                         ArenaBoundaries bound = ctp.getArenaMaster().getArenasBoundaries().get(ctp.getArenaMaster().getEditingArena().getName());
                         bound.setWorld(ctp.getArenaMaster().getEditingArena().getWorld().getName());
-                        bound.setx2(ctp.getArenaMaster().getEditingArena().getX2());
-                        bound.sety2(ctp.getArenaMaster().getEditingArena().getY2());
-                        bound.setz2(ctp.getArenaMaster().getEditingArena().getZ2());
+                        bound.setSecondVector(ctp.getArenaMaster().getEditingArena().getSecondCorner());
                     } else {   // New arena
                         ArenaBoundaries bound = new  ArenaBoundaries();
                         bound.setWorld(loc.getWorld().getName());
-                        bound.setx2(ctp.getArenaMaster().getEditingArena().getX2());
-                        bound.sety2(ctp.getArenaMaster().getEditingArena().getY2());
-                        bound.setz2(ctp.getArenaMaster().getEditingArena().getZ2());
+                        bound.setSecondVector(ctp.getArenaMaster().getEditingArena().getSecondCorner());
                         ctp.getArenaMaster().getArenasBoundaries().put(ctp.getArenaMaster().getEditingArena().getName(), bound);
                     }
 
@@ -1106,33 +1094,29 @@ public class BuildCommand extends CTPCommand {
         if (arg.equalsIgnoreCase("save")) {
             if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.save"})) {
                 if(ctp.getGlobalConfigOptions().enableHardArenaRestore
-                		&& ctp.getArenaMaster().getEditingArena().getX2() != 0
-                		&& ctp.getArenaMaster().getEditingArena().getY2() != 0
-                		&& ctp.getArenaMaster().getEditingArena().getZ2() != 0
-                		&& ctp.getArenaMaster().getEditingArena().getX1() != 0
-                		&& ctp.getArenaMaster().getEditingArena().getY1() != 0
-                		&& ctp.getArenaMaster().getEditingArena().getZ1() != 0) {
+                		&& ctp.getArenaMaster().getEditingArena().getFirstCorner() != null
+                		&& ctp.getArenaMaster().getEditingArena().getSecondCorner() != null) {
                     ctp.getServer().getScheduler().runTaskLaterAsynchronously(ctp, new Runnable() {
                         public void run () {
-                            int xlow = ctp.getArenaMaster().getEditingArena().getX1();
-                            int xhigh = ctp.getArenaMaster().getEditingArena().getX2();
-                            if (ctp.getArenaMaster().getEditingArena().getX2() < ctp.getArenaMaster().getEditingArena().getX1()) {
-                                xlow = ctp.getArenaMaster().getEditingArena().getX2();
-                                xhigh = ctp.getArenaMaster().getEditingArena().getX1();
+                            int xlow = ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockX();
+                            int xhigh = ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockX();
+                            if (ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockX() < ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockX()) {
+                                xlow = ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockX();
+                                xhigh = ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockX();
                             }
                             
-                            int ylow = ctp.getArenaMaster().getEditingArena().getY1();
-                            int yhigh = ctp.getArenaMaster().getEditingArena().getY2();
-                            if (ctp.getArenaMaster().getEditingArena().getY2() < ctp.getArenaMaster().getEditingArena().getY1()) {
-                                ylow = ctp.getArenaMaster().getEditingArena().getY2();
-                                yhigh = ctp.getArenaMaster().getEditingArena().getY1();
+                            int ylow = ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockY();
+                            int yhigh = ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockY();
+                            if (ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockY() < ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockY()) {
+                                ylow = ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockY();
+                                yhigh = ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockY();
                             }
                             
-                            int zlow = ctp.getArenaMaster().getEditingArena().getZ1();
-                            int zhigh = ctp.getArenaMaster().getEditingArena().getZ2();
-                            if (ctp.getArenaMaster().getEditingArena().getZ2() < ctp.getArenaMaster().getEditingArena().getZ1()) {
-                                zlow = ctp.getArenaMaster().getEditingArena().getZ2();
-                                zhigh = ctp.getArenaMaster().getEditingArena().getZ1();
+                            int zlow = ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockZ();
+                            int zhigh = ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockZ();
+                            if (ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockZ() < ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockZ()) {
+                                zlow = ctp.getArenaMaster().getEditingArena().getSecondCorner().getBlockZ();
+                                zhigh = ctp.getArenaMaster().getEditingArena().getFirstCorner().getBlockZ();
                             }
                             ctp.getMysqlConnector().connectToMySql();
 

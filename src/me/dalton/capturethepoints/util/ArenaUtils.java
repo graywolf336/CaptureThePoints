@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
@@ -124,6 +125,15 @@ public class ArenaUtils {
         return null;
     }
     
+    /** Checks if the first {@link Vector} is inside the other two. */
+	public boolean isInsideAB(Vector point, Vector first, Vector second) {
+		boolean x = isInside(point.getBlockX(), first.getBlockX(), second.getBlockX());
+		boolean y = isInside(point.getBlockY(), first.getBlockY(), second.getBlockY());
+		boolean z = isInside(point.getBlockZ(), first.getBlockZ(), second.getBlockZ());
+		
+		return x && y && z;
+	}
+    
     /**
      * Checks if two numbers are inside a point, or something.
      * <p />
@@ -132,8 +142,9 @@ public class ArenaUtils {
      * @param first The first point
      * @param second The second point
      * @return True if they are inside, false if not.
+     * @deprecated
      */
-    public boolean isInside(int loc, int first, int second) {
+    private boolean isInside(int loc, int first, int second) {
         int point1 = 0;
         int point2 = 0;
         if (first < second) {

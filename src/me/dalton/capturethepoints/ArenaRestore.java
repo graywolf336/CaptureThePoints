@@ -105,9 +105,9 @@ public class ArenaRestore {
                 // delete data from mysql
                 deleteArenaData(arenaName);
             } else {
-                String arenaCodedName = arenaName + "." + ctp.getArenaMaster().getArena(arenaName).getX1() + "." + ctp.getArenaMaster().getArena(arenaName).getY1() +
-                		"." + ctp.getArenaMaster().getArena(arenaName).getZ1() + "." + ctp.getArenaMaster().getArena(arenaName).getX2() +
-                        "." + ctp.getArenaMaster().getArena(arenaName).getY2() + "." + ctp.getArenaMaster().getArena(arenaName).getZ2();
+                String arenaCodedName = arenaName + "." + ctp.getArenaMaster().getArena(arenaName).getFirstCorner().getBlockX() + "." + ctp.getArenaMaster().getArena(arenaName).getFirstCorner().getBlockY() +
+                		"." + ctp.getArenaMaster().getArena(arenaName).getFirstCorner().getBlockZ() + "." + ctp.getArenaMaster().getArena(arenaName).getSecondCorner().getBlockX() +
+                        "." + ctp.getArenaMaster().getArena(arenaName).getSecondCorner().getBlockY() + "." + ctp.getArenaMaster().getArena(arenaName).getSecondCorner().getBlockZ();
                 ctp.getMysqlConnector().modifyData("INSERT INTO `Arena` (`name`, `world`) VALUES ( '" + arenaCodedName + "','" + world + "');");
             }
         } catch (SQLException ex) {
