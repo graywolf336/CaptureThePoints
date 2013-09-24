@@ -18,7 +18,6 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
-import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.events.CTPStartEvent;
@@ -248,34 +247,7 @@ public class ArenaUtils {
         	arena.getPlayTimer().schedule();
 
         //Money giving and score generation
-        arena.setMoneyScore(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            public void run () {
-                if (ctp.getArenaMaster().getArena(aName).getStatus().isRunning()) {
-                    for (PlayerData data : ctp.getArenaMaster().getArena(aName).getPlayersData().values())
-                        if (data.inArena())
-                            data.setMoney(data.getMoney() + ctp.getArenaMaster().getArena(aName).getConfigOptions().moneyEvery30Sec);
-                    
-                    if (ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration) {
-                        for (Team team : ctp.getArenaMaster().getArena(aName).getTeams()) {
-                            int dublicator = 1;
-                            int maxPossiblePointsToCapture = 0;
-                            for (Points point : ctp.getArenaMaster().getArena(aName).getCapturePoints()) {
-                                if(point.getNotAllowedToCaptureTeams() == null || !ctp.getUtil().containsTeam(point.getNotAllowedToCaptureTeams(), team.getColor()))
-                                    maxPossiblePointsToCapture++;
-                            }
-
-                            if (team.getControlledPoints() == maxPossiblePointsToCapture && maxPossiblePointsToCapture > 0) {
-                                dublicator = ctp.getArenaMaster().getArena(aName).getConfigOptions().scoreMyltiplier;
-                            }
-                            
-                            team.setScore(team.getScore() + (ctp.getArenaMaster().getArena(aName).getConfigOptions().onePointGeneratedScoreEvery30sec * team.getControlledPoints() * dublicator));
-                        }
-                    }
-                    ctp.getArenaUtil().didSomeoneWin(ctp.getArenaMaster().getArena(aName));
-                }
-            }
-
-        }, 600L, 600L));//30 sec
+        arena.getScoreGenTask().start();
 
         //Messages about score
         arena.setPointMessenger(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {

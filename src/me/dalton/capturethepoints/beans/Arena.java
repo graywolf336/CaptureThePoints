@@ -18,6 +18,7 @@ import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.tasks.AutoStartTimer;
 import me.dalton.capturethepoints.beans.tasks.PlayTimer;
+import me.dalton.capturethepoints.beans.tasks.ScoreGenerationTask;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;
@@ -39,7 +40,7 @@ public class Arena {
     private ConfigOptions co;
     
     //SchedulerIds
-    private int money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
+    private int pointMessenger = 0, healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
@@ -54,6 +55,7 @@ public class Arena {
     private Status status;
     private AutoStartTimer startTimer;
     private PlayTimer playTime;
+    private ScoreGenerationTask scoreGen;
     private boolean move = true;
     
     private int minimumPlayers = 2;
@@ -229,6 +231,11 @@ public class Arena {
     	return this.playTime;
     }
     
+    /** Returns the {@link ScoreGenerationTask} for the scoure generation task. */
+    public ScoreGenerationTask getScoreGenTask() {
+    	return this.scoreGen;
+    }
+    
     /** Sets the first corner to the given block coords. */
     public void setFirstCorner(int x, int y, int z) {
     	if(x == 0 && y == 0 && z == 0) return;
@@ -277,16 +284,6 @@ public class Arena {
 	public List<String> getWaitingToMove(){
 		return this.waitingToMove;
 	}
-    
-    /** Sets the scheduler id of the moneyscore task for this arena. */
-    public void setMoneyScore(int moneyscore) {
-    	this.money_Score = moneyscore;
-    }
-    
-    /** Gets the scheduler id of the moneyscore task for this arena. */
-    public int getMoneyScore() {
-    	return this.money_Score;
-    }
     
     /** Sets the scheduler id of the pointMessenger task for this arena. */
     public void setPointMessenger(int pointmessager) {
@@ -558,9 +555,8 @@ public class Arena {
             playTime.cancel();
         }
         
-        if (money_Score != 0) {
-            ctp.getServer().getScheduler().cancelTask(money_Score);
-            money_Score = 0;
+        if (scoreGen.getTaskId() != -1) {
+        	scoreGen.cancel();
         }
         if (pointMessenger != 0) {
             ctp.getServer().getScheduler().cancelTask(pointMessenger);

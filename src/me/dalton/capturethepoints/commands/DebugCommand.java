@@ -157,7 +157,7 @@ public class DebugCommand extends CTPCommand {
         } else {
             total++;
         }
-        if (ctp.getArenaMaster().getSelectedArena().getMoneyScore() != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getScoreGenTask().getTaskId() != -1) {
             running++; total++;
             result.add("Money Adder");
         } else {
