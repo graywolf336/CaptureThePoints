@@ -17,6 +17,7 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.timers.AutoStartTimer;
+import me.dalton.capturethepoints.beans.timers.PlayTimer;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;
@@ -38,7 +39,7 @@ public class Arena {
     private ConfigOptions co;
     
     //SchedulerIds
-    private int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
+    private int money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
@@ -52,6 +53,7 @@ public class Arena {
     //Scheduler, status, etc
     private Status status;
     private AutoStartTimer startTimer;
+    private PlayTimer playTime;
     private boolean move = true;
     
     private int minimumPlayers = 2;
@@ -74,6 +76,7 @@ public class Arena {
     	this.previousLocation = new HashMap<String, Location>();
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
+    	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
     }
     
     /**
@@ -94,6 +97,7 @@ public class Arena {
     	this.previousLocation = new HashMap<String, Location>();
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
+    	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
     }
     
     /** Sets the name of this arena. */
@@ -220,6 +224,11 @@ public class Arena {
     	return this.startTimer;
     }
     
+    /** Returns the {@link PlayTimer} for the timer countdown. */
+    public PlayTimer getPlayTimer() {
+    	return this.playTime;
+    }
+    
     /** Sets the first corner to the given block coords. */
     public void setFirstCorner(int x, int y, int z) {
     	if(x == 0 && y == 0 && z == 0) return;
@@ -268,16 +277,6 @@ public class Arena {
 	public List<String> getWaitingToMove(){
 		return this.waitingToMove;
 	}
-    
-    /** Sets the scheduler id of the play timer task for this arena. */
-    public void setPlayTimer(int playtimer) {
-    	this.playTimer = playtimer;
-    }
-    
-    /** Gets the scheduler id of the play timer task for this arena. */
-    public int getPlayTimer() {
-    	return this.playTimer;
-    }
     
     /** Sets the scheduler id of the moneyscore task for this arena. */
     public void setMoneyScore(int moneyscore) {
@@ -449,6 +448,17 @@ public class Arena {
 	public int scheduleDelayedRepeatingTask(Runnable r, long delay, long period) {
 		return Bukkit.getScheduler().runTaskTimer(ctp, r, delay, period).getTaskId();
 	}
+	
+	/**
+	 * Schedules a task which ones once at after the specified time, delay, has passed.
+	 * 
+	 * @param r The task to be scheduled
+	 * @param delay The time to pass before we run this
+	 * @return The id of the scheduled task, -1 if something went wrong.
+	 */
+	public int scheduleDelayedTask(Runnable r, long delay) {
+		return Bukkit.getScheduler().scheduleSyncDelayedTask(ctp, r, delay);
+	}
     
     public void leaveGame(Player p, ArenaLeaveReason reason) {
         //On exit we get double signal
@@ -544,10 +554,10 @@ public class Arena {
         ctp.getUtil().sendMessageToPlayers(this, event.getEndMessage());
 
         // Task canceling
-        if (playTimer != 0) {
-            ctp.getServer().getScheduler().cancelTask(playTimer);
-            playTimer = 0;
+        if (playTime.getTaskId() != 0) {
+            playTime.cancel();
         }
+        
         if (money_Score != 0) {
             ctp.getServer().getScheduler().cancelTask(money_Score);
             money_Score = 0;

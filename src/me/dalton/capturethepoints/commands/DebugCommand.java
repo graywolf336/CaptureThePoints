@@ -163,7 +163,7 @@ public class DebugCommand extends CTPCommand {
         } else {
             total++;
         }
-        if (ctp.getArenaMaster().getSelectedArena().getPlayTimer() != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getPlayTimer().getTaskId() != -1) {
             running++; total++;
             result.add("Play Timer");
         } else {

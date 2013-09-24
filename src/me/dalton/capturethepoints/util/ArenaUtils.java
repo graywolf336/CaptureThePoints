@@ -1,7 +1,6 @@
 package me.dalton.capturethepoints.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -244,38 +243,8 @@ public class ArenaUtils {
     	
         arena.getStartTimer().start();
         
-        // Play time for points only
-        arena.setPlayTimer(ctp.getServer().getScheduler().scheduleSyncDelayedTask(ctp, new Runnable() {
-            public void run () {
-                if ((ctp.getArenaMaster().getArena(aName).getStatus().isRunning()) && (!ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
-                    int maxPoints = -9999;
-                    for (Team team : ctp.getArenaMaster().getArena(aName).getTeams()) {
-                        if (team.getControlledPoints() > maxPoints) {
-                            maxPoints = team.getControlledPoints();
-                        }
-                    }
-                    HashMap<String, String> colors = new HashMap<String, String>();
-
-                    for (Team team : ctp.getArenaMaster().getArena(aName).getTeams()) {
-                        if (team.getControlledPoints() == maxPoints) {
-                            colors.put(team.getColor(), team.getColor());
-                        }
-                    }
-
-                    for (String player : ctp.getArenaMaster().getArena(aName).getPlayersData().keySet()) {
-                        if ((ctp.getArenaMaster().getArena(aName).getPlayerData(player).inArena())
-                        		&& (colors.containsKey(ctp.getArenaMaster().getArena(aName).getPlayerData(player).getTeam().getColor()))) {
-                        	ctp.getArenaMaster().getArena(aName).getPlayerData(player).setWinner(true);
-                        }
-                    }
-                    
-                    ctp.getUtil().sendMessageToPlayers(ctp.getArenaMaster().getArena(aName), "Time out! " + ChatColor.GREEN + colors.values().toString().toUpperCase().replace(",", " and") + ChatColor.WHITE + " wins!");
-                    ctp.getArenaMaster().getArena(aName).setPlayTimer(0);
-                    ctp.getArenaMaster().getArena(aName).endGame(true, true);//The game ended so give rewards
-                }
-            }
-
-        }, arena.getConfigOptions().playTime * 20 * 60));
+        if(!arena.getConfigOptions().useScoreGeneration)
+        	arena.getPlayTimer().schedule();
 
         //Money giving and score generation
         arena.setMoneyScore(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
