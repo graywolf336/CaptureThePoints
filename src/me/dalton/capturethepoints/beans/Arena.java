@@ -91,6 +91,8 @@ public class Arena {
     	this.waitingToMove = new LinkedList<String>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
     	this.previousLocation = new HashMap<String, Location>();
+    	
+    	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
     }
     
     /** Sets the name of this arena. */
