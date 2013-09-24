@@ -213,6 +213,7 @@ public class ArenaUtils {
     public void moveToSpawns(Arena arena) {
     	CTPStartEvent event = new CTPStartEvent(arena, ctp.getLanguage().GAME_STARTED);
     	ctp.getPluginManager().callEvent(event);
+    	arena = event.getArena();
     	
         for (String player : arena.getPlayersData().keySet()) {
             moveToSpawns(arena, player);
