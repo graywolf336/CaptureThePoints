@@ -60,7 +60,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         
         if (arena != null && arena.getConfigOptions() != null && !arena.getConfigOptions().allowCommands) {
             String[] args = event.getMessage().split(" ");
-            if (!ctp.getPermissions().canAccess(player, false, new String[] { "ctp.*", "ctp.admin" }) && arena.isGameRunning() && arena.getPlayersData().containsKey(player.getName())
+            if (!ctp.getPermissions().canAccess(player, false, new String[] { "ctp.*", "ctp.admin" }) && arena.getStatus().isRunning() && arena.getPlayersData().containsKey(player.getName())
                     && !args[0].equalsIgnoreCase("/ctp")) {
             	ctp.sendMessage(player, ChatColor.RED + "You can't use commands while playing!");
                 event.setCancelled(true);
@@ -304,19 +304,17 @@ public class CaptureThePointsPlayerListener implements Listener {
         Player p = event.getPlayer();
         Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         
-        //Find out if the start counter is active, if so cancel them moving.
-        if(a.getStartCounterID() != 0) {//counter id is not 0
-        	if(a.getStartCounterID() != -1) {//counter id is not -1 (failed)
-        		if (a.getPlayerData(p.getName()).getMoveChecker() >= 5) {
-        			a.getPlayerData(p.getName()).setMoveChecker(0);
-                	event.setCancelled(true);
-                	if(ctp.getGlobalConfigOptions().debugMessages)
-                		ctp.logInfo("Cancelled a player move event because the start down counter is happening.");
-                	return;
-        		}else {
-        			a.getPlayerData(p.getName()).addOneMoveChecker();
-        		}
-        	}
+        //Find out if the players can move
+        if(!a.canMove()) {
+    		if (a.getPlayerData(p.getName()).getMoveChecker() >= 5) {
+    			a.getPlayerData(p.getName()).setMoveChecker(0);
+            	event.setCancelled(true);
+            	if(ctp.getGlobalConfigOptions().debugMessages)
+            		ctp.logInfo("Cancelled a player move event because the players can't move, due to the arena saying they can't.");
+            	return;
+    		}else {
+    			a.getPlayerData(p.getName()).addOneMoveChecker();
+    		}
         }
         
         if(!a.getPlayerData(p).inLobby()) {
@@ -352,7 +350,7 @@ public class CaptureThePointsPlayerListener implements Listener {
         Player p = event.getPlayer();
         Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
         
-        if(!a.isGameRunning() && a.getPlayerData(p.getName()).inLobby()) {
+        if(!a.getStatus().isRunning() && a.getPlayerData(p.getName()).inLobby()) {
         	a.getPlayerData(p.getName()).setInArena(false);
         	a.getPlayerData(p.getName()).setInLobby(false);
             a.getLobby().getPlayersInLobby().remove(p.getName());
@@ -370,7 +368,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     	
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(play.getName());
     	
-        if (!(a.isGameRunning())) {
+        if (!(a.getStatus().isRunning())) {
             if (a.getPlayerData(play.getName()) != null && a.getPlayerData(play.getName()).inLobby()) {
                 if (ctp.getArenaUtil().isInsideAB(event.getTo().toVector(), a.getFirstCorner(), a.getSecondCorner())
                 		&& event.getTo().getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
@@ -488,14 +486,14 @@ public class CaptureThePointsPlayerListener implements Listener {
     /** Check the lobby to see if player[s] can be transferred.  */
     private void checkLobby(Arena arena, Player p) {
         // Kj -- If autostart is turned off, might as well ignore this. However, if a game has started and someone wants to join, that's different.
-        if (arena.getConfigOptions().autoStart || !arena.isPreGame()) {
+        if (arena.getConfigOptions().autoStart || arena.getStatus().isRunning()) {
             Lobby lobby = arena.getLobby();
             int readypeople = lobby.countReadyPeople();
 
             // The maximum number of players must be greater than the players already playing.
             if (arena.getMaxPlayers() > arena.getPlayersPlaying().size()) {
                 // Game not yet started
-                if (arena.isPreGame()) {
+                if (!arena.getStatus().isRunning()) {
                     if (!lobby.hasUnreadyPeople()) {
                         if (readypeople >= arena.getMinPlayers()) {//We have more than the required amount of people
                             if (readypeople % arena.getTeams().size() == 0) {  // There may be more than two teams playing. 
@@ -695,7 +693,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 	 */
     public void useHealingItem(PlayerInteractEvent event, Arena arena, Player p) {
     	//Check if the game is running or not
-    	if (!arena.isGameRunning()) return;
+    	if (!arena.getStatus().isRunning()) return;
     	
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Material mat = p.getItemInHand().getType();
@@ -775,7 +773,7 @@ public class CaptureThePointsPlayerListener implements Listener {
 
 	@SuppressWarnings("deprecation")
 	public void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {
-        if(arena.isGameRunning() || !arena.getLobby().getPlayersInLobby().containsKey(p.getName()))
+        if(arena.getStatus().isRunning() || !arena.getLobby().getPlayersInLobby().containsKey(p.getName()))
             return;
         
         if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.WOOL)) {

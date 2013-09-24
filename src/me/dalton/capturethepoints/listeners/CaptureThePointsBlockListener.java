@@ -91,7 +91,7 @@ public class CaptureThePointsBlockListener implements Listener {
         Arena arena = ctp.getArenaMaster().getArenaPlayerIsIn(player);
         PlayerData playerdata = arena.getPlayerData(player);
         
-        if (!arena.isGameRunning()) {//idk what this does
+        if (!arena.getStatus().isRunning()) {//idk what this does
             return;
         }
 
@@ -231,7 +231,7 @@ public class CaptureThePointsBlockListener implements Listener {
         Arena arena = ctp.getArenaMaster().getArenaPlayerIsIn(player);
         PlayerData playerdata = arena.getPlayerData(player);
 
-        if (!arena.isGameRunning()) {//TODO: Verify the purpose of this, I'm totally confused on as to why this is here exactly
+        if (!arena.getStatus().isRunning()) {//TODO: Verify the purpose of this, I'm totally confused on as to why this is here exactly
             return;
         }
         

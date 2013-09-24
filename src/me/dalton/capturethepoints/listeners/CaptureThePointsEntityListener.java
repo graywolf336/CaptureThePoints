@@ -48,7 +48,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityExplode(EntityExplodeEvent event) {
         for(Arena a : ctp.getArenaMaster().getArenas()) {
-            if (!a.isGameRunning())
+            if (!a.getStatus().isRunning())
                 return;
             
             if(ctp.getGlobalConfigOptions().enableHardArenaRestore)
@@ -87,7 +87,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         if(!ctp.getArenaMaster().isPlayerInAnArena(((Player) event.getEntity())))
             return;
         
-        if(!ctp.getArenaMaster().getArenaPlayerIsIn((Player) event.getEntity()).isGameRunning() && ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()).inLobby())  {
+        if(!ctp.getArenaMaster().getArenaPlayerIsIn((Player) event.getEntity()).getStatus().isRunning() && ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()).inLobby())  {
             event.setDroppedExp(0);
             event.getDrops().clear();
             return;
@@ -105,7 +105,7 @@ public class CaptureThePointsEntityListener  implements Listener {
 	if(!ctp.getArenaMaster().isPlayerInAnArena(player))
 		return; //not in an arena
 	
-	if (ctp.getArenaMaster().getArenaPlayerIsIn(player).isGameRunning()) {
+	if (ctp.getArenaMaster().getArenaPlayerIsIn(player).getStatus().isRunning()) {
 		if(!ctp.getArenaMaster().getArenaPlayerIsIn(player).getConfigOptions().regainHealth) {
 			if (event.getRegainReason() == RegainReason.SATIATED) {
 				event.setCancelled(true);
@@ -124,7 +124,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     	
     	Player thrower = (Player) event.getEntity().getShooter();
     	
-        if (ctp.getArenaMaster().getArenaPlayerIsIn(thrower).isGameRunning()) {
+        if (ctp.getArenaMaster().getArenaPlayerIsIn(thrower).getStatus().isRunning()) {
             ThrownPotion potion = event.getEntity();
             PotionEffect effect = null;
             boolean harmful = false;

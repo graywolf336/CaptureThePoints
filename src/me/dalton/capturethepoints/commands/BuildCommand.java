@@ -14,6 +14,7 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Stands;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.enums.Status;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -182,7 +183,7 @@ public class BuildCommand extends CTPCommand {
                 	return;
                 }
 
-                ctp.getArenaMaster().getEditingArena().setEdit(true);
+                ctp.getArenaMaster().getEditingArena().setStatus(Status.CREATING);
                 sendMessage(ChatColor.WHITE + "Arena selected for editing: " + ChatColor.GREEN + arg2);
 
                 return;
@@ -206,11 +207,11 @@ public class BuildCommand extends CTPCommand {
                 }
                 
                 if(arg3.equalsIgnoreCase("true")) {
-                	ctp.getArenaMaster().getArena(arg2).setEnabled(true);
+                	ctp.getArenaMaster().getArena(arg2).setStatus(Status.JOINABLE);
                 	sendMessage(ChatColor.WHITE + "You have enabled the arena called " + arg2 + ".");
                 	return;
                 }else if(arg3.equalsIgnoreCase("false")) {
-                	ctp.getArenaMaster().getArena(arg2).setEnabled(false);
+                	ctp.getArenaMaster().getArena(arg2).setStatus(Status.DISABLED);
                 	sendMessage(ChatColor.WHITE + "You have disabled the arena called " + arg2 + ".");
                 	return;
                 }else {
@@ -301,7 +302,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
                 
-                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2)); //Create the new arena!
+                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2, ctp.getGlobalConfigOptions().startCountDownTime)); //Create the new arena!
                 ctp.getArenaMaster().setEditingArena(arg2); //After creating, set the editing arena to the one we created
                 
                 FileConfiguration config = ctp.getConfigTools().load();
@@ -344,7 +345,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
                 
-                if (ctp.getArenaMaster().getArena(arg2).isGameRunning()) {
+                if (ctp.getArenaMaster().getArena(arg2).getStatus().isRunning()) {
                     sendMessage(ChatColor.RED + "Cannot delete arena while game is running in it!");
                     return;
                 }

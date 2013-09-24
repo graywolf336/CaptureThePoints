@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -16,11 +17,13 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
+import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 import me.dalton.capturethepoints.listeners.TagAPIListener;
 
-/** Arena Data of the saved arenas for playing CTP.
+/** Arena Data of the saved arenas for playing {@link CaptureThePoints}.
+ * 
  * @author graywolf336
  */
 public class Arena {
@@ -28,14 +31,13 @@ public class Arena {
 	private CaptureThePoints ctp;
     private String name = "";
     private String world;
+    private Vector corner1, corner2;
     
     //config
     private ConfigOptions co;
     
     //SchedulerIds
-    private int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0, startCounterID = 0, startCount = 5, endCounterID = 0, endCount = 5;
-    
-	private boolean enabled = true, pregame = true, running = false, edit = false;
+    private int playTimer = 0, money_Score = 0, pointMessenger = 0, healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
@@ -45,7 +47,11 @@ public class Arena {
     private HashMap<String, Location> previousLocation;
     private Lobby lobby;
     private Stands stands;
-    private Vector corner1, corner2;
+    
+    //Scheduler, status, etc
+    private Status status;
+    private AutoStartTimer startTimer;
+    private boolean move = true;
     
     private int minimumPlayers = 2;
     private int maximumPlayers = 9999;
@@ -57,7 +63,7 @@ public class Arena {
      * @param plugin The CTP plugin instance.
      * @since 1.5.0-b126
      */
-    public Arena(CaptureThePoints plugin) {
+    public Arena(CaptureThePoints plugin, int startSeconds) {
     	this.ctp = plugin;
     	this.teamSpawns = new HashMap<String, Spawn>();
     	this.teams = new ArrayList<Team>();
@@ -65,6 +71,8 @@ public class Arena {
     	this.waitingToMove = new LinkedList<String>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
     	this.previousLocation = new HashMap<String, Location>();
+    	
+    	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
     }
     
     /**
@@ -74,7 +82,7 @@ public class Arena {
      * @param plugin The CTP plugin instance.
      * @param name The name of the arena.
      */
-    public Arena(CaptureThePoints plugin, String name) {
+    public Arena(CaptureThePoints plugin, String name, int startSeconds) {
     	this.ctp = plugin;
     	this.name = name;
     	this.teamSpawns = new HashMap<String, Spawn>();
@@ -169,6 +177,46 @@ public class Arena {
     	return this.stands;
     }
     
+    /**
+     * Gets the status of the {@link Arena}.
+     * 
+     * @return The {@link Status status} of the arena.
+     */
+    public Status getStatus() {
+    	return this.status;
+    }
+    
+    /** Sets the status of the {@link Arena arena}.
+     * 
+     * @param status Status to set the arena to.
+     */
+    public void setStatus(Status status) {
+    	this.status = status;
+    }
+    
+    /** Updates the status of the arena to what is suitable per players. */
+    public void updateStatusToRunning() {
+    	if(players.size() == maximumPlayers)
+    		status = Status.FULL_GAME;
+    	else
+    		status = Status.IN_GAME;
+    }
+    
+    /** Sets whether the players can move or not. */
+    public void setMoveAbility(boolean move) {
+    	this.move = move;
+    }
+    
+    /** Returns whether the players can move or not. */
+    public boolean canMove() {
+    	return this.move;
+    }
+    
+    /** Returns the {@link AutoStartTimer start timer} for this arena. */
+    public AutoStartTimer getStartTimer() {
+    	return this.startTimer;
+    }
+    
     /** Sets the first corner to the given block coords. */
     public void setFirstCorner(int x, int y, int z) {
     	if(x == 0 && y == 0 && z == 0) return;
@@ -248,26 +296,6 @@ public class Arena {
     	return this.pointMessenger;
     }
     
-    /** Sets the scheduler id of the startCounter task for this arena. */
-    public void setStartCounterID(int startCounterID) {
-    	this.startCounterID = startCounterID;
-    }
-    
-    /** Gets the scheduler id of the startCounter task for this arena. */
-    public int getStartCounterID() {
-    	return this.startCounterID;
-    }
-    
-    /** Sets the number in which to start the counter off for counting down to start a game. */
-    public void setStartCount(int count) {
-    	this.startCount = count;
-    }
-    
-    /** Gets the number in which to start the counter off at when starting the game. */
-    public int getStartCount() {
-    	return this.startCount;
-    }
-    
     /** Sets the scheduler id of the endCounter task for this arena. */
     public void setEndCounterID(int endCounterID) {
     	this.endCounterID = endCounterID;
@@ -296,88 +324,6 @@ public class Arena {
     /** Gets the scheduler id of the healingItemsCooldowns task for this arena. */
     public int getHealingItemsCooldowns() {
     	return this.healingItemsCooldowns;
-    }
-    
-    /**
-     * Sets if the arena is enabled or not.
-     * 
-     * @param enabled Should the arena be enabled or not.
-     * @since 1.5.0-b156
-     */
-    public void setEnabled(boolean enabled) {
-    	this.enabled = enabled;
-    }
-    
-    /**
-     * Returns if the arena is enabled or not.
-     * 
-     * @return True if the arena is enabled, false if not.
-     * @since 1.5.0-b156
-     */
-    public boolean isEnabled() {
-    	return this.enabled;
-    }
-    
-    /**
-     * Sets whether the arena is being edited or not.
-     * 
-     * @param edit Setting the arena to edit mode or not.
-     * @since 1.5.0-b156
-     */
-    public void setEdit(boolean edit) {
-    	this.edit = edit;
-    }
-    
-    /**
-     * Returns if the arena is in editing mode or not.
-     * 
-     * @return True if the arena is in edit mode, false if not.
-     * @since 1.5.0-b156
-     */
-    public boolean isEdit() {
-    	return this.edit;
-    }
-    
-    /**
-     * Sets if the game is running or not.
-     * 
-     * @param running True if running, false if not.
-     * @since 1.5.0-b123
-     */
-    public void setRunning(boolean running) {
-    	this.running = running;
-    }
-    
-    /**
-     * Returns if the game is running or not.
-     * <p />
-     * 
-     * @return True if the game is running, false if not.
-     * @since 1.5.0-b123
-     */
-    public boolean isGameRunning() {
-    	return this.running;
-    }
-    
-    /**
-     * Sets if the game is in pregame or not.
-     * 
-     * @param pregame True if is pregame, false if not.
-     * @since 1.5.0-b126
-     */
-    public void setPreGame(boolean pregame) {
-    	this.pregame = pregame;
-    }
-    
-    /**
-     * Returns if the game is in pregame or not.
-     * <p />
-     * 
-     * @return True if the game is in the pregame, false if not.
-     * @since 1.5.0-b126
-     */
-    public boolean isPreGame() {
-    	return this.pregame;
     }
     
     /** Returns a list of all the players in the arena, including the lobby, as a List of Strings of their name.
@@ -489,6 +435,18 @@ public class Arena {
         return this.lobby != null;
     }
     
+    /**
+     * Schedules a repeating task to run after the given delayed time and repeats after the given time, both in ticks.
+     * 
+     * @param r The count down task to schedule
+     * @param delay The ticks to wait before running the task
+     * @param period The ticks to wait between runs
+     * @return The id of the task.
+     */
+	public int scheduleDelayedTask(Runnable r, long delay, long period) {
+		return Bukkit.getScheduler().runTaskTimer(ctp, r, delay, period).getTaskId();
+	}
+    
     public void leaveGame(Player p, ArenaLeaveReason reason) {
         //On exit we get double signal
         if (players.get(p.getName()) == null)
@@ -524,7 +482,7 @@ public class Arena {
 
         // Check for player replacement if there is someone waiting to join the game
         boolean wasReplaced = false;
-        if (getConfigOptions().exactTeamMemberCount && isGameRunning()) {
+        if (getConfigOptions().exactTeamMemberCount && status.isRunning()) {
             for (String playerName : players.keySet()) {
                 if (players.get(playerName).inLobby() && players.get(playerName).isReady()) {
                     ctp.getArenaUtil().moveToSpawns(this, playerName);
@@ -539,7 +497,7 @@ public class Arena {
             ctp.checkForGameEndThenPlayerLeft(this);
             
         //If there was no replacement we should move one member to lobby
-        if (!wasReplaced && getConfigOptions().exactTeamMemberCount && isGameRunning())
+        if (!wasReplaced && getConfigOptions().exactTeamMemberCount && status.isRunning())
             if (getConfigOptions().balanceTeamsWhenPlayerLeaves > 0)
                 ctp.balanceTeams(this, 0, getConfigOptions().balanceTeamsWhenPlayerLeaves);
     }
@@ -600,21 +558,18 @@ public class Arena {
             healingItemsCooldowns = 0;
         }
         
-        if(startCounterID != 0) {
-        	ctp.getServer().getScheduler().cancelTask(startCounterID);
-        	startCounterID = 0;
+        if(startTimer.getTaskId() != -1) {
+        	startTimer.stop();
         }
         
         if(endCounterID != 0) {
         	ctp.getServer().getScheduler().cancelTask(endCounterID);
-        	startCounterID = 0;
         }
 
         for (Points s : getCapturePoints())
             s.setControlledByTeam(null);
         
-        setPreGame(true);
-        setRunning(false);
+        status = Status.JOINABLE;
 
         for (String player : getPlayersData().keySet()) {
         	Player p = ctp.getServer().getPlayer(player);
@@ -642,7 +597,6 @@ public class Arena {
         getPlayers().clear();
         
         //Reset the count downs
-        startCount = getConfigOptions().startCountDownTime;
         endCount = getConfigOptions().endCountDownTime;
         
         for (Team t : getTeams()) {

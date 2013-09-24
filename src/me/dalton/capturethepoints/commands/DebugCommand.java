@@ -69,7 +69,7 @@ public class DebugCommand extends CTPCommand {
         
         sendMessage("Outputting CTP info (1) to Console.");
         ctp.logInfo("-----------========== CTP DEBUG ==========-----------");
-        ctp.logInfo("Game running (selected arena): " + ctp.getArenaMaster().getSelectedArena().isGameRunning());
+        ctp.logInfo("Game running (selected arena): " + ctp.getArenaMaster().getSelectedArena().getStatus().isRunning());
         String checkMainArena = ctp.getArenaMaster().checkArena(ctp.getArenaMaster().getSelectedArena(), player); //Check arena, if there is an error, an error message is returned.
         if (!checkMainArena.isEmpty()) {
             ctp.logInfo("Main Arena errors: "+checkMainArena);
@@ -85,7 +85,7 @@ public class DebugCommand extends CTPCommand {
         		|| ctp.getArenaMaster().getSelectedArena().getPlayersData().size() != (ctp.getArenaMaster().getSelectedArena().getLobby().getPlayersInLobby().size() + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size())) {
             result.add("Inconsistant number of Players: [" + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size() + " | " + ctp.getArenaMaster().getSelectedArena().getPlayersData().size() + " | " + (ctp.getArenaMaster().getSelectedArena().getLobby().countAllPeople() + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size()) + "]");
         }
-        if (!ctp.getArenaMaster().hasSuitableArena(ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size()) && ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
+        if (!ctp.getArenaMaster().hasSuitableArena(ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size()) && ctp.getArenaMaster().getSelectedArena().getStatus().isRunning()) {
             result.add("No suitable arena for the number of people playing: " + ctp.getArenaMaster().getSelectedArena().getPlayersPlaying().size());
         }
         boolean error = false;

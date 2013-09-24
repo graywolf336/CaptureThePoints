@@ -38,7 +38,7 @@ public class JoinAllCommand extends CTPCommand {
             }
         }
             
-        if (ctp.getArenaMaster().getSelectedArena().isGameRunning())
+        if (ctp.getArenaMaster().getSelectedArena().getStatus().isRunning())
             ctp.getArenaMaster().getSelectedArena().endGame(false, false);//Don't give rewards as the game ended prematurely.
         
         int numberofplayers = ctp.getServer().getOnlinePlayers().length;

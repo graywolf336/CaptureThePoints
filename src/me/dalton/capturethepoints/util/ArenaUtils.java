@@ -85,7 +85,7 @@ public class ArenaUtils {
      * @return The message to send to the players.
      */
     public String addPoints(Arena arena, String aTeam, String gainedpoint) {
-    	if(arena.isGameRunning()) {
+    	if(arena.getStatus().isRunning()) {
             for (Team team : arena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(aTeam)) {
                     team.addOneControlledPoints();
@@ -110,7 +110,7 @@ public class ArenaUtils {
      * @return The message to send to the players.
      */
     public String subtractPoints(Arena arena, String aTeam, String lostpoint) { // Kj -- remade.
-        if (arena.isGameRunning()) {
+        if (arena.getStatus().isRunning()) {
             for (Team team : arena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(aTeam)) {
                     team.substractOneControlledPoints();
@@ -142,7 +142,6 @@ public class ArenaUtils {
      * @param first The first point
      * @param second The second point
      * @return True if they are inside, false if not.
-     * @deprecated
      */
     private boolean isInside(int loc, int first, int second) {
         int point1 = 0;
@@ -211,10 +210,7 @@ public class ArenaUtils {
 
         ctp.getUtil().sendMessageToPlayers(arena, message);
         
-        arena.setPreGame(true);
-        arena.setRunning(false);
         arena.endGame(true, true);//End the game and give the rewards.
-
         return true;
     }
     
@@ -240,36 +236,18 @@ public class ArenaUtils {
 
         ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + event.getStartMessage() + " " + arena.getName() + "!");
         
-        arena.setPreGame(false);
-        arena.setRunning(true);
+        arena.updateStatusToRunning();
         
         didSomeoneWin(arena);
 
         final String aName = arena.getName();
-        
-    	arena.setStartCounterID(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-    		public void run() {
-    			Arena temp = ctp.getArenaMaster().getArena(aName);
-    			if(ctp.getArenaMaster().getArena(aName).getStartCount() == 0) {
-    				ctp.getUtil().sendMessageToPlayers(temp, "...Go!");
-    				ctp.getServer().getScheduler().cancelTask(temp.getStartCounterID());
-    				ctp.getArenaMaster().getArena(aName).setStartCounterID(0);
-    				return;
-    			}
-    			
-    			if(temp.getConfigOptions().startCountDownTime == temp.getStartCount())
-    				ctp.getUtil().sendMessageToPlayers(temp, ctp.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(temp.getStartCount())));
-    			else
-    				ctp.getUtil().sendMessageToPlayers(temp, temp.getStartCount() + "..");
-    			
-    			ctp.getArenaMaster().getArena(aName).setStartCount(temp.getStartCount() - 1);//Set the counter to one minus what it current this.
-    		}
-    	}, 0L, 20L));
     	
+        arena.getStartTimer().start();
+        
         // Play time for points only
         arena.setPlayTimer(ctp.getServer().getScheduler().scheduleSyncDelayedTask(ctp, new Runnable() {
             public void run () {
-                if ((ctp.getArenaMaster().getArena(aName).isGameRunning()) && (!ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
+                if ((ctp.getArenaMaster().getArena(aName).getStatus().isRunning()) && (!ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
                     int maxPoints = -9999;
                     for (Team team : ctp.getArenaMaster().getArena(aName).getTeams()) {
                         if (team.getControlledPoints() > maxPoints) {
@@ -302,7 +280,7 @@ public class ArenaUtils {
         //Money giving and score generation
         arena.setMoneyScore(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             public void run () {
-                if (ctp.getArenaMaster().getArena(aName).isGameRunning()) {
+                if (ctp.getArenaMaster().getArena(aName).getStatus().isRunning()) {
                     for (PlayerData data : ctp.getArenaMaster().getArena(aName).getPlayersData().values())
                         if (data.inArena())
                             data.setMoney(data.getMoney() + ctp.getArenaMaster().getArena(aName).getConfigOptions().moneyEvery30Sec);
@@ -332,7 +310,7 @@ public class ArenaUtils {
         //Messages about score
         arena.setPointMessenger(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             public void run () {
-                if (ctp.getArenaMaster().getArena(aName).isGameRunning() && (ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
+                if (ctp.getArenaMaster().getArena(aName).getStatus().isRunning() && (ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
                     String s = "";
                     for (Team team : ctp.getArenaMaster().getArena(aName).getTeams())
                         s = s + team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " score: " + team.getScore() + ChatColor.AQUA + " // "; // Kj -- Added teamcolour
@@ -350,7 +328,7 @@ public class ArenaUtils {
         // Healing items cooldowns
         arena.setHealingItemsCooldowns(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
             public void run () {
-                if (ctp.getArenaMaster().getArena(aName).isGameRunning()) {
+                if (ctp.getArenaMaster().getArena(aName).getStatus().isRunning()) {
                     for (HealingItems item : ctp.getHealingItems()) {
                         if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
                             for (String playName : item.cooldowns.keySet()) {

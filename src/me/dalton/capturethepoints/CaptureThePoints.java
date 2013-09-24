@@ -428,7 +428,7 @@ public class CaptureThePoints extends JavaPlugin {
     }
 
     public void checkForGameEndThenPlayerLeft(Arena a) {
-        if (a.getPlayersData().size() < 2 && !a.isPreGame()) {
+        if (a.getPlayersData().size() < 2) {
             //maybe dc or something. it should be moved to checking to see players who left the game
             boolean zeroPlayers = true;
             for (int i = 0; i < a.getTeams().size(); i++) {

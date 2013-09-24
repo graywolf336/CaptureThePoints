@@ -33,7 +33,7 @@ public class StartCommand extends CTPCommand {
         Lobby lobby = ctp.getArenaMaster().getArena(parameters.get(2)).getLobby();
         int readypeople = lobby.countReadyPeople();
             
-        if (!arena.isPreGame()) {
+        if (arena.getStatus().isRunning()) {
             sendMessage(ChatColor.RED + "A game has already been started.");
             return;
         }

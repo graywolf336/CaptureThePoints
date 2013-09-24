@@ -65,7 +65,7 @@ public class AutoCommand extends CTPCommand {
             return;
         }
         
-        if (ctp.getArenaMaster().getSelectedArena().isGameRunning()) {
+        if (ctp.getArenaMaster().getSelectedArena().getStatus().isRunning()) {
             sendMessage(ctp.getLanguage().PREVIOUS_GAME_TERMINATED);
             ctp.getArenaMaster().getSelectedArena().endGame(false, false);//Don't give rewards as we have ended the game prematurely.
         }

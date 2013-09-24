@@ -119,14 +119,14 @@ public class ConfigOptions {
     /** Should we count down on game start or not. [Default: false] */
     public boolean useStartCountDown = false;
     
-    /** The amount of time in seconds we should count down for the start counter. [Default: 5] */
-    public int startCountDownTime = 5;
+    /** The amount of time in seconds we should count down for the start counter. [Default: 10] */
+    public int startCountDownTime = 10;
     
     /** Should we count down on game end or not. [Default: false] */
     public boolean useEndCountDown = false;
     
-    /** The amount of time in seconds we should count down for the end counter. [Default: 5] */
-    public int endCountDownTime = 5;
+    /** The amount of time in seconds we should count down for the end counter. [Default: 10] */
+    public int endCountDownTime = 10;
     
     /** The KillStreak messages generated, starting from 2 kills in a row. <br>
      * [Default: "%player strikes again!", "%player is on a killing spree!", "%player is on a rampage!", "%player is unstoppable!", "%player is GOD-LIKE!"] 

@@ -31,6 +31,7 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Stands;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
 import me.dalton.capturethepoints.util.PotionManagement;
 
@@ -249,12 +250,12 @@ public class ArenaMaster {
 	
     /**Loads ArenaData data ready for assignment to mainArena */
     public Arena loadArena(String name) {
-        Arena arena = new Arena(ctp, name);
-        
         File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + name + ".yml");
         FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
         
         String world = arenaConf.getString("World");
+        
+        Arena arena = new Arena(ctp, name, arenaConf.getInt("GlobalSettings.CountDowns.StartCountDownTime", 10));
         
         // Kj -- check the world to see if it exists. 
         try {
@@ -550,16 +551,16 @@ public class ArenaMaster {
     	if(arena.getCapturePoints().size() == 0)
     		return ctp.getLanguage().checks_NO_POINTS;
     	
-    	if(arena.isEdit())
+    	if(arena.getStatus() == Status.CREATING)
     		return ctp.getLanguage().checks_EDIT_MODE;
     	
-    	if(!arena.isEnabled())
+    	if(arena.getStatus() == Status.DISABLED)
     		return ctp.getLanguage().checks_DISABLED;
     	
     	if(arena.getPlayersPlaying().size() == arena.getMaxPlayers())
     		return ctp.getLanguage().checks_FULL_ARENA;
     	
-    	if(arena.isGameRunning() && !arena.getConfigOptions().allowLateJoin)
+    	if(arena.getStatus().isRunning() && !arena.getConfigOptions().allowLateJoin)
     		return ctp.getLanguage().checks_GAME_ALREADY_STARTED;
     	
     	return "";
