@@ -1,4 +1,5 @@
 name: CaptureThePoints
+prefix: CTP
 main: me.dalton.capturethepoints.CaptureThePoints
 version: 1.5.0-b${BUILD_NUMBER}
 authors: [dalton, Humsas, kjhf, graywolf336]
