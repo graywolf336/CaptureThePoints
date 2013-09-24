@@ -15,6 +15,7 @@ public class ScoreGenerationTask {
     public ScoreGenerationTask(CaptureThePoints plugin, Arena arena) {
     	this.pl = plugin;
     	this.arena = arena;
+    	scheduled = false;
     }
     
     /**

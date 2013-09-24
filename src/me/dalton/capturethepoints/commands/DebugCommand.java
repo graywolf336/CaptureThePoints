@@ -169,7 +169,7 @@ public class DebugCommand extends CTPCommand {
         } else {
             total++;
         }
-        if (ctp.getArenaMaster().getSelectedArena().getPointMessenger() != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getScoreMessenger().getTaskId() != -1) {
             running++; total++;
             result.add("Points Messenger");
         } else {

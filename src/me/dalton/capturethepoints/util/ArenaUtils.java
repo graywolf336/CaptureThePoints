@@ -248,24 +248,9 @@ public class ArenaUtils {
 
         //Money giving and score generation
         arena.getScoreGenTask().start();
-
-        //Messages about score
-        arena.setPointMessenger(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            public void run () {
-                if (ctp.getArenaMaster().getArena(aName).getStatus().isRunning() && (ctp.getArenaMaster().getArena(aName).getConfigOptions().useScoreGeneration)) {
-                    String s = "";
-                    for (Team team : ctp.getArenaMaster().getArena(aName).getTeams())
-                        s = s + team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " score: " + team.getScore() + ChatColor.AQUA + " // "; // Kj -- Added teamcolour
-                    
-                    for (String player : ctp.getArenaMaster().getArena(aName).getPlayersData().keySet()) {
-                    	Player p = ctp.getServer().getPlayer(player);
-                    	ctp.sendMessage(p, "Max Score: " + ChatColor.GOLD + ctp.getArenaMaster().getArena(aName).getConfigOptions().scoreToWin); // Kj -- Green -> Gold
-                    	ctp.sendMessage(p, s);
-                    }
-                }
-            }
-
-        }, arena.getConfigOptions().scoreAnnounceTime * 20, arena.getConfigOptions().scoreAnnounceTime * 20));
+        
+        if(arena.getConfigOptions().useScoreGeneration)
+        	arena.getScoreMessenger().start();
 
         // Healing items cooldowns
         arena.setHealingItemsCooldowns(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {

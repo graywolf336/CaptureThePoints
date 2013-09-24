@@ -2,15 +2,6 @@ package me.dalton.capturethepoints.beans;
 
 /** The schedulers used by CTP */
 public class SchedulerIds {
-    
-  /** The timer used to give players money every x seconds */
-  public int money_Score;
-  
-  /** The timer used to track game time. */
-  public int playTimer;
-  
-  /** The timer used to announce points/scores of teams */
-  public int pointMessenger;
   
   /** The timer used to check time players have been in the lobby (and then to see if they need kicking) */
   public int lobbyActivity; // Kjhf

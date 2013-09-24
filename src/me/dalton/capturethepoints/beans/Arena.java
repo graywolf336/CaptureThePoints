@@ -19,6 +19,7 @@ import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.tasks.AutoStartTimer;
 import me.dalton.capturethepoints.beans.tasks.PlayTimer;
 import me.dalton.capturethepoints.beans.tasks.ScoreGenerationTask;
+import me.dalton.capturethepoints.beans.tasks.ScoreMessengerTask;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;
@@ -40,7 +41,7 @@ public class Arena {
     private ConfigOptions co;
     
     //SchedulerIds
-    private int pointMessenger = 0, healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
+    private int healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
@@ -56,6 +57,7 @@ public class Arena {
     private AutoStartTimer startTimer;
     private PlayTimer playTime;
     private ScoreGenerationTask scoreGen;
+    private ScoreMessengerTask scoreMsg;
     private boolean move = true;
     
     private int minimumPlayers = 2;
@@ -79,6 +81,8 @@ public class Arena {
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
     	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
+    	this.scoreGen = new ScoreGenerationTask(ctp, this);
+    	this.scoreMsg = new ScoreMessengerTask(ctp, this);
     }
     
     /**
@@ -100,6 +104,8 @@ public class Arena {
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
     	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
+    	this.scoreGen = new ScoreGenerationTask(ctp, this);
+    	this.scoreMsg = new ScoreMessengerTask(ctp, this);
     }
     
     /** Sets the name of this arena. */
@@ -231,9 +237,14 @@ public class Arena {
     	return this.playTime;
     }
     
-    /** Returns the {@link ScoreGenerationTask} for the scoure generation task. */
+    /** Returns the {@link ScoreGenerationTask} for the score generation task. */
     public ScoreGenerationTask getScoreGenTask() {
     	return this.scoreGen;
+    }
+    
+    /** Returns the {@link ScoreMessengerTask} for the score messaging to the players. */
+    public ScoreMessengerTask getScoreMessenger() {
+    	return this.scoreMsg;
     }
     
     /** Sets the first corner to the given block coords. */
@@ -284,16 +295,6 @@ public class Arena {
 	public List<String> getWaitingToMove(){
 		return this.waitingToMove;
 	}
-    
-    /** Sets the scheduler id of the pointMessenger task for this arena. */
-    public void setPointMessenger(int pointmessager) {
-    	this.pointMessenger = pointmessager;
-    }
-    
-    /** Gets the scheduler id of the pointMessenger task for this arena. */
-    public int getPointMessenger() {
-    	return this.pointMessenger;
-    }
     
     /** Sets the scheduler id of the endCounter task for this arena. */
     public void setEndCounterID(int endCounterID) {
@@ -558,10 +559,11 @@ public class Arena {
         if (scoreGen.getTaskId() != -1) {
         	scoreGen.cancel();
         }
-        if (pointMessenger != 0) {
-            ctp.getServer().getScheduler().cancelTask(pointMessenger);
-            pointMessenger = 0;
+        
+        if (scoreMsg.getTaskId() != -1) {
+            scoreMsg.cancel();
         }
+        
         if (healingItemsCooldowns != 0) {
             ctp.getServer().getScheduler().cancelTask(healingItemsCooldowns);
             healingItemsCooldowns = 0;
