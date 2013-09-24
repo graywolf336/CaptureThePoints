@@ -1,4 +1,4 @@
-package me.dalton.capturethepoints.beans.timers;
+package me.dalton.capturethepoints.beans.tasks;
 
 import java.util.HashSet;
 

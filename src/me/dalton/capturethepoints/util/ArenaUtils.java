@@ -241,6 +241,7 @@ public class ArenaUtils {
 
         final String aName = arena.getName();
     	
+        //Start the timers/scheduler/tasks/whatever you wanna call it
         arena.getStartTimer().start();
         
         if(!arena.getConfigOptions().useScoreGeneration)

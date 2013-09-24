@@ -16,8 +16,8 @@ import org.bukkit.util.Vector;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
-import me.dalton.capturethepoints.beans.timers.AutoStartTimer;
-import me.dalton.capturethepoints.beans.timers.PlayTimer;
+import me.dalton.capturethepoints.beans.tasks.AutoStartTimer;
+import me.dalton.capturethepoints.beans.tasks.PlayTimer;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;
@@ -554,7 +554,7 @@ public class Arena {
         ctp.getUtil().sendMessageToPlayers(this, event.getEndMessage());
 
         // Task canceling
-        if (playTime.getTaskId() != 0) {
+        if (playTime.getTaskId() != -1) {
             playTime.cancel();
         }
         

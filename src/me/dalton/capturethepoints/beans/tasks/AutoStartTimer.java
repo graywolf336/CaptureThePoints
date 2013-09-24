@@ -1,4 +1,4 @@
-package me.dalton.capturethepoints.beans.timers;
+package me.dalton.capturethepoints.beans.tasks;
 
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.beans.Arena;
