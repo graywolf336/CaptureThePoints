@@ -446,7 +446,7 @@ public class Arena {
      * @param period The ticks to wait between runs
      * @return The id of the task.
      */
-	public int scheduleDelayedTask(Runnable r, long delay, long period) {
+	public int scheduleDelayedRepeatingTask(Runnable r, long delay, long period) {
 		return Bukkit.getScheduler().runTaskTimer(ctp, r, delay, period).getTaskId();
 	}
     

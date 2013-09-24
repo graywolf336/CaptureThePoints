@@ -90,7 +90,7 @@ public class AutoStartTimer {
          * Start the timer
          */
         public synchronized void start() {
-            id = arena.scheduleDelayedTask(this, 20, 20);
+            id = arena.scheduleDelayedRepeatingTask(this, 20, 20);
         }
         
         /**
