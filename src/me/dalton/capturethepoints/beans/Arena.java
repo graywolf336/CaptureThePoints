@@ -16,6 +16,7 @@ import org.bukkit.util.Vector;
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
+import me.dalton.capturethepoints.beans.timers.AutoStartTimer;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;

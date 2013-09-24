@@ -1,6 +1,7 @@
-package me.dalton.capturethepoints.beans;
+package me.dalton.capturethepoints.beans.timers;
 
 import me.dalton.capturethepoints.CaptureThePoints;
+import me.dalton.capturethepoints.beans.Arena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
