@@ -5,9 +5,18 @@ package me.dalton.capturethepoints.beans;
  * @author Humsas
  */
 public class PlayersAndCooldowns {
+	private String player;
     private int cooldown = 0;
     private int healingTimesLeft = 0;
     private int intervalTimeLeft = 0;
+    
+    public PlayersAndCooldowns(String player) {
+    	this.player = player;
+    }
+    
+    public String getPlayer() {
+    	return this.player;
+    }
     
     public void setCooldown(int cooldown) {
     	this.cooldown = cooldown;

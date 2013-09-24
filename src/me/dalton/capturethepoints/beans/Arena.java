@@ -17,6 +17,7 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.tasks.AutoStartTimer;
+import me.dalton.capturethepoints.beans.tasks.ItemCoolDownsTask;
 import me.dalton.capturethepoints.beans.tasks.PlayTimer;
 import me.dalton.capturethepoints.beans.tasks.ScoreGenerationTask;
 import me.dalton.capturethepoints.beans.tasks.ScoreMessengerTask;
@@ -41,7 +42,7 @@ public class Arena {
     private ConfigOptions co;
     
     //SchedulerIds
-    private int healingItemsCooldowns = 0, endCounterID = 0, endCount = 5;
+    private int endCounterID = 0, endCount = 5;
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
@@ -55,6 +56,7 @@ public class Arena {
     //Scheduler, status, etc
     private Status status;
     private AutoStartTimer startTimer;
+    private ItemCoolDownsTask itemCoolDowns;
     private PlayTimer playTime;
     private ScoreGenerationTask scoreGen;
     private ScoreMessengerTask scoreMsg;
@@ -80,6 +82,7 @@ public class Arena {
     	this.previousLocation = new HashMap<String, Location>();
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
+    	this.itemCoolDowns = new ItemCoolDownsTask(ctp, this);
     	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
     	this.scoreGen = new ScoreGenerationTask(ctp, this);
     	this.scoreMsg = new ScoreMessengerTask(ctp, this);
@@ -103,6 +106,7 @@ public class Arena {
     	this.previousLocation = new HashMap<String, Location>();
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
+    	this.itemCoolDowns = new ItemCoolDownsTask(ctp, this);
     	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
     	this.scoreGen = new ScoreGenerationTask(ctp, this);
     	this.scoreMsg = new ScoreMessengerTask(ctp, this);
@@ -232,6 +236,11 @@ public class Arena {
     	return this.startTimer;
     }
     
+    /** Returns the {@link ItemCoolDownsTask} for this arena. */
+    public ItemCoolDownsTask getItemCoolDownTask() {
+    	return this.itemCoolDowns;
+    }
+    
     /** Returns the {@link PlayTimer} for the timer countdown. */
     public PlayTimer getPlayTimer() {
     	return this.playTime;
@@ -314,16 +323,6 @@ public class Arena {
     /** Gets the number in which to start the counter off at when ending the game and teleporting out. */
     public int getEndCount() {
     	return this.endCount;
-    }
-    
-    /** Sets the scheduler id of the healingItemsCooldowns task for this arena. */
-    public void setHealingItemsCooldowns(int healingitems) {
-    	this.healingItemsCooldowns = healingitems;
-    }
-    
-    /** Gets the scheduler id of the healingItemsCooldowns task for this arena. */
-    public int getHealingItemsCooldowns() {
-    	return this.healingItemsCooldowns;
     }
     
     /** Returns a list of all the players in the arena, including the lobby, as a List of Strings of their name.
@@ -564,9 +563,8 @@ public class Arena {
             scoreMsg.cancel();
         }
         
-        if (healingItemsCooldowns != 0) {
-            ctp.getServer().getScheduler().cancelTask(healingItemsCooldowns);
-            healingItemsCooldowns = 0;
+        if (itemCoolDowns.getTaskId() != -1) {
+        	itemCoolDowns.cancel();
         }
         
         if(startTimer.getTaskId() != -1) {

@@ -145,7 +145,7 @@ public class DebugCommand extends CTPCommand {
         ctp.logInfo(ctp.getRoles().size() + " Roles found: " + ctp.getRoles().keySet().toString());
         
         int running = 0, total = 0;
-        if (ctp.getArenaMaster().getSelectedArena().getHealingItemsCooldowns() != 0) {
+        if (ctp.getArenaMaster().getSelectedArena().getItemCoolDownTask().getTaskId() != -1) {
             running++; total++;
             result.add("Item Cooldowns");
         } else {

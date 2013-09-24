@@ -14,10 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import me.dalton.capturethepoints.CaptureThePoints;
-import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.PlayerData;
-import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.events.CTPStartEvent;
@@ -237,8 +235,6 @@ public class ArenaUtils {
         arena.updateStatusToRunning();
         
         didSomeoneWin(arena);
-
-        final String aName = arena.getName();
     	
         //Start the timers/scheduler/tasks/whatever you wanna call it
         arena.getStartTimer().start();
@@ -251,43 +247,8 @@ public class ArenaUtils {
         
         if(arena.getConfigOptions().useScoreGeneration)
         	arena.getScoreMessenger().start();
-
-        // Healing items cooldowns
-        arena.setHealingItemsCooldowns(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-            public void run () {
-                if (ctp.getArenaMaster().getArena(aName).getStatus().isRunning()) {
-                    for (HealingItems item : ctp.getHealingItems()) {
-                        if (item != null && item.cooldowns != null && item.cooldowns.size() > 0) {
-                            for (String playName : item.cooldowns.keySet()) {
-                                PlayersAndCooldowns data = item.cooldowns.get(playName);
-                                Player player = ctp.getServer().getPlayer(playName);
-                                if (data.getCooldown() == 1) {// This is cause we begin from top
-                                	player.sendMessage(ChatColor.GREEN + item.item.getItem().toString().toLowerCase() + ChatColor.WHITE + " cooldown has refreshed!");
-                                }
-
-                                if (data.getHealingTimesLeft() > 0 && data.getIntervalTimeLeft() <= 0) {
-                                    if (ctp.getServer().getPlayer(playName).getHealth() + item.hotHeal > ctp.getArenaMaster().getArena(aName).getConfigOptions().maxPlayerHealth) {
-                                    	ctp.getArenaUtil().healPlayerAndCallEvent(player, ctp.getArenaMaster().getArena(aName).getConfigOptions().maxPlayerHealth);
-                                    } else {
-                                    	ctp.getArenaUtil().healPlayerAndCallEvent(player, player.getHealth() + item.hotHeal);
-                                    }
-                                    data.setIntervalTimeLeft(item.hotInterval);
-                                    data.setHealingTimesLeft(data.getHealingTimesLeft() - 1);
-                                }
-                                
-                                data.setIntervalTimeLeft(data.getIntervalTimeLeft() - 1);
-                                data.setCooldown(data.getCooldown() - 1);
-
-                                if (data.getCooldown() <= 0 && data.getHealingTimesLeft() <= 0) {
-                                    item.cooldowns.remove(playName);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        }, 20L, 20L)); // Every second (one)
+        
+        arena.getItemCoolDownTask().start();
     }
     
 	@SuppressWarnings("deprecation")

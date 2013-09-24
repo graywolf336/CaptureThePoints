@@ -722,7 +722,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                     }
                     
                     if (cooldownData == null) {
-                        cooldownData = new PlayersAndCooldowns();
+                        cooldownData = new PlayersAndCooldowns(p.getName());
                     } else {
                         alreadyExists = true;
                     }
