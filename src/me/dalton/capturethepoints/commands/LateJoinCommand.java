@@ -21,7 +21,7 @@ public class LateJoinCommand extends CTPCommand {
     public void perform() {
         if (!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
             if (ctp.getArenaMaster().getArena(parameters.get(2)).getStatus().isRunning())
-            	ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
+            	ctp.getArenaMaster().getArena(parameters.get(2)).joinLobby(player);
             else
                 sendMessage(ctp.getLanguage().GAME_NOT_STARTED);
             return;

@@ -36,7 +36,7 @@ public class PJoinCommand extends CTPCommand {
                 ctp.sendMessage(bob, ChatColor.GREEN + sender.getName() + ChatColor.WHITE + " forced you to join CTP!");
             }
             
-            ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getArena(parameters.get(3)), bob);
+            ctp.getArenaMaster().getArena(parameters.get(3)).joinLobby(bob);
         } else {
             sendMessage(ChatColor.GOLD + parameters.get(2) + ChatColor.RED +" is already playing CTP!");
         }

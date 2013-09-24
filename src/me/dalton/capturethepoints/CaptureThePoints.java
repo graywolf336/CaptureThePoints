@@ -46,7 +46,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class CaptureThePoints extends JavaPlugin {
 	private Permission permission = null;
-    private Economy economyHandler = null;
+    private Economy economy = null;
     private boolean UsePermissions;
     private boolean useTag = false;
 
@@ -204,6 +204,7 @@ public class CaptureThePoints extends JavaPlugin {
         arenaRestore.cancelArenaRestoreSchedules();
         clearConfig();
         pluginManager = null;
+        economy = null;
         permission = null;
         commands.clear();
     }
@@ -666,12 +667,12 @@ public class CaptureThePoints extends JavaPlugin {
 
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if (economyProvider != null) 
-            economyHandler = economyProvider.getProvider();
+            economy = economyProvider.getProvider();
 
-        if(economyHandler != null)
+        if(economy != null)
         	logInfo("Vault plugin found, economy support enabled.");
 
-        return economyHandler != null;
+        return economy != null;
     }
     
     private boolean setupTag() {
@@ -682,8 +683,8 @@ public class CaptureThePoints extends JavaPlugin {
     	return true;
     }
     
-    public Economy getEconomyHandler() {
-    	return this.economyHandler;
+    public Economy getEconomy() {
+    	return this.economy;
     }
     
     public boolean usePermissions() {

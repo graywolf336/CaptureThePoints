@@ -45,7 +45,7 @@ public class JoinAllCommand extends CTPCommand {
         ctp.getArenaMaster().chooseSuitableArena(numberofplayers); // Choose a suitable arena based on the number of players on the server.
 
         for (Player p : ctp.getServer().getOnlinePlayers())
-        	ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getSelectedArena(), p);
+        	ctp.getArenaMaster().getSelectedArena().joinLobby(p);
 
         return;
     }

@@ -22,10 +22,10 @@ public class JoinCommand extends CTPCommand {
     @Override
     public void perform() {
     	if(!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
-    		if(parameters.size() == 2)
-    			ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getSelectedArena(), player);
-    		else if(ctp.getArenaMaster().isArena(parameters.get(2)))
-    			ctp.getArenaMaster().moveToLobby(ctp.getArenaMaster().getArena(parameters.get(2)), player);
+    		if(parameters.size() == 2) //Only did /ctp join, so send them to the default arena
+    			ctp.getArenaMaster().getSelectedArena().joinLobby(player);
+    		else if(ctp.getArenaMaster().isArena(parameters.get(2))) //Did /ctp j <arena>, so send them to the selected one if it is an arena
+    			ctp.getArenaMaster().getArena(parameters.get(2)).joinLobby(player);
         	else {
         		sendMessage(ctp.getLanguage().ARENA_NAME_LIST);
         		for(Arena a : ctp.getArenaMaster().getArenas())

@@ -366,7 +366,7 @@ public class Util {
     }
 
     public void getMoney(String string, Items item) {
-        if(ctp.getEconomyHandler() == null)
+        if(ctp.getEconomy() == null)
             return;
 
         if(string.contains("$")) {
@@ -398,8 +398,8 @@ public class Util {
 
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
-                        if(ctp.getEconomyHandler() != null)
-                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
+                        if(ctp.getEconomy() != null)
+                        	ctp.getEconomy().depositPlayer(player.getName(), item.getMoney());
 
                         player.giveExp(item.getExpReward());
                         continue;
@@ -433,8 +433,8 @@ public class Util {
                     Items item = ctp.getRewards().getLooserRewards().get(id);
                     // EXp + money
                     if(item.getItem().equals(Material.AIR)) {
-                        if(ctp.getEconomyHandler() != null)
-                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
+                        if(ctp.getEconomy() != null)
+                        	ctp.getEconomy().depositPlayer(player.getName(), item.getMoney());
 
                         player.giveExp(item.getExpReward());
                         continue;
@@ -472,8 +472,8 @@ public class Util {
 	                    Items item = ctp.getRewards().getRewardsForKill().get(id);
 	                    // EXp + money
 	                    if(item.getItem().equals(Material.AIR)) {
-	                        if(ctp.getEconomyHandler() != null)
-	                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
+	                        if(ctp.getEconomy() != null)
+	                        	ctp.getEconomy().depositPlayer(player.getName(), item.getMoney());
 	
 	                        player.giveExp(item.getExpReward());
 	                        continue;
@@ -510,8 +510,8 @@ public class Util {
 	                    Items item = ctp.getRewards().getRewardsForCapture().get(id);
 	                    // EXp + money
 	                    if(item.getItem().equals(Material.AIR)) {
-	                        if(ctp.getEconomyHandler() != null)
-	                        	ctp.getEconomyHandler().depositPlayer(player.getName(), item.getMoney());
+	                        if(ctp.getEconomy() != null)
+	                        	ctp.getEconomy().depositPlayer(player.getName(), item.getMoney());
 	
 	                        player.giveExp(item.getExpReward());
 	                        continue;

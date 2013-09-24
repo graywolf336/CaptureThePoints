@@ -7,10 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.util.Vector;
 
 import me.dalton.capturethepoints.CaptureThePoints;
@@ -24,8 +29,10 @@ import me.dalton.capturethepoints.beans.tasks.ScoreMessengerTask;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 import me.dalton.capturethepoints.events.CTPEndEvent;
+import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 import me.dalton.capturethepoints.listeners.TagAPIListener;
+import me.dalton.capturethepoints.util.PotionManagement;
 
 /** Arena Data of the saved arenas for playing {@link CaptureThePoints}.
  * 
@@ -455,6 +462,111 @@ public class Arena {
 	 */
 	public int scheduleDelayedTask(Runnable r, long delay) {
 		return Bukkit.getScheduler().scheduleSyncDelayedTask(ctp, r, delay);
+	}
+	
+	/**
+	 * Sends the player to the lobby.
+	 * 
+	 * @param p The player to send to the lobby.
+	 * @return Whether it was successful or not.
+	 */
+	public boolean joinLobby(Player player) {
+		//Don't add someone who is already in
+		if(players.get(player.getName()) != null) return false;
+		
+		String mainArenaCheckError = ctp.getArenaMaster().checkArena(this, player); // Check arena, if there is an error, an error message is returned.
+        if(!mainArenaCheckError.isEmpty()) {
+            ctp.sendMessage(player, mainArenaCheckError);
+            return false;
+        }
+
+        // Some more checks
+        if(player.isInsideVehicle()) {
+            try {
+                player.leaveVehicle();
+            } catch (Exception e) {
+                player.kickPlayer(ctp.getLanguage().checks_PLAYER_IN_VEHICLE); // May sometimes reach this if player is riding an entity other than a Minecart
+                return false;
+            }
+        }
+        
+        if(player.isSleeping()) {
+            player.kickPlayer(ctp.getLanguage().checks_PLAYER_SLEEPING);
+            return false;
+        }
+
+        if(players.isEmpty())
+            lobby.getPlayersInLobby().clear();   //Reset if first to come
+
+    	//Call a custom event for when players join the arena
+        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, this, ctp.getLanguage().PLAYER_JOIN.replaceAll("%PN", player.getName()));
+        ctp.getPluginManager().callEvent(event);
+        player = event.getPlayer(); //In case some plugin sets data to this
+        
+        if(event.isCancelled())
+        	return false; //Some plugin cancelled the event, so don't go forward and allow the plugin to handle the message that is sent when cancelled.
+        
+        if(ctp.getEconomy() != null && getConfigOptions().economyMoneyCostForJoiningArena != 0) {
+            EconomyResponse r = ctp.getEconomy().bankWithdraw(player.getName(), getConfigOptions().economyMoneyCostForJoiningArena);
+            if(r.transactionSuccess()) {
+                ctp.sendMessage(player,
+                		ctp.getLanguage().SUCCESSFUL_PAYING_FOR_JOINING
+                			.replaceAll("%EA", String.valueOf(r.amount))
+                			.replaceAll("%AN", name));
+            } else {
+                ctp.sendMessage(player, ctp.getLanguage().NOT_ENOUGH_MONEY_FOR_JOINING);
+                event.setCancelled(true);
+                return false;
+            }
+        }
+        
+        // Assign player's PlayerData
+        PlayerData data = new PlayerData(player, getConfigOptions().moneyAtTheLobby);
+        
+        // Store and remove potion effects on player
+        data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));
+        PotionManagement.removeAllEffects(player);
+        
+        // Save player's previous state 
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            data.inCreative(true);
+            player.setGameMode(GameMode.SURVIVAL);
+        }
+
+        addPlayerData(player, data);
+        getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
+        getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj
+        
+        player.setFoodLevel(20);
+        player.setMaxHealth(getConfigOptions().maxPlayerHealth);//Sets their health to the custom maximum.
+        
+        //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
+        player.setHealth(getConfigOptions().maxPlayerHealth);
+        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, (double)getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
+    	ctp.getPluginManager().callEvent(regen);
+    	player = (Player) regen.getEntity(); //In case some plugin sets something different here
+        
+        // Get lobby location and move player to it.
+        Location loc = new Location(getWorld(), getLobby().getX(), getLobby().getY(), getLobby().getZ());
+        loc.setYaw((float) getLobby().getDir());
+        if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
+        	loc.getWorld().loadChunk(loc.getChunk());
+        
+        getPrevoiusPosition().put(player.getName(), player.getLocation());
+        ctp.getInvManagement().saveInv(player);
+
+        ctp.getUtil().sendMessageToPlayers(this, event.getJoinMessage());
+
+        // Get lobby location and move player to it.        
+        player.teleport(loc); // Teleport player to lobby
+
+        //clear the inventory again in case some other plugin restored some inventory to them after we teleported them (Multiverse inventories)
+        ctp.getInvManagement().clearInventory(player, true);
+        
+        ctp.sendMessage(player, ctp.getLanguage().LOBBY_JOIN.replaceAll("%AN", name));
+        getPlayerData(player).setInLobby(true);
+		
+		return true;
 	}
     
     public void leaveGame(Player p, ArenaLeaveReason reason) {

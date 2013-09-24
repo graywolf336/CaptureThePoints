@@ -9,18 +9,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import net.milkbowl.vault.economy.EconomyResponse;
-
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.util.Vector;
 
 import me.dalton.capturethepoints.beans.Arena;
@@ -32,8 +26,6 @@ import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Stands;
 import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.enums.Status;
-import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
-import me.dalton.capturethepoints.util.PotionManagement;
 
 public class ArenaMaster {
 	//mob arena style! thanks to mob arena for being on github! :)
@@ -564,117 +556,5 @@ public class ArenaMaster {
     		return ctp.getLanguage().checks_GAME_ALREADY_STARTED;
     	
     	return "";
-    }
-    
-    public void moveToLobby(Arena arena, Player player) {        
-        String mainArenaCheckError = checkArena(arena, player); // Check arena, if there is an error, an error message is returned.
-        if (!mainArenaCheckError.isEmpty()) {
-            ctp.sendMessage(player, mainArenaCheckError);
-            return;
-        }
-
-        // Some more checks
-        if (player.isInsideVehicle()) {
-            try {
-                player.leaveVehicle();
-            } catch (Exception e) {
-                player.kickPlayer(ctp.getLanguage().checks_PLAYER_IN_VEHICLE); // May sometimes reach this if player is riding an entity other than a Minecart
-                return;
-            }
-        }
-        
-        if (player.isSleeping()) {
-            player.kickPlayer(ctp.getLanguage().checks_PLAYER_SLEEPING);
-            return;
-        }
-
-        if (arena.getPlayersData().isEmpty())
-            arena.getLobby().getPlayersInLobby().clear();   //Reset if first to come
-
-    	//Call a custom event for when players join the arena
-        CTPPlayerJoinEvent event = new CTPPlayerJoinEvent(player, arena, ctp.getLanguage().PLAYER_JOIN.replaceAll("%PN", player.getName()));
-        ctp.getPluginManager().callEvent(event);
-        
-        if(event.isCancelled())
-        	return; //Some plugin cancelled the event, so don't go forward and allow the plugin to handle the message that is sent when cancelled.
-        
-        if(ctp.getEconomyHandler() != null && arena.getConfigOptions().economyMoneyCostForJoiningArena != 0) {
-            EconomyResponse r = ctp.getEconomyHandler().bankWithdraw(player.getName(), arena.getConfigOptions().economyMoneyCostForJoiningArena);
-            if(r.transactionSuccess()) {
-                ctp.sendMessage(player,
-                		ctp.getLanguage().SUCCESSFUL_PAYING_FOR_JOINING
-                			.replaceAll("%EA", String.valueOf(r.amount))
-                			.replaceAll("%AN", arena.getName()));
-            } else {
-                ctp.sendMessage(player, ctp.getLanguage().NOT_ENOUGH_MONEY_FOR_JOINING);
-                event.setCancelled(true);
-                return;
-            }
-        }
-        
-        // Assign player's PlayerData
-        PlayerData data = new PlayerData();
-        data.setDeaths(0);
-        data.setDeathsInARow(0);
-        data.setKills(0);
-        data.setKillsInARow(0);
-        data.setMoney(arena.getConfigOptions().moneyAtTheLobby);
-        data.setPointsCaptured(0);
-        data.setReady(false);
-        data.setInArena(false);
-        data.setFoodLevel(player.getFoodLevel());
-        data.setOldMaxHealth(player.getMaxHealth());
-        data.setOldHealth(player.getHealth());
-        data.setLobbyJoinTime(System.currentTimeMillis());
-        
-        // Store and remove potion effects on player
-        data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));
-        PotionManagement.removeAllEffects(player);
-
-        
-        player.setFoodLevel(20);
-        player.setMaxHealth(arena.getConfigOptions().maxPlayerHealth);//Sets their health to the custom maximum.
-        player.setHealth(player.getMaxHealth());
-        
-        // Save player's previous state 
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            data.inCreative(true);
-            player.setGameMode(GameMode.SURVIVAL);
-        }
-
-        arena.addPlayerData(player, data);
-        
-        arena.getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
-        arena.getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj
-
-        //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
-        player.setHealth(arena.getConfigOptions().maxPlayerHealth);
-        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, (double)arena.getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
-    	ctp.getPluginManager().callEvent(regen);
-        
-        // Get lobby location and move player to it.
-        Location loc = new Location(arena.getWorld(), arena.getLobby().getX(), arena.getLobby().getY() + 1, arena.getLobby().getZ());
-        loc.setYaw((float) arena.getLobby().getDir());
-        if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
-        	loc.getWorld().loadChunk(loc.getChunk());
-
-        Double X = Double.valueOf(player.getLocation().getX());
-        Double y = Double.valueOf(player.getLocation().getY());
-        Double z = Double.valueOf(player.getLocation().getZ());
-
-        Location previous = new Location(player.getWorld(), X.doubleValue(), y.doubleValue(), z.doubleValue());
-        arena.getPrevoiusPosition().put(player.getName(), previous);
-        ctp.getInvManagement().saveInv(player);
-
-        ctp.getUtil().sendMessageToPlayers(arena, event.getJoinMessage());
-
-        // Get lobby location and move player to it.        
-        player.teleport(loc); // Teleport player to lobby
-
-        //clear the inventory again in case some other plugin restored some inventory to them after we teleported them (Multiverse inventories)
-        ctp.getInvManagement().clearInventory(player, true);
-        
-        ctp.sendMessage(player, ctp.getLanguage().LOBBY_JOIN.replaceAll("%AN", arena.getName()));
-        arena.getPlayerData(player).setInLobby(true);
     }
 }

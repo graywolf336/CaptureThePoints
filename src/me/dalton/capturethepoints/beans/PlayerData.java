@@ -3,18 +3,44 @@ package me.dalton.capturethepoints.beans;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 /** Player Data of the people playing CTP. */
 public class PlayerData {
     private Team team;
-    private String role;
+    private String name, role;
     private int money, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel, playerLives;
     private double oldHealth, oldMaxHealth;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, inStands = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
     private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-
+    
+    public PlayerData(Player player, int startMoney) {
+    	this.name = player.getName();
+    	this.deaths = 0;
+    	this.deathsInARow = 0;
+    	this.kills = 0;
+    	this.killsInARow = 0;
+    	this.pointsCaptured = 0;
+    	this.money = startMoney;
+    	this.ready = false;
+    	this.inArena = false;
+    	this.foodLevel = player.getFoodLevel();
+    	this.oldMaxHealth = player.getMaxHealth();
+    	this.oldHealth = player.getHealth();
+    	this.lobbyJoinTime = System.currentTimeMillis();
+    }
+    
+    public Player getPlayer() {
+    	return Bukkit.getPlayerExact(name);
+    }
+    
+    public String getName() {
+    	return this.name;
+    }
+    
     /** Sets the team this player is on. */
     public void setTeam(Team team) {
     	this.team = team;
