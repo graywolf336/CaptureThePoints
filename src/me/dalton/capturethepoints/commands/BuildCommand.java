@@ -508,7 +508,7 @@ public class BuildCommand extends CTPCommand {
                     if (!hasTeam)
                     	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
                     sendMessage(ChatColor.GREEN + "You set the " + team.getChatColor() + arg2 + ChatColor.GREEN + " team spawn point.");
-                    sendMessage("If you are done creating the spawns, create the Lobby spawn next.");
+                    sendMessage(ChatColor.BOLD + "If" + ChatColor.WHITE +  " you are done creating the spawns, create the points next. Use: " + ChatColor.AQUA + "/ctp setpoint <name> <vert | hor> [no capture teams]");
                     return;
                 }
 
@@ -679,14 +679,6 @@ public class BuildCommand extends CTPCommand {
                     player.getWorld().getBlockAt(start_x, start_y, start_z + 1).setType(Material.AIR);
                 }
 
-                String aWorld = arenaConf.getString("World");
-                if (aWorld == null) {
-                    arenaConf.addDefault("World", player.getWorld().getName());
-                } else if (!aWorld.equals(player.getWorld().getName())) {
-                    sendMessage(ChatColor.RED + "Please build arena lobby in same world as its spawns and capture points!");
-                    return;
-                } 
-
                 // save arena point data
                 if(parameters.size() > 5) {
                     tmps.setNotAllowedToCaptureTeams(new ArrayList<String>());
@@ -719,6 +711,7 @@ public class BuildCommand extends CTPCommand {
                 ctp.getArenaMaster().getEditingArena().getCapturePoints().add(tmps);
                 
                 sendMessage(ChatColor.WHITE + "You created capture point -----> " + ChatColor.GREEN + arg2);
+                sendMessage(ChatColor.BOLD + "If" + ChatColor.WHITE + " you are done creating all the points, go setup the lobby. Use: " + ChatColor.AQUA + "/ctp b setlobby");
                 return;
             }
             sendMessage(ctp.getLanguage().NO_PERMISSION);
