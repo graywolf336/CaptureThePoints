@@ -1040,6 +1040,7 @@ public class BuildCommand extends CTPCommand {
                 File arenaFile = new File("plugins/CaptureThePoints" + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
                 arenaConf.addDefault("MinimumPlayers", amount);
+                
                 try {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);

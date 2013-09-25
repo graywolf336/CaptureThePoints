@@ -85,10 +85,11 @@ public class ArenaUtils {
             for (Team team : arena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(aTeam)) {
                     team.addOneControlledPoints();
+                    String name = Character.toUpperCase(aTeam.charAt(0)) + aTeam.substring(1).toLowerCase();
                     if (!arena.getConfigOptions().useScoreGeneration)
-                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getConfigOptions().pointsToWin + " " + ctp.getLanguage().POINTS + ").";
+                        return team.getChatColor() + name + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getConfigOptions().pointsToWin + " " + ctp.getLanguage().POINTS + ").";
                     else
-                        return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getCapturePoints().size() + " " + ctp.getLanguage().POINTS + ").";
+                        return team.getChatColor() + name + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getCapturePoints().size() + " " + ctp.getLanguage().POINTS + ").";
                 }
             }
             return null;
@@ -113,7 +114,9 @@ public class ArenaUtils {
                     if (team.getControlledPoints() < 0) {
                         team.setControlledPoints(0);
                     }
-                    return team.getChatColor() + aTeam.toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().LOST + " " + ChatColor.GOLD + lostpoint + ".";
+                    
+                    String name = Character.toUpperCase(aTeam.charAt(0)) + aTeam.substring(1).toLowerCase();
+                    return team.getChatColor() + name + ChatColor.WHITE + " " + ctp.getLanguage().LOST + " " + ChatColor.GOLD + lostpoint + ".";
                 }
             }
             return null;

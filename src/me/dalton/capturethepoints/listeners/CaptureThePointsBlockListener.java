@@ -284,9 +284,7 @@ public class CaptureThePointsBlockListener implements Listener {
                                 CTPPointCaptureEvent capEvent = new CTPPointCaptureEvent(arena, player, playerdata, point);
                                 ctp.getPluginManager().callEvent(capEvent);
                                 
-                                if (ctp.getArenaUtil().didSomeoneWin(arena)) {
-                                    loc.getBlock().setType(Material.AIR);
-                                }
+                                ctp.getArenaUtil().didSomeoneWin(arena);
                                 break;
                             }
                         }
@@ -310,9 +308,7 @@ public class CaptureThePointsBlockListener implements Listener {
                                 CTPPointCaptureEvent capEvent = new CTPPointCaptureEvent(arena, player, playerdata, point);
                                 ctp.getPluginManager().callEvent(capEvent);
                                 
-                                if (ctp.getArenaUtil().didSomeoneWin(arena)) {
-                                	loc.getBlock().setType(Material.AIR);
-                                }
+                                ctp.getArenaUtil().didSomeoneWin(arena);
                                 break;
                             }
                         }
