@@ -131,7 +131,7 @@ public class BuildCommand extends CTPCommand {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b setstands " + ChatColor.WHITE + "- sets arena stands");
                 }
                 if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.enable"})) {
-                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp build enable <Arena name> <true/false>" + ChatColor.WHITE + "- sets arena stands");
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b enable <Arena name> <true/false>" + ChatColor.WHITE + "- sets arena stands");
                 }
             }
             return;
