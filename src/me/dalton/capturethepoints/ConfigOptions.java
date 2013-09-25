@@ -116,6 +116,12 @@ public class ConfigOptions {
     /** How many lives should a player have when using the system. [Default: 5] */
     public int playerLives = 5;
     
+    /** Should we set the player's custom time? [Default: false] */
+    public boolean usePlayerTime = false;
+    
+    /** If we do set the player's custom time, which one should it be? [Default: midnight] (can be dawn, midday, dusk, or midnight) */
+    public String playerTime = "midnight";
+    
     /** Should we count down on game start or not. [Default: false] */
     public boolean useStartCountDown = false;
     

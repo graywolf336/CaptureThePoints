@@ -66,6 +66,8 @@ public class InvManagement {
         //As bukkit supports setting their max health higher than 20, we should get what it was and restore that.
         p.setMaxHealth(a.getPlayerData(p.getName()).getOldMaxHealth());
         p.setHealth(a.getPlayerData(p.getName()).getOldHealth());
+        
+        p.resetPlayerTime();
     }
 
 	/**

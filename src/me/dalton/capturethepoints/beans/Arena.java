@@ -552,7 +552,23 @@ public class Arena {
         
         ctp.sendMessage(player, ctp.getLanguage().LOBBY_JOIN.replaceAll("%AN", name));
         getPlayerData(player).setInLobby(true);
-		
+        
+        if(getConfigOptions().usePlayerTime) {
+        	int time = 18000;
+        	String t = getConfigOptions().playerTime;
+        	
+        	if(t.equalsIgnoreCase("dawn"))
+        		time = 0;
+        	else if(t.equalsIgnoreCase("midday"))
+        		time = 6000;
+        	else if(t.equalsIgnoreCase("dusk"))
+        		time = 12000;
+        	else if(t.equalsIgnoreCase("midnight"))
+        		time = 18000;
+        	
+        	player.setPlayerTime(time, false);
+        }
+        
 		return true;
 	}
     

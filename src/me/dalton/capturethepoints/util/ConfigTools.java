@@ -17,6 +17,7 @@ public class ConfigTools {
 	private String pointCapture = "GlobalSettings.GameMode.PointCapture.";
 	private String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
 	private String playerLives = "GlobalSettings.GameMode.PlayerLives.";
+	private String playerTime = "GlobalSettings.GameMode.PlayerTime.";
 	private String countDown = "GlobalSettings.CountDowns.";
 	private String global = "GlobalSettings.";
 	private String mySql = "GlobalSettings.MySql.";
@@ -292,6 +293,10 @@ public class ConfigTools {
         co.usePlayerLives = config.getBoolean(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
         co.playerLives = config.getInt(playerLives + "Lives", globalConfigOptions.playerLives);
         
+        //Player time
+        co.usePlayerTime = config.getBoolean(playerTime + "Enabled", globalConfigOptions.usePlayerTime);
+        co.playerTime = config.getString(playerTime + "Time", globalConfigOptions.playerTime);
+        
         //Count down options
         co.useStartCountDown = config.getBoolean(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
         co.startCountDownTime = config.getInt(countDown + "StartCountDownTime", globalConfigOptions.startCountDownTime);
@@ -363,6 +368,18 @@ public class ConfigTools {
             config.set(pointCapture + "PointsToWin", globalConfigOptions.pointsToWin);
         if(!config.contains(pointCapture + "PlayTime"))
             config.set(pointCapture + "PlayTime", globalConfigOptions.playTime);
+        
+        //Player lives
+        if(!config.contains(playerLives + "Enabled"))
+        	config.getBoolean(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
+        if(!config.contains(playerLives + "Lives"))
+        	config.getInt(playerLives + "Lives", globalConfigOptions.playerLives);
+        
+        //Player time
+        if(!config.contains(playerTime + "Enabled"))
+        	config.getBoolean(playerTime + "Enabled", globalConfigOptions.usePlayerTime);
+        if(!config.contains(playerTime + "Time"))
+        	config.getString(playerTime + "Time", globalConfigOptions.playerTime);
 
         // Score mod
         if(!config.contains(pointCaptureWithScore + "UseScoreGeneration"))
