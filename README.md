@@ -6,6 +6,7 @@ _Status of this branch's builds:_ [![Build Status](http://git.graywolf336.com:80
 ### Branch: newArenas ###
 * The way we handle more than one arena will be improved
 * Joining arenas will be done with `/ctp j <arena>`
+* When creating/editing an arena, players can't join. If you want to edit it and allow it, select edit first then do `/ctp b enable <arena> true/false`
 
 ### Language Files ###
 #### Done ####
