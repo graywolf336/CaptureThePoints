@@ -73,10 +73,17 @@ public class PlayTimer {
                     }
                     
                     HashSet<String> colors = new HashSet<String>();
-
+                    
+                    String teams = "";
                     for (Team team : arena.getTeams()) {
                         if (team.getControlledPoints() == maxPoints) {
                             colors.add(team.getColor());
+                            
+                            if(teams.isEmpty()) {
+                            	teams =+ Character.toUpperCase(team.getColor().charAt(0)) + team.getColor().substring(1).toLowerCase();
+                            }else {
+                            	teams = teams + " and " + Character.toUpperCase(team.getColor().charAt(0)) + team.getColor().substring(1).toLowerCase();
+                            }
                         }
                     }
 
@@ -86,7 +93,7 @@ public class PlayTimer {
                         }
                     }
                     
-                    pl.getUtil().sendMessageToPlayers(arena, "Time out! " + ChatColor.GREEN + colors.toString().toUpperCase().replace(",", " and") + ChatColor.WHITE + " wins!");
+                    pl.getUtil().sendMessageToPlayers(arena, "Time out! " + teams + ChatColor.WHITE + " wins!");
                     arena.endGame(true, true); //The game ended so give rewards
                 }
     			
