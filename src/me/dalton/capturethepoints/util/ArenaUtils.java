@@ -238,18 +238,13 @@ public class ArenaUtils {
         didSomeoneWin(arena);
     	
         //Start the timers/scheduler/tasks/whatever you wanna call it
-        arena.getStartTimer().start();
-        
-        if(!arena.getConfigOptions().useScoreGeneration)
-        	arena.getPlayTimer().schedule();
-
-        //Money giving and score generation
-        arena.getScoreGenTask().start();
-        
-        if(arena.getConfigOptions().useScoreGeneration)
-        	arena.getScoreMessenger().start();
-        
-        arena.getItemCoolDownTask().start();
+        if(arena.getConfigOptions().useStartCountDown) {
+        	arena.getStartTimer().start();
+        	arena.setMoveAbility(false);
+        }else {
+        	arena.setMoveAbility(true);
+        	arena.startOtherTasks();
+        }
     }
     
 	@SuppressWarnings("deprecation")

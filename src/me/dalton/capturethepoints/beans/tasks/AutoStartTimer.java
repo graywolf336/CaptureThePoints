@@ -120,19 +120,17 @@ public class AutoStartTimer {
                     started = false;
                     
                     arena.setMoveAbility(true);
-                    	
+                    arena.startOtherTasks();
+                    
                     pl.getLogger().info("CaptureThePoints arena '" + arena.getName() + "' has started!");
                     pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + "...Go!");
-                    
-                    //Initiate the system count down until we open the gate.
-                    //arena.initiateEndGateTimer();
                     
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
                 } else {
                 	if(remaining == 5) {
                 		//Teleport players to their spawns
-                		arena.setMoveAbility(false);
+                		//arena.setMoveAbility(false);
                 	}
                 	
                     // Warn at x seconds left

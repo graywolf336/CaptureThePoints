@@ -443,6 +443,19 @@ public class Arena {
 		return Bukkit.getScheduler().scheduleSyncDelayedTask(ctp, r, delay);
 	}
 	
+	public void startOtherTasks() {
+        //Start all the other tasks and timers, since the game is starting.
+        if(!getConfigOptions().useScoreGeneration)
+        	getPlayTimer().schedule();
+        
+        getScoreGenTask().start();
+        
+        if(getConfigOptions().useScoreGeneration)
+        	getScoreMessenger().start();
+        
+        getItemCoolDownTask().start();
+	}
+	
 	/**
 	 * Sends the player to the lobby.
 	 * 
