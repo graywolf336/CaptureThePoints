@@ -15,7 +15,7 @@ public class PlayerData {
     private double oldHealth, oldMaxHealth;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, inStands = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
-    private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
+    private List<PotionEffect> potionEffects;
     
     public PlayerData(Player player, int startMoney) {
     	this.name = player.getName();
@@ -31,6 +31,7 @@ public class PlayerData {
     	this.oldMaxHealth = player.getMaxHealth();
     	this.oldHealth = player.getHealth();
     	this.lobbyJoinTime = System.currentTimeMillis();
+    	this.potionEffects = new ArrayList<PotionEffect>();
     }
     
     public Player getPlayer() {
