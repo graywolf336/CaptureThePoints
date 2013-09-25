@@ -169,14 +169,14 @@ public class ArenaUtils {
             for (Team team : arena.getTeams()) {
                 if (team.getScore() >= arena.getConfigOptions().scoreToWin) {
                     winningteams.add(team);
-                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().WINS;
+                    WinMessage = team.getChatColor() + team.getName() + ChatColor.WHITE + " " + ctp.getLanguage().WINS;
                 }
             }
         } else {
             for (Team team : arena.getTeams()) {
                 if (team.getControlledPoints() >= arena.getConfigOptions().pointsToWin) {
                     winningteams.add(team);
-                    WinMessage = team.getChatColor() + team.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().WINS;
+                    WinMessage = team.getChatColor() + team.getName() + ChatColor.WHITE + " " + ctp.getLanguage().WINS;
                 }
             }
         }
@@ -191,9 +191,9 @@ public class ArenaUtils {
         }
 
         for (Team team : winningteams) {
-            for (String player : arena.getPlayersData().keySet()) {
-                if (arena.getPlayerData(player).inArena() && (arena.getPlayerData(player).getTeam() == team)) {
-                	arena.getPlayerData(player).setWinner(true);
+            for (PlayerData player : arena.getPlayersData().values()) {
+                if (player.inArena() && (player.getTeam() == team)) {
+                	player.setWinner(true);
                 }
             }
         }
@@ -202,10 +202,10 @@ public class ArenaUtils {
         String message = "";
         if (arena.getConfigOptions().useScoreGeneration)
             for (Team aTeam : arena.getTeams())
-                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_SCORE + ": " + aTeam.getScore() + ChatColor.AQUA + " // ";
+                message = message + aTeam.getChatColor() + aTeam.getName() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_SCORE + ": " + aTeam.getScore() + ChatColor.AQUA + " // ";
         else
             for (Team aTeam : arena.getTeams())
-                message = message + aTeam.getChatColor() + aTeam.getColor().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_POINTS + ": " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
+                message = message + aTeam.getChatColor() + aTeam.getName().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_POINTS + ": " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
 
         ctp.getUtil().sendMessageToPlayers(arena, message);
         
@@ -282,7 +282,7 @@ public class ArenaUtils {
             	arena.getTeams().get(teamNR).setChatColor(ChatColor.GREEN);
             }
 
-            arena.getTeams().get(teamNR).addOneMemeberCount();
+            arena.getTeams().get(teamNR).addOneMember();
 
         } else {   // For already selected team
             team = playerdata.getTeam();
@@ -379,7 +379,7 @@ public class ArenaUtils {
                     	
                         Player p = ctp.getServer().getPlayer(playersForBalance.get(j));
                         
-                        arena.getPlayerData(p).getTeam().substractOneMemeberCount();
+                        arena.getPlayerData(p).getTeam().substractOneMember();
                         Team oldTeam = arena.getPlayerData(p).getTeam();
                         arena.getPlayerData(p).setTeam(null);     // For moveToSpawns team check
 
@@ -403,7 +403,7 @@ public class ArenaUtils {
         }else if(arena.getConfigOptions().exactTeamMemberCount) { //If there are not enough players to balance teams
             for(String p : playersForBalance) {
                 // Moving to Lobby
-            	arena.getPlayerData(p).getTeam().substractOneMemeberCount();
+            	arena.getPlayerData(p).getTeam().substractOneMember();
             	arena.getPlayerData(p).setTeam(null);
             	arena.getPlayerData(p).setInArena(false);
             	arena.getPlayerData(p).setInLobby(true);

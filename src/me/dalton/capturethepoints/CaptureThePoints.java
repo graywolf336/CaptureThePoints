@@ -339,7 +339,7 @@ public class CaptureThePoints extends JavaPlugin {
         // Reseting player data       
         if (newTeam == null) {
             // Moving to Lobby
-            a.getPlayerData(p).getTeam().substractOneMemeberCount();
+            a.getPlayerData(p).getTeam().substractOneMember();
             a.getPlayerData(p).setTeam(null);
             a.getPlayerData(p).setInArena(false);
             a.getPlayerData(p).setInLobby(true);
@@ -372,7 +372,7 @@ public class CaptureThePoints extends JavaPlugin {
             String oldteam = a.getPlayerData(p).getTeam().getColor();
             ChatColor oldcc = a.getPlayerData(p).getTeam().getChatColor();
             
-            a.getPlayerData(p).getTeam().substractOneMemeberCount();
+            a.getPlayerData(p).getTeam().substractOneMember();
             a.getPlayerData(p).setTeam(newTeam);
             
             Player player = getServer().getPlayer(p);
@@ -424,7 +424,7 @@ public class CaptureThePoints extends JavaPlugin {
             		.replaceAll("%NC", newTeam.getChatColor() + "")
             		.replaceAll("%NT", newTeam.getColor()));
             
-            newTeam.addOneMemeberCount();
+            newTeam.addOneMember();
         }
     }
 

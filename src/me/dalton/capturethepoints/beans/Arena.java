@@ -576,7 +576,7 @@ public class Arena {
         if (players.get(p.getName()).getTeam() != null) {
         	for(Team t : getTeams())
         		if(t == players.get(p.getName()).getTeam()) {
-        			t.substractOneMemeberCount();
+        			t.substractOneMember();
         			break;
         		}
         }

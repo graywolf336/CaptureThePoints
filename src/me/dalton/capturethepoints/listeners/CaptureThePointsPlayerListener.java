@@ -803,7 +803,7 @@ public class CaptureThePointsPlayerListener implements Listener {
             	arena.getTeams().get(hasThatTeam).setChatColor(ChatColor.GREEN);
             }
 
-            arena.getTeams().get(hasThatTeam).addOneMemeberCount();
+            arena.getTeams().get(hasThatTeam).addOneMember();
 
 
             DyeColor color1 = DyeColor.valueOf(arena.getPlayerData(p.getName()).getTeam().getColor().toUpperCase());

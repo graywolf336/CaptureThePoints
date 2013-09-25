@@ -58,12 +58,12 @@ public class Team {
     }
     
     /** Subtracts one member count from the total. */
-    public void substractOneMemeberCount() {
+    public void substractOneMember() {
     	this.memberCount--;
     }
     
     /** Adds one member to the count. */
-    public void addOneMemeberCount() {
+    public void addOneMember() {
     	this.memberCount++;
     }
     
