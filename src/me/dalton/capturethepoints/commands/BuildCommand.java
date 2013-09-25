@@ -324,7 +324,8 @@ public class BuildCommand extends CTPCommand {
                 	ctp.getArenaMaster().setSelectedArena(ctp.getArenaMaster().getEditingArena());
                 }
                 
-                sendMessage("You created arena: " + ChatColor.GREEN + arg2);
+                sendMessage("You are creating an arena called: " + ChatColor.GREEN + arg2);
+                sendMessage("Now please create the first corner for the arena's boundary.");
                 return;
             }
             
@@ -506,7 +507,8 @@ public class BuildCommand extends CTPCommand {
 
                     if (!hasTeam)
                     	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
-                    sendMessage("You set the " + team.getChatColor() + arg2 + ChatColor.WHITE + " team spawn point.");
+                    sendMessage(ChatColor.GREEN + "You set the " + team.getChatColor() + arg2 + ChatColor.GREEN + " team spawn point.");
+                    sendMessage("If you are done creating the spawns, create the Lobby spawn next.");
                     return;
                 }
 
@@ -947,7 +949,8 @@ public class BuildCommand extends CTPCommand {
                         ctp.getArenaMaster().getArenasBoundaries().put(ctp.getArenaMaster().getEditingArena().getName(), bound);
                     }
 
-                    sendMessage("First boundary point set.");
+                    sendMessage(ChatColor.GREEN + "First boundary point set.");
+                    sendMessage("Now set the second boundary point.");
                 } else if (arg2.equalsIgnoreCase("2")) {
                 	ctp.getArenaMaster().getEditingArena().setSecondCorner(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
@@ -982,7 +985,8 @@ public class BuildCommand extends CTPCommand {
                         ctp.getArenaMaster().getArenasBoundaries().put(ctp.getArenaMaster().getEditingArena().getName(), bound);
                     }
 
-                    sendMessage("Second boundary point set.");
+                    sendMessage(ChatColor.GREEN + "Second boundary point set.");
+                    sendMessage("Now set the spawn points for each team you want to have in this arena.");
                 }
 
                 return;
