@@ -443,15 +443,25 @@ public class Arena {
 		return Bukkit.getScheduler().scheduleSyncDelayedTask(ctp, r, delay);
 	}
 	
+	/** 
+	 * Starts all the tasks except for start count down and end count down.
+	 * 
+	 * <ul>
+	 *  <li>Play timer, if not using score generation</li>
+	 *  <li>Score Generation Task, if score generation is enabled</li>
+	 *  <li>Score Messenger Task, if score generation is enabled</li>
+	 *  <li>Item Cool Down Task</li>
+	 * </ul>
+	 */
 	public void startOtherTasks() {
         //Start all the other tasks and timers, since the game is starting.
         if(!getConfigOptions().useScoreGeneration)
         	getPlayTimer().schedule();
         
-        getScoreGenTask().start();
-        
-        if(getConfigOptions().useScoreGeneration)
+        if(getConfigOptions().useScoreGeneration) {
+        	getScoreGenTask().start();
         	getScoreMessenger().start();
+        }
         
         getItemCoolDownTask().start();
 	}
