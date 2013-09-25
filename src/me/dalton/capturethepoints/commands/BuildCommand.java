@@ -726,31 +726,32 @@ public class BuildCommand extends CTPCommand {
                 }
                 
                 arg2 = arg2.toLowerCase();
-
-                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
+                
+                Arena a = ctp.getArenaMaster().getEditingArena();
+                File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + a.getName() + ".yml");
                 FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
 
                 if (arenaConf.getString("Points." + arg2 + ".X") == null) {
                     sendMessage(ChatColor.RED + "This arena point does not exist! -----> " + ChatColor.GREEN + arg2);
                     return;
                 }
-                if ((arenaConf.getConfigurationSection("Points").getKeys(false).size() == 1) && (!arenaConf.contains("Team-Spawns")))
-                {
+                
+                if ((arenaConf.getConfigurationSection("Points").getKeys(false).size() == 1) && (!arenaConf.contains("Team-Spawns"))) {
                     arenaConf.set("World", null);
                 }
+                
                 int start_x = arenaConf.getInt("Points." + arg2 + ".X", 0);
                 int start_y = arenaConf.getInt("Points." + arg2 + ".Y", 0);
                 int start_z = arenaConf.getInt("Points." + arg2 + ".Z", 0);
 
                 // Kj -- s -> aPoint
-                if (ctp.getArenaMaster().getEditingArena().getName().equals(player.getWorld().getName())) {
-                    for (Points aPoint : ctp.getArenaMaster().getEditingArena().getCapturePoints()) {
-                        if (aPoint.getName().equalsIgnoreCase(arg2)) {
-                        	ctp.getArenaMaster().getEditingArena().getCapturePoints().remove(aPoint);
-                            break;
-                        }
+                for (Points aPoint : a.getCapturePoints()) {
+                    if (aPoint.getName().equalsIgnoreCase(arg2)) {
+                    	a.getCapturePoints().remove(aPoint);
+                        break;
                     }
                 }
+                
                 //Remove blocks
                 if (arenaConf.getString("Points." + arg2 + ".Dir") == null) {
                     for (int x = start_x + 2; x >= start_x - 1; x--) {
@@ -768,6 +769,7 @@ public class BuildCommand extends CTPCommand {
                 }
 
                 arenaConf.set("Points." + arg2, null);
+                
                 try {
                     arenaConf.options().copyDefaults(true);
                     arenaConf.save(arenaFile);

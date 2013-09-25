@@ -2,6 +2,7 @@ package me.dalton.capturethepoints.beans;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class Arena {
     
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
-    private List<Points> capturePoints;
+    private HashSet<Points> capturePoints;
     private List<String> waitingToMove;
     private Map<String, PlayerData> players;
     private HashMap<String, Location> previousLocation;
@@ -84,7 +85,7 @@ public class Arena {
     	this.name = name;
     	this.teamSpawns = new HashMap<String, Spawn>();
     	this.teams = new ArrayList<Team>();
-    	this.capturePoints = new LinkedList<Points>();
+    	this.capturePoints = new HashSet<Points>();
     	this.waitingToMove = new LinkedList<String>();
     	this.players = new ConcurrentHashMap<String, PlayerData>();
     	this.previousLocation = new HashMap<String, Location>();
@@ -147,7 +148,7 @@ public class Arena {
     
     /** Gets the capture points this arena has. 
      * @see Points */
-    public List<Points> getCapturePoints() {
+    public HashSet<Points> getCapturePoints() {
     	return this.capturePoints;
     }
     
