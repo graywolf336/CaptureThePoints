@@ -73,36 +73,13 @@ public class Arena {
     private int maximumPlayers = 9999;
     
     /**
-     * Initiates a new arena instance without a name.
-     * <p />
-     * 
-     * @param plugin The CTP plugin instance.
-     * @since 1.5.0-b126
-     */
-    public Arena(CaptureThePoints plugin, int startSeconds) {
-    	this.ctp = plugin;
-    	this.teamSpawns = new HashMap<String, Spawn>();
-    	this.teams = new ArrayList<Team>();
-    	this.capturePoints = new LinkedList<Points>();
-    	this.waitingToMove = new LinkedList<String>();
-    	this.players = new ConcurrentHashMap<String, PlayerData>();
-    	this.previousLocation = new HashMap<String, Location>();
-    	
-    	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
-    	this.itemCoolDowns = new ItemCoolDownsTask(ctp, this);
-    	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
-    	this.scoreGen = new ScoreGenerationTask(ctp, this);
-    	this.scoreMsg = new ScoreMessengerTask(ctp, this);
-    }
-    
-    /**
      * Initiates a new arena instance.
      * <p />
      * 
      * @param plugin The CTP plugin instance.
      * @param name The name of the arena.
      */
-    public Arena(CaptureThePoints plugin, String name, int startSeconds) {
+    public Arena(CaptureThePoints plugin, String name, int startSeconds, int playingTime) {
     	this.ctp = plugin;
     	this.name = name;
     	this.teamSpawns = new HashMap<String, Spawn>();
@@ -114,7 +91,7 @@ public class Arena {
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
     	this.itemCoolDowns = new ItemCoolDownsTask(ctp, this);
-    	this.playTime = new PlayTimer(ctp, this, getConfigOptions().playTime * 20 * 60); //TODO test, as it will fail
+    	this.playTime = new PlayTimer(ctp, this, playingTime * 60 * 20); //Convert minutes to seconds, seconds to ticks
     	this.scoreGen = new ScoreGenerationTask(ctp, this);
     	this.scoreMsg = new ScoreMessengerTask(ctp, this);
     }

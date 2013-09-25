@@ -302,7 +302,7 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
                 
-                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2, ctp.getGlobalConfigOptions().startCountDownTime)); //Create the new arena!
+                ctp.getArenaMaster().addNewArena(new Arena(ctp, arg2, ctp.getGlobalConfigOptions().startCountDownTime, ctp.getGlobalConfigOptions().playTime)); //Create the new arena!
                 ctp.getArenaMaster().setEditingArena(arg2); //After creating, set the editing arena to the one we created
                 
                 FileConfiguration config = ctp.getConfigTools().load();
