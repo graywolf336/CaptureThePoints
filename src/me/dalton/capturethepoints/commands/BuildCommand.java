@@ -325,7 +325,7 @@ public class BuildCommand extends CTPCommand {
                 }
                 
                 sendMessage("You are creating an arena called: " + ChatColor.GREEN + arg2);
-                sendMessage("Now please create the first corner for the arena's boundary.");
+                sendMessage("Now please create the first corner for the arena's boundary. Use: " + ChatColor.AQUA + "/ctp b setboundary 1");
                 return;
             }
             
@@ -492,7 +492,7 @@ public class BuildCommand extends CTPCommand {
                     try {
                         team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase())); // Kj -- init teamchat colour
                     } catch (Exception ex) {
-                    	if(spawn.getName().equalsIgnoreCase("teal"))
+                    	if(spawn.getName().equalsIgnoreCase("cyan"))
                     		team.setChatColor(ChatColor.DARK_AQUA);
                     	else
                     		team.setChatColor(ChatColor.GREEN);
@@ -950,7 +950,7 @@ public class BuildCommand extends CTPCommand {
                     }
 
                     sendMessage(ChatColor.GREEN + "First boundary point set.");
-                    sendMessage("Now set the second boundary point.");
+                    sendMessage("Now set the second boundary point. Use: " + ChatColor.AQUA + "/ctp b setboundary 2");
                 } else if (arg2.equalsIgnoreCase("2")) {
                 	ctp.getArenaMaster().getEditingArena().setSecondCorner(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
@@ -986,7 +986,7 @@ public class BuildCommand extends CTPCommand {
                     }
 
                     sendMessage(ChatColor.GREEN + "Second boundary point set.");
-                    sendMessage("Now set the spawn points for each team you want to have in this arena.");
+                    sendMessage("Now set the spawn points for each team you want to have in this arena. Use: " + ChatColor.AQUA + "/ctp b setspawn <color>");
                 }
 
                 return;
