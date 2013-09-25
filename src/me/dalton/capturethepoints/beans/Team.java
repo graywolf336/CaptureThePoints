@@ -9,11 +9,18 @@ import org.bukkit.ChatColor;
 /** A CTP Team */
 public class Team {
     private ChatColor chatcolor = ChatColor.GREEN; // Kjhf
-    private String color;
+    private String color, name;
     private int memberCount;
     private int score;
     private int controlledPoints;
     private Spawn spawn;
+    
+    /** Gets the name of this team, the color but first case is cap and the rest are lowercase. */
+    public String getName() {
+    	if(name.isEmpty()) name = Character.toUpperCase(color.charAt(0)) + color.substring(1).toLowerCase();
+    	
+    	return this.name;
+    }
     
     /** Sets the associated ChatColor of this Team.
      * @see ChatColor
@@ -32,6 +39,7 @@ public class Team {
     /** Sets this Teams color. */
     public void setColor(String color) {
     	this.color = color;
+    	this.name = Character.toUpperCase(color.charAt(0)) + color.substring(1).toLowerCase();
     }
     
     /** Gets this Teams color. */
