@@ -80,9 +80,10 @@ public class Arena {
      * @param plugin The CTP plugin instance.
      * @param name The name of the arena.
      */
-    public Arena(CaptureThePoints plugin, String name, int startSeconds, int playingTime) {
+    public Arena(CaptureThePoints plugin, String name, Status status, int startSeconds, int playingTime) {
     	this.ctp = plugin;
     	this.name = name;
+    	this.status = status;
     	this.teamSpawns = new HashMap<String, Spawn>();
     	this.teams = new ArrayList<Team>();
     	this.capturePoints = new HashSet<Points>();

@@ -247,7 +247,7 @@ public class ArenaMaster {
         
         String world = arenaConf.getString("World");
         
-        Arena arena = new Arena(ctp, name, arenaConf.getInt("GlobalSettings.CountDowns.StartCountDownTime", 10), arenaConf.getInt("GlobalSettings.GameMode.PointCapture.PlayTime", 10));
+        Arena arena = new Arena(ctp, name, Status.JOINABLE, arenaConf.getInt("GlobalSettings.CountDowns.StartCountDownTime", 10), arenaConf.getInt("GlobalSettings.GameMode.PointCapture.PlayTime", 10));
         
         // Kj -- check the world to see if it exists. 
         try {
