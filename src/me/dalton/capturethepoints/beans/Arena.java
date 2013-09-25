@@ -23,6 +23,7 @@ import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.ConfigOptions;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.beans.tasks.AutoStartTimer;
+import me.dalton.capturethepoints.beans.tasks.EndCountDownTimer;
 import me.dalton.capturethepoints.beans.tasks.ItemCoolDownsTask;
 import me.dalton.capturethepoints.beans.tasks.PlayTimer;
 import me.dalton.capturethepoints.beans.tasks.ScoreGenerationTask;
@@ -49,9 +50,6 @@ public class Arena {
     //config
     private ConfigOptions co;
     
-    //SchedulerIds
-    private int endCounterID = 0, endCount = 5;
-    
     private HashMap<String, Spawn> teamSpawns;
     private List<Team> teams;
     private HashSet<Points> capturePoints;
@@ -64,6 +62,7 @@ public class Arena {
     //Scheduler, status, etc
     private Status status;
     private AutoStartTimer startTimer;
+    private EndCountDownTimer endTimer;
     private ItemCoolDownsTask itemCoolDowns;
     private PlayTimer playTime;
     private ScoreGenerationTask scoreGen;
@@ -80,7 +79,7 @@ public class Arena {
      * @param plugin The CTP plugin instance.
      * @param name The name of the arena.
      */
-    public Arena(CaptureThePoints plugin, String name, Status status, int startSeconds, int playingTime) {
+    public Arena(CaptureThePoints plugin, String name, Status status, int startSeconds, int endSeconds, int playingTime) {
     	this.ctp = plugin;
     	this.name = name;
     	this.status = status;
@@ -92,6 +91,7 @@ public class Arena {
     	this.previousLocation = new HashMap<String, Location>();
     	
     	this.startTimer = new AutoStartTimer(ctp, this, startSeconds);
+    	this.endTimer = new EndCountDownTimer(ctp, this, endSeconds);
     	this.itemCoolDowns = new ItemCoolDownsTask(ctp, this);
     	this.playTime = new PlayTimer(ctp, this, playingTime * 60 * 20); //Convert minutes to seconds, seconds to ticks
     	this.scoreGen = new ScoreGenerationTask(ctp, this);
@@ -222,6 +222,11 @@ public class Arena {
     	return this.startTimer;
     }
     
+    /** Returns the {@link EndCountDownTimer end timer} for this arena. */
+    public EndCountDownTimer getEndTimer() {
+    	return this.endTimer;
+    }
+    
     /** Returns the {@link ItemCoolDownsTask} for this arena. */
     public ItemCoolDownsTask getItemCoolDownTask() {
     	return this.itemCoolDowns;
@@ -290,26 +295,6 @@ public class Arena {
 	public List<String> getWaitingToMove(){
 		return this.waitingToMove;
 	}
-    
-    /** Sets the scheduler id of the endCounter task for this arena. */
-    public void setEndCounterID(int endCounterID) {
-    	this.endCounterID = endCounterID;
-    }
-    
-    /** Gets the scheduler id of the endCounter task for this arena. */
-    public int getEndCounterID() {
-    	return this.endCounterID;
-    }
-    
-    /** Sets the number in which to start the counter off for counting down to the teleporting at the end of a game. */
-    public void setEndCount(int count) {
-    	this.endCount = count;
-    }
-    
-    /** Gets the number in which to start the counter off at when ending the game and teleporting out. */
-    public int getEndCount() {
-    	return this.endCount;
-    }
     
     /** Returns a list of all the players in the arena, including the lobby, as a List of Strings of their name.
      * <p />
@@ -633,32 +618,13 @@ public class Arena {
      * @param countdown True to countdown to the end, false to just straight up end it.
      */
     public void endGame(final boolean rewards, boolean countdown) {
-    	final String aName = getName();
-        
     	if(countdown)
-	    	setEndCounterID(ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
-	    		public void run() {
-	    			Arena temp = ctp.getArenaMaster().getArena(aName);
-	    			if(temp.getEndCount() == 0) {
-	    				ctp.getServer().getScheduler().cancelTask(temp.getEndCounterID());
-	    				ctp.getArenaMaster().getArena(aName).setEndCounterID(0);
-	    				endGameNoCountDown(rewards);
-	    				return;
-	    			}
-	    			
-	    			if(temp.getConfigOptions().endCountDownTime == temp.getEndCount())
-	    				ctp.getUtil().sendMessageToPlayers(temp, ctp.getLanguage().END_COUNTDOWN.replaceAll("%CS", String.valueOf(temp.getEndCount())));
-	    			else
-	    				ctp.getUtil().sendMessageToPlayers(temp, temp.getEndCount() + "..");
-	    			
-	    			ctp.getArenaMaster().getArena(aName).setEndCount(temp.getEndCount() - 1);//Set the counter to one minus what it current this.
-	    		}
-	    	}, 0L, 20L));
+    		endTimer.start(rewards);
     	else
     		endGameNoCountDown(rewards);
     }
     
-    private void endGameNoCountDown(boolean rewards) {
+    public void endGameNoCountDown(boolean rewards) {
     	CTPEndEvent event = new CTPEndEvent(this, ctp.getLanguage().GAME_ENDED);
     	ctp.getPluginManager().callEvent(event);
     	
@@ -685,8 +651,8 @@ public class Arena {
         	startTimer.stop();
         }
         
-        if(endCounterID != 0) {
-        	ctp.getServer().getScheduler().cancelTask(endCounterID);
+        if(endTimer.getTaskId() != -1) {
+        	endTimer.stop();
         }
 
         for (Points s : getCapturePoints())
@@ -718,9 +684,6 @@ public class Arena {
         getPrevoiusPosition().clear();
         getPlayersData().clear();
         getPlayers().clear();
-        
-        //Reset the count downs
-        endCount = getConfigOptions().endCountDownTime;
         
         for (Team t : getTeams()) {
             t.setMemberCount(0);
