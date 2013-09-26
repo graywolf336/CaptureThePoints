@@ -487,7 +487,11 @@ public class CaptureThePoints extends JavaPlugin {
         loadRoles();
         loadRewards();
         loadHealingItems();
-
+        
+        // Load the default and global config before the arenas are loaded.
+        globalConfigOptions = getConfigTools().getConfigOptions(globalConfigFile);
+        FileConfiguration globalConfig = getConfigTools().load();
+        
         //Load existing arenas
         getArenaMaster().loadArenas(new File(mainDir + File.separator + "Arenas"));
 
@@ -500,9 +504,6 @@ public class CaptureThePoints extends JavaPlugin {
 
             getArenaMaster().getArenasBoundaries().put(a.getName(), tmpBound);
         }
-
-        globalConfigOptions = getConfigTools().getConfigOptions(globalConfigFile);
-        FileConfiguration globalConfig = getConfigTools().load();
 
         String arenaName = globalConfig.getString("Arena");
         if (arenaName == null)
