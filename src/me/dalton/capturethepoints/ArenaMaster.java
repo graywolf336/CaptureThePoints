@@ -272,8 +272,8 @@ public class ArenaMaster {
             }
         }
         
-        arena.setMaxPlayers(arenaConf.getInt("MaximumPlayers", 9999));
-        arena.setMinPlayers(arenaConf.getInt("MinimumPlayers", 4));
+        arena.setMaxPlayers(arenaConf.getInt("GlobalSettings.GameMode.Players.MaximumPlayers", 9999));
+        arena.setMinPlayers(arenaConf.getInt("GlobalSettings.GameMode.Players.MinimumPlayers", 4));
         
         if (arenaConf.contains("Points")) {
             for (String str : arenaConf.getConfigurationSection("Points").getKeys(false)) {
