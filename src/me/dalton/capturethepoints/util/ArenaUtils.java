@@ -85,11 +85,10 @@ public class ArenaUtils {
             for (Team team : arena.getTeams()) {
                 if (team.getColor().equalsIgnoreCase(aTeam)) {
                     team.addOneControlledPoints();
-                    String name = Character.toUpperCase(aTeam.charAt(0)) + aTeam.substring(1).toLowerCase();
                     if (!arena.getConfigOptions().useScoreGeneration)
-                        return team.getChatColor() + name + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getConfigOptions().pointsToWin + " " + ctp.getLanguage().POINTS + ").";
+                        return team.getChatColor() + team.getName() + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getConfigOptions().pointsToWin + " " + ctp.getLanguage().POINTS + ").";
                     else
-                        return team.getChatColor() + name + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getCapturePoints().size() + " " + ctp.getLanguage().POINTS + ").";
+                        return team.getChatColor() + team.getName() + ChatColor.WHITE + " " + ctp.getLanguage().CAPTURED + " " + ChatColor.GOLD + gainedpoint + ChatColor.WHITE + ". (" + team.getControlledPoints() + "/" + arena.getCapturePoints().size() + " " + ctp.getLanguage().POINTS + ").";
                 }
             }
             return null;
@@ -115,8 +114,7 @@ public class ArenaUtils {
                         team.setControlledPoints(0);
                     }
                     
-                    String name = Character.toUpperCase(aTeam.charAt(0)) + aTeam.substring(1).toLowerCase();
-                    return team.getChatColor() + name + ChatColor.WHITE + " " + ctp.getLanguage().LOST + " " + ChatColor.GOLD + lostpoint + ".";
+                    return team.getChatColor() + team.getName() + ChatColor.WHITE + " " + ctp.getLanguage().LOST + " " + ChatColor.GOLD + lostpoint + ".";
                 }
             }
             return null;
@@ -205,7 +203,7 @@ public class ArenaUtils {
                 message = message + aTeam.getChatColor() + aTeam.getName() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_SCORE + ": " + aTeam.getScore() + ChatColor.AQUA + " // ";
         else
             for (Team aTeam : arena.getTeams())
-                message = message + aTeam.getChatColor() + aTeam.getName().toUpperCase() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_POINTS + ": " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
+                message = message + aTeam.getChatColor() + aTeam.getName() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_POINTS + ": " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
 
         ctp.getUtil().sendMessageToPlayers(arena, message);
         
@@ -430,13 +428,13 @@ public class ArenaUtils {
 		if(arena.getStands() == null)
 			return;
 		
-		PlayerData pd = arena.getPlayerData(player);
+		PlayerData data = arena.getPlayerData(player);
 		
-		if(pd.inArena())
-			arena.getPlayerData(player).setInArena(false);
-		if(pd.inLobby())
-			arena.getPlayerData(player).setInLobby(false);
-		if(pd.inStands())
+		if(data.inArena())
+			data.setInArena(false);
+		if(data.inLobby())
+			data.setInLobby(false);
+		if(data.inStands())
 			return;
 		
 		ctp.getInvManagement().clearInventory(player, true); //clear the inventory, thus they have no items
