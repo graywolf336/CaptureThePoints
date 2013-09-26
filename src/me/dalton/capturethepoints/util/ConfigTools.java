@@ -380,15 +380,15 @@ public class ConfigTools {
         
         //Player lives
         if(!config.contains(playerLives + "Enabled"))
-        	config.getBoolean(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
+        	config.set(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
         if(!config.contains(playerLives + "Amount"))
-        	config.getInt(playerLives + "Amount", globalConfigOptions.playerLives);
+        	config.set(playerLives + "Amount", globalConfigOptions.playerLives);
         
         //Player time
         if(!config.contains(playerTime + "Enabled"))
-        	config.getBoolean(playerTime + "Enabled", globalConfigOptions.usePlayerTime);
+        	config.set(playerTime + "Enabled", globalConfigOptions.usePlayerTime);
         if(!config.contains(playerTime + "Value"))
-        	config.getString(playerTime + "Value", globalConfigOptions.playerTime);
+        	config.set(playerTime + "Value", globalConfigOptions.playerTime);
 
         // Score mod
         if(!config.contains(pointCaptureWithScore + "UseScoreGeneration"))
