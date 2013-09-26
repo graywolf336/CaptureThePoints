@@ -835,7 +835,7 @@ public class BuildCommand extends CTPCommand {
             return;
         }
         
-        if (arg.equalsIgnoreCase("setstands") || arg.equalsIgnoreCase("stands")) {
+        if (arg.equalsIgnoreCase("setstands") || arg.equalsIgnoreCase("stands") || arg.equalsIgnoreCase("setstand")) {
             if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.setstands", "ctp.admin.stands"})) {
                 File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + ctp.getArenaMaster().getEditingArena().getName() + ".yml");
 
