@@ -90,7 +90,10 @@ _Status of this branch's builds:_ [![Build Status](http://git.graywolf336.com:80
 * - CTPStartEvent
 * Force clients to get the sign updates that we do when restoring an arena, thanks to Bubelbub
 * Revamped how multiple arenas are handled
-* Recoded ~40% of the plugin, should have better performance
+* Recoded ~50% of the plugin, should have better performance
+* Moved some config options, you will have to manually reset them (sorry)
+* - `MaximumPlayers` has been moved under `GlobalSettings.GameMode.Players.MaximumPlayers`
+* - `MinimumPlayers` has been moved under `GlobalSettings.GameMode.Players.MinimumPlayers`
 * Changed some commands to fix the new system
 * - `/ctp j <arena>` if no `<arena>` is given, we will send them to the default arena or the one arena (if there is only one)
 * - `/ctp kick <arena> <player`
@@ -111,6 +114,11 @@ _Status of this branch's builds:_ [![Build Status](http://git.graywolf336.com:80
 * Added count downs to starting and stopping
 * - Configurable per arena
 * - Power is configurable per arena
+* Added support for player lives (not done)
+* - Config option is under `GlobalSettings.GameMode.Players.Lives.Enabled` and also `GlobalSettings.GameMode.Players.Lives.Amount`
+* Added support for setting the players client side time per arena
+* - Config option is under `GlobalSettings.GameMode.Players.Time.Enabled` and also `GlobalSettings.GameMode.Players.Time.Value`
+* - Only four values are accepted (might change if enough people request it) `dawn`, `midday`, `dusk`, and `midnight`
 
 
 ### Update: 1.4.5 ###
