@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -34,6 +35,7 @@ import me.dalton.capturethepoints.events.CTPEndEvent;
 import me.dalton.capturethepoints.events.CTPPlayerJoinEvent;
 import me.dalton.capturethepoints.events.CTPPlayerLeaveEvent;
 import me.dalton.capturethepoints.listeners.TagAPIListener;
+import me.dalton.capturethepoints.util.LangTools;
 import me.dalton.capturethepoints.util.PotionManagement;
 
 /** Arena Data of the saved arenas for playing {@link CaptureThePoints}.
@@ -706,5 +708,27 @@ public class Arena {
             t.setControlledPoints(0);
             t.setScore(0);
     	}
+    }
+    
+    /** Checks and calculates the Player's killstreak and deathstreak and outputs an appropriate message according to config.
+     * @param player The player
+     * @param died If they died (false if they were the killer). */
+    public void checkForKillMSG(Player player, boolean died) {
+        PlayerData data = getPlayerData(player);
+        if (died) {
+            data.addOneDeath();
+            data.addOneDeathInARow();
+            data.setKillsInARow(0);
+        } else {
+            data.addOneKill();
+            data.addOneKillInARow();
+            data.setDeathsInARow(0);
+            String message = getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
+
+            if (!message.isEmpty())
+            	ctp.getUtil().sendMessageToPlayers(this,
+            			LangTools.getColorfulMessage(message.replace("%player",
+            					data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE)));
+        }
     }
 }

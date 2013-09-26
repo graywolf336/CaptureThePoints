@@ -453,30 +453,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    /** Checks and calculates the Player's killstreak and deathstreak and outputs an appropriate message according to config.
-     * @param player The player
-     * @param died If they died (false if they were the killer). */
-    public void checkForKillMSG(Arena a, Player player, boolean died) {
-        PlayerData data = a.getPlayerData(player);
-        if (died) {
-            data.addOneDeath();
-            data.addOneDeathInARow();
-            data.setKillsInARow(0);
-        } else {
-            data.addOneKill();
-            data.addOneKillInARow();
-            data.setDeathsInARow(0);
-            String message = a.getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
-
-            if (!message.isEmpty())
-            	getUtil().sendMessageToPlayers(a,
-            			LangTools.getColorfulMessage(message.replace("%player",
-            					a.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE)));
-        }
-
-        a.addPlayerData(player, data);
-    }
-
     private void loadConfigFiles(boolean reloading) {
     	if(reloading) {
     		for(Arena a : arenaMaster.getArenas())

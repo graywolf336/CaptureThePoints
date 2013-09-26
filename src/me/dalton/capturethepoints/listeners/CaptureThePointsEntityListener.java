@@ -472,13 +472,13 @@ public class CaptureThePointsEntityListener  implements Listener {
             dropWool(arena, player);
             arena.getPlayerData(attacker).setMoney(arena.getPlayerData(attacker).getMoney() + arena.getConfigOptions().moneyForKill);
             attacker.sendMessage("Money: " + ChatColor.GREEN + arena.getPlayerData(attacker).getMoney());
-            ctp.checkForKillMSG(arena, attacker, false);
-            ctp.checkForKillMSG(arena, player, true);
+            arena.checkForKillMSG(attacker, false);
+            arena.checkForKillMSG(player, true);
         } else {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
                 ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
-            ctp.checkForKillMSG(arena, player, true);
+            arena.checkForKillMSG(player, true);
         }
 
         if(arena.getConfigOptions().usePlayerLives) {
