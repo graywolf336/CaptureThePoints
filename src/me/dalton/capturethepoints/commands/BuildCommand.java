@@ -850,15 +850,15 @@ public class BuildCommand extends CTPCommand {
                     return;
                 }
                 
-                Stands stands = new Stands( player.getLocation().getX(), player.getLocation().getY(),
+                Stands stands = new Stands(player.getLocation().getX(), player.getLocation().getY(),
                         player.getLocation().getZ(), player.getLocation().getYaw());
 
                 ctp.getArenaMaster().getEditingArena().setStands(stands);
 
-                arenaConf.set("Lobby.X", Double.valueOf(stands.getX()));
-                arenaConf.set("Lobby.Y", Double.valueOf(stands.getY()));
-                arenaConf.set("Lobby.Z", Double.valueOf(stands.getZ()));
-                arenaConf.set("Lobby.Dir", Double.valueOf(stands.getDir()));
+                arenaConf.set("Stands.X", Double.valueOf(stands.getX()));
+                arenaConf.set("Stands.Y", Double.valueOf(stands.getY()));
+                arenaConf.set("Stands.Z", Double.valueOf(stands.getZ()));
+                arenaConf.set("Stands.Dir", Double.valueOf(stands.getDir()));
                 
                 try {
                     arenaConf.options().copyDefaults(true);
