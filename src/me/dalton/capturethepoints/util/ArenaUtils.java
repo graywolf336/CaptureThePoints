@@ -230,7 +230,7 @@ public class ArenaUtils {
             arena.getConfigOptions().pointsToWin = arena.getCapturePoints().size();
 
         // Balance teams for already selected teams
-        balanceTeamsFromLobby(arena);
+        arena.balanceTeams(0);
 
         ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + event.getStartMessage() + " " + arena.getName() + "!");
         
@@ -325,7 +325,7 @@ public class ArenaUtils {
         playerdata.setInArena(true);
     }
 	
-	@SuppressWarnings("deprecation")
+	/** @deprecated Use {@link Arena#balanceTeams(int, int) }*/
 	private void balanceTeamsFromLobby(Arena arena) {
         // Take the total amount of players and divide it by the amount of teams, then round it up to the highest number.
         int optimalPlayersInTeam = (int) Math.ceil(arena.getPlayersPlaying().size() / arena.getTeams().size());

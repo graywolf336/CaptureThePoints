@@ -15,8 +15,6 @@ import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Rewards;
-import me.dalton.capturethepoints.beans.Spawn;
-import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.*;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 
@@ -32,9 +30,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -255,177 +250,6 @@ public class CaptureThePoints extends JavaPlugin {
     public void sendHelp(CommandSender sender) {
         HelpCommand helpCommand = new HelpCommand(this);
         helpCommand.execute(sender, Arrays.asList("ctp"));
-    }
-
-    /** Attempt to balance the teams.
-     * 
-     * @param a The arena in which we're balancing the teams.
-     * @param loop Times this has recursed (prevents overruns).
-     * @param balanceThreshold The config value for balance threshold.
-     * @return Whether the teams are balanced.
-     */
-    public boolean balanceTeams(Arena a, int loop, int balanceThreshold) {//TODO
-        if (loop > 5) {
-        	logWarning("balanceTeams hit over 5 recursions. Aborting.");
-            return false;
-        }
-        
-        Team lowestTeam = null; // Team with the lower number of players
-        int lowestmembercount = -1;
-        Team highestTeam = null; // Team with the higher number of players
-        int highestmembercount = -1;
-        
-        int difference = 0;
-
-        for (Team aTeam : a.getTeams()) {
-            if (lowestmembercount == -1) {
-                lowestmembercount = aTeam.getMemberCount();
-                lowestTeam = aTeam;
-                highestmembercount = aTeam.getMemberCount();
-                highestTeam = aTeam;
-                continue;
-            } else {
-                if (aTeam.getMemberCount() != lowestmembercount || aTeam.getMemberCount() != highestmembercount) {
-                    if (aTeam.getMemberCount() < lowestmembercount) {
-                        lowestmembercount = aTeam.getMemberCount(); // Reassign new low
-                        lowestTeam = aTeam;
-                    } else if (aTeam.getMemberCount() > highestmembercount) {
-                        highestmembercount = aTeam.getMemberCount(); // Reassign new high
-                        highestTeam = aTeam;
-                    } else {
-                        continue; // Logic error
-                    }
-                } else {
-                    continue; // These teams are balanced.
-                }
-            }
-        }
-
-        difference = highestmembercount - lowestmembercount;
-        if ((highestTeam == lowestTeam) || difference < balanceThreshold) {
-            // The difference between the teams is not great enough to balance the teams as defined by balancethreshold.
-            return true;
-        }
-
-        if (difference % a.getTeams().size() == 0) {
-            // The teams balance evenly.
-        	String player = highestTeam.getRandomPlayer(a);
-        	if(player != null) {
-        		balancePlayer(a, player, lowestTeam); // Move one player from the team with the higher number of players to the lower.
-        	}else {
-        		loop++;
-        		return false;
-        	}
-            
-        } else {
-        	String player = highestTeam.getRandomPlayer(a);
-        	if(player != null) {
-        		// The teams balance unevenly.
-                balancePlayer(a, player, null); // Move one player from the team with the higher number of players to lobby.
-        	}else {
-        		loop++;
-        		return false;
-        	}
-            
-        }
-        
-        loop++;
-        boolean balanced = balanceTeams(a, loop, balanceThreshold); // Check Teams again to check if balanced.
-        return balanced;
-    }
-
-	@SuppressWarnings("deprecation")
-	private void balancePlayer(Arena a, String p, Team newTeam) {
-        // Reseting player data       
-        if (newTeam == null) {
-            // Moving to Lobby
-            a.getPlayerData(p).getTeam().substractOneMember();
-            a.getPlayerData(p).setTeam(null);
-            a.getPlayerData(p).setInArena(false);
-            a.getPlayerData(p).setInLobby(true);
-            a.getLobby().getPlayersInLobby().put(p, false);
-            a.getPlayerData(p).setReady(false);
-            a.getPlayerData(p).setJustJoined(true); // Flag for teleport
-            a.getPlayerData(p).setLobbyJoinTime(System.currentTimeMillis());     
-            a.getPlayerData(p).isWarned(false);
-            a.getPlayerData(p).setRole(null);
-            
-            Player player = getServer().getPlayer(p);
-            
-            // Remove Helmet
-            player.getInventory().setHelmet(null);
-            player.getInventory().remove(Material.WOOL);
-            
-            
-            //It's deprecated but it's currently the only way to get the desired effect.
-            player.updateInventory();
-        
-            // Get lobby location and move player to it.
-            Location loc = new Location(a.getWorld(), a.getLobby().getX(), a.getLobby().getY() + 1, a.getLobby().getZ());
-            loc.setYaw((float) a.getLobby().getDir());
-            loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
-            player.teleport(loc); // Teleport player to lobby
-            getUtil().sendMessageToPlayers(a, getLanguage().TEAM_BALANCE_MOVE_TO_LOBBY.replaceAll("%PN", p));
-            
-        } else {
-            // Moving to other Team
-            String oldteam = a.getPlayerData(p).getTeam().getColor();
-            ChatColor oldcc = a.getPlayerData(p).getTeam().getChatColor();
-            
-            a.getPlayerData(p).getTeam().substractOneMember();
-            a.getPlayerData(p).setTeam(newTeam);
-            
-            Player player = getServer().getPlayer(p);
-                                   
-            // Change wool colour and Helmet
-            ItemStack[] contents = player.getInventory().getContents();
-            int amountofwool = 0;
-            for (ItemStack item : contents) {
-                if (item == null) {
-                    continue;
-                }
-                
-                if (item.getType() == Material.WOOL) {
-                    amountofwool += item.getAmount();
-                }
-            }
-            
-            player.getInventory().remove(Material.WOOL);
-            
-            //Give wool
-            DyeColor color1 = DyeColor.valueOf(newTeam.getColor().toUpperCase());
-            ItemStack helmet = new ItemStack(Material.WOOL, 1, color1.getData());
-            player.getInventory().setHelmet(helmet);
-            
-            if (amountofwool !=0) {
-                ItemStack wool = new ItemStack(Material.WOOL, amountofwool, color1.getData());
-                player.getInventory().addItem(wool);
-            }
-
-            //It's deprecated but it's currently the only way to get the desired effect.
-            player.updateInventory();
-            
-            // Get team spawn location and move player to it.
-            Spawn spawn =
-                    a.getTeamSpawns().get(newTeam.getColor()) != null ?
-                    a.getTeamSpawns().get(newTeam.getColor()) :
-                    newTeam.getSpawn();
-            Location loc = new Location(a.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
-            loc.setYaw((float) spawn.getDir());
-            a.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
-            boolean teleport = player.teleport(loc);
-            if (!teleport)
-            	player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
-            
-            getUtil().sendMessageToPlayers(a, getLanguage().TEAM_BALANCE_CHANGE_TEAMS
-            		.replaceAll("%PN", player.getName())
-            		.replaceAll("%OC", oldcc + "")
-            		.replaceAll("%OT", oldteam)
-            		.replaceAll("%NC", newTeam.getChatColor() + "")
-            		.replaceAll("%NT", newTeam.getColor()));
-            
-            newTeam.addOneMember();
-        }
     }
 
     private void loadConfigFiles(boolean reloading) {
