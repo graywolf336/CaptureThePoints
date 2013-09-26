@@ -327,22 +327,27 @@ public class ArenaUtils {
 	
 	@SuppressWarnings("deprecation")
 	private void balanceTeamsFromLobby(Arena arena) {
-        int difference = 0;
-        int optimalPlayerCountInTeam = arena.getPlayersPlaying().size() / arena.getTeams().size();
+        // Take the total amount of players and divide it by the amount of teams, then round it up to the highest number.
+        int optimalPlayersInTeam = (int) Math.ceil(arena.getPlayersPlaying().size() / arena.getTeams().size());
+        
+        //Creates an int array which stores amount of players in that team
         int[] teamPlayersCount = new int[arena.getTeams().size()];
+        
+        //Create a list for when/if we need to move players
         List<String> playersForBalance = new ArrayList<String>();
-
+        
+        int difference = 0;
+        
         if(ctp.getGlobalConfigOptions().debugMessages) {
         	ctp.getLogger().info("Starting the auto balacing:");
-        	ctp.getLogger().info("   Difference: " + difference);
-        	ctp.getLogger().info("   optimalPlayerCountInTeam: " + optimalPlayerCountInTeam);
-        	ctp.getLogger().info("   teamPlayersCount: " + teamPlayersCount.length);
+        	ctp.getLogger().info("   optimalPlayerCountInTeam: " + optimalPlayersInTeam);
+        	ctp.getLogger().info("   there are this many teams: " + teamPlayersCount.length);
         }
         
         boolean areEqual = true;
         for(int i = 0; i < arena.getTeams().size(); i++) {
             teamPlayersCount[i] = arena.getTeams().get(i).getTeamPlayers(arena).size();
-            if(optimalPlayerCountInTeam != teamPlayersCount[i])
+            if(optimalPlayersInTeam != teamPlayersCount[i])
                 areEqual = false;
         }
 
@@ -361,24 +366,31 @@ public class ArenaUtils {
            
             List<String> TeamPlayers = arena.getTeams().get(i).getTeamPlayers(arena);
             // Randam ir sudedam i sarasa zaidejus, kuriu yra per daug
-            for(int j = 0; j < teamPlayersCount[i] - optimalPlayerCountInTeam; j++)
+            for(int j = 0; j < teamPlayersCount[i] - optimalPlayersInTeam; j++)
                 playersForBalance.add(TeamPlayers.get(j));
             
-            if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0)
-                difference = difference + (optimalPlayerCountInTeam - teamPlayersCount[i]);
+            if(teamPlayersCount[i] - optimalPlayersInTeam < 0)
+                difference = difference + (optimalPlayersInTeam - teamPlayersCount[i]);
+        }
+        
+        if(ctp.getGlobalConfigOptions().debugMessages) {
+        	ctp.getLogger().info("   difference is: " + difference);
+        	ctp.getLogger().info("   players set to move:");
+        	for(String s : playersForBalance)
+        		ctp.getLogger().info("      " + s);
         }
         
         // If there are enough players to balance teams
         if(difference <= playersForBalance.size() && difference > 0) {
             for(int i = 0; i < arena.getTeams().size(); i++) {
-                if(teamPlayersCount[i] - optimalPlayerCountInTeam < 0) {
+                if(teamPlayersCount[i] - optimalPlayersInTeam < 0) {
                     List<Player> playersForRemove = new ArrayList<Player>();
-                    for(int j = 0; j < optimalPlayerCountInTeam - teamPlayersCount[i]; j++) {
+                    for(int j = 0; j < optimalPlayersInTeam - teamPlayersCount[i]; j++) {
                     	
                         Player p = ctp.getServer().getPlayer(playersForBalance.get(j));
-                        
-                        arena.getPlayerData(p).getTeam().substractOneMember();
                         Team oldTeam = arena.getPlayerData(p).getTeam();
+                        
+                        oldTeam.substractOneMember();
                         arena.getPlayerData(p).setTeam(null);     // For moveToSpawns team check
 
                         //Remove Helmet
@@ -390,8 +402,11 @@ public class ArenaUtils {
                         
                 		ctp.getArenaUtil().moveToSpawns(arena, p.getName());
                         playersForRemove.add(p);
-                        ctp.sendMessage(p, arena.getPlayerData(p).getTeam().getChatColor() + "You" + ChatColor.WHITE + " changed teams from "
-                                + oldTeam.getChatColor() + oldTeam.getColor() + ChatColor.WHITE + " to "+ arena.getPlayerData(p).getTeam().getChatColor() + arena.getPlayerData(p).getTeam().getColor() + ChatColor.WHITE + "! [Team-balancing]");
+                        
+                        PlayerData data = arena.getPlayerData(p);
+                        ctp.sendMessage(p, data.getTeam().getChatColor() + "You" + ChatColor.WHITE + " changed teams from "
+                                + oldTeam.getChatColor() + oldTeam.getName() + ChatColor.WHITE
+                                + " to "+ data.getTeam().getChatColor() + data.getTeam().getName() + ChatColor.WHITE + "! " + ChatColor.ITALIC + "[Team-balancing]");
                     }
                     
                     for(Player p : playersForRemove)
