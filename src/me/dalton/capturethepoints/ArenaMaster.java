@@ -242,10 +242,7 @@ public class ArenaMaster {
 	
     /**Loads ArenaData data ready for assignment to mainArena */
     public Arena loadArena(String name) {
-        File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + name + ".yml");
-        
-        ctp.getConfigTools().setArenaConfigOptions(arenaFile); //Update the config in case it doesn't have something new. :)
-        
+        File arenaFile = new File(ctp.getMainDirectory() + File.separator + "Arenas" + File.separator + name + ".yml");        
         FileConfiguration arenaConf = YamlConfiguration.loadConfiguration(arenaFile);
         
         String world = arenaConf.getString("World");
