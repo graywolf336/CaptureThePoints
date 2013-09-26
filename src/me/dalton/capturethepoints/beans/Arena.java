@@ -621,7 +621,7 @@ public class Arena {
 
         //check for player count, only then were no replacement
         if (!wasReplaced)
-            ctp.checkForGameEndThenPlayerLeft(this);
+            checkForGameEndWhenPlayerLeft();
             
         //If there was no replacement we should move one member to lobby
         if (!wasReplaced && getConfigOptions().exactTeamMemberCount && status.isRunning())
@@ -711,8 +711,12 @@ public class Arena {
     }
     
     /** Checks and calculates the Player's killstreak and deathstreak and outputs an appropriate message according to config.
+     * 
+     * <p>
+     * 
      * @param player The player
-     * @param died If they died (false if they were the killer). */
+     * @param died If they died (false if they were the killer).
+     */
     public void checkForKillMSG(Player player, boolean died) {
         PlayerData data = getPlayerData(player);
         if (died) {
@@ -729,6 +733,31 @@ public class Arena {
             	ctp.getUtil().sendMessageToPlayers(this,
             			LangTools.getColorfulMessage(message.replace("%player",
             					data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE)));
+        }
+    }
+    
+    private void checkForGameEndWhenPlayerLeft() {
+        if (getPlayersData().size() < 2) {
+            //maybe dc or something. it should be moved to checking to see players who left the game
+            boolean zeroPlayers = true;
+            for (Team team : getTeams()) {
+                if (team.getMemberCount() == 1) {
+                    zeroPlayers = false;
+                    
+                    ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().GAME_ENDED_TOO_FEW_PLAYERS
+                    		.replaceAll("%TC", team.getChatColor() + "")
+                    		.replaceAll("%TN", team.getColor().toUpperCase())
+                    		.replaceAll("%WS", team.getScore() + ""));
+                    
+                    endGame(false, true);//Game ended prematurely, don't give rewards but do countdown.
+                    break;
+                }
+            }
+            
+            if (zeroPlayers) {
+            	ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().NO_PLAYERS_LEFT);
+                endGame(false, false);//Game ended prematurely, don't give rewards to ghost players we may have.
+            }
         }
     }
 }

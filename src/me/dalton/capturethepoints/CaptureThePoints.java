@@ -428,31 +428,6 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void checkForGameEndThenPlayerLeft(Arena a) {
-        if (a.getPlayersData().size() < 2) {
-            //maybe dc or something. it should be moved to checking to see players who left the game
-            boolean zeroPlayers = true;
-            for (int i = 0; i < a.getTeams().size(); i++) {
-                if (a.getTeams().get(i).getMemberCount() == 1) {
-                    zeroPlayers = false;
-                    
-                    getUtil().sendMessageToPlayers(a, getLanguage().GAME_ENDED_TOO_FEW_PLAYERS
-                    		.replaceAll("%TC", a.getTeams().get(i).getChatColor() + "")
-                    		.replaceAll("%TN", a.getTeams().get(i).getColor().toUpperCase())
-                    		.replaceAll("%WS", a.getTeams().get(i).getScore() + ""));
-                    
-                    a.endGame(false, true);//Game ended prematurely, don't give rewards but do countdown.
-                    break;
-                }
-            }
-            
-            if (zeroPlayers) {
-            	getUtil().sendMessageToPlayers(a, getLanguage().NO_PLAYERS_LEFT);
-                a.endGame(false, false);//Game ended prematurely, don't give rewards to ghost players we may have.
-            }
-        }
-    }
-
     private void loadConfigFiles(boolean reloading) {
     	if(reloading) {
     		for(Arena a : arenaMaster.getArenas())
