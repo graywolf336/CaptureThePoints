@@ -272,11 +272,6 @@ public class ArenaMaster {
             }
         }
         
-        if(!arenaConf.contains("MaximumPlayers"))
-            arenaConf.set("MaximumPlayers", 9999);
-        if(!arenaConf.contains("MinimumPlayers"))
-            arenaConf.set("MinimumPlayers", 4);
-
         arena.setMaxPlayers(arenaConf.getInt("MaximumPlayers", 9999));
         arena.setMinPlayers(arenaConf.getInt("MinimumPlayers", 4));
         

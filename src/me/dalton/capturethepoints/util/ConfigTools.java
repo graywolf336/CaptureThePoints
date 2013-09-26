@@ -12,15 +12,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigTools {
-	private ConfigOptions globalConfigOptions = null;
 	private CaptureThePoints ctp;
-	private String pointCapture = "GlobalSettings.GameMode.PointCapture.";
-	private String pointCaptureWithScore = "GlobalSettings.GameMode.PointCaptureWithScoreGeneration.";
-	private String playerLives = "GlobalSettings.GameMode.PlayerLives.";
-	private String playerTime = "GlobalSettings.GameMode.PlayerTime.";
-	private String countDown = "GlobalSettings.CountDowns.";
+	private ConfigOptions globalConfigOptions = null;
 	private String global = "GlobalSettings.";
-	private String mySql = "GlobalSettings.MySql.";
+	private String countDown = global + "CountDowns.";
+	private String mySql = global + "MySql.";
+	private String gamemode = global + "GameMode.";
+	private String pointCapture = gamemode + "PointCapture.";
+	private String pointCaptureWithScore = gamemode + "PointCaptureWithScoreGeneration.";
+	private String players = gamemode + "Players.";
+	private String playerLives = players + "Lives.";
+	private String playerTime = players + "Time.";
 	
 	public ConfigTools(CaptureThePoints ctp) {
 		this.ctp = ctp;
@@ -291,11 +293,11 @@ public class ConfigTools {
 
         //Player lives
         co.usePlayerLives = config.getBoolean(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
-        co.playerLives = config.getInt(playerLives + "Lives", globalConfigOptions.playerLives);
+        co.playerLives = config.getInt(playerLives + "Amount", globalConfigOptions.playerLives);
         
         //Player time
         co.usePlayerTime = config.getBoolean(playerTime + "Enabled", globalConfigOptions.usePlayerTime);
-        co.playerTime = config.getString(playerTime + "Time", globalConfigOptions.playerTime);
+        co.playerTime = config.getString(playerTime + "Value", globalConfigOptions.playerTime);
         
         //Count down options
         co.useStartCountDown = config.getBoolean(countDown + "UseStartCountDown", globalConfigOptions.useStartCountDown);
@@ -361,6 +363,7 @@ public class ConfigTools {
     }
 
     public void setArenaConfigOptions(File arenafile) {
+    	if(ctp.getGlobalConfigOptions().debugMessages) ctp.getLogger().info("Update the config file: " + arenafile.getAbsolutePath());
         FileConfiguration config = load(arenafile);
 
         //Game mode configuration
@@ -369,17 +372,23 @@ public class ConfigTools {
         if(!config.contains(pointCapture + "PlayTime"))
             config.set(pointCapture + "PlayTime", globalConfigOptions.playTime);
         
+        // Max and min players
+        if(!config.contains(players + "MaximumPlayers"))
+        	config.set(players + "MaximumPlayers", 9999);
+        if(!config.contains(players + "MinimumPlayers"))
+        	config.set(players + "MinimumPlayers", 4);
+        
         //Player lives
         if(!config.contains(playerLives + "Enabled"))
         	config.getBoolean(playerLives + "Enabled", globalConfigOptions.usePlayerLives);
-        if(!config.contains(playerLives + "Lives"))
-        	config.getInt(playerLives + "Lives", globalConfigOptions.playerLives);
+        if(!config.contains(playerLives + "Amount"))
+        	config.getInt(playerLives + "Amount", globalConfigOptions.playerLives);
         
         //Player time
         if(!config.contains(playerTime + "Enabled"))
         	config.getBoolean(playerTime + "Enabled", globalConfigOptions.usePlayerTime);
-        if(!config.contains(playerTime + "Time"))
-        	config.getString(playerTime + "Time", globalConfigOptions.playerTime);
+        if(!config.contains(playerTime + "Value"))
+        	config.getString(playerTime + "Value", globalConfigOptions.playerTime);
 
         // Score mod
         if(!config.contains(pointCaptureWithScore + "UseScoreGeneration"))
