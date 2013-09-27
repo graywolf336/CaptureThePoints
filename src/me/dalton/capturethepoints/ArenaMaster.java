@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -323,11 +322,7 @@ public class ArenaMaster {
                 team.setColor(spawn.getName());
                 team.setMemberCount(0);
                 
-                try {
-                    team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase()));
-                } catch (Exception ex) {
-                    team.setChatColor(ChatColor.GREEN);
-                }
+                team.setChatColor(ctp.getArenaUtil().getChatColorFromColor(team.getColor()));
 
                 // Check if this spawn is already in the list
                 boolean hasTeam = false;

@@ -44,6 +44,41 @@ public class ArenaUtils {
     	return null;
     }
     
+    /** Returns the ChatColor from the given color, returns green if nothing close enough is found. */
+    public ChatColor getChatColorFromColor(String color) {
+    	if(color.equalsIgnoreCase("cyan")) {
+    		return ChatColor.AQUA;
+    	}else if(color.equalsIgnoreCase("black")) {
+    		return ChatColor.BLACK;
+    	}else if(color.equalsIgnoreCase("light_blue")) {
+    		return ChatColor.BLUE;
+    	}else if(color.equalsIgnoreCase("blue")) {
+    		return ChatColor.DARK_BLUE;
+    	}else if(color.equalsIgnoreCase("gray")) {
+    		return ChatColor.DARK_GRAY;
+    	}else if(color.equalsIgnoreCase("green")) {
+    		return ChatColor.DARK_GREEN;
+    	}else if(color.equalsIgnoreCase("purple")) {
+    		return ChatColor.DARK_PURPLE;
+    	}else if(color.equalsIgnoreCase("red")) {
+    		return ChatColor.DARK_RED;
+    	}else if(color.equalsIgnoreCase("orange")) {
+    		return ChatColor.GOLD;
+    	}else if(color.equalsIgnoreCase("lime")) {
+    		return ChatColor.GREEN;
+    	}else if(color.equalsIgnoreCase("magenta")) {
+    		return ChatColor.LIGHT_PURPLE;
+    	}else if(color.equalsIgnoreCase("pink")) {
+    		return ChatColor.RED;
+    	}else if(color.equalsIgnoreCase("white")) {
+    		return ChatColor.WHITE;
+    	}else if(color.equalsIgnoreCase("yellow")) {
+    		return ChatColor.YELLOW;
+    	}else {
+    		return ChatColor.GREEN;
+    	}
+    }
+    
     /**
      * Heal the player (set the health) and cause an event to happen from it, thus improving relations with other plugins.
      * 

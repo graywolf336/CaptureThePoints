@@ -487,14 +487,7 @@ public class BuildCommand extends CTPCommand {
                     team.setColor(arg2);
                     team.setMemberCount(0);
                     
-                    try {
-                        team.setChatColor(ChatColor.valueOf(spawn.getName().toUpperCase())); // Kj -- init teamchat colour
-                    } catch (Exception ex) {
-                    	if(spawn.getName().equalsIgnoreCase("cyan"))
-                    		team.setChatColor(ChatColor.DARK_AQUA);
-                    	else
-                    		team.setChatColor(ChatColor.GREEN);
-                    }
+                    team.setChatColor(ctp.getArenaUtil().getChatColorFromColor(team.getColor()));
                     
                     // Check if this spawn is already in the list
                     boolean hasTeam = false;

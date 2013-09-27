@@ -936,7 +936,7 @@ public class Arena {
             		.replaceAll("%OC", oldcc + "")
             		.replaceAll("%OT", oldteam)
             		.replaceAll("%NC", newTeam.getChatColor() + "")
-            		.replaceAll("%NT", newTeam.getColor()));
+            		.replaceAll("%NT", newTeam.getName()));
             
             newTeam.addOneMember();
         }
