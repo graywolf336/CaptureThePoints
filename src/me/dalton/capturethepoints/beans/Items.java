@@ -12,6 +12,8 @@ public class Items {
     private short type = -1;
     private List<Enchantment> enchantments = new LinkedList<Enchantment>();
     private List<Integer> enchLevels = new LinkedList<Integer>();
+    private String name = "";
+    private List<String> lore = new LinkedList<String>();
     private int money = 0;
     private int exp = 0;
     
@@ -65,6 +67,26 @@ public class Items {
     /** Gets the items levels of enchantments */
     public List<Integer> getEnchantmentLevels() {
     	return this.enchLevels;
+    }
+    
+    /** Sets the custom name of this item. */
+    public void setName(String name) {
+    	this.name = name;
+    }
+    
+    /** Gets the custom name of this item. */
+    public String getName() {
+    	return this.name;
+    }
+    
+    /** Sets the lore for this item. */
+    public void setLore(List<String> lore) {
+    	this.lore = lore;
+    }
+    
+    /** Gets the lore for this item. */
+    public List<String> getLore() {
+    	return this.lore;
     }
     
     /** Sets the money reward */

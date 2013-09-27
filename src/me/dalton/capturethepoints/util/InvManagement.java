@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class InvManagement {
 	private CaptureThePoints ctp;
@@ -180,7 +181,15 @@ public class InvManagement {
                     stack.setAmount(item.getAmount());
                     if(item.getType() != -1)
                         stack.setDurability(item.getType());
-
+                    
+                    ItemMeta meta = stack.getItemMeta();
+                    	if(!item.getName().isEmpty())
+                    		meta.setDisplayName(item.getName());
+                    	if(!item.getLore().isEmpty())
+                    		meta.setLore(item.getLore());
+                    	
+                	stack.setItemMeta(meta);
+                    
                     // Add enchantments
                     for(int j = 0; j < item.getEnchantments().size(); j++) {
                         stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
