@@ -199,18 +199,20 @@ public class CaptureThePointsBlockListener implements Listener {
 
         if (!ctp.getArenaMaster().isPlayerInAnArena(player)) {// If tries to place blocks in arena out of game
             for(ArenaBoundaries bound : ctp.getArenaMaster().getArenasBoundaries().values()) {
-                if (ctp.getArenaUtil().isInsideAB(block.getLocation().toVector(), bound.getFirstCorner(), bound.getSecondCorner())
-                		&& block.getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
-                    if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
-                        return; // Player can edit arena
-                    }
+            	if(bound.getFirstCorner() != null && bound.getSecondCorner() != null) {
+                    if (ctp.getArenaUtil().isInsideAB(block.getLocation().toVector(), bound.getFirstCorner(), bound.getSecondCorner())
+                    		&& block.getWorld().getName().equalsIgnoreCase(bound.getWorld())) {
+                        if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.canModify"})) {
+                            return; // Player can edit arena
+                        }
 
-                    ctp.sendMessage(player, ctp.getLanguage().NO_PERMISSION);
-                    event.setCancelled(true);
-                    if(ctp.getGlobalConfigOptions().debugMessages)
-                    	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block that was inside arena but the player wasn't playing.");
-                    return;
-                }
+                        ctp.sendMessage(player, ctp.getLanguage().NO_PERMISSION);
+                        event.setCancelled(true);
+                        if(ctp.getGlobalConfigOptions().debugMessages)
+                        	ctp.getLogger().info("Just cancelled a BlockPlaceEvent because the player tried to place a block that was inside arena but the player wasn't playing.");
+                        return;
+                    }
+            	}
             }
             return;
         }
