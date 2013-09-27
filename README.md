@@ -36,6 +36,7 @@ Need to completely re-think this entire thing as how it is currently setup is ju
 * Added support for Bukkit's player max health option, now it can be higher than 20 (requires a newer version of bukkit).
 * Added support for adding colors in the kill streak messages.
 * Added support for TagAPI, player's name tags will relate to their team color
+* Added support for items to have a custom name and custom lore!
 * Added config option to keep the inventory on respawning, including bought items
 * Added eggs are grenades if enabled in the config.
 * Added count downs to starting and stopping

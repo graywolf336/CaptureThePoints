@@ -262,7 +262,6 @@ public class Util {
     	if(text == null) return null;
     	
         // Trim commas and whitespace, and split items by commas
-        text = text.toUpperCase();
         text = text.trim();
         if (text.endsWith(",")) {
             text = text.substring(0, text.length() - 1);
@@ -313,6 +312,7 @@ public class Util {
                 item = item.substring(0, fBracket) + item.substring(sBracket + 1, item.length());
             }
             
+            item.toUpperCase();
             // Split the reset by colons, this will contain the name, amount, enchantments, etc
             String[] parts = item.split(":");
  
