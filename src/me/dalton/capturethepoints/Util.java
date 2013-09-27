@@ -333,7 +333,7 @@ public class Util {
                 String p = enchantmentsString[i];
                 
                 if(ctp.getGlobalConfigOptions().debugMessages)
-                	ctp.logInfo(p);
+                	ctp.logInfo("Enchantment String: " + p);
                 
                 if(p.contains("|")) {
                     int firstLoc = p.indexOf("|");
@@ -341,11 +341,17 @@ public class Util {
                     enchantmentsString[i] = p.substring(0, firstLoc);
 
                     String[] enchntParts = enchantString.split("|");
+                    if(ctp.getGlobalConfigOptions().debugMessages)
+                    	ctp.logInfo("Amount of enchantments: " + enchntParts.length);
+                    
                     for(String ench : enchntParts) {
                     	if(ctp.getGlobalConfigOptions().debugMessages)
-                        	ctp.logInfo(ench);
+                        	ctp.logInfo("Enchantment: " + ench);
                     	
                         String[] enchParts = ench.split("~");
+                        if(ctp.getGlobalConfigOptions().debugMessages)
+                        	ctp.logInfo("Enchantment parts: " + enchParts.length);
+                        
                         Enchantment enchantment;
                         int enchLevel = Integer.parseInt(enchParts[1]);
 
