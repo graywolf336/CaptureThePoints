@@ -12,7 +12,7 @@ public class ListCommand extends CTPCommand {
         super.aliases.add("list");
         super.notOpCommand = true;
         super.requiredPermissions = new String[]{"ctp.*", "ctp.play", "ctp.admin"};
-        super.senderMustBePlayer = true;
+        super.senderMustBePlayer = false;
         super.minParameters = 2;
         super.maxParameters = 2;
         super.usageTemplate = "/ctp list";
@@ -20,7 +20,7 @@ public class ListCommand extends CTPCommand {
     
 	@Override
 	protected void perform() {
-		if(!ctp.getArenaMaster().isPlayerInAnArena(player.getName())) {
+		if(!ctp.getArenaMaster().isPlayerInAnArena(sender.getName())) {
 			if(ctp.getArenaMaster().getArenas().size() == 0) {
 				sendMessage(ctp.getLanguage().checks_NO_ARENAS);
 				return;
