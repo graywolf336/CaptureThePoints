@@ -269,17 +269,17 @@ public class ArenaUtils {
 
         ctp.getServer().broadcastMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + event.getStartMessage() + " " + arena.getName() + "!");
         
-        arena.updateStatusToRunning();
-        
         didSomeoneWin(arena);
     	
         //Start the timers/scheduler/tasks/whatever you wanna call it
         if(arena.getConfigOptions().useStartCountDown) {
         	arena.getStartTimer().start();
         	arena.setMoveAbility(false);
+        	arena.updateStatusToRunning(true);
         }else {
         	arena.setMoveAbility(true);
         	arena.startOtherTasks();
+        	arena.updateStatusToRunning(false);
         }
     }
     

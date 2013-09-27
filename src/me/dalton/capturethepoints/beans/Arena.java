@@ -205,8 +205,10 @@ public class Arena {
     }
     
     /** Updates the status of the arena to what is suitable per players. */
-    public void updateStatusToRunning() {
-    	if(players.size() == maximumPlayers)
+    public void updateStatusToRunning(boolean countingDown) {
+    	if(countingDown) {
+    		status = Status.COUNTING_DOWN;
+    	}else if(players.size() == maximumPlayers)
     		status = Status.FULL_GAME;
     	else
     		status = Status.IN_GAME;

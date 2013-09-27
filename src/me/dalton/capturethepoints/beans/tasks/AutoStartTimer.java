@@ -27,7 +27,6 @@ public class AutoStartTimer {
      */
     public void start() {
         if (!started) {
-        	pl.getLogger().info("Count down started for " + arena.getName() + " with " + seconds + " seconds.");
             timer = new Timer(seconds);
             timer.start();
             started = true;
@@ -81,7 +80,6 @@ public class AutoStartTimer {
          */
         public synchronized void start() {
             id = arena.scheduleDelayedRepeatingTask(this, 20, 20);
-            pl.getLogger().info("Starting the count down with an id of " + id + " and remaining of " + remaining + ".");
         }
         
         /**
@@ -94,25 +92,22 @@ public class AutoStartTimer {
     
         public void run() {
             synchronized(this) {
-            	pl.getLogger().info("Count down is at " + remaining);
-            	
                 // Abort if the arena is running, or if players have left
                 if (arena.getStatus().isRunning() || arena.getPlayers().size() == 0) {
                     started = false;
+                    arena.updateStatusToRunning(false);
                     arena.setMoveAbility(true);
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
                     return;
                 }
                 
-                pl.getLogger().info("Lowering the remaining count by one now.");
-                
                 // Count down
                 remaining--;
                 
                 // Start if 0
                 if (remaining <= 0) {
-                    arena.updateStatusToRunning();
+                    arena.updateStatusToRunning(false);
                     started = false;
                     
                     arena.setMoveAbility(true);
@@ -124,7 +119,7 @@ public class AutoStartTimer {
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
                 } else {                	
-                    // Warn at x seconds left
+                    // Tell them every second, will probably revert back once this works.
                 	pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
                 }
                 

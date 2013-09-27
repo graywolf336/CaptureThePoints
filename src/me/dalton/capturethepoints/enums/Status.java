@@ -10,6 +10,8 @@ package me.dalton.capturethepoints.enums;
 public enum Status {
 	/** The arena is joinable and is not started. */
 	JOINABLE (true, false),
+	/** The arena is currently counting down to start. */
+	COUNTING_DOWN (true, false),
 	/** The arena is full but the game hasn't started. */
 	FULL (false, false),
 	/** The arena is running and is joinable (check the config for the arena first to see if it is allowed). */
