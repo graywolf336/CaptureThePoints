@@ -81,6 +81,7 @@ public class AutoStartTimer {
          */
         public synchronized void start() {
             id = arena.scheduleDelayedRepeatingTask(this, 20, 20);
+            pl.getLogger().info("Starting the count down with an id of " + id + " and remaining of " + remaining + ".");
         }
         
         /**
@@ -93,6 +94,8 @@ public class AutoStartTimer {
     
         public void run() {
             synchronized(this) {
+            	pl.getLogger().info("Count down is at " + remaining);
+            	
                 // Abort if the arena is running, or if players have left
                 if (arena.getStatus().isRunning() || arena.getPlayers().size() == 0) {
                     started = false;
@@ -101,6 +104,8 @@ public class AutoStartTimer {
                     Bukkit.getScheduler().cancelTask(id);
                     return;
                 }
+                
+                pl.getLogger().info("Lowering the remaining count by one now.");
                 
                 // Count down
                 remaining--;
