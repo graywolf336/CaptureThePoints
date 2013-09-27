@@ -80,9 +80,9 @@ public class PlayTimer {
                             colors.add(team.getColor());
                             
                             if(teams.isEmpty()) {
-                            	teams =+ Character.toUpperCase(team.getColor().charAt(0)) + team.getColor().substring(1).toLowerCase();
+                            	teams = teams + team.getChatColor() + team.getName();
                             }else {
-                            	teams = teams + " and " + Character.toUpperCase(team.getColor().charAt(0)) + team.getColor().substring(1).toLowerCase();
+                            	teams = teams + " and " + team.getChatColor() + team.getName();
                             }
                         }
                     }
