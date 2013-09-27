@@ -499,7 +499,7 @@ public class BuildCommand extends CTPCommand {
                     if (!hasTeam)
                     	ctp.getArenaMaster().getEditingArena().getTeams().add(team);
                     sendMessage(ChatColor.GREEN + "You set the " + team.getChatColor() + arg2 + ChatColor.GREEN + " team spawn point.");
-                    sendMessage(ChatColor.BOLD + "If" + ChatColor.WHITE +  " you are done creating the spawns, create the points next. Use: " + ChatColor.AQUA + "/ctp setpoint <name> <vert | hor> [no capture teams]");
+                    sendMessage(ChatColor.BOLD + "If" + ChatColor.WHITE +  " you are done creating the spawns, create the points next. Use: " + ChatColor.AQUA + "/ctp b setpoint <name> <vert | hor> [no capture teams]");
                     return;
                 }
 
