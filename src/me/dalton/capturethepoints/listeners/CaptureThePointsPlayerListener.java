@@ -307,15 +307,10 @@ public class CaptureThePointsPlayerListener implements Listener {
         
         //Find out if the players can move
         if(!a.canMove()) {
-    		if (a.getPlayerData(p.getName()).getMoveChecker() >= 5) {
-    			a.getPlayerData(p.getName()).setMoveChecker(0);
-            	event.setCancelled(true);
-            	if(ctp.getGlobalConfigOptions().debugMessages)
-            		ctp.logInfo("Cancelled a player move event because the players can't move, due to the arena saying they can't.");
-            	return;
-    		}else {
-    			a.getPlayerData(p.getName()).addOneMoveChecker();
-    		}
+        	event.setCancelled(true);
+        	if(ctp.getGlobalConfigOptions().debugMessages)
+        		ctp.logInfo("Cancelled a player move event because the players can't move, due to the arena saying they can't.");
+        	return;
         }
         
         if(!a.getPlayerData(p).inLobby()) {
