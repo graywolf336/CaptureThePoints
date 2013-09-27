@@ -292,7 +292,7 @@ public class CaptureThePoints extends JavaPlugin {
         lo = LangTools.getLanguageOptions(this);
     }
 
-    public void loadHealingItems() {
+    private void loadHealingItems() {
         FileConfiguration config = getConfigTools().load();
         // Healing items loading
         if (!config.contains("HealingItems")) {
@@ -340,7 +340,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void loadRoles () {
+    private void loadRoles () {
         FileConfiguration config = getConfigTools().load();
         if (!config.contains("Roles")) {
             config.set("Roles.Tank.Items", "268, 297:16, DIAMOND_CHESTPLATE, 308, 309, SHEARS, CAKE");
@@ -363,7 +363,7 @@ public class CaptureThePoints extends JavaPlugin {
         }
     }
 
-    public void loadRewards () {
+    private void loadRewards () {
         FileConfiguration config = getConfigTools().load();
         if (!config.contains("Rewards")) {
 			config.set("Rewards.WinnerTeam.ItemCount", "2");
