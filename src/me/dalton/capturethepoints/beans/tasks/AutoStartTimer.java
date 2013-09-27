@@ -76,7 +76,7 @@ public class AutoStartTimer {
             
             // Find the first countdown announcement value
             for (int i = 0; i < intervals.length; i++) {
-            	if(seconds > intervals[i]) {
+            	if(seconds >= intervals[i]) {
             		countdownIndex = i;
             	}else {
             		break;
@@ -128,6 +128,7 @@ public class AutoStartTimer {
                 	// Inform them it is starting at an interval index.
                 	if(remaining == intervals[countdownIndex]) {
                 		pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
+                		countdownIndex--;
                 	}
                 }
                 
