@@ -349,9 +349,16 @@ public class CaptureThePoints extends JavaPlugin {
             config.set("Roles.Berserker.Items", "267, GOLDEN_APPLE:2");
         }
         
-        for (String str : config.getConfigurationSection("Roles").getKeys(false)) {
-            String text = config.getString("Roles." + str + ".Items");
-            roles.put(str.toLowerCase(), getUtil().getItemListFromString(text));
+        for (String role : config.getConfigurationSection("Roles").getKeys(false)) {
+            String text = config.getString("Roles." + role + ".Items");
+            List<Items> items = getUtil().getItemListFromString(text);
+            
+            if(items == null || items.isEmpty()) {
+            	logWarning("There was an error loading the role " + role + "'s items, please check it is correct.");
+            	continue;
+            }
+            
+            roles.put(role.toLowerCase(), items);
         }
         
         try {

@@ -29,6 +29,7 @@ Need to completely re-think this entire thing as how it is currently setup is ju
 * Fixed a bug that could allow for glitching out items
 * Fixed a bug that allowed users to teleport out of the lobby using ender pearls.
 * Fixed the conflicting nature of Multiverse Inventories, we clear their inventory before we teleport and after.
+* Fixed an NPE that could happen if a role didn't have any items
 * Allowing blocks to be broke is now false.
 * Allowing blocks to be placed is now false.
 * Added a config option to allow explosions breaking blocks, defaults to false
