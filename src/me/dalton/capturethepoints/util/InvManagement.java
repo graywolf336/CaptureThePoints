@@ -165,7 +165,7 @@ public class InvManagement {
                 
                 // Add enchantments
                 for(int j = 0; j < item.getEnchantments().size(); j++)
-                    i.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                    i.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                 
                 ctp.getUtil().equipArmorPiece(i, p.getInventory());
             } else {
@@ -183,7 +183,7 @@ public class InvManagement {
 
                     // Add enchantments
                     for(int j = 0; j < item.getEnchantments().size(); j++) {
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     }
                 } catch(Exception e) {
                     ctp.logSevere("There is error in your config file, with roles. Please check them!");

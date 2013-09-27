@@ -327,17 +327,18 @@ public class Util {
     public void getEnchantments(String[] enchantmentsString, Items item) {
         List<Enchantment> enchantments = new LinkedList<Enchantment>();
         List<Integer> enchLevels = new LinkedList<Integer>();
+        
         try {
             for(int i = 0; i < enchantmentsString.length; i++) {
                 String p = enchantmentsString[i];
-                if(p.contains("/")) {
-                    int firstLoc = p.indexOf("/");
+                if(p.contains("|")) {
+                    int firstLoc = p.indexOf("|");
                     String enchantString = p.substring(firstLoc + 1);
                     enchantmentsString[i] = p.substring(0, firstLoc);
 
-                    String[] enchntParts = enchantString.split("/");
+                    String[] enchntParts = enchantString.split("|");
                     for(String ench : enchntParts) {
-                        String[] enchParts = ench.split("-");
+                        String[] enchParts = ench.split("~");
                         Enchantment enchantment;
                         int enchLevel = Integer.parseInt(enchParts[1]);
 
@@ -346,8 +347,8 @@ public class Util {
                         else
                             enchantment = Enchantment.getByName(enchParts[0].toUpperCase());
 
-                        if (enchLevel < 0 || enchLevel > enchantment.getMaxLevel())
-                            enchLevel = enchantment.getMaxLevel();
+                        if (enchLevel < 0)
+                            enchLevel = enchantment.getStartLevel();
                         
                         // Move to next enchantment
                         if(enchLevel == 0)
@@ -358,6 +359,7 @@ public class Util {
                     }
                 }
             }
+            
             item.setEnchantmentLevels(enchLevels);
             item.setEnchantments(enchantments);
         } catch(Exception e) {
