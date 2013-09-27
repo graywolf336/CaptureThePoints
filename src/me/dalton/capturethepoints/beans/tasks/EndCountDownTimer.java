@@ -101,9 +101,6 @@ public class EndCountDownTimer {
                     return;
                 }
                 
-                // Count down
-                remaining--;
-                
                 // Start if 0
                 if (remaining <= 0) {
                 	started = false;
@@ -118,6 +115,9 @@ public class EndCountDownTimer {
 
                 	}
                 }
+                
+                // Count down after everything, this ensures that the first number is broadcasted.
+                remaining--;
                 
                 this.notifyAll();
             }

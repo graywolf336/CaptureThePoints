@@ -68,11 +68,20 @@ public class AutoStartTimer {
      * ever interfere with each other.
      */
     private class Timer implements Runnable {
-        private int remaining;
-        private int id;
+        private int remaining, id, countdownIndex;
+        private int[] intervals = new int[]{1, 2, 3, 4, 5, 10, 20, 30, 40, 45, 50, 60};
         
         private Timer(int seconds) {
             this.remaining = seconds;
+            
+            // Find the first countdown announcement value
+            for (int i = 0; i < intervals.length; i++) {
+            	if(seconds > intervals[i]) {
+            		countdownIndex = i;
+            	}else {
+            		break;
+            	}
+            }
         }
         
         /**
@@ -102,9 +111,6 @@ public class AutoStartTimer {
                     return;
                 }
                 
-                // Count down
-                remaining--;
-                
                 // Start if 0
                 if (remaining <= 0) {
                     arena.updateStatusToRunning(false);
@@ -118,10 +124,15 @@ public class AutoStartTimer {
                     
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
-                } else {                	
-                    // Tell them every second, will probably revert back once this works.
-                	pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
+                } else {
+                	// Inform them it is starting at an interval index.
+                	if(remaining == intervals[countdownIndex]) {
+                		pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
+                	}
                 }
+                
+                // Count down after we do everything.
+                remaining--;
                 
                 this.notifyAll();
             }
