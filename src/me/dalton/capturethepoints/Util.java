@@ -363,6 +363,7 @@ public class Util {
             item.setEnchantmentLevels(enchLevels);
             item.setEnchantments(enchantments);
         } catch(Exception e) {
+        	ctp.logSevere(e.getMessage());
         	ctp.getLogger().severe("Error while loading config file. Check: Item enchantments");
         }
     }
