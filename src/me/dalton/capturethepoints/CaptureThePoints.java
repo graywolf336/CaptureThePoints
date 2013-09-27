@@ -205,8 +205,9 @@ public class CaptureThePoints extends JavaPlugin {
     }
     
     public void clearConfig() {
-    	for(Arena a : getArenaMaster().getArenas())
-    		a.endGame(false, false);//Don't give rewards, the game ended prematurely
+    	if(arenaMaster != null)
+	    	for(Arena a : getArenaMaster().getArenas())
+	    		a.endGame(false, false);//Don't give rewards, the game ended prematurely
     	
         healingItems.clear();
         rewards = null;
