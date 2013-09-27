@@ -82,7 +82,7 @@ public class PlayTimer {
                             if(teams.isEmpty()) {
                             	teams = teams + team.getChatColor() + team.getName();
                             }else {
-                            	teams = teams + " and " + team.getChatColor() + team.getName();
+                            	teams = teams + ChatColor.WHITE + " and " + team.getChatColor() + team.getName();
                             }
                         }
                     }
