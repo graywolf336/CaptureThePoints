@@ -260,13 +260,13 @@ public class CaptureThePoints extends JavaPlugin {
     		arenaMaster.resetArenas();
     	}
     	
-        loadRoles();
-        loadRewards();
-        loadHealingItems();
-        
         // Load the default and global config before the arenas are loaded.
         globalConfigOptions = getConfigTools().getConfigOptions(globalConfigFile);
         FileConfiguration globalConfig = getConfigTools().load();
+    	
+        loadRoles();
+        loadRewards();
+        loadHealingItems();
         
         //Load existing arenas
         getArenaMaster().loadArenas(new File(mainDir + File.separator + "Arenas"));
