@@ -47,7 +47,7 @@ public class ArenaUtils {
     /** Returns the ChatColor from the given color, returns green if nothing close enough is found. */
     public ChatColor getChatColorFromColor(String color) {
     	if(color.equalsIgnoreCase("cyan")) {
-    		return ChatColor.AQUA;
+    		return ChatColor.DARK_AQUA;
     	}else if(color.equalsIgnoreCase("black")) {
     		return ChatColor.BLACK;
     	}else if(color.equalsIgnoreCase("light_blue")) {
