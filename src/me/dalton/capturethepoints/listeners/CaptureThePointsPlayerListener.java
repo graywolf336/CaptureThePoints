@@ -13,6 +13,7 @@ import me.dalton.capturethepoints.beans.Lobby;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.PlayersAndCooldowns;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.beans.Team;
 import me.dalton.capturethepoints.commands.PJoinCommand;
 import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.events.CTPShopPurchaseEvent;
@@ -772,7 +773,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     }
 
 	@SuppressWarnings("deprecation")
-	public void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {
+	private void selectTeam(PlayerInteractEvent event, Arena arena, Player p) {
         if(arena.getStatus().isRunning() || !arena.getLobby().getPlayersInLobby().containsKey(p.getName()))
             return;
         
@@ -795,15 +796,10 @@ public class CaptureThePointsPlayerListener implements Listener {
                 return;
             }
             
-            arena.getPlayerData(p.getName()).setTeam(arena.getTeams().get(hasThatTeam));
-
-            try {
-            	arena.getTeams().get(hasThatTeam).setChatColor(ChatColor.valueOf(color.toUpperCase())); // Kj
-            } catch (Exception ex) {
-            	arena.getTeams().get(hasThatTeam).setChatColor(ChatColor.GREEN);
-            }
-
-            arena.getTeams().get(hasThatTeam).addOneMember();
+            Team team = arena.getTeams().get(hasThatTeam);
+            
+            arena.getPlayerData(p.getName()).setTeam(team);
+            team.addOneMember();
 
 
             DyeColor color1 = DyeColor.valueOf(arena.getPlayerData(p.getName()).getTeam().getColor().toUpperCase());
@@ -814,7 +810,7 @@ public class CaptureThePointsPlayerListener implements Listener {
     		//It's deprecated but it's currently the only way to get the desired effect.
     		p.updateInventory();
 
-            ctp.sendMessage(p, "You selected " + ChatColor.GREEN + color.toUpperCase() + ChatColor.WHITE + " team.");
+            ctp.sendMessage(p, "You selected " + team.getChatColor() + team.getName() + ChatColor.WHITE + " team.");
         }
     }
 }
