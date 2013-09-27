@@ -69,7 +69,7 @@ public class AutoStartTimer {
      */
     private class Timer implements Runnable {
         private int remaining, id, countdownIndex;
-        private int[] intervals = new int[]{1, 2, 3, 4, 5, 10, 20, 30, 40, 45, 50, 60};
+        private int[] intervals = new int[]{1, 2, 3, 4, 5, 10, 15, 20, 30, 40, 45, 50, 60};
         
         private Timer(int seconds) {
             this.remaining = seconds;
