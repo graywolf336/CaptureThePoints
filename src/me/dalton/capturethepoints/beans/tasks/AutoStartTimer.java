@@ -26,7 +26,8 @@ public class AutoStartTimer {
      * started, nothing happens if the method is called again.
      */
     public void start() {
-        if (seconds > 5 && !started) {
+        if (!started) {
+        	pl.getLogger().info("Starting the countdown task for arena: " + arena.getName());
             timer = new Timer(seconds);
             timer.start();
             started = true;
@@ -106,6 +107,7 @@ public class AutoStartTimer {
                 // Abort if the arena is running, or if players have left
                 if (arena.getStatus().isRunning() || arena.getPlayers().size() == 0) {
                     started = false;
+                    arena.setMoveAbility(true);
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
                     return;
