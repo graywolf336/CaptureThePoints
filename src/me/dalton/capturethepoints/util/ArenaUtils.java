@@ -346,8 +346,8 @@ public class ArenaUtils {
 
         Location loc = new Location(arena.getWorld(),
         		arena.getTeamSpawns().get(color).getX(),
-        		arena.getTeamSpawns().get(color).getY() + 1D,
-        		arena.getTeamSpawns().get(color).getZ()); // Kj -- Y+1
+        		arena.getTeamSpawns().get(color).getY(),
+        		arena.getTeamSpawns().get(color).getZ());
         loc.setYaw((float) arena.getTeamSpawns().get(color).getDir());
         loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
         
