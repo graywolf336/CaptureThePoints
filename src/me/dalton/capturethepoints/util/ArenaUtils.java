@@ -159,6 +159,8 @@ public class ArenaUtils {
     
     /** Checks if the first {@link Vector} is inside the other two. */
 	public boolean isInsideAB(Vector point, Vector first, Vector second) {
+		if(point == null || first == null || second == null) return false;
+		
 		boolean x = isInside(point.getBlockX(), first.getBlockX(), second.getBlockX());
 		boolean y = isInside(point.getBlockY(), first.getBlockY(), second.getBlockY());
 		boolean z = isInside(point.getBlockZ(), first.getBlockZ(), second.getBlockZ());
