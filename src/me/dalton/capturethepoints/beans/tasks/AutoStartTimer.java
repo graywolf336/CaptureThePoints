@@ -27,7 +27,7 @@ public class AutoStartTimer {
      */
     public void start() {
         if (!started) {
-        	pl.getLogger().info("Starting the countdown task for arena: " + arena.getName());
+        	pl.getLogger().info("Count down started for " + arena.getName() + " with " + seconds + " seconds.");
             timer = new Timer(seconds);
             timer.start();
             started = true;
