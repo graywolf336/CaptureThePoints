@@ -771,6 +771,9 @@ public class Arena {
      */
     public boolean balanceTeams(int loop) {
     	int balanceThreshold = getConfigOptions().balanceTeamsWhenPlayerLeaves;
+    	
+    	ctp.getLogger().info("Balancing teams in the arena '" + getName() + "' and we are in loop '" + loop + "'.");
+    	
         if (loop > 5) {
         	ctp.getLogger().warning("balanceTeams hit over 5 recursions. Aborting.");
             return false;
@@ -842,6 +845,11 @@ public class Arena {
 
 	@SuppressWarnings("deprecation")
 	private void balancePlayer(String p, Team newTeam) {
+		if(newTeam == null)
+			ctp.getLogger().info("Balancing the player '" + p + "' and they are moving to the lobby.");
+		else
+			ctp.getLogger().info("Balancing the player '" + p + "' and they are moving to the team " + newTeam.getName() + ".");
+		
         // Reseting player data
 		PlayerData data = getPlayerData(p);
         if (newTeam == null) {
