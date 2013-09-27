@@ -682,6 +682,7 @@ public class Arena {
         for (Points s : getCapturePoints())
             s.setControlledByTeam(null);
         
+        setMoveAbility(true);
         status = Status.JOINABLE;
 
         for (String player : getPlayersData().keySet()) {
