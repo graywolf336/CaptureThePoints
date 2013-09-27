@@ -343,7 +343,7 @@ public class CaptureThePoints extends JavaPlugin {
     private void loadRoles () {
         FileConfiguration config = getConfigTools().load();
         if (!config.contains("Roles")) {
-            config.set("Roles.Tank.Items", "WOOD_SWORD:2|16~4|19~2|20~3{Grays Sword/Testing one/Testing two}, BREAD:16, DIAMOND_CHESTPLATE|0~4, 308, 309, SHEARS");
+            config.set("Roles.Tank.Items", "WOOD_SWORD:2|16~4|19~2|20~3{GrayWolfs Sword/The amazing sword of/the unknown graywolf}, BREAD:16, DIAMOND_CHESTPLATE|0~4, 308, 309, SHEARS");
             config.set("Roles.Fighter.Items", "272, 297:4, 261, 262:32, CHAINMAIL_CHESTPLATE, CHAINMAIL_LEGGINGS, CHAINMAIL_BOOTS|2~10");
             config.set("Roles.Ranger.Items", "268, 297:6, 261, 262:256, 299, 300, 301");
             config.set("Roles.Berserker.Items", "267, GOLDEN_APPLE:2");

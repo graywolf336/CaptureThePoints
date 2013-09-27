@@ -292,24 +292,26 @@ public class Util {
             int fBracket = item.indexOf("{");
             int sBracket = item.indexOf("}");
             
-            //Grays Sword/Testing one/Testing two
-            String[] m = item.substring(fBracket + 1, sBracket).split("/");
-            if(m.length > 0) {
-                i.setName(LangTools.getColorfulMessage(m[0])); //First part should always be the name! Rest is the lore
-                List<String> lore = new LinkedList<String>();
-                
-                for(String meta : m) {
-                	if(meta.equalsIgnoreCase(i.getName()))
-                		continue;
-                	else
-                		lore.add(LangTools.getColorfulMessage(meta));
+            if(fBracket != -1 && sBracket != -1) {
+                //Grays Sword/Testing one/Testing two
+                String[] m = item.substring(fBracket + 1, sBracket).split("/");
+                if(m.length > 0) {
+                    i.setName(LangTools.getColorfulMessage(m[0])); //First part should always be the name! Rest is the lore
+                    List<String> lore = new LinkedList<String>();
+                    
+                    for(String meta : m) {
+                    	if(meta.equalsIgnoreCase(i.getName()))
+                    		continue;
+                    	else
+                    		lore.add(LangTools.getColorfulMessage(meta));
+                    }
+                    
+                    i.setLore(lore);
                 }
                 
-                i.setLore(lore);
+                //WOOD_SWORD:2|16~4|19~2|20~3
+                item = item.substring(0, fBracket) + item.substring(sBracket + 1, item.length());
             }
-            
-            //WOOD_SWORD:2|16~4|19~2|20~3
-            item = item.substring(0, fBracket) + item.substring(sBracket + 1, item.length());
             
             // Split the reset by colons, this will contain the name, amount, enchantments, etc
             String[] parts = item.split(":");
