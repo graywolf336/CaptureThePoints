@@ -815,7 +815,13 @@ public class BuildCommand extends CTPCommand {
                     ctp.logSevere("Unable to save an arena's config file, please see the StackTrace for more information.");
                 }
                 
-                sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " arena lobby created");
+                sendMessage(ChatColor.GREEN + ctp.getArenaMaster().getEditingArena().getName() + ChatColor.WHITE + " arena lobby created, don't forget the role signs!");
+                if(ctp.getArenaMaster().getEditingArena().getConfigOptions().usePlayerLives) {
+                	sendMessage("Since you are using player lives, please set the stands location. Use: " + ChatColor.AQUA + "/ctp b setstands");
+                }else {
+                	sendMessage("Arena looks like it is ready to go, to enable it type: " + ChatColor.AQUA + "/ctp b enable <true/false>");
+                }
+                
                 return;
             }
             sendMessage(ctp.getLanguage().NO_PERMISSION);
