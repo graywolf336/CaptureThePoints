@@ -50,7 +50,7 @@ public class ArenaUtils {
     		return ChatColor.DARK_AQUA;
     	}else if(color.equalsIgnoreCase("black")) {
     		return ChatColor.BLACK;
-    	}else if(color.equalsIgnoreCase("light_blue")) {
+    	}else if(color.equalsIgnoreCase("lightblue")) {
     		return ChatColor.BLUE;
     	}else if(color.equalsIgnoreCase("blue")) {
     		return ChatColor.DARK_BLUE;
@@ -74,6 +74,8 @@ public class ArenaUtils {
     		return ChatColor.WHITE;
     	}else if(color.equalsIgnoreCase("yellow")) {
     		return ChatColor.YELLOW;
+    	}else if(color.equalsIgnoreCase("lightgray")) {
+    		return ChatColor.GRAY;
     	}else {
     		return ChatColor.GREEN;
     	}
