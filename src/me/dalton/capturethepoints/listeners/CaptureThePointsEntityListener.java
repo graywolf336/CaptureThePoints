@@ -3,11 +3,13 @@ package me.dalton.capturethepoints.listeners;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import me.dalton.capturethepoints.CaptureThePoints;
 import me.dalton.capturethepoints.HealingItems;
 import me.dalton.capturethepoints.Util;
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
+import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.events.CTPPlayerDeathEvent;
 import me.dalton.capturethepoints.util.PotionManagement;
@@ -194,7 +196,10 @@ public class CaptureThePointsEntityListener  implements Listener {
         
         Player attacker = null;
         if (ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()) != null) {
-
+        	Player player = (Player) event.getEntity();
+        	PlayerData data = ctp.getArenaMaster().getPlayerData(player);
+        	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(player);
+        	
             // for melee
             if (checkForPlayerEvent(event)) {
                 attacker = ((Player) ((EntityDamageByEntityEvent) event).getDamager());
@@ -205,17 +210,17 @@ public class CaptureThePointsEntityListener  implements Listener {
                 attacker = (Player) ((Projectile) ((EntityDamageByEntityEvent) event).getDamager()).getShooter();
             }
 
-            Player playa = (Player) event.getEntity();
+            
 
             // lobby damage check
-            if (ctp.getArenaMaster().getPlayerData(playa).inLobby() || (attacker != null && ctp.getArenaMaster().getPlayerData(attacker) != null && ctp.getArenaMaster().getPlayerData(attacker).inLobby())) {
+            if (data.inLobby() || (attacker != null && ctp.getArenaMaster().getPlayerData(attacker) != null && ctp.getArenaMaster().getPlayerData(attacker).inLobby())) {
                 event.setCancelled(true);
                 if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
                 return;
             }
 
-            if (isProtected(ctp.getArenaMaster().getArenaPlayerIsIn(playa), playa)) {
+            if (isProtected(a, player)) {
                 // If you damage yourself
                 if (attacker != null) {
                 	ctp.sendMessage(attacker, ChatColor.LIGHT_PURPLE + "You can't damage enemy in their spawn!");
@@ -229,9 +234,9 @@ public class CaptureThePointsEntityListener  implements Listener {
 
             //disable pvp damage
             if (attacker != null) {
-                if ((ctp.getArenaMaster().getPlayerData(playa) != null) && (ctp.getArenaMaster().getPlayerData(attacker) != null)) {
-                    if (ctp.getArenaMaster().getPlayerData(playa).getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(attacker).getTeam().getColor())) {
-                    	ctp.sendMessage(attacker, ctp.getArenaMaster().getPlayerData(playa).getTeam().getChatColor() + playa.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
+                if (ctp.getArenaMaster().getPlayerData(attacker) != null) {
+                    if (data.getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(attacker).getTeam().getColor())) {
+                    	ctp.sendMessage(attacker, data.getTeam().getChatColor() + player.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
                         event.setCancelled(true);
                         if(ctp.getGlobalConfigOptions().debugMessages)
                         	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
@@ -248,22 +253,18 @@ public class CaptureThePointsEntityListener  implements Listener {
             }
 
             //Player has "died"
-            if ((ctp.getArenaMaster().getPlayerData(playa) != null) && (playa.getHealth() - event.getDamage() <= 0)) {
+            if (player.getHealth() - event.getDamage() <= 0) {
                 event.setCancelled(true);
+                
                 if(ctp.getGlobalConfigOptions().debugMessages)
                 	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player 'died' therefore we are respawning it.");
-                respawnPlayer(ctp.getArenaMaster().getArenaPlayerIsIn(playa), playa, attacker);
+                
+                respawnPlayer(a, player, attacker);
                 
                 //Throw a custom event for when the player dies in the arena
-                CTPPlayerDeathEvent CTPevent = new CTPPlayerDeathEvent(playa, ctp.getArenaMaster().getArenaPlayerIsIn(playa), ctp.getArenaMaster().getPlayerData(playa));
+                CTPPlayerDeathEvent CTPevent = new CTPPlayerDeathEvent(player, a, data);
                 ctp.getPluginManager().callEvent(CTPevent);
             }
-        }
-        
-        if (ctp.getArenaMaster().getPlayerData(((Player) event.getEntity())) != null && ctp.getArenaMaster().getPlayerData(((Player) event.getEntity()).getName()).inLobby()) {
-            event.setCancelled(true);
-            if(ctp.getGlobalConfigOptions().debugMessages)
-            	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is in the lobby.");
         }
     }
     
@@ -464,9 +465,11 @@ public class CaptureThePointsEntityListener  implements Listener {
     }
     
     private void respawnPlayer(Arena arena, Player player, Player attacker) {
+    	PlayerData data = arena.getPlayerData(player);
+    	
         if (attacker != null) {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
-                ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                ctp.getUtil().sendMessageToPlayers(arena, data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + arena.getPlayerData(attacker).getTeam().getChatColor() + attacker.getName());
             
             dropWool(arena, player);
@@ -476,20 +479,16 @@ public class CaptureThePointsEntityListener  implements Listener {
             arena.checkForKillMSG(player, true);
         } else {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
-                ctp.getUtil().sendMessageToPlayers(arena, arena.getPlayerData(player).getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                ctp.getUtil().sendMessageToPlayers(arena, data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
+            
             arena.checkForKillMSG(player, true);
-        }
-
-        if(arena.getConfigOptions().usePlayerLives) {
-        	arena.getPlayerData(player).subtractALife();
-        	ctp.sendMessage(player, ctp.getLanguage().REMAINING_LIVES + " " + arena.getPlayerData(player).getPlayerLives());
         }
         
         PotionManagement.removeAllEffects(player);
         ctp.getArenaUtil().setFullHealthPlayerAndCallEvent(arena, player);
         player.setFoodLevel(20);
-        Spawn spawn = arena.getPlayerData(player).getTeam().getSpawn();
+        Spawn spawn = data.getTeam().getSpawn();
 
         if (arena.getConfigOptions().giveNewRoleItemsOnRespawn)
             giveRoleItemsAfterDeath(player, arena.getConfigOptions().keepBoughtItemsOnRespawn);
@@ -501,11 +500,17 @@ public class CaptureThePointsEntityListener  implements Listener {
                     if (playName.equalsIgnoreCase(player.getName()))
                         item.cooldowns.remove(playName);
 
-        if(arena.getConfigOptions().usePlayerLives && arena.getPlayerData(player).getPlayerLives() == 0) {
-        	ctp.sendMessage(player, ctp.getLanguage().NO_MORE_LIVES);
-        	ctp.getArenaUtil().moveToStands(arena, player);
-        	ctp.getUtil().sendMessageToPlayers(arena, player, ctp.getLanguage().PLAYER_LOST_LAST_LIFE.replaceAll("%PN", player.getName()));
-        	return;
+        if(arena.getConfigOptions().usePlayerLives) {
+        	data.subtractALife();
+        	
+        	if(arena.getPlayerData(player).getLives() == 0) {
+            	ctp.sendMessage(player, ctp.getLanguage().NO_MORE_LIVES);
+            	ctp.getArenaUtil().moveToStands(arena, player);
+            	ctp.getUtil().sendMessageToPlayers(arena, player, ctp.getLanguage().PLAYER_LOST_LAST_LIFE.replaceAll("%PN", player.getName()));
+            	return;
+        	}else {
+        		ctp.sendMessage(player, ctp.getLanguage().REMAINING_LIVES + " " + data.getLives());
+        	}
         }
         
         Location loc = new Location(arena.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());

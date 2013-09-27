@@ -515,7 +515,7 @@ public class Arena {
         }
         
         // Assign player's PlayerData
-        PlayerData data = new PlayerData(player, getConfigOptions().moneyAtTheLobby);
+        PlayerData data = new PlayerData(player, getConfigOptions().moneyAtTheLobby, getConfigOptions().playerLives);
         
         // Store and remove potion effects on player
         data.setPotionEffects(PotionManagement.storePlayerPotionEffects(player));

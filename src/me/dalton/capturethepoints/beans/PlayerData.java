@@ -11,22 +11,25 @@ import org.bukkit.potion.PotionEffect;
 public class PlayerData {
     private Team team;
     private String name, role;
-    private int money, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel, playerLives;
+    private int money, lives, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel;
     private double oldHealth, oldMaxHealth;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, inStands = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
     private List<PotionEffect> potionEffects;
     
-    public PlayerData(Player player, int startMoney) {
+    public PlayerData(Player player, int startMoney, int lives) {
     	this.name = player.getName();
-    	this.deaths = 0;
-    	this.deathsInARow = 0;
+    	this.money = startMoney;
+    	this.lives = lives;
     	this.kills = 0;
     	this.killsInARow = 0;
+    	this.deaths = 0;
+    	this.deathsInARow = 0;
+    	this.moveChecker = 0;
     	this.pointsCaptured = 0;
-    	this.money = startMoney;
     	this.ready = false;
     	this.inArena = false;
+    	
     	this.foodLevel = player.getFoodLevel();
     	this.oldMaxHealth = player.getMaxHealth();
     	this.oldHealth = player.getHealth();
@@ -153,18 +156,18 @@ public class PlayerData {
     }
     
     /** Sets the number of player lives this player has. */
-    public void setPlayerLives(int amount) {
-    	this.playerLives = amount;
+    public void setLives(int amount) {
+    	this.lives = amount;
     }
     
     /** Gets the number of player lives this player has. */
-    public int getPlayerLives() {
-    	return this.playerLives;
+    public int getLives() {
+    	return this.lives;
     }
     
     /** Subtracts one player life from the total, can go negative and zero. */
     public void subtractALife() {
-    	this.playerLives--;
+    	this.lives--;
     }
     
     public void setMoveChecker(int amount) {
