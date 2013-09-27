@@ -70,21 +70,10 @@ public class AutoStartTimer {
      */
     private class Timer implements Runnable {
         private int remaining;
-        private int countdownIndex;
         private int id;
-        private int[] intervals = new int[]{1, 2, 3, 4, 5, 10, 20, 30, 40, 45, 50, 60};
         
         private Timer(int seconds) {
             this.remaining = seconds;
-            
-            // Find the first countdown announcement value
-            for (int i = 0; i < intervals.length; i++) {
-                if (seconds > intervals[i]) {
-                    countdownIndex = i;
-                } else {
-                    break;
-                }
-            }
         }
         
         /**
@@ -129,17 +118,9 @@ public class AutoStartTimer {
                     
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
-                } else {
-                	if(remaining == 5) {
-                		//Teleport players to their spawns
-                		//arena.setMoveAbility(false);
-                	}
-                	
+                } else {                	
                     // Warn at x seconds left
-                    if (remaining == intervals[countdownIndex]) {
-                    	pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
-                        countdownIndex--;
-                    }
+                	pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
                 }
                 
                 this.notifyAll();
