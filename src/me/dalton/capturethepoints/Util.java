@@ -340,7 +340,7 @@ public class Util {
                     String enchantString = p.substring(firstLoc + 1);
                     enchantmentsString[i] = p.substring(0, firstLoc);
 
-                    String[] enchntParts = enchantString.split("|");
+                    String[] enchntParts = enchantString.split("\\|");
                     if(ctp.getGlobalConfigOptions().debugMessages)
                     	ctp.logInfo("Amount of enchantments: " + enchntParts.length);
                     
