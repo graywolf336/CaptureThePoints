@@ -640,7 +640,10 @@ public class Arena {
      */
     public void endGame(final boolean rewards, boolean countdown) {
     	if(countdown)
-    		endTimer.start(rewards);
+    		if(getConfigOptions().useEndCountDown)
+    			endTimer.start(rewards);
+    		else
+    			endGameNoCountDown(rewards);
     	else
     		endGameNoCountDown(rewards);
     }
