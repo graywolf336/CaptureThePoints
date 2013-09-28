@@ -488,6 +488,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         PotionManagement.removeAllEffects(player);
         ctp.getArenaUtil().setFullHealthPlayerAndCallEvent(arena, player);
         player.setFoodLevel(20);
+        player.setFireTicks(0);
         Spawn spawn = data.getTeam().getSpawn();
 
         if (arena.getConfigOptions().giveNewRoleItemsOnRespawn)
