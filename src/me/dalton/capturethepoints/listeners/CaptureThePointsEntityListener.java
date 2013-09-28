@@ -388,7 +388,7 @@ public class CaptureThePointsEntityListener  implements Listener {
                     
                     // Add enchantments
                     for(int j = 0; j < item.getEnchantments().size(); j++)
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     
                     inv.addItem(stack);
                 } else {// find if there is something equipped
@@ -396,7 +396,7 @@ public class CaptureThePointsEntityListener  implements Listener {
 
                     // Add enchantments
                     for(int j = 0; j < item.getEnchantments().size(); j++)
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     
                     //If the armour slot is the role's thing, reset it to reset the durability but if it isn't (besides being null) then we just add this to their inventory.
                     //This way players keep their extra armor that they could have bought from the in game store.
