@@ -40,6 +40,11 @@ public class InvManagement {
 	 */
     public void restoreThings(Player p) {
     	Arena a = ctp.getArenaMaster().getArenaPlayerIsIn(p.getName());
+    	
+        // do not check double signal
+        if (a.getPlayerData(p.getName()) == null)
+            return;
+        
         a.getPlayerData(p.getName()).setJustJoined(true);
         
         clearInventory(p, true); //clear the inventory for the current world
@@ -52,10 +57,6 @@ public class InvManagement {
         p.teleport(a.getPrevoiusPosition().get(p.getName())); //teleport back to where they was
         
         restoreInv(p); //then restore the items they had. this makes it compatiable with multiverse and storing different inventories per world.
-
-        // do not check double signal
-        if (a.getPlayerData(p.getName()) == null)
-            return;
         
         PotionManagement.removeAllEffects(p);
         PotionManagement.restorePotionEffects(p, a.getPlayerData(p.getName()).getPotionEffects());
@@ -69,6 +70,7 @@ public class InvManagement {
         p.setHealth(a.getPlayerData(p.getName()).getOldHealth());
         
         p.resetPlayerTime();
+        p.setDisplayName(a.getPlayerData(p.getName()).getOldDisplayName());
     }
 
 	/**

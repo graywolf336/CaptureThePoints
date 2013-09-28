@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffect;
 /** Player Data of the people playing CTP. */
 public class PlayerData {
     private Team team;
-    private String name, role;
+    private String name, role, oldDisplayName;
     private int money, lives, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel;
     private double oldHealth, oldMaxHealth;
     private long lobbyJoinTime, classChangeTime = 0;
@@ -19,6 +19,7 @@ public class PlayerData {
     
     public PlayerData(Player player, int startMoney, int lives) {
     	this.name = player.getName();
+    	this.oldDisplayName = player.getDisplayName();
     	this.money = startMoney;
     	this.lives = lives;
     	this.kills = 0;
@@ -45,9 +46,14 @@ public class PlayerData {
     	return this.name;
     }
     
+    public String getOldDisplayName() {
+    	return this.oldDisplayName;
+    }
+    
     /** Sets the team this player is on. */
     public void setTeam(Team team) {
     	this.team = team;
+    	getPlayer().setDisplayName(team.getChatColor() + getPlayer().getName());
     }
     
     /** Gets the team this player is on. */
