@@ -12,7 +12,7 @@ public class PlayerData {
     private Team team;
     private String name, role, oldDisplayName;
     private int money, lives, kills, killsInARow, deaths, deathsInARow, moveChecker, pointsCaptured, foodLevel;
-    private double oldHealth, oldMaxHealth;
+    private int oldHealth, oldMaxHealth;
     private long lobbyJoinTime, classChangeTime = 0;
     private boolean ready = false, winner = false, inLobby = false, inArena = false, inStands = false, justJoined = true, isInCreativeMode = false, warnedAboutActivity = false; // Kjhf
     private List<PotionEffect> potionEffects;
@@ -82,22 +82,22 @@ public class PlayerData {
     }
     
     /** Sets the player's old max health, for supporting other plugins. */
-    public void setOldMaxHealth(double max) {
+    public void setOldMaxHealth(int max) {
     	this.oldMaxHealth = max;
     }
     
     /** Gets the player's old max health, for supporting other plugins. */
-    public double getOldMaxHealth() {
+    public int getOldMaxHealth() {
     	return this.oldMaxHealth;
     }
     
     /** Sets the player's old health. */
-    public void setOldHealth(double d) {
+    public void setOldHealth(int d) {
     	this.oldHealth = d;
     }
     
     /** Gets the player's old health before they joined the arena. */
-    public double getOldHealth() {
+    public int getOldHealth() {
     	return this.oldHealth;
     }
     

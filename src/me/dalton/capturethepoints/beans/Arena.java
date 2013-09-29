@@ -536,7 +536,7 @@ public class Arena {
         
         //Set the player's health and also trigger an event to happen because of it, add compability with other plugins
         player.setHealth(getConfigOptions().maxPlayerHealth);
-        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, (double)getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
+        EntityRegainHealthEvent regen = new EntityRegainHealthEvent(player, getConfigOptions().maxPlayerHealth, RegainReason.CUSTOM);
     	ctp.getPluginManager().callEvent(regen);
     	player = (Player) regen.getEntity(); //In case some plugin sets something different here
         
