@@ -1,7 +1,7 @@
 CaptureThePoints
 ==========
 
-_Status of this branch's builds:_ [![Build Status](http://git.graywolf336.com:8080/job/CaptureThePoints/badge/icon)](http://git.graywolf336.com:8080/job/CaptureThePoints/)
+_Status of this branch's builds:_ [![Build Status](http://git.graywolf336.com:8080/job/CaptureThePoints%201.4.7/badge/icon)](http://git.graywolf336.com:8080/job/CaptureThePoints%201.4.7/)
 
 ### Language ###
 Need to completely re-think this entire thing as how it is currently setup is just horrible and I am not proud of it at all. You can tell it was rushed and not thought through. 
