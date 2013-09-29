@@ -461,7 +461,7 @@ public class Arena {
 	/**
 	 * Sends the player to the lobby.
 	 * 
-	 * @param p The player to send to the lobby.
+	 * @param player The player to send to the lobby.
 	 * @return Whether it was successful or not.
 	 */
 	public boolean joinLobby(Player player) {

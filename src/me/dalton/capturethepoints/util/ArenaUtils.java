@@ -30,7 +30,6 @@ public class ArenaUtils {
     /**
      * Returns a Team from the color provided.
      * 
-     * @param ctp CaptureThePoints instance
      * @param arena The arena to check
      * @param color The color of the team to get
      * @return The Team from the color given.
