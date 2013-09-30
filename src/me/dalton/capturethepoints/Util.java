@@ -407,7 +407,7 @@ public class Util {
         	if(ctp.getGlobalConfigOptions().debugMessages)
         		e.printStackTrace();
         	
-        	ctp.getLogger().severe("Error while loading config file. Check: Item enchantments");
+        	ctp.getLogger().severe("Error while loading config file. Check: Item enchantments " + enchantmentsString.toString());
         }
     }
 
