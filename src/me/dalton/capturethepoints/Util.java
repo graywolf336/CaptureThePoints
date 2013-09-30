@@ -299,7 +299,7 @@ public class Util {
                     List<String> lore = new LinkedList<String>();
                     
                     for(String meta : m) {
-                    	if(meta.equalsIgnoreCase(i.getName()))
+                    	if(meta.equalsIgnoreCase(ChatColor.stripColor(i.getName())))
                     		continue;
                     	else
                     		lore.add(LangTools.getColorfulMessage(meta));
