@@ -197,23 +197,20 @@ public class CaptureThePoints extends JavaPlugin {
         }
         
         arenaRestore.cancelArenaRestoreSchedules();
-        clearConfig();
+        
+    	if(arenaMaster != null)
+	    	for(Arena a : getArenaMaster().getArenas())
+	    		a.endGame(false, false);//Don't give rewards, the game ended prematurely
+        
+        healingItems.clear();
+        roles.clear();
+        rewards = null;
         pluginManager = null;
         economy = null;
         permission = null;
         commands.clear();
     }
     
-    public void clearConfig() {
-    	if(arenaMaster != null)
-	    	for(Arena a : getArenaMaster().getArenas())
-	    		a.endGame(false, false);//Don't give rewards, the game ended prematurely
-    	
-        healingItems.clear();
-        rewards = null;
-        roles.clear();
-    }
-
     @Override
     public boolean onCommand (CommandSender sender, Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("ctp"))

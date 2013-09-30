@@ -251,10 +251,10 @@ public class Util {
     public boolean isItInteger(String text) {
         try {
             Integer.parseInt(text);
+            return true;
         } catch (Exception NumberFormatException) {
             return false;
         }
-        return true;
     }
 
     //mine
@@ -358,25 +358,15 @@ public class Util {
             for(int i = 0; i < enchantmentsString.length; i++) {
                 String p = enchantmentsString[i];
                 
-                if(ctp.getGlobalConfigOptions().debugMessages)
-                	ctp.logInfo("Enchantment String: " + p);
-                
                 if(p.contains("|")) {
                     int firstLoc = p.indexOf("|");
                     String enchantString = p.substring(firstLoc + 1);
                     enchantmentsString[i] = p.substring(0, firstLoc);
 
                     String[] enchntParts = enchantString.split("\\|");
-                    if(ctp.getGlobalConfigOptions().debugMessages)
-                    	ctp.logInfo("Amount of enchantments: " + enchntParts.length);
                     
-                    for(String ench : enchntParts) {
-                    	if(ctp.getGlobalConfigOptions().debugMessages)
-                        	ctp.logInfo("Enchantment: " + ench);
-                    	
+                    for(String ench : enchntParts) {                    	
                         String[] enchParts = ench.split("~");
-                        if(ctp.getGlobalConfigOptions().debugMessages)
-                        	ctp.logInfo("Enchantment parts: " + enchParts.length);
                         
                         Enchantment enchantment;
                         int enchLevel = Integer.parseInt(enchParts[1]);
