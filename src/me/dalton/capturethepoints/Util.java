@@ -468,7 +468,7 @@ public class Util {
                         stack.setDurability(item.getType());
                     // Add enchantments
                     for(int j = 0; j < item.getEnchantments().size(); j++)
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
 
                     player.getInventory().addItem(stack);
                 }
@@ -503,7 +503,7 @@ public class Util {
                     
                     // Add enchantments
                     for(int j = 0; j < item.getEnchantments().size(); j++)
-                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
                     
                     player.getInventory().addItem(stack);
                 }
@@ -540,7 +540,7 @@ public class Util {
 	                        stack.setDurability(item.getType());
 	                    // Add enchantments
 	                    for(int j = 0; j < item.getEnchantments().size(); j++)
-	                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+	                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
 	
 	                    player.getInventory().addItem(stack);
 	                }
@@ -578,7 +578,7 @@ public class Util {
 	                        stack.setDurability(item.getType());
 	                    // Add enchantments
 	                    for(int j = 0; j < item.getEnchantments().size(); j++)
-	                        stack.addEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
+	                        stack.addUnsafeEnchantment(item.getEnchantments().get(j), item.getEnchantmentLevels().get(j));
 	                    
 	                    player.getInventory().addItem(stack);
 	                }
