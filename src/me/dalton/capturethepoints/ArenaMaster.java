@@ -263,7 +263,6 @@ public class ArenaMaster {
                 arena.setWorld(worlds.get(0));
                 ctp.logInfo("Successfully resolved the world. \"" + arena.getWorld() + "\" will be used.");
             } else {
-            	ctp.logInfo("This usually happens on the first load, create an arena and this message should go away.");
             	ctp.logInfo("Could not resolve the world. Please fix this manually. Hint: Your installed worlds are: " + worlds);
             }
         }
