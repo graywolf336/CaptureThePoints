@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.IOException;
@@ -163,8 +164,9 @@ public class CaptureThePoints extends JavaPlugin {
                 }
 
                 for(Arena a : arenaMaster.getArenas()) {
-	                for (PlayerData data : a.getPlayersData().values()) {
-	                	
+                	HashSet<PlayerData> temp = new HashSet<PlayerData>(a.getPlayersData().values()); //Create a local copy
+                	
+	                for (PlayerData data : temp) {
 	                    Player p = getServer().getPlayer(data.getName());
 	                    if (data.inLobby() && !data.isReady()) {
 	                        // Kj -- Time inactivity warning.
