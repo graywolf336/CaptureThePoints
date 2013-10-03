@@ -163,9 +163,9 @@ public class CaptureThePoints extends JavaPlugin {
                 }
 
                 for(Arena a : arenaMaster.getArenas()) {
-	                for (String player : a.getPlayersData().keySet()) {
-	                    PlayerData data = a.getPlayerData(player);
-	                    Player p = getServer().getPlayer(player);
+	                for (PlayerData data : a.getPlayersData().values()) {
+	                	
+	                    Player p = getServer().getPlayer(data.getName());
 	                    if (data.inLobby() && !data.isReady()) {
 	                        // Kj -- Time inactivity warning.
 	                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
