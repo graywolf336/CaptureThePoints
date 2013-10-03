@@ -140,7 +140,7 @@ public class CaptureThePointsBlockListener implements Listener {
                             
                             if (point.getControlledByTeam() != null) {
                                 point.setControlledByTeam(null);
-                                ctp.getUtil().sendMessageToPlayers(arena, ctp.getArenaUtil().subtractPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
+                                arena.sendMessageToPlayers(ctp.getArenaUtil().subtractPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
                                 break;
                             }
                         }
@@ -158,7 +158,7 @@ public class CaptureThePointsBlockListener implements Listener {
                             
                             if (point.getControlledByTeam() != null) {
                             	point.setControlledByTeam(null);
-                                ctp.getUtil().sendMessageToPlayers(arena, ctp.getArenaUtil().subtractPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
+                                arena.sendMessageToPlayers(ctp.getArenaUtil().subtractPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
                                 break;
                             }
                         }
@@ -276,7 +276,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         if (checkForFillHor(point, loc, playerdata.getTeam().getColor(), ((Wool) data).getColor().toString(), false)) {
                             if (point.getControlledByTeam() == null) {
                                 point.setControlledByTeam(playerdata.getTeam().getColor());
-                                ctp.getUtil().sendMessageToPlayers(arena, ctp.getArenaUtil().addPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
+                                arena.sendMessageToPlayers(ctp.getArenaUtil().addPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
                                 playerdata.setPointsCaptured(playerdata.getPointsCaptured() + 1);
                                 playerdata.setMoney(playerdata.getMoney() + arena.getConfigOptions().moneyForPointCapture);
                                 player.sendMessage("Money: " + ChatColor.GREEN + playerdata.getMoney());
@@ -300,7 +300,7 @@ public class CaptureThePointsBlockListener implements Listener {
                         if (checkForFillVert(point, loc, playerdata.getTeam().getColor(), ((Wool) data).getColor().toString(), false)) {
                             if (point.getControlledByTeam() == null) {
                                 point.setControlledByTeam(playerdata.getTeam().getColor());
-                                ctp.getUtil().sendMessageToPlayers(arena, ctp.getArenaUtil().addPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
+                                arena.sendMessageToPlayers(ctp.getArenaUtil().addPoints(arena, ((Wool) data).getColor().toString(), point.getName()));
                                 playerdata.setPointsCaptured(playerdata.getPointsCaptured() + 1);
                                 playerdata.setMoney(playerdata.getMoney() + arena.getConfigOptions().moneyForPointCapture);
                                 player.sendMessage("Money: " + ChatColor.GREEN + playerdata.getMoney());

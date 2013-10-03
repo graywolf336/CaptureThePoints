@@ -6,6 +6,7 @@ package me.dalton.capturethepoints;
  */
 import java.io.Serializable;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -164,7 +165,7 @@ public final class MultiInvInventory implements Serializable {
                 continue;
             }
             MultiInvItem item = new MultiInvItem();
-            item.setId(stack.getTypeId());
+            item.setMaterial(stack.getType());
             item.setQuanitity(stack.getAmount());
             item.setDurability(stack.getDurability());
             items[i] = item;
@@ -182,10 +183,10 @@ public final class MultiInvInventory implements Serializable {
                 i++;
                 continue;
             }
-            int id = item.getId();
+            Material mat = item.getMaterial();
             int amount = item.getQuanitity();
             short damage = item.getDurability();
-            ItemStack stack = new ItemStack(id, amount, damage);
+            ItemStack stack = new ItemStack(mat, amount, damage);
             items[i] = stack;
             i++;
         }

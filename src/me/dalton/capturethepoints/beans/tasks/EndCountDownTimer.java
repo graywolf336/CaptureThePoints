@@ -109,9 +109,9 @@ public class EndCountDownTimer {
                     Bukkit.getScheduler().cancelTask(id);
                 } else {
                 	if(arena.getConfigOptions().endCountDownTime == remaining) {
-                		pl.getUtil().sendMessageToPlayers(arena, pl.getLanguage().END_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
+                		arena.sendMessageToPlayers(pl.getLanguage().END_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
                 	}else {
-                		pl.getUtil().sendMessageToPlayers(arena, remaining + "..");
+                		arena.sendMessageToPlayers(remaining + "..");
 
                 	}
                 }

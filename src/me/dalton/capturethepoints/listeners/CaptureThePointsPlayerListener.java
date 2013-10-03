@@ -155,7 +155,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                 //If this role exists
                 if (ctp.getRoles().containsKey(a.getPlayerData(p.getName()).getRole())) {
                     if (!a.getPlayerData(p.getName()).isReady())
-                        ctp.getUtil().sendMessageToPlayers(a, p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
+                        a.sendMessageToPlayers(p, ChatColor.GREEN + p.getName() + ChatColor.WHITE + " is ready.");
                     
                     a.getPlayerData(p.getName()).setReady(true);
                     a.getLobby().getPlayersInLobby().put(p.getName(), true);
@@ -499,7 +499,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                                     if (readypeople / arena.getTeams().size() >= 1) {
                                     	ctp.getArenaUtil().moveToSpawns(arena);
                                     } else {
-                                    	ctp.getUtil().sendMessageToPlayers(arena, "There are already an odd number of players, please wait for a new player to ready up.");
+                                    	arena.sendMessageToPlayers("There are already an odd number of players, please wait for a new player to ready up.");
                                         return;
                                     }
                                 } else {   // Does not require exact count and everyone is ready. Move them.
@@ -510,7 +510,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             //Save variable for minor bug that results from player error
                             Arena mainArenaTmp = arena;
                             if (ctp.getArenaMaster().hasSuitableArena(readypeople)) {
-                                ctp.getUtil().sendMessageToPlayers(arena, ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
+                                arena.sendMessageToPlayers(ChatColor.RED + "Not enough players for a game. Attempting to change arena. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
                                 arena.endGame(false, false);//Don't give rewards.
                                 ctp.getArenaMaster().chooseSuitableArena(readypeople);
                                 for (String aPlayer : lobby.getPlayersInLobby().keySet()) {
@@ -520,7 +520,7 @@ public class CaptureThePointsPlayerListener implements Listener {
                             } else {
                             	//Reseting main Arena back
                             	arena = mainArenaTmp;
-                                ctp.getUtil().sendMessageToPlayers(arena, ChatColor.RED + "Not enough players for a game. No other suitable arenas found. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
+                                arena.sendMessageToPlayers(ChatColor.RED + "Not enough players for a game. No other suitable arenas found. [Needed " + arena.getMinPlayers() + " players, found " + readypeople + "].");
                             }
                         }
                     } else {

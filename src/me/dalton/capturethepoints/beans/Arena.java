@@ -393,6 +393,36 @@ public class Arena {
         return toReturn;
     }
     
+    /** Send message to Players that are playing in an arena
+     * <p />
+     * 
+     * @param arena The arena to send the message to it's players.
+     * @param message The message to send. "[CTP] " has been included.
+     */
+    public void sendMessageToPlayers(String message) {
+        for (String player : getPlayersData().keySet()) {
+        	Player p = ctp.getServer().getPlayerExact(player);
+            p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message); // Kj
+        }
+    }
+    
+    /** Send message to Players that are playing in the given arena but exclude a person.
+     * <p />
+     * 
+     * @param arena The arena to send the message to it's players.
+     * @param exclude The Player to exclude
+     * @param s The message to send. "[CTP] " has been included.
+     */
+    public void sendMessageToPlayers(Player exclude, String s) {
+        for (String player : getPlayersData().keySet()) {
+        	if(player.equalsIgnoreCase(exclude.getName())) continue;
+        	
+        	Player p = ctp.getServer().getPlayerExact(player);
+            if (p != null)
+                p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
+        }
+    }
+    
     /**
      * Player's previous Locations before they started playing CTP.
      * 
@@ -549,7 +579,7 @@ public class Arena {
         getPrevoiusPosition().put(player.getName(), player.getLocation());
         ctp.getInvManagement().saveInv(player);
 
-        ctp.getUtil().sendMessageToPlayers(this, event.getJoinMessage());
+        sendMessageToPlayers(event.getJoinMessage());
 
         // Get lobby location and move player to it.        
         player.teleport(loc); // Teleport player to lobby
@@ -593,7 +623,7 @@ public class Arena {
         
         ctp.getInvManagement().removeCoolDowns(p.getName());
         
-        ctp.getUtil().sendMessageToPlayers(this, p, ctp.getLanguage().PLAYER_LEFT.replaceAll("%PN", p.getName())); // Won't send to "player".
+        sendMessageToPlayers(p, ctp.getLanguage().PLAYER_LEFT.replaceAll("%PN", p.getName())); // Won't send to "player".
         
         //Remove the number count from the teamdata
         if (players.get(p.getName()).getTeam() != null) {
@@ -654,7 +684,7 @@ public class Arena {
     	CTPEndEvent event = new CTPEndEvent(this, ctp.getLanguage().GAME_ENDED);
     	ctp.getPluginManager().callEvent(event);
     	
-        ctp.getUtil().sendMessageToPlayers(this, event.getEndMessage());
+        sendMessageToPlayers(event.getEndMessage());
 
         // Task canceling
         if (playTime.getTaskId() != -1) {
@@ -739,9 +769,8 @@ public class Arena {
             String message = getConfigOptions().killStreakMessages.getMessage(data.getKillsInARow());
 
             if (!message.isEmpty())
-            	ctp.getUtil().sendMessageToPlayers(this,
-            			LangTools.getColorfulMessage(message.replace("%player",
-            					data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE)));
+            	sendMessageToPlayers(LangTools.getColorfulMessage(message.replace("%player",
+            			data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE)));
         }
     }
     
@@ -753,10 +782,10 @@ public class Arena {
                 if (team.getMemberCount() == 1) {
                     zeroPlayers = false;
                     
-                    ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().GAME_ENDED_TOO_FEW_PLAYERS
-                    		.replaceAll("%TC", team.getChatColor() + "")
-                    		.replaceAll("%TN", team.getColor().toUpperCase())
-                    		.replaceAll("%WS", team.getScore() + ""));
+                    sendMessageToPlayers(ctp.getLanguage().GAME_ENDED_TOO_FEW_PLAYERS
+	            		.replaceAll("%TC", team.getChatColor() + "")
+	            		.replaceAll("%TN", team.getColor().toUpperCase())
+	            		.replaceAll("%WS", team.getScore() + ""));
                     
                     endGame(false, true);//Game ended prematurely, don't give rewards but do countdown.
                     break;
@@ -764,7 +793,7 @@ public class Arena {
             }
             
             if (zeroPlayers) {
-            	ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().NO_PLAYERS_LEFT);
+            	sendMessageToPlayers(ctp.getLanguage().NO_PLAYERS_LEFT);
                 endGame(false, false);//Game ended prematurely, don't give rewards to ghost players we may have.
             }
         }
@@ -888,7 +917,7 @@ public class Arena {
             loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
             player.teleport(loc); // Teleport player to lobby
             
-            ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().TEAM_BALANCE_MOVE_TO_LOBBY.replaceAll("%PN", p));
+            sendMessageToPlayers(ctp.getLanguage().TEAM_BALANCE_MOVE_TO_LOBBY.replaceAll("%PN", p));
             
         } else {
             // Moving to other Team
@@ -937,12 +966,12 @@ public class Arena {
             if (!teleport)
             	player.teleport(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ(), 0.0F, (float)spawn.getDir()));
             
-            ctp.getUtil().sendMessageToPlayers(this, ctp.getLanguage().TEAM_BALANCE_CHANGE_TEAMS
-            		.replaceAll("%PN", player.getName())
-            		.replaceAll("%OC", oldcc + "")
-            		.replaceAll("%OT", oldteam)
-            		.replaceAll("%NC", newTeam.getChatColor() + "")
-            		.replaceAll("%NT", newTeam.getName()));
+            sendMessageToPlayers(ctp.getLanguage().TEAM_BALANCE_CHANGE_TEAMS
+	    		.replaceAll("%PN", player.getName())
+	    		.replaceAll("%OC", oldcc + "")
+	    		.replaceAll("%OT", oldteam)
+	    		.replaceAll("%NC", newTeam.getChatColor() + "")
+	    		.replaceAll("%NT", newTeam.getName()));
             
             newTeam.addOneMember();
         }

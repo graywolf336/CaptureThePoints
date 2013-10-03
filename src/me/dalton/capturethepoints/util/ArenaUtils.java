@@ -235,7 +235,7 @@ public class ArenaUtils {
             }
         }
 
-        ctp.getUtil().sendMessageToPlayers(arena, WinMessage);
+        arena.sendMessageToPlayers(WinMessage);
         String message = "";
         if (arena.getConfigOptions().useScoreGeneration)
             for (Team aTeam : arena.getTeams())
@@ -244,7 +244,7 @@ public class ArenaUtils {
             for (Team aTeam : arena.getTeams())
                 message = message + aTeam.getChatColor() + aTeam.getName() + ChatColor.WHITE + " " + ctp.getLanguage().FINAL_POINTS + ": " + aTeam.getControlledPoints() + ChatColor.AQUA + " // ";
 
-        ctp.getUtil().sendMessageToPlayers(arena, message);
+        arena.sendMessageToPlayers(message);
         
         arena.endGame(true, true);//End the game and give the rewards.
         return true;

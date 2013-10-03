@@ -469,7 +469,7 @@ public class CaptureThePointsEntityListener  implements Listener {
     	
         if (attacker != null) {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
-                ctp.getUtil().sendMessageToPlayers(arena, data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                arena.sendMessageToPlayers(data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + arena.getPlayerData(attacker).getTeam().getChatColor() + attacker.getName());
             
             dropWool(arena, player);
@@ -479,7 +479,7 @@ public class CaptureThePointsEntityListener  implements Listener {
             arena.checkForKillMSG(player, true);
         } else {
             if(!ctp.getGlobalConfigOptions().disableKillMessages)
-                ctp.getUtil().sendMessageToPlayers(arena, data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE
+                arena.sendMessageToPlayers(data.getTeam().getChatColor() + player.getName() + ChatColor.WHITE
                         + " was killed by " + ChatColor.LIGHT_PURPLE + "Herobrine");
             
             arena.checkForKillMSG(player, true);
@@ -507,7 +507,7 @@ public class CaptureThePointsEntityListener  implements Listener {
         	if(arena.getPlayerData(player).getLives() == 0) {
             	ctp.sendMessage(player, ctp.getLanguage().NO_MORE_LIVES);
             	ctp.getArenaUtil().moveToStands(arena, player);
-            	ctp.getUtil().sendMessageToPlayers(arena, player, ctp.getLanguage().PLAYER_LOST_LAST_LIFE.replaceAll("%PN", player.getName()));
+            	arena.sendMessageToPlayers(player, ctp.getLanguage().PLAYER_LOST_LAST_LIFE.replaceAll("%PN", player.getName()));
             	return;
         	}else {
         		ctp.sendMessage(player, ctp.getLanguage().REMAINING_LIVES + " " + data.getLives());

@@ -120,14 +120,14 @@ public class AutoStartTimer {
                     arena.startOtherTasks();
                     
                     pl.getLogger().info("CaptureThePoints arena '" + arena.getName() + "' has started!");
-                    pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + "...Go!");
+                    arena.sendMessageToPlayers(ChatColor.ITALIC + "...Go!");
                     
                     this.notifyAll();
                     Bukkit.getScheduler().cancelTask(id);
                 } else {
                 	// Inform them it is starting at an interval index.
                 	if(remaining == intervals[countdownIndex]) {
-                		pl.getUtil().sendMessageToPlayers(arena, ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
+                		arena.sendMessageToPlayers(ChatColor.ITALIC + pl.getLanguage().START_COUNTDOWN.replaceAll("%CS", String.valueOf(remaining)));
                 		countdownIndex--;
                 	}
                 }

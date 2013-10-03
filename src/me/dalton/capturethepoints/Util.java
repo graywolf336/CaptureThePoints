@@ -127,40 +127,6 @@ public class Util {
             inv.setBoots(stack);
         }
     }
-
-    /** Send message to Players that are playing in an arena
-     * <p />
-     * 
-     * @param arena The arena to send the message to it's players.
-     * @param message The message to send. "[CTP] " has been included.
-     * @see PlayerData
-     * @see Arena
-     */
-    public void sendMessageToPlayers(Arena arena, String message) {
-        for (String player : arena.getPlayersData().keySet()) {
-        	Player p = ctp.getServer().getPlayer(player);
-            p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + message); // Kj
-        }
-    }
-    
-    /** Send message to Players that are playing in the given arena but exclude a person.
-     * <p />
-     * 
-     * @param arena The arena to send the message to it's players.
-     * @param exclude The Player to exclude
-     * @param s The message to send. "[CTP] " has been included.
-     * @see PlayerData
-     * @see Arena
-     */
-    public void sendMessageToPlayers(Arena arena, Player exclude, String s) {
-        for (String player : arena.getPlayersData().keySet()) {
-        	if(player.equalsIgnoreCase(exclude.getName())) continue;
-        	
-        	Player p = ctp.getServer().getPlayer(player);
-            if (p != null)
-                p.sendMessage(ChatColor.AQUA + "[CTP] " + ChatColor.WHITE + s); // Kj
-        }
-    }
     
     /**
      * Takes a comma-separated list of items in the <type>:<amount> format and
@@ -195,7 +161,8 @@ public class Util {
                 amount = Integer.parseInt(parts[2]);
             }
 
-            ItemStack stack = new ItemStack(0);
+            ItemStack stack = new ItemStack(Material.AIR);
+            
             // Make the ItemStack.
             if (amount > 64) {
                 while (amount > 64) {

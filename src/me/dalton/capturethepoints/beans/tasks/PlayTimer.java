@@ -93,7 +93,7 @@ public class PlayTimer {
                         }
                     }
                     
-                    pl.getUtil().sendMessageToPlayers(arena, "Time out! " + teams + ChatColor.WHITE + " wins!");
+                    arena.sendMessageToPlayers("Time out! " + teams + ChatColor.WHITE + " wins!");
                     arena.endGame(true, true); //The game ended so give rewards
                 }
     			
