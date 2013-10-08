@@ -561,6 +561,7 @@ public class Arena {
         getLobby().getPlayersInLobby().put(player.getName(), false); // Kj
         getLobby().getPlayersWhoWereInLobby().add(player.getName()); // Kj
         
+        player.setFlying(false);
         player.setFoodLevel(20);
         player.setMaxHealth(getConfigOptions().maxPlayerHealth);//Sets their health to the custom maximum.
         
