@@ -307,7 +307,12 @@ public class CaptureThePointsPlayerListener implements Listener {
         
         //Find out if the players can move
         if(!a.canMove()) {
-        	event.setCancelled(true);
+        	Spawn s = a.getPlayerData(p).getTeam().getSpawn();
+        	Location l = new Location(a.getWorld(), s.getX(), s.getY(), s.getZ());
+        	l.setYaw((float) s.getDir());
+        	
+        	p.teleport(l);
+        	
         	if(ctp.getGlobalConfigOptions().debugMessages)
         		ctp.logInfo("Cancelled a player move event because the players can't move, due to the arena saying they can't.");
         	return;

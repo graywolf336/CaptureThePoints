@@ -348,12 +348,9 @@ public class ArenaUtils {
                 ? arena.getTeamSpawns().get(playerdata.getTeam().getColor())
                 : team.getSpawn();
 
-        Location loc = new Location(arena.getWorld(),
-        		arena.getTeamSpawns().get(color).getX(),
-        		arena.getTeamSpawns().get(color).getY(),
-        		arena.getTeamSpawns().get(color).getZ());
-        loc.setYaw((float) arena.getTeamSpawns().get(color).getDir());
-        loc.getWorld().loadChunk(loc.getBlockX(), loc.getBlockZ());
+        Location loc = new Location(arena.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ());
+        loc.setYaw((float) spawn.getDir());
+        loc.getWorld().loadChunk(loc.getChunk());
         
         boolean teleport = p.teleport(loc);
         if (!teleport)
