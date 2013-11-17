@@ -327,11 +327,13 @@ public class CaptureThePointsPlayerListener implements Listener {
                 		&& loc.getWorld().getName().equalsIgnoreCase(a.getWorld().getName())) {
                     return;
                 } else {
-                    String color = a.getPlayerData(p.getName()).getTeam().getColor();
-                    Location loc2 = new Location(a.getWorld(), a.getTeamSpawns().get(color).getX(), a.getTeamSpawns().get(color).getY() + 1, a.getTeamSpawns().get(color).getZ());
-                    loc2.setYaw((float) a.getTeamSpawns().get(color).getDir());
-                    loc2.getWorld().loadChunk(loc2.getBlockX(), loc2.getBlockZ());
-                    p.teleport(loc2);
+                	if(a.getPlayerData(p.getName()).getTeam() != null) {
+                        String color = a.getPlayerData(p.getName()).getTeam().getColor();
+                        Location loc2 = new Location(a.getWorld(), a.getTeamSpawns().get(color).getX(), a.getTeamSpawns().get(color).getY() + 1, a.getTeamSpawns().get(color).getZ());
+                        loc2.setYaw((float) a.getTeamSpawns().get(color).getDir());
+                        loc2.getWorld().loadChunk(loc2.getBlockX(), loc2.getBlockZ());
+                        p.teleport(loc2);
+                	}
                 }
             } else {
             	a.getPlayerData(p.getName()).addOneMoveChecker();
