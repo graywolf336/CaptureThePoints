@@ -11,6 +11,7 @@ import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
 import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Spawn;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.events.CTPPlayerDeathEvent;
 import me.dalton.capturethepoints.util.PotionManagement;
 
@@ -235,20 +236,26 @@ public class CaptureThePointsEntityListener  implements Listener {
             //disable pvp damage
             if (attacker != null) {
                 if (ctp.getArenaMaster().getPlayerData(attacker) != null) {
-                    if (data.getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(attacker).getTeam().getColor())) {
-                    	ctp.sendMessage(attacker, data.getTeam().getChatColor() + player.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
-                        event.setCancelled(true);
-                        if(ctp.getGlobalConfigOptions().debugMessages)
-                        	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
-                        return;
-                    } else {
-                    	// This is if there exists something like factions group protection
-                        if (event.isCancelled()) {
-                            event.setCancelled(false);
+                	if(data.getTeam() != null) {
+                        if (data.getTeam().getColor().equalsIgnoreCase(ctp.getArenaMaster().getPlayerData(attacker).getTeam().getColor())) {
+                        	ctp.sendMessage(attacker, data.getTeam().getChatColor() + player.getName() + ChatColor.LIGHT_PURPLE + " is on your team!");
+                            event.setCancelled(true);
                             if(ctp.getGlobalConfigOptions().debugMessages)
-                            	ctp.getLogger().info("Just uncancelled a EntityDamageEvent because the event was cancelled by some other plugin.");
+                            	ctp.getLogger().info("Just cancelled a EntityDamageEvent because the player is on the same team as the attacker.");
+                            return;
+                        } else {
+                        	// This is if there exists something like factions group protection
+                            if (event.isCancelled()) {
+                                event.setCancelled(false);
+                                if(ctp.getGlobalConfigOptions().debugMessages)
+                                	ctp.getLogger().info("Just uncancelled a EntityDamageEvent because the event was cancelled by some other plugin.");
+                            }
                         }
-                    }
+                	}else {
+                		a.leaveGame(player, ArenaLeaveReason.UNKNOWN);
+                		event.setCancelled(true);
+                		return;
+                	}
                 }
             }
 
