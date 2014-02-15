@@ -21,7 +21,7 @@ public class ListCommand extends CTPCommand {
 	@Override
 	protected void perform() {
 		if(!ctp.getArenaMaster().isPlayerInAnArena(sender.getName())) {
-			if(ctp.getArenaMaster().getArenas().size() == 0) {
+			if(ctp.getArenaMaster().getArenas().isEmpty()) {
 				sendMessage(ctp.getLanguage().checks_NO_ARENAS);
 				return;
 			}
@@ -30,9 +30,9 @@ public class ListCommand extends CTPCommand {
 			
     		for(Arena a : ctp.getArenaMaster().getArenas())
     			if(ctp.getArenaMaster().getSelectedArena().getName().equalsIgnoreCase(a.getName()))
-    				sendMessage("  -" + a.getName());
+    				sendMessage("  - " + a.getName());
     			else
-    				sendMessage("  -" + a.getName());
+    				sendMessage("  - " + a.getName());
 			return;
 		}else {
 			sendMessage(ctp.getLanguage().ALREADY_PLAYING);
