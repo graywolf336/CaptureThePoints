@@ -133,6 +133,9 @@ public class BuildCommand extends CTPCommand {
                 if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.enable"})) {
                 	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b enable <true/false>" + ChatColor.WHITE + "- enables or disables the arena");
                 }
+                if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.pointstowin"})) {
+                	ctp.sendMessage(player, ChatColor.GREEN + "/ctp b pointstowin <number>" + ChatColor.WHITE + "- sets the amount of points needed to win.");
+                }
             }else {
             	ctp.sendMessage(player, "Invalid page.");
             }
@@ -166,7 +169,7 @@ public class BuildCommand extends CTPCommand {
         }
         
         //sets arena for editing/creating
-        if (arg.equalsIgnoreCase("editarena")) {
+        if (arg.equalsIgnoreCase("editarena") || arg.equalsIgnoreCase("edit")) {
             if (ctp.getPermissions().canAccess(player, false, new String[]{"ctp.*", "ctp.admin", "ctp.admin.editarena"})) {
                 if (parameters.size() < 4) {
                     sendMessage(ChatColor.WHITE + "Usage: " + ChatColor.GREEN + "/ctp build editarena <Arena name>");
@@ -174,7 +177,7 @@ public class BuildCommand extends CTPCommand {
                 }
                 
                 arg2 = arg2.toLowerCase();
-                if (ctp.getArenaMaster().getArena(arg2) == null) {
+                if (ctp.getArenaMaster().isArena(arg2)) {
                     sendMessage(ChatColor.RED + "This arena does not exist! -----> " + ChatColor.GREEN + arg2);
                     return;
                 }
