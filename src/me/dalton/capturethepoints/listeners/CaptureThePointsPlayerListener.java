@@ -545,7 +545,8 @@ public class CaptureThePointsPlayerListener implements Listener {
                     		notReady = notReady.substring(0, notReady.length() - 2);
                     	}
                     	
-                    	ctp.sendMessage(p, ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople() + " Players Not Ready: " + notReady + "."); // Kj
+                    	ctp.sendMessage(p, ChatColor.GREEN + "Thank you for readying. Waiting for " + lobby.countUnreadyPeople() + "/" + lobby.countAllPeople());
+                    	ctp.sendMessage(p, "Players not ready: " + notReady + "."); // Kj
                     }
                 } else { // Game already started
                     if (!arena.getConfigOptions().allowLateJoin) {
