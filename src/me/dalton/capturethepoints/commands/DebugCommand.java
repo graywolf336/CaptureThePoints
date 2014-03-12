@@ -151,7 +151,7 @@ public class DebugCommand extends CTPCommand {
         } else {
             total++;
         }
-        if (ctp.getLobbyActivity() != 0) {
+        if (ctp.getArenaMaster().getLobbyActivityId() != 0) {
             running++; total++;
             result.add("Lobby Activity");
         } else {

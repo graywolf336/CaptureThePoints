@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -24,6 +25,7 @@ import me.dalton.capturethepoints.beans.Points;
 import me.dalton.capturethepoints.beans.Spawn;
 import me.dalton.capturethepoints.beans.Stands;
 import me.dalton.capturethepoints.beans.Team;
+import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 import me.dalton.capturethepoints.enums.Status;
 
 public class ArenaMaster {
@@ -33,15 +35,56 @@ public class ArenaMaster {
 	private List<Arena> arenas;
 	private String selectedArena, editingArena;
     private HashMap<String, ArenaBoundaries> arenasBoundaries;
+    private int lobbyActivity = 0;
 	
 	public ArenaMaster(CaptureThePoints plugin) {
 		this.ctp = plugin;
 		this.arenas = new LinkedList<Arena>();
 		this.arenasBoundaries = new HashMap<String, ArenaBoundaries>();
+		
+        lobbyActivity = ctp.getServer().getScheduler().scheduleSyncRepeatingTask(ctp, new Runnable() {
+            public void run () {
+            	if(getArenas().isEmpty()) return; //if we don't have any arenas, return and do nothing
+            	
+                if (ctp.getGlobalConfigOptions().lobbyKickTime <= 0) {
+                    return;
+                }
+
+                for(Arena a : getArenas()) {
+                	HashSet<PlayerData> temp = new HashSet<PlayerData>(a.getPlayersData().values()); //Create a local copy
+                	
+	                for (PlayerData data : temp) {
+	                    Player p = ctp.getServer().getPlayer(data.getName());
+	                    if (data.inLobby() && !data.isReady()) {
+	                        // Kj -- Time inactivity warning.
+	                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((ctp.getGlobalConfigOptions().lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
+	                            ctp.sendMessage(p, ctp.getLanguage().READY_UP_REMINDER);
+	                            data.isWarned(true);
+	                        }
+	
+	                        // Kj -- Time inactive in the lobby is greater than the lobbyKickTime specified in config (in ms)
+	                        if ((System.currentTimeMillis() - data.getLobbyJoinTime() >= (ctp.getGlobalConfigOptions().lobbyKickTime * 1000)) && data.hasBeenWarned()) {
+	                            data.setInLobby(false);
+	                            data.setInArena(false);
+	                            data.isWarned(false);
+	                            a.leaveGame(p, ArenaLeaveReason.PLAYER_NOT_READY);
+	                            ctp.sendMessage(p, ctp.getLanguage().NOT_READY_KICK);
+	                        }
+	                    }
+	                }
+                }
+            }
+
+        }, 200L, 200L); // 10 sec
 	}
 	
 	public CaptureThePoints getPlugin() {
 		return ctp;
+	}
+	
+	/** Gets the lobby activity id. */
+	public int getLobbyActivityId() {
+		return this.lobbyActivity;
 	}
 	
 	public void addNewArena(Arena arena) {

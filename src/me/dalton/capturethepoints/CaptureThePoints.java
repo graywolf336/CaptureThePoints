@@ -13,16 +13,13 @@ import me.dalton.capturethepoints.util.Permissions;
 import me.dalton.capturethepoints.beans.ArenaBoundaries;
 import me.dalton.capturethepoints.beans.Arena;
 import me.dalton.capturethepoints.beans.Items;
-import me.dalton.capturethepoints.beans.PlayerData;
 import me.dalton.capturethepoints.beans.Rewards;
 import me.dalton.capturethepoints.commands.*;
-import me.dalton.capturethepoints.enums.ArenaLeaveReason;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.IOException;
@@ -74,9 +71,6 @@ public class CaptureThePoints extends JavaPlugin {
     private MysqlConnector mysqlConnector = new MysqlConnector(this);
     
     private LanguageOptions lo = null;
-    
-    //General scheduler ids
-    private int lobbyActivity = 0;
 
     private final HashMap<String, ItemStack[]> Inventories = new HashMap<String, ItemStack[]>();
 
@@ -153,51 +147,14 @@ public class CaptureThePoints extends JavaPlugin {
         // Checks for mysql
         if(this.globalConfigOptions.enableHardArenaRestore)
             mysqlConnector.checkMysqlData();
-
-        //Kj: LobbyActivity timer.
-        lobbyActivity = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            public void run () {
-            	if(arenaMaster.getArenas().isEmpty()) return; //if we don't have any arenas, return and do nothing
-            	
-                if (globalConfigOptions.lobbyKickTime <= 0) {
-                    return;
-                }
-
-                for(Arena a : arenaMaster.getArenas()) {
-                	HashSet<PlayerData> temp = new HashSet<PlayerData>(a.getPlayersData().values()); //Create a local copy
-                	
-	                for (PlayerData data : temp) {
-	                    Player p = getServer().getPlayer(data.getName());
-	                    if (data.inLobby() && !data.isReady()) {
-	                        // Kj -- Time inactivity warning.
-	                        if (((System.currentTimeMillis() - data.getLobbyJoinTime()) >= ((globalConfigOptions.lobbyKickTime * 1000) / 2)) && !data.hasBeenWarned()) {
-	                            sendMessage(p, getLanguage().READY_UP_REMINDER);
-	                            data.isWarned(true);
-	                        }
-	
-	                        // Kj -- Time inactive in the lobby is greater than the lobbyKickTime specified in config (in ms)
-	                        if ((System.currentTimeMillis() - data.getLobbyJoinTime() >= (globalConfigOptions.lobbyKickTime * 1000)) && data.hasBeenWarned()) {
-	                            data.setInLobby(false);
-	                            data.setInArena(false);
-	                            data.isWarned(false);
-	                            a.leaveGame(p, ArenaLeaveReason.PLAYER_NOT_READY);
-	                            sendMessage(p, getLanguage().NOT_READY_KICK);
-	                        }
-	                    }
-	                }
-                }
-            }
-
-        }, 200L, 200L); // 10 sec
         
         logInfo("Loaded " + arenaMaster.getArenas().size() + " arena" + ((arenaMaster.getArenas().size() > 1 || arenaMaster.getArenas().size() == 0) ? "s!" : "!"));
     }
 
     @Override
     public void onDisable () {
-        if (lobbyActivity != 0) {
-            getServer().getScheduler().cancelTask(lobbyActivity);
-            lobbyActivity = 0;
+        if (arenaMaster.getLobbyActivityId() != 0) {
+            getServer().getScheduler().cancelTask(arenaMaster.getLobbyActivityId());
         }
         
         arenaRestore.cancelArenaRestoreSchedules();
@@ -206,6 +163,7 @@ public class CaptureThePoints extends JavaPlugin {
         economy = null;
         permission = null;
         commands.clear();
+        arenaMaster = null;
     }
     
     private void clearConfig() {
@@ -531,10 +489,6 @@ public class CaptureThePoints extends JavaPlugin {
     /** Returns the MySQL Connector */
     public MysqlConnector getMysqlConnector() {
     	return this.mysqlConnector;
-    }
-    
-    public int getLobbyActivity() {
-    	return this.lobbyActivity;
     }
     
     public boolean isFirstTime() {
