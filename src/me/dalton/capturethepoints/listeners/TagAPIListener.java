@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.kitteh.tag.PlayerReceiveNameTagEvent;
+import org.kitteh.tag.AsyncPlayerReceiveNameTagEvent;
 import org.kitteh.tag.TagAPI;
 
 public class TagAPIListener implements Listener {
@@ -18,7 +18,7 @@ public class TagAPIListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onNameTag(PlayerReceiveNameTagEvent event) {
+	public void onNameTag(AsyncPlayerReceiveNameTagEvent event) {
 		if(!ctp.getArenaMaster().isPlayerInAnArena(event.getPlayer())) return; //if the player receiving this is not playing, don't send.
 		if(!ctp.getArenaMaster().isPlayerInAnArena(event.getNamedPlayer())) return; //check if the player who's tag update we are getting is playing
 		PlayerData pd = ctp.getArenaMaster().getPlayerData(event.getNamedPlayer());
