@@ -32,11 +32,12 @@ public class ArenaMaster {
 	
 	private List<Arena> arenas;
 	private String selectedArena, editingArena;
-    private HashMap<String, ArenaBoundaries> arenasBoundaries = new HashMap<String, ArenaBoundaries>();
+    private HashMap<String, ArenaBoundaries> arenasBoundaries;
 	
 	public ArenaMaster(CaptureThePoints plugin) {
 		this.ctp = plugin;
 		this.arenas = new LinkedList<Arena>();
+		this.arenasBoundaries = new HashMap<String, ArenaBoundaries>();
 	}
 	
 	public CaptureThePoints getPlugin() {
