@@ -50,7 +50,7 @@ public class InvManagement {
         clearInventory(p, true); //clear the inventory for the current world
         
         Location loc = a.getPrevoiusPosition().get(p.getName());
-        loc.setYaw((float) a.getLobby().getDir());
+        //loc.setYaw((float) a.getLobby().getDir());
         if(!loc.getWorld().isChunkLoaded(loc.getChunk()))
         	loc.getWorld().loadChunk(loc.getChunk());
         
