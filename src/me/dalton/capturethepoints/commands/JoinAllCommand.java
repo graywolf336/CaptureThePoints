@@ -41,7 +41,7 @@ public class JoinAllCommand extends CTPCommand {
         if (ctp.getArenaMaster().getSelectedArena().getStatus().isRunning())
             ctp.getArenaMaster().getSelectedArena().endGame(false, false);//Don't give rewards as the game ended prematurely.
         
-        int numberofplayers = ctp.getServer().getOnlinePlayers().length;
+        int numberofplayers = ctp.getServer().getOnlinePlayers().size();
         ctp.getArenaMaster().chooseSuitableArena(numberofplayers); // Choose a suitable arena based on the number of players on the server.
 
         for (Player p : ctp.getServer().getOnlinePlayers())
